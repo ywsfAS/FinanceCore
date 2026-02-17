@@ -1,0 +1,18 @@
+﻿using FinanceCore.Domain.Enums;
+using MediatR;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace FinanceCore.Application.Features.Budgets.Commands.Update
+{
+    public record UpdateBudgetCommand(
+        Guid Id,
+        decimal Amount,
+        EnCurrency Currency,
+        BudgetPeriod Period,
+        DateTime StartDate,
+        DateTime EndDate) : IRequest;
+}

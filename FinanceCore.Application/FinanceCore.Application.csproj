@@ -7,12 +7,16 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Accounts\Commands\" />
-    <Folder Include="Accounts\Queries\" />
+    <ProjectReference Include="..\FinanceCore\FinanceCore.Domain.csproj" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\FinanceCore\FinanceCore.Domain.csproj" />
+    <Folder Include="Features\Transactions\Commands\Update\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="12.1.1" />
+    <PackageReference Include="MediatR" Version="14.0.0" />
   </ItemGroup>
 
 </Project>
