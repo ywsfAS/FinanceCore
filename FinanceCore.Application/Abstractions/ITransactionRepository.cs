@@ -9,10 +9,10 @@ namespace FinanceCore.Application.Abstractions
 {
     public interface ITransactionRepository
     {
-        Task<Transaction?> GetByIdAsync(Guid id , CancellationToken token = default);
+        Task<Transaction?> GetByIdAsync(Guid id, CancellationToken token = default);
         Task<IEnumerable<Transaction>> GetByAccountIdAsync(Guid id, CancellationToken token = default);
         Task AddAsync(Transaction transaction, CancellationToken token = default);
-        Task UpdateAsync( Transaction transaction, CancellationToken token = default);
+        Task UpdateAsync(Transaction transaction, CancellationToken token = default);
         Task DeleteAsync(Transaction transaction, CancellationToken token = default);
 
     }
