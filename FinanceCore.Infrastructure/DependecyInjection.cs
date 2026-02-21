@@ -1,7 +1,9 @@
-﻿using FinanceCore.Application.Abstractions;
+﻿using Dapper;
+using FinanceCore.Application.Abstractions;
 using FinanceCore.Infrastructure.Auth;
 using FinanceCore.Infrastructure.context;
 using FinanceCore.Infrastructure.context.ConnectionFactory;
+using FinanceCore.Infrastructure.Persistence.TypeHandlers;
 using FinanceCore.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
@@ -25,6 +27,9 @@ namespace FinanceCore.Infrastructure
 
             services.AddScoped<IConnectionFactory>(sp =>
             new SqlConnectionFactory(connectionString));
+            
+
+
 
             services.AddScoped<IAccountRepository, AccountRepository>();
             services.AddScoped<IUserRepository, UserRepository>();

@@ -1,6 +1,6 @@
 ﻿using FinanceCore.Domain.Common;
 
-namespace FinanceCore.Domain.Users;
+namespace FinanceCore.Domain.Common;
 
 public sealed class Email : ValueObject
 {
