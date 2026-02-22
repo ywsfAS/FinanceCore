@@ -18,6 +18,41 @@ public class Category : AggregateRoot
 
     private Category() { }
 
+    private Category(
+        Guid CategoryId,
+        Guid userId,
+        string name,
+        CategoryType type,
+        DateTime createdAt,
+        bool Active,
+        string? description = null,
+        bool isDefault = false
+        )
+    {
+        Id = CategoryId;
+        UserId = userId;
+        Name = name;
+        Type = type;
+        IsActive = Active;
+        Description = description;
+        IsDefault = isDefault;
+        CreatedAt = createdAt;
+    }
+
+    public static Category Create(
+        
+        Guid CategoryId,
+        Guid userId,
+        string name,
+        CategoryType type,
+        DateTime createdAt,
+        bool Active,
+        string? description = null,
+        bool isDefault = false
+        )
+    {
+        return new Category(CategoryId, userId, name, type, createdAt, Active, description, isDefault);
+    }
     public static Category Create(
         Guid userId,
         string name,

@@ -20,6 +20,40 @@ public class Transaction : AggregateRoot
 
     private Transaction() { }
 
+    private Transaction(    
+        Guid TransactionId,
+        Guid accountId,
+        Money amount,
+        Guid categoryId,
+        EnTransactionType type,
+        DateTime date,
+        string? description = null,
+        string? notes = null
+        )
+    {
+        Id = TransactionId;
+        AccountId = accountId;
+        Amount = amount;
+        CategoryId = categoryId;
+        Type = type;
+       Description = description;
+        Notes = notes;
+        Date = date;
+    }
+    public static Transaction Create(
+        Guid TransactionId,
+        Guid accountId,
+        Money amount,
+        Guid categoryId,
+        EnTransactionType type,
+        DateTime date,
+        string? description = null,
+        string? notes = null
+        )
+    {
+        return new Transaction(TransactionId,accountId,amount,categoryId,type,date,description,notes);
+
+    }
     public static Transaction Create(
         Guid accountId,
         Money amount,

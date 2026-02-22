@@ -4,7 +4,7 @@ namespace FinanceCore.Infrastructure.Mappers.ToDB
 {
     static class EmailMapper
     {
-        public static EmailModel MapToDB(Email email )
+        public static EmailModel MapToModel(Email email )
         {
             return new EmailModel{ Email = email.Address };
 

@@ -23,6 +23,43 @@ public class Account : AggregateRoot
 
     private Account() { }
 
+    private Account(Guid AccountId ,Guid userId, string name, EnAccountType type, EnCurrency currency, Money balance, Money initialBalance, bool isActive, string? description, DateTime createdAt, DateTime? lastTransactionAt, string? bankName, string? accountNumberLastFour)
+    {
+        Id = AccountId;
+        UserId = userId;
+        Name = name;
+        Type = type;
+        Currency = currency;
+        Balance = balance;
+        InitialBalance = initialBalance;
+        IsActive = isActive;
+        Description = description;
+        CreatedAt = createdAt;
+        LastTransactionAt = lastTransactionAt;
+        BankName = bankName;
+        AccountNumberLastFour = accountNumberLastFour;
+    }
+
+    public static Account Create(
+        Guid Id,
+        Guid userId,
+        string name,
+        EnAccountType type,
+        EnCurrency currency,
+        Money balance,
+        Money initialBalance,
+        bool isActive,
+        DateTime createdAt,
+        string? bankName,
+        DateTime? lastTransactionAt = null,
+        string? description = null,
+        string? accountNumberLastFour = null)
+    {
+
+        return new Account(Id,userId,name,type,currency,balance,initialBalance,isActive,description,createdAt,lastTransactionAt,bankName,null);
+    }
+
+
     public static Account Create(
         Guid userId,
         string name,

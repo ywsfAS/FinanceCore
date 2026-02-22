@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace FinanceCore.Infrastructure.Models
 {
-    internal class MoneyModel
+    public class MoneyModel
     {
+        public decimal Balance { get; set; }
+        public byte Currency { get; set; }
+
     }
 }

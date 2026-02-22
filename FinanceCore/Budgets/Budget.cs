@@ -21,6 +21,52 @@ public class Budget : AggregateRoot
 
     private Budget() { }
 
+
+    private Budget(
+        Guid BudgetId,
+         Guid userId,
+        Guid categoryId,
+        string name,
+        Money amount,
+        Money spentAmount,
+
+        BudgetPeriod period,
+        DateTime startDate,
+        DateTime endDate
+        )
+    {
+        Id = BudgetId;
+        UserId = userId;
+        CategoryId = categoryId;
+        SpentAmount = spentAmount;
+        Name = name;
+        Amount = amount;
+        Period = period;
+         
+        StartDate = startDate;
+        EndDate = endDate;
+
+    }
+
+    public static Budget Create(
+        
+        Guid BudgetId,
+         Guid userId,
+        Guid categoryId,
+        string name,
+        Money amount,
+        Money spentAmount,
+
+        BudgetPeriod period,
+        DateTime startDate,
+        DateTime endDate
+        
+        )
+    {
+
+        return new Budget(BudgetId, userId, categoryId, name, amount, spentAmount, period, startDate, endDate );
+
+    }
     public static Budget Create(
         Guid userId,
         Guid categoryId,

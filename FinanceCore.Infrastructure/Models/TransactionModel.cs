@@ -6,7 +6,17 @@ using System.Threading.Tasks;
 
 namespace FinanceCore.Infrastructure.Models
 {
-    internal class TransactionModel
+    public class TransactionModel
     {
+        public Guid Id { get; set; }
+        public Guid AccountId { get; set; }
+        public Guid CategoryId { get; set; }
+        public MoneyModel Amount { get; set; }
+        public byte Type { get; set; }
+        public DateTime Date { get; set; }
+        public string? Description { get; set; }
+        public DateTime CreatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
     }
+
 }

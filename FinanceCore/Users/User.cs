@@ -27,8 +27,33 @@ public class User : AggregateRoot
     public int FailedLoginAttempts { get; private set; }
     public DateTime? LockoutEnd { get; private set; }
 
+
+
     private User() { }
 
+
+    // Constructor For Db
+    private User(Guid Id ,string name,
+        Email email,
+        string passwordHash,
+        EnCurrency defaultCurrency = EnCurrency.USD,
+        string? timeZone = null ) { 
+        this.Id = Id;
+        this.Name = name;
+        this.Email = email;
+        this.PasswordHash = passwordHash;
+        this.DefaultCurrency = defaultCurrency;
+        this.TimeZone = TimeZone;
+        this.IsActive = true;
+    }
+    public static User Create(Guid Id,string name,
+        Email email,
+        string passwordHash,
+        EnCurrency defaultCurrency = EnCurrency.USD,
+        string? timeZone = null)
+    {
+        return new User(Id, name, email, passwordHash, defaultCurrency, timeZone);
+    }
     public static User Create(
         string name,
         Email email,

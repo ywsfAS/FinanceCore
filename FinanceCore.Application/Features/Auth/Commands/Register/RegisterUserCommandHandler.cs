@@ -2,6 +2,7 @@
 using FinanceCore.Domain.Users;
 using FinanceCore.Domain.Exceptions;
 using MediatR;
+using FinanceCore.Domain.Common;
 
 namespace FinanceCore.Application.Features.Auth.Commands.Register
 {

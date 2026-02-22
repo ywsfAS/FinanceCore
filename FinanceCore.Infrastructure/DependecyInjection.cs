@@ -3,7 +3,6 @@ using FinanceCore.Application.Abstractions;
 using FinanceCore.Infrastructure.Auth;
 using FinanceCore.Infrastructure.context;
 using FinanceCore.Infrastructure.context.ConnectionFactory;
-using FinanceCore.Infrastructure.Persistence.TypeHandlers;
 using FinanceCore.Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
