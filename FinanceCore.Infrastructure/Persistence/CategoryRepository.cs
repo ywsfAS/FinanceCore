@@ -1,6 +1,9 @@
 ﻿using FinanceCore.Application.Abstractions;
 using FinanceCore.Domain.Categories;
 using FinanceCore.Infrastructure.context;
+using FinanceCore.Infrastructure.Mappers;
+using FinanceCore.Infrastructure.Models.FinanceCore.Infrastructure.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace FinanceCore.Infrastructure.Repositories
 {
@@ -15,44 +18,40 @@ namespace FinanceCore.Infrastructure.Repositories
 
         public async Task<Category?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            return await _connectionFactory.ReadSingleAsync<Category, Guid>(
+            var model =  await _connectionFactory.ReadSingleAsync<CategoryModel, Guid>(
                 "sp_GetCategoryById",
                 id);
+            if (model == null)
+            {
+                return null;
+            }
+            return CategoryMapper.MapToDomain(model);
         }
 
         public async Task<IEnumerable<Category>> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken = default)
         {
-            return await _connectionFactory.ReadListAsync<Category>(
+            var models =  await _connectionFactory.ReadListAsync<CategoryModel>(
                 "sp_GetCategoriesByUserId",
                 new { UserId = userId });
+            return models.Select(model => CategoryMapper.MapToDomain(model));
         }
 
         public async Task AddAsync(Category category, CancellationToken cancellationToken = default)
         {
+            var model = CategoryMapper.MapToModel(category);
             await _connectionFactory.ExecuteNonQueryAsync(
                 "sp_CreateCategory",
-                new
-                {
-                    category.Id,
-                    category.UserId,
-                    category.Name,
-                    Type = category.Type.ToString(),
-                    category.Description,
-                    category.CreatedAt
-                });
+                model
+                );
         }
 
         public async Task UpdateAsync(Category category, CancellationToken cancellationToken = default)
         {
+            var model = CategoryMapper.MapToModel(category);
             await _connectionFactory.ExecuteNonQueryAsync(
                 "sp_UpdateCategory",
-                new
-                {
-                    category.Id,
-                    category.Name,
-                    category.Description,
-                    category.UpdatedAt
-                });
+                model
+                );
         }
 
         public async Task DeleteAsync(Category category, CancellationToken cancellationToken = default)

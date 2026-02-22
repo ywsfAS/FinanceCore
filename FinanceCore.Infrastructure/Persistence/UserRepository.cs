@@ -1,6 +1,8 @@
 ﻿using FinanceCore.Application.Abstractions;
 using FinanceCore.Domain.Users;
 using FinanceCore.Infrastructure.context;
+using FinanceCore.Infrastructure.Models;
+using FinanceCore.Infrastructure.Mappers;
 
 namespace FinanceCore.Infrastructure.Repositories
 {
@@ -15,48 +17,47 @@ namespace FinanceCore.Infrastructure.Repositories
 
         public async Task<User?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            return await _connectionFactory.ReadSingleAsync<User, Guid>(
+            var model = await _connectionFactory.ReadSingleAsync<UserModel,Guid>(
                 "sp_GetUserById",
                 id);
+            if (model == null) {
+                return null;
+            }
+            return UserMapper.MapToDomain(model);
         }
 
         public async Task<User?> GetByEmailAsync(string email, CancellationToken cancellationToken = default)
         {
-            var users = await _connectionFactory.ReadListAsync<User>(
+            var models = await _connectionFactory.ReadListAsync<UserModel>(
                 "sp_GetUserByEmail",
                 new { Email = email });
+            
 
-            return users.FirstOrDefault();
+            var model = models.FirstOrDefault();
+            if (model == null)
+            {
+                return null;
+            }
+            return UserMapper.MapToDomain(model);
         }
 
         public async Task AddAsync(User user, CancellationToken cancellationToken = default)
         {
+            var model = UserMapper.MapToModel(user);
+                
             await _connectionFactory.ExecuteNonQueryAsync(
-                "sp_CreateUser",
-                new
-                {
-                    user.Id,
-                    user.Name,
-                    Email = user.Email.Address,
-                    user.PasswordHash,
-                    DefaultCurrency = user.DefaultCurrency.ToString(),
-                    user.TimeZone,
-                    user.CreatedAt
-                });
+             "sp_CreateUser",
+             model
+             );
         }
 
         public async Task UpdateAsync(User user, CancellationToken cancellationToken = default)
         {
+            var model = UserMapper.MapToModel(user);
             await _connectionFactory.ExecuteNonQueryAsync(
                 "sp_UpdateUser",
-                new
-                {
-                    user.Id,
-                    user.Name,
-                    DefaultCurrency = user.DefaultCurrency.ToString(),
-                    user.TimeZone,
-                    user.UpdatedAt
-                });
+                model
+                );
         }
 
         public async Task DeleteAsync(User user, CancellationToken cancellationToken = default)

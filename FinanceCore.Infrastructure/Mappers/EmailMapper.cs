@@ -1,6 +1,6 @@
 ﻿using FinanceCore.Infrastructure.Models;
 using FinanceCore.Domain.Common;
-namespace FinanceCore.Infrastructure.Mappers.ToDB
+namespace FinanceCore.Infrastructure.Mappers
 {
     static class EmailMapper
     {
@@ -8,6 +8,10 @@ namespace FinanceCore.Infrastructure.Mappers.ToDB
         {
             return new EmailModel{ Email = email.Address };
 
+        }
+        public static Email MapToDomain(EmailModel model)
+        {
+            return new Email(model.Email);
         }
     }
 }

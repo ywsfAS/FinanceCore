@@ -1,6 +1,8 @@
 ﻿using FinanceCore.Application.Abstractions;
 using FinanceCore.Domain.Transactions;
 using FinanceCore.Infrastructure.context;
+using FinanceCore.Infrastructure.Mappers;
+using FinanceCore.Infrastructure.Models;
 
 namespace FinanceCore.Infrastructure.Repositories
 {
@@ -15,50 +17,39 @@ namespace FinanceCore.Infrastructure.Repositories
 
         public async Task<Transaction?> GetByIdAsync(Guid id, CancellationToken token = default)
         {
-            return await _connectionFactory.ReadSingleAsync<Transaction, Guid>(
+            var model =  await _connectionFactory.ReadSingleAsync<TransactionModel, Guid>(
                 "sp_GetTransactionById",
                 id);
+            if (model == null) { 
+                return null;
+            }
+            return TransactionMapper.MapToDomain(model);
         }
 
         public async Task<IEnumerable<Transaction>> GetByAccountIdAsync(Guid accountId, CancellationToken token = default)
         {
-            return await _connectionFactory.ReadListAsync<Transaction>(
+            var models =  await _connectionFactory.ReadListAsync<TransactionModel>(
                 "sp_GetTransactionsByAccountId",
-                new { AccountId = accountId });
+                new {AccountId = accountId});
+            return models.Select(model => TransactionMapper.MapToDomain(model));
         }
 
         public async Task AddAsync(Transaction transaction, CancellationToken token = default)
         {
-            await _connectionFactory.ExecuteNonQueryAsync(
+            var model = TransactionMapper.MapToModel(transaction);
+             await _connectionFactory.ExecuteNonQueryAsync(
                 "sp_CreateTransaction",
-                new
-                {
-                    transaction.Id,
-                    transaction.AccountId,
-                    transaction.CategoryId,
-                    Amount = transaction.Amount.Amount,
-                    Currency = transaction.Amount.Currency.ToString(),
-                    Type = transaction.Type.ToString(),
-                    transaction.Date,
-                    transaction.Description,
-                    transaction.CreatedAt
-                });
+                model
+                );
         }
 
         public async Task UpdateAsync(Transaction transaction, CancellationToken token = default)
         {
+           var model = TransactionMapper.MapToModel(transaction);
             await _connectionFactory.ExecuteNonQueryAsync(
                 "sp_UpdateTransaction",
-                new
-                {
-                    transaction.Id,
-                    transaction.CategoryId,
-                    Amount = transaction.Amount.Amount,
-                    Currency = transaction.Amount.Currency.ToString(),
-                    transaction.Date,
-                    transaction.Description,
-                    transaction.UpdatedAt
-                });
+                model
+               );
         }
 
         public async Task DeleteAsync(Transaction transaction, CancellationToken token = default)

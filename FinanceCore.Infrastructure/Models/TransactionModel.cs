@@ -11,7 +11,9 @@ namespace FinanceCore.Infrastructure.Models
         public Guid Id { get; set; }
         public Guid AccountId { get; set; }
         public Guid CategoryId { get; set; }
-        public MoneyModel Amount { get; set; }
+        public decimal Amount { get; set; }
+        public byte Currency { get; set; }
+
         public byte Type { get; set; }
         public DateTime Date { get; set; }
         public string? Description { get; set; }

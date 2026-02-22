@@ -12,8 +12,11 @@ namespace FinanceCore.Infrastructure.Models
         public string Name { get; set; }
         public Guid UserId { get; set; }
         public Guid CategoryId { get; set; }
-        public MoneyModel Amount { get; set; }
-        public MoneyModel SpentMoney { get; set; }
+        public decimal Amount { get; set; }
+        public byte AmountCurrency { get; set; }
+        public decimal SpentMoney { get; set; }
+        public byte SpentCurrency { get; set; }
+        
         public byte Period { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }

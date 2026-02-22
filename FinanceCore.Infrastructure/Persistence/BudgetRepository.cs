@@ -1,6 +1,9 @@
 ﻿using FinanceCore.Application.Abstractions;
 using FinanceCore.Domain.Budgets;
 using FinanceCore.Infrastructure.context;
+using FinanceCore.Infrastructure.Mappers;
+using FinanceCore.Infrastructure.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace FinanceCore.Infrastructure.Repositories
 {
@@ -15,50 +18,40 @@ namespace FinanceCore.Infrastructure.Repositories
 
         public async Task<Budget?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            return await _connectionFactory.ReadSingleAsync<Budget, Guid>(
+            var model =  await _connectionFactory.ReadSingleAsync<BudgetModel, Guid>(
                 "sp_GetBudgetById",
                 id);
+            if (model == null) {
+               return null;
+            }
+            return BudgetMapper.MapToDomain(model);
         }
 
         public async Task<IEnumerable<Budget>> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken = default)
         {
-            return await _connectionFactory.ReadListAsync<Budget>(
+
+             var models = await _connectionFactory.ReadListAsync<BudgetModel>(
                 "sp_GetBudgetsByUserId",
                 new { UserId = userId });
+            return models.Select(model => BudgetMapper.MapToDomain(model));
         }
 
         public async Task AddAsync(Budget budget, CancellationToken cancellationToken = default)
         {
+            var model = BudgetMapper.MapToModel(budget);
             await _connectionFactory.ExecuteNonQueryAsync(
                 "sp_CreateBudget",
-                new
-                {
-                    budget.Id,
-                    budget.UserId,
-                    budget.CategoryId,
-                    Amount = budget.Amount.Amount,
-                    Currency = budget.Amount.Currency.ToString(),
-                    Period = budget.Period.ToString(),
-                    budget.StartDate,
-                    budget.EndDate,
-                    budget.CreatedAt
-                });
+                budget
+                );
         }
 
         public async Task UpdateAsync(Budget budget, CancellationToken cancellationToken = default)
         {
+            var model = BudgetMapper.MapToModel(budget);
             await _connectionFactory.ExecuteNonQueryAsync(
                 "sp_UpdateBudget",
-                new
-                {
-                    budget.Id,
-                    Amount = budget.Amount.Amount,
-                    Currency = budget.Amount.Currency.ToString(),
-                    Period = budget.Period.ToString(),
-                    budget.StartDate,
-                    budget.EndDate,
-                    budget.UpdatedAt
-                });
+                model
+             );
         }
 
         public async Task DeleteAsync(Budget budget, CancellationToken cancellationToken = default)

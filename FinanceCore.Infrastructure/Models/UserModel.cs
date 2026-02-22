@@ -10,7 +10,7 @@ namespace FinanceCore.Infrastructure.Models
     {
         public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty;
-        public EmailModel Email { get; set; }
+        public string Email { get; set; } = string.Empty ;
         public string PasswordHash { get; set; } = string.Empty;
         public byte DefaultCurrency { get; set; }
         public string? TimeZone { get; set; }

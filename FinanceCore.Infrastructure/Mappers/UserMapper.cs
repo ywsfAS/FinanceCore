@@ -1,0 +1,20 @@
+﻿using FinanceCore.Domain.Enums;
+using FinanceCore.Domain.Users;
+using FinanceCore.Infrastructure.Models;
+using FinanceCore.Domain.Common;
+namespace FinanceCore.Infrastructure.Mappers
+{
+    public static class UserMapper
+    {
+        public static UserModel MapToModel(User user)
+        {
+  
+            return new UserModel { Id = user.Id, Name = user.Name, Email = user.Email.Address, PasswordHash = user.PasswordHash, DefaultCurrency = (byte)user.DefaultCurrency, TimeZone = user.TimeZone, CreatedAt = user.CreatedAt, UpdatedAt = user.UpdatedAt };
+        }
+        public static User MapToDomain(UserModel model)
+        {
+            return User.Create(model.Id, model.Name,new Email(model.Email), model.PasswordHash, (EnCurrency)model.DefaultCurrency, model.TimeZone);
+
+        }
+    }
+}
