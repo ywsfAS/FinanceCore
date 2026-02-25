@@ -13,7 +13,7 @@ namespace FinanceCore.Infrastructure.Mappers
         }
         public static User MapToDomain(UserModel model)
         {
-            return User.Create(model.Id, model.Name,new Email(model.Email), model.PasswordHash, (EnCurrency)model.DefaultCurrencyId, model.TimeZone);
+            return User.Create(model.Id, model.Name,new Email(model.Email), model.PasswordHash, (EnCurrency)model.DefaultCurrencyId, model.TimeZone,model.CreatedAt,model.UpdatedAt);
 
         }
     }

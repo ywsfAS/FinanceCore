@@ -8,13 +8,13 @@ namespace FinanceCore.Infrastructure.Mappers
     {
         public static BudgetModel MapToModel(Budget budget)
         {
-            return new BudgetModel { Id = budget.Id, UserId = budget.UserId, CategoryId = budget.CategoryId, Amount = budget.Amount.Amount,AmountCurrency = (byte)budget.Amount.Currency,SpentMoney = budget.Amount.Amount ,SpentCurrency = (byte)budget.Amount.Currency , Period = (byte)budget.Period, StartDate = budget.StartDate , EndDate = budget.EndDate , CreatedAt = budget.CreatedAt, UpdatedAt = budget.UpdatedAt };
+            return new BudgetModel { Id = budget.Id, UserId = budget.UserId, CategoryId = budget.CategoryId, Amount = budget.Amount.Amount, Period = budget.Period, StartDate = budget.StartDate , EndDate = budget.EndDate , CreatedAt = budget.CreatedAt, UpdatedAt = budget.UpdatedAt };
 
 
         }
         public static Budget MapToDomain(BudgetModel model)
         {
-            return Budget.Create(model.Id, model.UserId, model.CategoryId, model.Name, new Money(model.Amount,(EnCurrency)model.AmountCurrency),new Money(model.SpentMoney,(EnCurrency)model.SpentCurrency), (BudgetPeriod)model.Period, model.StartDate, model.EndDate);
+            return Budget.Create(model.Id, model.UserId, model.CategoryId, model.Name,(EnCurrency)model.CurrencyId, new Money(model.Amount),model.Period, model.StartDate, model.EndDate,model.CreatedAt,model.UpdatedAt);
 
 
         }

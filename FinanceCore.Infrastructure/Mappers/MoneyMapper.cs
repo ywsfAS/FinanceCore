@@ -14,13 +14,13 @@ namespace FinanceCore.Infrastructure.Mappers
     {
         public static MoneyModel MapToModel(Money money)
         {
-            return new MoneyModel { Balance = money.Amount , Currency = (byte)money.Currency };
+            return new MoneyModel { Balance = money.Amount};
 
         }
 
         public static Money MapToDomain(MoneyModel model)
         {
-            return new Money(model.Balance, (EnCurrency)model.Currency);
+            return new Money(model.Balance);
 
         }
     }

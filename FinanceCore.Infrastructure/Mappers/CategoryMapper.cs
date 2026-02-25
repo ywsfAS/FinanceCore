@@ -17,7 +17,7 @@ namespace FinanceCore.Infrastructure.Mappers
         }
         public static Category MapToDomain(CategoryModel model)
         {
-            return Category.Create(model.Id, model.UserId, model.Name, (CategoryType)model.Type, model.CreatedAt, model.IsActive, model.Description, model.IsDefault);
+            return Category.Create(model.Id, model.UserId, model.Name, (CategoryType)model.Type,model.IsActive,model.IsDefault,model.Description, model.CreatedAt , model.UpdatedAt);
         }
     }
 }

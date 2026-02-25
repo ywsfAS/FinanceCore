@@ -9,7 +9,7 @@ namespace FinanceCore.Domain.Events.Transaction
 {
     public record TransactionAmountChangedEvent(
         Guid TransactionId,
-        Guid AccountId,
+        Guid? AccountId,
         Money OldAmount,
         Money NewAmount) : DomainEvent;
 }

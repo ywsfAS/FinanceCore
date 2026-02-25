@@ -9,5 +9,5 @@ namespace FinanceCore.Domain.Events.Transaction
 {
     public record TransactionUpdatedEvent(
         Guid TransactionId,
-        Guid AccountId) : DomainEvent;
+        Guid? AccountId) : DomainEvent;
 }

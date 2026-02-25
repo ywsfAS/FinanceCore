@@ -3,5 +3,6 @@
 public enum EnTransactionType
 {
     Income,
-    Expense
+    Expense,
+    Transfer
 }

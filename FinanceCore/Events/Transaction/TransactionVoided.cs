@@ -11,7 +11,7 @@ namespace FinanceCore.Domain.Events.Transaction
 {
     public record TransactionVoidedEvent(
         Guid TransactionId,
-        Guid AccountId,
+        Guid? AccountId,
         Money Amount,
         EnTransactionType Type,
         string Reason,

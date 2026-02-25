@@ -1,48 +1,37 @@
 ﻿
 using FinanceCore.Domain.Enums;
 
-namespace FinanceCore.Domain.Common;
-
-public sealed class Money : ValueObject
+namespace FinanceCore.Domain.Common
 {
-    public decimal Amount { get; }
-    public EnCurrency Currency { get; }
-
-    public Money(decimal amount, EnCurrency currency)
+    public class Money : ValueObject
     {
-        if (amount < 0)
-            throw new ArgumentException("Amount cannot be negative.");
+        public decimal Amount { get; init; }
 
+        public Money(decimal amount)
+        {
+            if (amount < 0)
+                throw new ArgumentException("Money amount cannot be negative");
+            Amount = amount;
+        }
 
-        Amount = amount;
-        Currency = currency;
+        public Money Add(Money other) => new(Amount + other.Amount);
+
+        public Money Subtract(Money other)
+        {
+            if (other.Amount > Amount)
+                throw new ArgumentException("Cannot subtract more than available amount");
+            return new(Amount - other.Amount);
+        }
+        protected override IEnumerable<object> GetEqualityComponents()
+        {
+            yield return Amount; // only define the equality here !
+
+        }
+        public static Money Zero => new(0);
+
+        public static implicit operator decimal(Money money) => money.Amount;
+        public static implicit operator Money(decimal amount) => new(amount);
     }
 
-    protected override IEnumerable<object> GetEqualityComponents()
-    {
-        yield return Amount;
-        yield return Currency;
-    }
-
-    public Money Add(Money other)
-    {
-        EnsureSameCurrency(other);
-        return new Money(Amount + other.Amount, Currency);
-    }
-
-    public Money Subtract(Money other)
-    {
-        EnsureSameCurrency(other);
-
-        if (Amount < other.Amount)
-            throw new InvalidOperationException("Insufficient funds.");
-
-        return new Money(Amount - other.Amount, Currency);
-    }
-
-    private void EnsureSameCurrency(Money other)
-    {
-        if (Currency != other.Currency)
-            throw new InvalidOperationException("Currency mismatch.");
-    }
 }
+
