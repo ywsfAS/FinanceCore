@@ -17,7 +17,7 @@ namespace FinanceCore.Application.Features.Transactions.Commands.Create
 
         public async Task<Guid> Handle(CreateTransactionCommand command, CancellationToken cancellationToken)
         {
-            var transaction = Transaction.Create(command.accountId,new Money(command.amount,command.currency),command.CategoryId,command.type,DateTime.UtcNow,command.description,command.notes);
+            var transaction = Transaction.Create(command.accountId,command.ToAccountId,command.amount,command.CategoryId,command.type,DateTime.UtcNow,command.description);
         
             await _transactionRepository.AddAsync(transaction, cancellationToken);
 

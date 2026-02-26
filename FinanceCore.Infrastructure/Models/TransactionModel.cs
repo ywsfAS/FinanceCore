@@ -13,7 +13,7 @@ namespace FinanceCore.Infrastructure.Models
         public Guid AccountId { get; set; } // Only for transfer 
         public Guid? ToAccountId { get; set; }
         public EnAccountType Type { get; set; }
-        public Guid CategoryId { get; set; }
+        public Guid? CategoryId { get; set; }
         public decimal Amount { get; set; }
         public DateTime Date { get; set; }
         public string? Description { get; set; }

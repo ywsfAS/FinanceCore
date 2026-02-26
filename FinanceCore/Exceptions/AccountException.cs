@@ -42,7 +42,7 @@ namespace FinanceCore.Domain.Exceptions
         public Money Available { get; }
 
         public InsufficientBalanceException(Guid accountId, Money required, Money available)
-            : base($"Account has insufficient balance. Required: {required.Amount} {required.Currency}, Available: {available.Amount} {available.Currency}")
+            : base($"Account has insufficient balance. Required: {required.Amount} , Available: {available.Amount}")
         {
             AccountId = accountId;
             Required = required;
@@ -143,7 +143,7 @@ namespace FinanceCore.Domain.Exceptions
         public Money Amount { get; }
 
         public InvalidTransferAmountException(Money amount)
-            : base($"Invalid transfer amount: {amount.Amount} {amount.Currency}. Amount must be positive.")
+            : base($"Invalid transfer amount: {amount.Amount}. Amount must be positive.")
         {
             Amount = amount;
         }

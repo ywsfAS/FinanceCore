@@ -21,7 +21,7 @@ namespace FinanceCore.API.Controllers
         /// <summary>
         /// Create a new budget
         /// </summary>
-        [HttpPost]
+        [HttpPost("Create")]
         public async Task<IActionResult> CreateBudget([FromBody] CreateBudgetCommand command)
         {
             var budgetId = await _mediator.Send(command);

@@ -20,7 +20,7 @@ namespace FinanceCore.Application.Features.Budgets.Commands.Update
             if (budget is null)
                 throw new BudgetNotFoundException(command.Id);
 
-            budget.UpdateAmount(new Money(command.Amount, command.Currency));
+            budget.UpdateAmount(new Money(command.Amount));
             budget.ExtendPeriod(command.Period);
    
             await _budgetRepository.UpdateAsync(budget, cancellationToken);

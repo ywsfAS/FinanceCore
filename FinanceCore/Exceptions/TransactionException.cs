@@ -112,10 +112,9 @@ namespace FinanceCore.Domain.Exceptions
     {
         public Guid CategoryId { get; }
 
-        public InvalidTransactionCategoryException(Guid categoryId)
-            : base($"Invalid category ID: {categoryId}. Category does not exist or is inactive.")
+        public InvalidTransactionCategoryException()
+            : base($"Invalid category ID Category does not exist or is inactive.")
         {
-            CategoryId = categoryId;
         }
 
         public InvalidTransactionCategoryException(Guid categoryId, string reason)
@@ -187,7 +186,7 @@ namespace FinanceCore.Domain.Exceptions
         public DateTime Date { get; }
 
         public DuplicateTransactionException(Guid accountId, Money amount, DateTime date)
-            : base($"Duplicate transaction detected for account {accountId}: {amount.Amount} {amount.Currency} on {date:yyyy-MM-dd}")
+            : base($"Duplicate transaction detected for account {accountId}: {amount.Amount} on {date:yyyy-MM-dd}")
         {
             AccountId = accountId;
             Amount = amount;

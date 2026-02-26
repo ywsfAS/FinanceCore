@@ -43,7 +43,7 @@ public class SavingsGoal : AggregateRoot
             Name = name.Trim(),
             Description = description?.Trim(),
             TargetAmount = targetAmount,
-            CurrentAmount = new Money(0, targetAmount.Currency),
+            CurrentAmount = new Money(0),
             TargetDate = targetDate,
             Status = EnGoalStatus.Active,
             CreatedAt = DateTime.UtcNow
@@ -62,9 +62,6 @@ public class SavingsGoal : AggregateRoot
     {
         if (Status != EnGoalStatus.Active)
             throw new InvalidOperationException("Cannot contribute to inactive goal.");
-
-        if (amount.Currency != CurrentAmount.Currency)
-            throw new InvalidOperationException("Currency mismatch.");
 
         if (amount.Amount <= 0)
             throw new ArgumentException("Contribution must be positive.", nameof(amount));
@@ -90,8 +87,6 @@ public class SavingsGoal : AggregateRoot
         if (Status == EnGoalStatus.Completed)
             throw new InvalidOperationException("Cannot withdraw from completed goal.");
 
-        if (amount.Currency != CurrentAmount.Currency)
-            throw new InvalidOperationException("Currency mismatch.");
 
         if (amount.Amount <= 0)
             throw new ArgumentException("Withdrawal must be positive.", nameof(amount));
@@ -133,6 +128,6 @@ public class SavingsGoal : AggregateRoot
     public Money GetRemainingAmount()
     {
         var remaining = TargetAmount.Amount - CurrentAmount.Amount;
-        return new Money(remaining > 0 ? remaining : 0, TargetAmount.Currency);
+        return new Money(remaining > 0 ? remaining : 0);
     }
 }

@@ -41,7 +41,7 @@ namespace FinanceCore.Infrastructure.Repositories
             var model = BudgetMapper.MapToModel(budget);
             await _connectionFactory.ExecuteNonQueryAsync(
                 "sp_CreateBudget",
-                budget
+                model
                 );
         }
 

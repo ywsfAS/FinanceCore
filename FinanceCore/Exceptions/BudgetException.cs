@@ -151,7 +151,7 @@ namespace FinanceCore.Domain.Exceptions
         public Money SpentAmount { get; }
 
         public BudgetExceededException(Guid budgetId, string categoryName, Money budgetAmount, Money spentAmount)
-            : base($"Budget '{categoryName}' exceeded. Budget: {budgetAmount.Amount} {budgetAmount.Currency}, Spent: {spentAmount.Amount} {spentAmount.Currency}")
+            : base($"Budget '{categoryName}' exceeded. Budget: {budgetAmount.Amount}, Spent: {spentAmount.Amount}")
         {
             BudgetId = budgetId;
             CategoryName = categoryName;

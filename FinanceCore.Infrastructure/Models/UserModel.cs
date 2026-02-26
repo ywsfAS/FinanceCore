@@ -14,7 +14,7 @@ namespace FinanceCore.Infrastructure.Models
         public string PasswordHash { get; set; } = string.Empty;
         public byte DefaultCurrencyId { get; set; }
         public string? TimeZone { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime? UpdatedAt { get; set; }
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+        public DateTime? UpdatedAt { get; set; } = null;
     }
 }

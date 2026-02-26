@@ -10,9 +10,8 @@ namespace FinanceCore.Application.Features.Transactions.Commands.Update
 {
     public record UpdateTransactionCommand(
         Guid Id,
-        Guid CategoryId,
+        Guid? CategoryId,
         decimal Amount,
-        EnCurrency Currency,
         DateTime Date,
         string? Description = null) : IRequest;
 }

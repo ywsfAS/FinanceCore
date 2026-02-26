@@ -17,8 +17,6 @@ namespace FinanceCore.Application.Features.Transactions.Commands.Create
             .NotEmpty().LessThan(0);
             RuleFor(x => x.type)
             .IsInEnum();
-            RuleFor(x => x.currency)
-            .IsInEnum();
-        }
+           }
     }
 }

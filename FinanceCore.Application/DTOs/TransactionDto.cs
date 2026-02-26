@@ -9,10 +9,9 @@ namespace FinanceCore.Application.DTOs
 {
     public record TransactionDto(
      Guid Id,
-     Guid AccountId,
-     Guid CategoryId,
+     Guid? AccountId,
+     Guid? CategoryId,
      decimal Amount,
-     EnCurrency Currency,
      EnTransactionType Type,
      DateTime Date,
      string? Description);

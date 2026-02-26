@@ -25,7 +25,7 @@ namespace FinanceCore.Application.Features.Budgets.Queries.GetBudgetById
                 budget.UserId,
                 budget.CategoryId,
                 budget.Amount.Amount,
-                budget.Amount.Currency,
+                budget.Currency,
                 budget.Period,
                 budget.StartDate,
                 budget.EndDate);

@@ -11,7 +11,7 @@ namespace FinanceCore.Domain.Transactions
     {
         public Guid AccountId { get; private set; }
         public Guid? ToAccountId { get; private set; }
-        public Guid CategoryId { get; private set; }
+        public Guid? CategoryId { get; private set; }
         public Money Amount { get; private set; }
         public EnTransactionType Type { get; private set; }
         public DateTime Date { get; private set; }
@@ -26,7 +26,7 @@ namespace FinanceCore.Domain.Transactions
             Guid accountId,
             Guid? toAccountId,
             Money amount,
-            Guid categoryId,
+            Guid? categoryId,
             EnTransactionType type,
             DateTime date,
             string? description,
@@ -51,7 +51,7 @@ namespace FinanceCore.Domain.Transactions
             Guid accountId,
             Guid? toAccountId,
             decimal amount,
-            Guid categoryId,
+            Guid? categoryId,
             EnTransactionType type,
             DateTime date,
             string? description,
@@ -69,7 +69,7 @@ namespace FinanceCore.Domain.Transactions
             Guid accountId,
             Guid? toAccountId,
             decimal amount,
-            Guid categoryId,
+            Guid? categoryId,
             EnTransactionType type,
             DateTime? date = null,
             string? description = null)
@@ -87,7 +87,7 @@ namespace FinanceCore.Domain.Transactions
                 throw new SelfTransferException(accountId);
 
             if (categoryId == Guid.Empty)
-                throw new InvalidTransactionCategoryException(categoryId, "Category ID cannot be empty");
+                throw new InvalidTransactionCategoryException();
 
             if (amount <= 0)
                 throw new InvalidTransactionAmountException(amount);
@@ -153,8 +153,10 @@ namespace FinanceCore.Domain.Transactions
                 var oldCategoryId = CategoryId;
                 CategoryId = categoryId.Value;
                 hasChanges = true;
-
-                AddDomainEvent(new TransactionCategoryChangedEvent(Id, oldCategoryId, CategoryId));
+                   if(CategoryId != Guid.Empty && oldCategoryId != Guid.Empty)
+                {
+                    AddDomainEvent(new TransactionCategoryChangedEvent(Id, oldCategoryId, CategoryId));
+                }
             }
 
             if (date.HasValue && date.Value != Date)

@@ -29,7 +29,8 @@ namespace FinanceCore.Application.Features.Budgets.Commands.Create
                 command.UserId,
                 command.CategoryId,
                 command.name,
-                new Money(command.Amount, command.Currency),
+                command.Currency,
+                new Money(command.Amount),
                 command.Period,
                 command.StartDate
                 );

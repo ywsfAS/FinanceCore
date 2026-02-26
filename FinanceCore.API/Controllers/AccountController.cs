@@ -21,7 +21,7 @@ namespace FinanceCore.API.Controllers
         /// <summary>
         /// Create a new account
         /// </summary>
-        [HttpPost]
+        [HttpPost("Create")]
         public async Task<IActionResult> CreateAccount([FromBody] CreateAccountCommand command)
         {
             var accountId = await _mediator.Send(command);

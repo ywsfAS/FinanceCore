@@ -25,7 +25,7 @@ namespace FinanceCore.Domain.Users
             EnCurrency defaultCurrency,
             string? timeZone,
             DateTime createdAt,
-            DateTime? updatedAt)
+            DateTime? updatedAt = null)
         {
             Id = id;
             Name = name;

@@ -31,7 +31,7 @@ namespace FinanceCore.Application.Features.Accounts.Queries.GetAccountById
                 account.Name,
                 account.Type,
                 account.Balance.Amount,
-                account.Balance.Currency,
+                account.Currency,
                 account.CreatedAt);
         }
     }
