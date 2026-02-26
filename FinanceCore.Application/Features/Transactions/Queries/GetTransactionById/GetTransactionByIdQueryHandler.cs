@@ -30,6 +30,7 @@ namespace FinanceCore.Application.Features.Transactions.Queries.GetTransactionBy
             return new TransactionDto(
                 transaction.Id,
                 transaction.AccountId,
+                transaction.ToAccountId,
                 transaction.CategoryId,
                 transaction.Amount.Amount,
                 transaction.Type,

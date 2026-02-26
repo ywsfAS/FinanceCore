@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using FinanceCore.Application.DTOs.Auth;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,6 +8,6 @@ using System.Threading.Tasks;
 
 namespace FinanceCore.Application.Features.Auth.Commands.Login
 {
-    public record LoginUserCommand(string Email , string Password) : IRequest<string>;
+    public record LoginUserCommand(string Email , string Password) : IRequest<LoginDto>;
 
 }

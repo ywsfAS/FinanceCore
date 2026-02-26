@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace FinanceCore.Application.Features.Auth.Commands.Register
 {
-    internal class RegisterUserCommandValidator : AbstractValidator<RegisterUserCommand>
+    public class RegisterUserCommandValidator : AbstractValidator<RegisterUserCommand>
     {
         public RegisterUserCommandValidator() {
             RuleFor(x => x.Name).NotEmpty().MaximumLength(100);

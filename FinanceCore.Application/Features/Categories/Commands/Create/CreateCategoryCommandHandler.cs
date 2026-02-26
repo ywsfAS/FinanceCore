@@ -1,9 +1,10 @@
 ﻿using FinanceCore.Application.Abstractions;
 using FinanceCore.Domain.Categories;
 using MediatR;
+using FinanceCore.Application.DTOs;
 namespace FinanceCore.Application.Features.Categories.Commands.Create
 {
-    public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryCommand, Guid>
+    public class CreateCategoryCommandHandler : IRequestHandler<CreateCategoryCommand, CategoryDto>
     {
         private readonly ICategoryRepository _categoryRepository;
 
@@ -12,7 +13,7 @@ namespace FinanceCore.Application.Features.Categories.Commands.Create
             _categoryRepository = categoryRepository;
         }
 
-        public async Task<Guid> Handle(CreateCategoryCommand command, CancellationToken cancellationToken)
+        public async Task<CategoryDto> Handle(CreateCategoryCommand command, CancellationToken cancellationToken)
         {
             var category =  Category.Create(
                 command.UserId,
@@ -22,7 +23,7 @@ namespace FinanceCore.Application.Features.Categories.Commands.Create
 
             await _categoryRepository.AddAsync(category, cancellationToken);
 
-            return category.Id;
+            return new CategoryDto(category.Id,category.UserId,category.Name,category.Type,category.Description);
         }
     }
 

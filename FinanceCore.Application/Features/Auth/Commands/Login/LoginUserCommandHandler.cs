@@ -1,10 +1,11 @@
 ﻿using FinanceCore.Application.Abstractions;
-using MediatR;
+using FinanceCore.Application.DTOs.Auth;
 using FinanceCore.Domain.Exceptions;
+using MediatR;
 
 namespace FinanceCore.Application.Features.Auth.Commands.Login
 {
-    public class LoginUserCommandHandler : IRequestHandler<LoginUserCommand,string>
+    public class LoginUserCommandHandler : IRequestHandler<LoginUserCommand,LoginDto>
     {
         private readonly IUserRepository _userRepository;
         private readonly IJwtTokenGenerator _JwtGenerator;
@@ -16,7 +17,7 @@ namespace FinanceCore.Application.Features.Auth.Commands.Login
             _hasher = hasher;
             _JwtGenerator = jwtGenerator;
         }
-        public async Task<string> Handle(LoginUserCommand command , CancellationToken token = default)
+        public async Task<LoginDto> Handle(LoginUserCommand command , CancellationToken token = default)
         {
             var user = await _userRepository.GetByEmailAsync(command.Email);
             if (user == null) {
@@ -26,8 +27,8 @@ namespace FinanceCore.Application.Features.Auth.Commands.Login
             if (!IsPasswordValid) { 
                 throw new InvalidCredentialsException();  
             }
-
-            return _JwtGenerator.GenerateToken(user);
+            var JwtToken =  _JwtGenerator.GenerateToken(user);
+            return new LoginDto(user.Id, user.Email.Address, JwtToken);
 
         }
 

@@ -33,8 +33,9 @@ namespace FinanceCore.API.Controllers
         /// <response code="200">User found and returned successfully</response>
         /// <response code="404">User not found</response>
         [HttpGet("{id}")]
+        [Produces("application/json")]
         [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ValidationErrorDto),StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetUserById(Guid id)
         {
             var query = new GetUserByIdQuery(id);
@@ -52,9 +53,10 @@ namespace FinanceCore.API.Controllers
         /// <response code="400">Invalid input or ID mismatch</response>
         /// <response code="404">User not found</response>
         [HttpPut("{id}")]
+        [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ValidationErrorDto),StatusCodes.Status404NotFound)]
         public async Task<IActionResult> UpdateUser(Guid id, [FromBody] UpdateUserCommand command)
         {
             if (id != command.Id)
@@ -72,8 +74,9 @@ namespace FinanceCore.API.Controllers
         /// <response code="204">User deleted successfully</response>
         /// <response code="404">User not found</response>
         [HttpDelete("{id}")]
+        [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ValidationErrorDto),StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteUser(Guid id)
         {
             var command = new DeleteUserCommand(id);

@@ -1,4 +1,5 @@
-﻿using FinanceCore.Application.Features.Budgets.Commands.Create;
+﻿using FinanceCore.Application.DTOs;
+using FinanceCore.Application.Features.Budgets.Commands.Create;
 using FinanceCore.Application.Features.Budgets.Commands.Delete;
 using FinanceCore.Application.Features.Budgets.Commands.Update;
 using FinanceCore.Application.Features.Budgets.Queries.GetBudgetById;
@@ -22,16 +23,22 @@ namespace FinanceCore.API.Controllers
         /// Create a new budget
         /// </summary>
         [HttpPost("Create")]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(BudgetDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateBudget([FromBody] CreateBudgetCommand command)
         {
-            var budgetId = await _mediator.Send(command);
-            return CreatedAtAction(nameof(GetBudgetById), new { id = budgetId }, budgetId);
+            var budget = await _mediator.Send(command);
+            return CreatedAtAction(nameof(GetBudgetById), new { id = budget.Id }, budget);
         }
 
         /// <summary>
         /// Get budget by ID
         /// </summary>
         [HttpGet("{id}")]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(BudgetDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetBudgetById(Guid id)
         {
             var query = new GetBudgetByIdQuery(id);
@@ -43,6 +50,9 @@ namespace FinanceCore.API.Controllers
         /// Get all budgets for a user
         /// </summary>
         [HttpGet("user/{userId}")]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(BudgetDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetBudgetsByUserId(Guid userId)
         {
             var query = new GetBudgetByIdQuery(userId);
@@ -54,6 +64,9 @@ namespace FinanceCore.API.Controllers
         /// Update an existing budget
         /// </summary>
         [HttpPut("{id}")]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> UpdateBudget(Guid id, [FromBody] UpdateBudgetCommand command)
         {
             if (id != command.Id)
@@ -67,6 +80,9 @@ namespace FinanceCore.API.Controllers
         /// Delete a budget
         /// </summary>
         [HttpDelete("{id}")]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> DeleteBudget(Guid id)
         {
             var command = new DeleteBudgetCommand(id);

@@ -1,4 +1,5 @@
-﻿using FinanceCore.Domain.Enums;
+﻿using FinanceCore.Application.DTOs;
+using FinanceCore.Domain.Enums;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -16,5 +17,5 @@ namespace FinanceCore.Application.Features.Budgets.Commands.Create
         EnCurrency Currency,
         BudgetPeriod Period,
         DateTime StartDate,
-        DateTime EndDate) : IRequest<Guid>;
+        DateTime EndDate) : IRequest<BudgetDto>;
 }

@@ -1,4 +1,6 @@
-﻿using FinanceCore.Application.Features.Categories.Commands.Create;
+﻿using FinanceCore.Application.DTOs;
+using FinanceCore.Application.DTOs.Auth;
+using FinanceCore.Application.Features.Categories.Commands.Create;
 using FinanceCore.Application.Features.Categories.Commands.Delete;
 using FinanceCore.Application.Features.Categories.Commands.Update;
 using FinanceCore.Application.Features.Categories.Queries;
@@ -21,17 +23,23 @@ namespace FinanceCore.API.Controllers
         /// <summary>
         /// Create a new category
         /// </summary>
-        [HttpPost]
+        [HttpPost("Create")]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(CategoryDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateCategory([FromBody] CreateCategoryCommand command)
         {
-            var categoryId = await _mediator.Send(command);
-            return CreatedAtAction(nameof(GetCategoryById), new { id = categoryId }, categoryId);
+            var response = await _mediator.Send(command);
+            return CreatedAtAction(nameof(GetCategoryById), new { id = response.Id}, response);
         }
 
         /// <summary>
         /// Get category by ID
         /// </summary>
         [HttpGet("{id}")]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(CategoryDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetCategoryById(Guid id)
         {
             var query = new GetCategoryByIdQuery(id);
@@ -43,6 +51,9 @@ namespace FinanceCore.API.Controllers
         /// Get all categories for a user
         /// </summary>
         [HttpGet("user/{userId}")]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(CategoryDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetCategoriesByUserId(Guid userId)
         {
             var query = new GetCategoryByIdQuery(userId);
@@ -54,6 +65,9 @@ namespace FinanceCore.API.Controllers
         /// Update an existing category
         /// </summary>
         [HttpPut("{id}")]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> UpdateCategory(Guid id, [FromBody] UpdateCategoryCommand command)
         {
             if (id != command.Id)
@@ -67,6 +81,9 @@ namespace FinanceCore.API.Controllers
         /// Delete a category
         /// </summary>
         [HttpDelete("{id}")]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> DeleteCategory(Guid id)
         {
             var command = new DeleteCategoryCommand(id);

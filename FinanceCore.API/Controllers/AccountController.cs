@@ -1,3 +1,4 @@
+using FinanceCore.Application.DTOs;
 using FinanceCore.Application.Features.Accounts.Commands.Create;
 using FinanceCore.Application.Features.Accounts.Commands.Delete;
 using FinanceCore.Application.Features.Accounts.Commands.Update;
@@ -22,16 +23,22 @@ namespace FinanceCore.API.Controllers
         /// Create a new account
         /// </summary>
         [HttpPost("Create")]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(AccountDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateAccount([FromBody] CreateAccountCommand command)
         {
-            var accountId = await _mediator.Send(command);
-            return CreatedAtAction(nameof(GetAccountById), new { id = accountId }, accountId);
+            var account = await _mediator.Send(command);
+            return CreatedAtAction(nameof(GetAccountById), new { id = account.Id }, account);
         }
 
         /// <summary>
         /// Get account by ID
         /// </summary>
         [HttpGet("{id}")]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(AccountDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetAccountById(Guid id)
         {
             var query = new GetAccountByIdQuery(id);
@@ -43,6 +50,9 @@ namespace FinanceCore.API.Controllers
         /// Get all accounts for a user
         /// </summary>
         [HttpGet("user/{userId}")]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(AccountDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetAccountsByUserId(Guid userId)
         {
             var query = new GetAccountByIdQuery(userId);
@@ -54,6 +64,9 @@ namespace FinanceCore.API.Controllers
         /// Update an existing account
         /// </summary>
         [HttpPut("{id}")]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> UpdateAccount(Guid id, [FromBody] UpdateAccountCommand command)
         {
             if (id != command.Id)
@@ -67,6 +80,9 @@ namespace FinanceCore.API.Controllers
         /// Delete an account
         /// </summary>
         [HttpDelete("{id}")]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> DeleteAccount(Guid id)
         {
             var command = new DeleteAccountCommand(id);

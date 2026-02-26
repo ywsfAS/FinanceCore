@@ -3,11 +3,13 @@ using FinanceCore.Domain.Users;
 using FinanceCore.Domain.Exceptions;
 using MediatR;
 using FinanceCore.Domain.Common;
+using System.ComponentModel.DataAnnotations;
+using FinanceCore.Application.DTOs.Auth;
 
 namespace FinanceCore.Application.Features.Auth.Commands.Register
 {
 
-    public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, Guid>
+    public class RegisterUserCommandHandler : IRequestHandler<RegisterUserCommand, RegisterDto>
     {
         private readonly IUserRepository _userRepository;
         private readonly IPasswordHasher _hasher;
@@ -18,7 +20,7 @@ namespace FinanceCore.Application.Features.Auth.Commands.Register
             _hasher = hasher;
         }
 
-        public async Task<Guid> Handle(RegisterUserCommand command, CancellationToken cancellationToken)
+        public async Task<RegisterDto> Handle(RegisterUserCommand command, CancellationToken cancellationToken)
         {
             var existingUser = await _userRepository.GetByEmailAsync(command.Email, cancellationToken);
 
@@ -31,10 +33,10 @@ namespace FinanceCore.Application.Features.Auth.Commands.Register
                 command.Name,
                 new Email(command.Email),
                 HashedPassword);
-
+            
             await _userRepository.AddAsync(user, cancellationToken);
-
-            return user.Id;
+            var Response = new RegisterDto(user.Id, user.Name, user.Email.Address);
+            return Response;
         }
     }
 }

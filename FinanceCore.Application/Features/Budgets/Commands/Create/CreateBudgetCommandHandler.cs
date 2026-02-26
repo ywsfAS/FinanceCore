@@ -1,11 +1,12 @@
 ﻿using FinanceCore.Application.Abstractions;
+using FinanceCore.Application.DTOs;
 using FinanceCore.Domain.Budgets;
 using FinanceCore.Domain.Common;
-using MediatR;
 using FinanceCore.Domain.Exceptions;
+using MediatR;
 namespace FinanceCore.Application.Features.Budgets.Commands.Create
 {
-    public class CreateBudgetCommandHandler : IRequestHandler<CreateBudgetCommand, Guid>
+    public class CreateBudgetCommandHandler : IRequestHandler<CreateBudgetCommand, BudgetDto>
     {
         private readonly IBudgetRepository _budgetRepository;
         private readonly ICategoryRepository _categoryRepository;
@@ -18,7 +19,7 @@ namespace FinanceCore.Application.Features.Budgets.Commands.Create
             _categoryRepository = categoryRepository;
         }
 
-        public async Task<Guid> Handle(CreateBudgetCommand command, CancellationToken cancellationToken)
+        public async Task<BudgetDto> Handle(CreateBudgetCommand command, CancellationToken cancellationToken)
         {
             var category = await _categoryRepository.GetByIdAsync(command.CategoryId, cancellationToken);
 
@@ -37,7 +38,8 @@ namespace FinanceCore.Application.Features.Budgets.Commands.Create
 
             await _budgetRepository.AddAsync(budget, cancellationToken);
 
-            return budget.Id;
+            return new BudgetDto(budget.Id,budget.UserId,budget.CategoryId,budget.Amount,budget.Currency,budget.Period,budget.StartDate,budget.EndDate);
+           
         }
     }
 

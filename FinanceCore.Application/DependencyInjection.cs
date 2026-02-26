@@ -1,5 +1,6 @@
-﻿using Microsoft.Extensions.DependencyInjection;
-using FluentValidation;
+﻿using FluentValidation;
+using MediatR;
+using Microsoft.Extensions.DependencyInjection;
 namespace FinanceCore.Application
 {
     public static class DependencyInjection
@@ -12,8 +13,8 @@ namespace FinanceCore.Application
             {
                 config.RegisterServicesFromAssembly(assembly);
             });
-
             service.AddValidatorsFromAssembly(assembly);
+            service.AddTransient(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
 
 
             return service;

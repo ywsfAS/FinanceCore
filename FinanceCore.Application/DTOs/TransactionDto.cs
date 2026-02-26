@@ -10,6 +10,7 @@ namespace FinanceCore.Application.DTOs
     public record TransactionDto(
      Guid Id,
      Guid? AccountId,
+     Guid? ToAccount,
      Guid? CategoryId,
      decimal Amount,
      EnTransactionType Type,
