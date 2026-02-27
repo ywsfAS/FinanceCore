@@ -1,6 +1,8 @@
 ﻿using FinanceCore.Application.DTOs;
+using FinanceCore.Application.DTOs.Transaction;
 using FinanceCore.Application.Features.Transactions.Commands.Create;
 using FinanceCore.Application.Features.Transactions.Commands.Delete;
+using FinanceCore.Application.Features.Transactions.Commands.Income;
 using FinanceCore.Application.Features.Transactions.Commands.Update;
 using FinanceCore.Application.Features.Transactions.Queries.GetTransactionById;
 using MediatR;
@@ -27,10 +29,29 @@ namespace FinanceCore.API.Controllers
         [Produces("application/json")]
         [ProducesResponseType(typeof(TransactionDto),StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> CreateTransaction([FromBody] CreateTransactionCommand command)
+        public async Task<IActionResult> CreateTransfer([FromBody] TransferTransactionCommand command)
         {
             var response = await _mediator.Send(command);
-            return CreatedAtAction(nameof(GetTransactionById), new { id = response.Id }, response);
+            return CreatedAtAction(nameof(GetTransactionById), new { id = response.CreditTransactionId }, response);
+        }
+        [HttpPost("Income")]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(IncomeDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> CreateIncome([FromBody] IncomeCommand command)
+        {
+            var response = await _mediator.Send(command);
+            return CreatedAtAction(nameof(GetTransactionById), new { id = response.AccountId }, response);
+        }
+
+        [HttpPost("Expense")]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(TransactionDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> CreateExpense([FromBody] TransferTransactionCommand command)
+        {
+            var response = await _mediator.Send(command);
+            return CreatedAtAction(nameof(GetTransactionById), new { id = response.CreditTransactionId }, response);
         }
 
         /// <summary>

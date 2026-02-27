@@ -4,5 +4,7 @@ public enum EnTransactionType
 {
     Income,
     Expense,
-    Transfer
+    Transfer,
+    Debt,
+    Credit
 }

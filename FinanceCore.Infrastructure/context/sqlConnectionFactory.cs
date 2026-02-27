@@ -64,5 +64,11 @@ namespace FinanceCore.Infrastructure.context.ConnectionFactory
                 commandType: CommandType.StoredProcedure);
             return result;
         }
+        public async Task<T> QuerySingleAsync<T>(string procedure , object? parameters = null)
+        {
+            using var connection = GetConnection();
+            return await connection.QuerySingleAsync<T>(procedure , parameters,commandType : CommandType.StoredProcedure);
+
+        }
     }
 }

@@ -1,4 +1,6 @@
 ﻿using FinanceCore.Application.Abstractions;
+using FinanceCore.Application.DTOs.Transaction;
+using Dapper;
 using FinanceCore.Domain.Transactions;
 using FinanceCore.Infrastructure.context;
 using FinanceCore.Infrastructure.Mappers;
@@ -41,6 +43,41 @@ namespace FinanceCore.Infrastructure.Repositories
                 "sp_CreateTransaction",
                 model
                 );
+        }
+        public async Task<TransferDto> TransferAsync(Transaction transaction, CancellationToken token)
+        {
+            var model = TransactionMapper.MapToModel(transaction);
+
+            // Use QuerySingleAsync to get the SP result
+            var result = await _connectionFactory.QuerySingleAsync<TransferModel>(
+                "sp_Transfer",
+                new
+                {
+                    SourceAccountId = model.AccountId,
+                    DestinationAccountId = model.ToAccountId,
+                    Amount = model.Amount,
+                    Description = model.Description
+                }
+                );
+
+            return new TransferDto(result.CreditTransactionId,result.DebitTransactionId,result.SourceBalance,result.DestinationBalance,result.TransferDate);
+        }
+        public async Task<IncomeDto> IncomeAsync(Transaction transaction, CancellationToken token)
+        {
+            var model = TransactionMapper.MapToModel(transaction);
+            var result = await _connectionFactory.QuerySingleAsync<TransactionModel>(
+                "sp_CreateIncome",
+                new
+                {
+                    AccountId = model.AccountId,
+                    CategoryId = model.CategoryId,
+                    Amount = model.Amount,
+                    Description = model?.Description,
+                }
+                );
+            return new IncomeDto(result.Id ,result.CategoryId , result.Amount , result.Description );
+
+
         }
 
         public async Task UpdateAsync(Transaction transaction, CancellationToken token = default)

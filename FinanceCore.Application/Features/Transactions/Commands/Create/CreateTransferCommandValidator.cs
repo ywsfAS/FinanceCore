@@ -7,16 +7,16 @@ using System.Threading.Tasks;
 
 namespace FinanceCore.Application.Features.Transactions.Commands.Create
 {
-    public class CreateTransactionCommandValidator : AbstractValidator<CreateTransactionCommand>
+    public class CreateTransferCommandValidator : AbstractValidator<TransferTransactionCommand>
     {
-        public CreateTransactionCommandValidator() {
+        public CreateTransferCommandValidator() {
 
             RuleFor(x => x.accountId)
             .NotEmpty();
+            RuleFor(x => x.ToAccountId).NotEmpty();
             RuleFor(x => x.amount)
-            .NotEmpty().LessThan(0);
-            RuleFor(x => x.type)
-            .IsInEnum();
+            .NotEmpty().GreaterThan(0);
+  
            }
     }
 }

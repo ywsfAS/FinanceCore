@@ -3,6 +3,7 @@ using FinanceCore.Application.Features.Accounts.Commands.Create;
 using FinanceCore.Application.Features.Accounts.Commands.Delete;
 using FinanceCore.Application.Features.Accounts.Commands.Update;
 using FinanceCore.Application.Features.Accounts.Queries.GetAccountById;
+using FinanceCore.Application.Features.Accounts.Queries.GetBalanceById;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -49,7 +50,7 @@ namespace FinanceCore.API.Controllers
         /// <summary>
         /// Get all accounts for a user
         /// </summary>
-        [HttpGet("user/{userId}")]
+        [HttpGet("{userId}")]
         [Produces("application/json")]
         [ProducesResponseType(typeof(AccountDto), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
@@ -59,7 +60,19 @@ namespace FinanceCore.API.Controllers
             var accounts = await _mediator.Send(query);
             return Ok(accounts);
         }
-
+        /// <summary>
+        /// Get account's Balance
+        /// </summary>
+        [HttpGet("{userId}/balance")]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(AccountBalanceDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetAccountsBalanceByUserId(Guid userId)
+        {
+            var query = new GetBalanceByIdQuery(userId);
+            var account = await _mediator.Send(query);
+            return Ok(account);
+        }
         /// <summary>
         /// Update an existing account
         /// </summary>

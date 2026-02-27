@@ -34,6 +34,8 @@ namespace FinanceCore.Infrastructure.context
         /// Executes a stored procedure and returns a scalar value.
         /// </summary>
         Task<T?> ExecuteScalarAsync<T>(string procedure, object? parameters = null);
+        Task<T> QuerySingleAsync<T>(string procedure , object? parameters = null);
+
     }
 
 }
