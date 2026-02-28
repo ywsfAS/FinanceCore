@@ -41,8 +41,7 @@ namespace FinanceCore.Infrastructure.Repositories
             AND CategoryId = @CategoryId
             AND StartDate <= @End
             AND EndDate >= @Start
-            ORDER BY StartDate DESC"; // latest overlapping budget
-
+            ORDER BY StartDate DESC";  
             // QuerySingleOrDefault maps to BudgetModel
             var budgetModel = await connection.QuerySingleOrDefaultAsync<BudgetModel>(
                 sql,
