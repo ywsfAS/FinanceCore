@@ -14,7 +14,6 @@ namespace FinanceCore.Application.Features.Transactions.Commands.Income
             RuleFor(x => x.Amount).GreaterThan(0);
             RuleFor(x => x.CategoryId).NotEmpty();
         
-        
         }
     }
 }

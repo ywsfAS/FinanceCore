@@ -1,6 +1,6 @@
 ﻿namespace FinanceCore.Domain.Enums;
 
-public enum EnTransactionType
+public enum EnTransactionType : byte
 {
     Income,
     Expense,

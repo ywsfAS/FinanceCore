@@ -7,5 +7,5 @@ using System.Threading.Tasks;
 
 namespace FinanceCore.Application.DTOs.Transaction
 {
-    public record IncomeDto(Guid AccountId , Guid? CategoryId , decimal Amount , string Description , EnTransactionType Type = EnTransactionType.Income);
+    public record ExpenseDto(Guid Id , Guid? CategoryId , decimal Amount , string? Decription , EnTransactionType Type = EnTransactionType.Expense);
 }

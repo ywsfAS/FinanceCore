@@ -5,6 +5,7 @@ using FinanceCore.Domain.Transactions;
 using FinanceCore.Infrastructure.context;
 using FinanceCore.Infrastructure.Mappers;
 using FinanceCore.Infrastructure.Models;
+using FinanceCore.Application.DTOs;
 
 namespace FinanceCore.Infrastructure.Repositories
 {
@@ -79,6 +80,23 @@ namespace FinanceCore.Infrastructure.Repositories
 
 
         }
+        public async Task<ExpenseDto> ExpenseAsync(Transaction transaction, CancellationToken token)
+        {
+            var model = TransactionMapper.MapToModel(transaction);
+            var result = await _connectionFactory.QuerySingleAsync<TransactionModel>(
+                "sp_CreateExpense",
+                new
+                {
+                    AccountId = model.AccountId,
+                    CategoryId = model.CategoryId,
+                    Amount = model.Amount,
+                    Description = model?.Description,
+                }
+                );
+            return new ExpenseDto(result.Id, result.CategoryId, result.Amount, result.Description);
+
+
+        }
 
         public async Task UpdateAsync(Transaction transaction, CancellationToken token = default)
         {
@@ -94,6 +112,46 @@ namespace FinanceCore.Infrastructure.Repositories
             await _connectionFactory.ExecuteNonQueryAsync(
                 "sp_DeleteTransaction",
                 new { transaction.Id });
+        }
+        public async Task<IEnumerable<TransactionDto>?> GetFiltredTransactionsAsync(Guid? CategoryId , DateTime? Start , DateTime? End ,byte? Type , int Page , int PageSize)
+        {
+            using var connection = _connectionFactory.GetConnection();
+            var sql = @"SELECT * FROM Transactions WHERE 1 = 1";
+
+            var parameters = new DynamicParameters();
+
+            if (CategoryId.HasValue)
+            {
+                sql += " AND CategoryId = @CategoryId";
+                parameters.Add("CategoryId", CategoryId);
+            }
+            if (Start.HasValue) {
+                sql += " AND CreatedAt >= @Start";
+                parameters.Add("Start", Start);
+
+
+            }
+            if (End.HasValue) {
+                sql += " AND CreatedAt <= @End";
+                parameters.Add("End", End);
+            
+            }
+            if (Type.HasValue)
+            {
+                sql += " AND TransactionTypeId = @Type";
+                parameters.Add("Type", Type);
+            }
+
+            // Order By CreatedAt
+            sql += " ORDER BY CreatedAt";
+            sql += " OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY";
+
+
+            parameters.Add("Offset", (Page - 1) * PageSize);
+            parameters.Add("PageSize", PageSize);
+
+            var model = await connection.QueryAsync<TransactionModel>(sql, parameters);
+            return model.Select(model => new TransactionDto(model.Id,model.AccountId,model.ToAccountId,model.CategoryId,model.Amount,model.Type,model.CreatedAt,model.Description));
         }
     }
 }

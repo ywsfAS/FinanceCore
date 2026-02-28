@@ -2,9 +2,12 @@
 using FinanceCore.Application.DTOs.Transaction;
 using FinanceCore.Application.Features.Transactions.Commands.Create;
 using FinanceCore.Application.Features.Transactions.Commands.Delete;
+using FinanceCore.Application.Features.Transactions.Commands.Expense;
 using FinanceCore.Application.Features.Transactions.Commands.Income;
 using FinanceCore.Application.Features.Transactions.Commands.Update;
+using FinanceCore.Application.Features.Transactions.Queries.GetFiltredTransactions;
 using FinanceCore.Application.Features.Transactions.Queries.GetTransactionById;
+using FinanceCore.Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using System.Runtime.ExceptionServices;
@@ -46,12 +49,12 @@ namespace FinanceCore.API.Controllers
 
         [HttpPost("Expense")]
         [Produces("application/json")]
-        [ProducesResponseType(typeof(TransactionDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ExpenseDto), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> CreateExpense([FromBody] TransferTransactionCommand command)
+        public async Task<IActionResult> CreateExpense([FromBody] ExpenseCommand command)
         {
             var response = await _mediator.Send(command);
-            return CreatedAtAction(nameof(GetTransactionById), new { id = response.CreditTransactionId }, response);
+            return CreatedAtAction(nameof(GetTransactionById), new { id = response.Id }, response);
         }
 
         /// <summary>
@@ -78,6 +81,19 @@ namespace FinanceCore.API.Controllers
         public async Task<IActionResult> GetTransactionsByAccountId(Guid accountId)
         {
             var query = new GetTransactionByIdQuery(accountId);
+            var transactions = await _mediator.Send(query);
+            return Ok(transactions);
+        }
+        /// <summary>
+        /// Get all transactions for an account
+        /// </summary>
+        [HttpGet("FiltredTransactions")]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(IEnumerable<TransactionDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetTransactionsByFilters(Guid? CategoryId , DateTime? Start , DateTime? End , EnTransactionType? Type , int Page = 1 ,int PageSize = 10 )
+        {
+            var query = new GetFiltredTransactionsQuery(CategoryId, Start, End, Type, Page, PageSize);
             var transactions = await _mediator.Send(query);
             return Ok(transactions);
         }
