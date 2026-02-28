@@ -17,7 +17,7 @@ namespace FinanceCore.Application.Abstractions
         Task<IncomeDto> IncomeAsync(Transaction transaction, CancellationToken token);
         Task<ExpenseDto> ExpenseAsync(Transaction transaction, CancellationToken token);
         Task<IEnumerable<TransactionDto>?> GetFiltredTransactionsAsync(Guid? CategoryId, DateTime? Start, DateTime? End, byte? Type, int Page, int PageSize);
-
+        Task<decimal> GetTotalSpentAsync(Guid categoryId, DateTime start, DateTime end, byte Type);
         Task AddAsync(Transaction transaction, CancellationToken token = default);
         Task UpdateAsync(Transaction transaction, CancellationToken token = default);
         Task DeleteAsync(Transaction transaction, CancellationToken token = default);

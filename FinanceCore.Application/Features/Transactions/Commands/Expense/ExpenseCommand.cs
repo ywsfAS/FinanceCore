@@ -8,5 +8,5 @@ using System.Threading.Tasks;
 
 namespace FinanceCore.Application.Features.Transactions.Commands.Expense
 {
-    public record ExpenseCommand(Guid AccountId , Guid CategoryId , decimal Amount , string? Description) : IRequest<ExpenseDto>;
+    public record ExpenseCommand(Guid AccountId , Guid CategoryId , decimal Amount , string? Description , DateTime TransactionDate) : IRequest<ExpenseDto>;
 }

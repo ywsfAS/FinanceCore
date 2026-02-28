@@ -1,5 +1,8 @@
-﻿using FinanceCore.Application.Abstractions;
+﻿using Dapper;
+using FinanceCore.Application.Abstractions;
+using FinanceCore.Application.DTOs;
 using FinanceCore.Domain.Budgets;
+using FinanceCore.Domain.Enums;
 using FinanceCore.Infrastructure.context;
 using FinanceCore.Infrastructure.Mappers;
 using FinanceCore.Infrastructure.Models;
@@ -25,6 +28,47 @@ namespace FinanceCore.Infrastructure.Repositories
                return null;
             }
             return BudgetMapper.MapToDomain(model);
+        }
+        public async Task<BudgetDto?> GetByCategoryIdAsync(Guid userId, Guid categoryId, DateTime start, DateTime end)
+        {
+            using var connection = _connectionFactory.GetConnection();
+
+            // Query to get the budget that overlaps the period
+            var sql = @"
+            SELECT TOP 1 *
+            FROM Budgets
+            WHERE UserId = @UserId
+            AND CategoryId = @CategoryId
+            AND StartDate <= @End
+            AND EndDate >= @Start
+            ORDER BY StartDate DESC"; // latest overlapping budget
+
+            // QuerySingleOrDefault maps to BudgetModel
+            var budgetModel = await connection.QuerySingleOrDefaultAsync<BudgetModel>(
+                sql,
+                new
+                {
+                    UserId = userId,
+                    CategoryId = categoryId,
+                    Start = start,
+                    End = end
+                }
+            );
+
+            if (budgetModel == null)
+                return null;
+
+            // Map BudgetModel to BudgetDto
+            return new BudgetDto(
+                budgetModel.Id,
+                budgetModel.UserId,
+                budgetModel.CategoryId,
+                budgetModel.Amount,
+                (EnCurrency)budgetModel.CurrencyId, // convert byte to enum
+                budgetModel.Period,
+                budgetModel.StartDate,
+                budgetModel.EndDate
+            );
         }
 
         public async Task<IEnumerable<Budget>> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken = default)

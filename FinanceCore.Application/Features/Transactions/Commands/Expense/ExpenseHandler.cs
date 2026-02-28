@@ -5,6 +5,7 @@ using FinanceCore.Domain.Exceptions;
 using FinanceCore.Domain.Transactions;
 using MediatR;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace FinanceCore.Application.Features.Transactions.Commands.Expense
@@ -14,11 +15,13 @@ namespace FinanceCore.Application.Features.Transactions.Commands.Expense
         private readonly ITransactionRepository _transactionRepository;
         private readonly IAccountRepository _accountRepository;
         private readonly ICategoryRepository _categoryRepositroy;
-        public ExpenseHandler(ITransactionRepository transactionRepository, IAccountRepository accountRepository, ICategoryRepository categoryRepositroy)
+        private readonly IBudgetRepository _budgetRepository;
+        public ExpenseHandler(ITransactionRepository transactionRepository,IBudgetRepository budgetRepository, IAccountRepository accountRepository, ICategoryRepository categoryRepositroy)
         {
             _transactionRepository = transactionRepository;
             _accountRepository = accountRepository;
             _categoryRepositroy = categoryRepositroy;
+            _budgetRepository = budgetRepository;
         }
 
 
@@ -33,6 +36,19 @@ namespace FinanceCore.Application.Features.Transactions.Commands.Expense
             if (category == null)
             {
                 throw new CategoryNotFoundException(command.CategoryId);
+            }
+            // Get Budget
+            var budget = await _budgetRepository.GetByCategoryIdAsync(account.UserId,category.Id,command.TransactionDate , command.TransactionDate);
+            var spent = await _transactionRepository.GetTotalSpentAsync(
+                budget.CategoryId,
+                budget.StartDate,
+                budget.EndDate,
+                (byte)EnTransactionType.Expense
+            );
+            var isExceeded = spent > budget.Amount;
+            if (isExceeded)
+            {
+                throw new BudgetExceededException(budget.Id , category.Name , budget.Amount , spent);
             }
             var transaction = Transaction.Create(command.AccountId, null, command.Amount, command.CategoryId, EnTransactionType.Expense, DateTime.UtcNow, command.Description);
 

@@ -113,7 +113,25 @@ namespace FinanceCore.Infrastructure.Repositories
                 "sp_DeleteTransaction",
                 new { transaction.Id });
         }
-        public async Task<IEnumerable<TransactionDto>?> GetFiltredTransactionsAsync(Guid? CategoryId , DateTime? Start , DateTime? End ,byte? Type , int Page , int PageSize)
+        public async Task<decimal> GetTotalSpentAsync(Guid categoryId, DateTime start, DateTime end, byte type = 2)
+        {
+            // Fetch all filtered transactions (paginated internally)
+            var transactions = await FetchAllTransactionsAsync(categoryId, start, end, type);
+
+            // Sum amounts
+            return transactions.Sum(t => t.Amount);
+        }
+        public async Task<IEnumerable<TransactionDto>?> GetFiltredTransactionsAsync(
+            Guid? categoryId,
+            DateTime? start,
+            DateTime? end,
+            byte? type,
+            int page,
+            int pageSize)
+        {
+            return await FetchTransactionsPageAsync(categoryId, start, end, type, page, pageSize);
+        }
+        private async Task<IEnumerable<TransactionDto>?> FetchTransactionsPageAsync(Guid? CategoryId , DateTime? Start , DateTime? End ,byte? Type , int Page , int PageSize)
         {
             using var connection = _connectionFactory.GetConnection();
             var sql = @"SELECT * FROM Transactions WHERE 1 = 1";
@@ -152,6 +170,28 @@ namespace FinanceCore.Infrastructure.Repositories
 
             var model = await connection.QueryAsync<TransactionModel>(sql, parameters);
             return model.Select(model => new TransactionDto(model.Id,model.AccountId,model.ToAccountId,model.CategoryId,model.Amount,model.Type,model.CreatedAt,model.Description));
+        }
+        private async Task<IEnumerable<TransactionDto>> FetchAllTransactionsAsync(
+            Guid? categoryId = null,
+            DateTime? start = null,
+            DateTime? end = null,
+            byte? type = null)
+        {
+            var allTransactions = new List<TransactionDto>();
+            int page = 1;
+            const int pageSize = 100; // fetch in batches to avoid loading everything at once
+
+            while (true)
+            {
+                var pageTransactions = (await FetchTransactionsPageAsync(categoryId, start, end, type, page, pageSize)).ToList();
+                if (!pageTransactions.Any())
+                    break;
+
+                allTransactions.AddRange(pageTransactions);
+                page++;
+            }
+
+            return allTransactions;
         }
     }
 }

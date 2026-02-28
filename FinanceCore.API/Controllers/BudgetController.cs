@@ -3,6 +3,7 @@ using FinanceCore.Application.Features.Budgets.Commands.Create;
 using FinanceCore.Application.Features.Budgets.Commands.Delete;
 using FinanceCore.Application.Features.Budgets.Commands.Update;
 using FinanceCore.Application.Features.Budgets.Queries.GetBudgetById;
+using FinanceCore.Application.Features.Budgets.Queries.GetBudgetProgress;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -45,7 +46,19 @@ namespace FinanceCore.API.Controllers
             var budget = await _mediator.Send(query);
             return Ok(budget);
         }
-
+        /// <summary>
+        /// Get budget Progress
+        /// </summary>
+        [HttpGet("{id}/Progress")]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(BudgetProgressDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetBudgetProgressById(Guid id)
+        {
+            var query = new GetBudgetProgressQuery(id);
+            var budget = await _mediator.Send(query);
+            return Ok(budget);
+        }
         /// <summary>
         /// Get all budgets for a user
         /// </summary>
