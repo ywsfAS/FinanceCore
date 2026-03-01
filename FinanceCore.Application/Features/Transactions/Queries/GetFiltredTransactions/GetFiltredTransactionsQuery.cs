@@ -1,4 +1,4 @@
-﻿using FinanceCore.Application.DTOs;
+﻿using FinanceCore.Application.DTOs.Transaction;
 using FinanceCore.Domain.Enums;
 using MediatR;
 using System;

@@ -1,16 +1,18 @@
 using FinanceCore.Application.DTOs;
+using FinanceCore.Application.DTOs.Transaction;
 using FinanceCore.Application.Features.Accounts.Commands.Create;
 using FinanceCore.Application.Features.Accounts.Commands.Delete;
 using FinanceCore.Application.Features.Accounts.Commands.Update;
 using FinanceCore.Application.Features.Accounts.Queries.GetAccountById;
 using FinanceCore.Application.Features.Accounts.Queries.GetBalanceById;
+using FinanceCore.Application.Features.Transactions.Queries.GetTransactionById;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FinanceCore.API.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/accounts")]
     public class AccountsController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -23,7 +25,7 @@ namespace FinanceCore.API.Controllers
         /// <summary>
         /// Create a new account
         /// </summary>
-        [HttpPost("Create")]
+        [HttpPost()]
         [Produces("application/json")]
         [ProducesResponseType(typeof(AccountDto), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
@@ -50,7 +52,7 @@ namespace FinanceCore.API.Controllers
         /// <summary>
         /// Get all accounts for a user
         /// </summary>
-        [HttpGet("{userId}")]
+        [HttpGet("users/{userId}/accounts")]
         [Produces("application/json")]
         [ProducesResponseType(typeof(AccountDto), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
@@ -63,11 +65,11 @@ namespace FinanceCore.API.Controllers
         /// <summary>
         /// Get account's Balance
         /// </summary>
-        [HttpGet("{userId}/balance")]
+        [HttpGet("{Id}/balance")]
         [Produces("application/json")]
         [ProducesResponseType(typeof(AccountBalanceDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetAccountsBalanceByUserId(Guid userId)
+        public async Task<IActionResult> GetAccountsBalanceById(Guid userId)
         {
             var query = new GetBalanceByIdQuery(userId);
             var account = await _mediator.Send(query);
@@ -101,6 +103,19 @@ namespace FinanceCore.API.Controllers
             var command = new DeleteAccountCommand(id);
             await _mediator.Send(command);
             return NoContent();
+        }
+        /// <summary>
+        /// Get all transactions for an account
+        /// </summary>
+        [HttpGet("{accountId}/transactions")]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(CreateTransactionDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status404NotFound)]
+        public async Task<IActionResult> GetTransactionsByAccountId(Guid accountId)
+        {
+            var query = new GetTransactionByIdQuery(accountId);
+            var transactions = await _mediator.Send(query);
+            return Ok(transactions);
         }
     }
 }

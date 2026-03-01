@@ -1,10 +1,10 @@
 ﻿using FinanceCore.Application.Abstractions;
-using FinanceCore.Application.DTOs;
 using MediatR;
 using FinanceCore.Domain.Exceptions;
+using FinanceCore.Application.DTOs.Transaction;
 namespace FinanceCore.Application.Features.Transactions.Queries.GetTransactionById
 {
-    public class GetTransactionByIdQueryHandler : IRequestHandler<GetTransactionByIdQuery, TransactionDto>
+    public class GetTransactionByIdQueryHandler : IRequestHandler<GetTransactionByIdQuery,TransactionDto>
     {
         private readonly ITransactionRepository _transactionRepository;
         private readonly IAccountRepository _accountRepository;

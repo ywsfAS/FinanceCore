@@ -16,6 +16,6 @@ namespace FinanceCore.Application.Features.Budgets.Commands.Create
         decimal Amount,
         EnCurrency Currency,
         BudgetPeriod Period,
-        DateTime StartDate,
-        DateTime EndDate) : IRequest<BudgetDto>;
+        DateTime StartDate
+        ) : IRequest<BudgetDto>;
 }

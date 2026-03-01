@@ -5,7 +5,7 @@ using FinanceCore.Domain.Transactions;
 using FinanceCore.Infrastructure.context;
 using FinanceCore.Infrastructure.Mappers;
 using FinanceCore.Infrastructure.Models;
-using FinanceCore.Application.DTOs;
+using FinanceCore.Domain.Enums;
 
 namespace FinanceCore.Infrastructure.Repositories
 {
@@ -45,7 +45,7 @@ namespace FinanceCore.Infrastructure.Repositories
                 model
                 );
         }
-        public async Task<TransferDto> TransferAsync(Transaction transaction, CancellationToken token)
+        public async Task<CreateTransferDto> TransferAsync(Transaction transaction, CancellationToken token)
         {
             var model = TransactionMapper.MapToModel(transaction);
 
@@ -61,9 +61,9 @@ namespace FinanceCore.Infrastructure.Repositories
                 }
                 );
 
-            return new TransferDto(result.CreditTransactionId,result.DebitTransactionId,result.SourceBalance,result.DestinationBalance,result.TransferDate);
+            return new CreateTransferDto(result.CreditTransactionId,result.DebitTransactionId,model.AccountId,model.ToAccountId,model.Amount,result.SourceBalance,result.DestinationBalance,result.TransferDate);
         }
-        public async Task<IncomeDto> IncomeAsync(Transaction transaction, CancellationToken token)
+        public async Task<CreateTransactionDto> IncomeAsync(Transaction transaction, CancellationToken token)
         {
             var model = TransactionMapper.MapToModel(transaction);
             var result = await _connectionFactory.QuerySingleAsync<TransactionModel>(
@@ -76,11 +76,11 @@ namespace FinanceCore.Infrastructure.Repositories
                     Description = model?.Description,
                 }
                 );
-            return new IncomeDto(result.Id ,result.CategoryId , result.Amount , result.Description );
+            return new CreateTransactionDto(result.Id ,model.AccountId,result.CategoryId , result.Amount ,model.Type,model.Date,result.Description);
 
 
         }
-        public async Task<ExpenseDto> ExpenseAsync(Transaction transaction, CancellationToken token)
+        public async Task<CreateTransactionDto> ExpenseAsync(Transaction transaction, CancellationToken token)
         {
             var model = TransactionMapper.MapToModel(transaction);
             var result = await _connectionFactory.QuerySingleAsync<TransactionModel>(
@@ -93,7 +93,7 @@ namespace FinanceCore.Infrastructure.Repositories
                     Description = model?.Description,
                 }
                 );
-            return new ExpenseDto(result.Id, result.CategoryId, result.Amount, result.Description);
+            return new CreateTransactionDto(result.Id ,model.AccountId,result.CategoryId , result.Amount ,model.Type,model.Date,result.Description);
 
 
         }
@@ -169,7 +169,7 @@ namespace FinanceCore.Infrastructure.Repositories
             parameters.Add("PageSize", PageSize);
 
             var model = await connection.QueryAsync<TransactionModel>(sql, parameters);
-            return model.Select(model => new TransactionDto(model.Id,model.AccountId,model.ToAccountId,model.CategoryId,model.Amount,model.Type,model.CreatedAt,model.Description));
+            return model.Select(model => new TransactionDto(model.Id, model.AccountId, model.ToAccountId, model.CategoryId, model.Amount, model.Type, model.CreatedAt, model.Description));
         }
         private async Task<IEnumerable<TransactionDto>> FetchAllTransactionsAsync(
             Guid? categoryId = null,

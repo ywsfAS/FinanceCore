@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace FinanceCore.API.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/categories")]
     public class CategoriesController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -23,7 +23,7 @@ namespace FinanceCore.API.Controllers
         /// <summary>
         /// Create a new category
         /// </summary>
-        [HttpPost("Create")]
+        [HttpPost()]
         [Produces("application/json")]
         [ProducesResponseType(typeof(CategoryDto), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
@@ -47,19 +47,7 @@ namespace FinanceCore.API.Controllers
             return Ok(category);
         }
 
-        /// <summary>
-        /// Get all categories for a user
-        /// </summary>
-        [HttpGet("user/{userId}")]
-        [Produces("application/json")]
-        [ProducesResponseType(typeof(CategoryDto), StatusCodes.Status201Created)]
-        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetCategoriesByUserId(Guid userId)
-        {
-            var query = new GetCategoryByIdQuery(userId);
-            var categories = await _mediator.Send(query);
-            return Ok(categories);
-        }
+
 
         /// <summary>
         /// Update an existing category

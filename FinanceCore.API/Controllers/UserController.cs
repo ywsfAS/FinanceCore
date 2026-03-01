@@ -1,4 +1,6 @@
 ﻿using FinanceCore.Application.DTOs;
+using FinanceCore.Application.Features.Budgets.Queries.GetBudgetById;
+using FinanceCore.Application.Features.Categories.Queries;
 using FinanceCore.Application.Features.Users.Command.Delete;
 using FinanceCore.Application.Features.Users.Command.Update;
 using FinanceCore.Application.Features.Users.Queries.GetUserById;
@@ -11,7 +13,7 @@ namespace FinanceCore.API.Controllers
     /// Controller for managing user profile operations
     /// </summary>
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/users")]
     public class UsersController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -82,6 +84,32 @@ namespace FinanceCore.API.Controllers
             var command = new DeleteUserCommand(id);
             await _mediator.Send(command);
             return NoContent();
+        }
+        /// <summary>
+        /// Get all budgets for a user
+        /// </summary>
+        [HttpGet("{userId}/budgets")]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(BudgetDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetBudgetsByUserId(Guid userId)
+        {
+            var query = new GetBudgetByIdQuery(userId);
+            var budgets = await _mediator.Send(query);
+            return Ok(budgets);
+        }
+        /// <summary>
+        /// Get all categories for a user
+        /// </summary>
+        [HttpGet("{userId}/categories")]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(CategoryDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetCategoriesByUserId(Guid userId)
+        {
+            var query = new GetCategoryByIdQuery(userId);
+            var categories = await _mediator.Send(query);
+            return Ok(categories);
         }
     }
 }

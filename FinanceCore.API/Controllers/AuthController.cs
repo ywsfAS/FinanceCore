@@ -11,7 +11,7 @@ namespace FinanceCore.API.Controllers
     /// Controller for authentication operations including user registration and login
     /// </summary>
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/auth")]
     public class AuthController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -32,7 +32,7 @@ namespace FinanceCore.API.Controllers
         /// <returns>Returns the newly created user Info</returns>
         /// <response code="201">User registered successfully</response>
         /// <response code="400">Invalid input or email already exists</response>
-        [HttpPost("Register")]
+        [HttpPost("register")]
         [Produces("application/json")]
         [ProducesResponseType(typeof(RegisterDto), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ValidationErrorDto),StatusCodes.Status400BadRequest)]

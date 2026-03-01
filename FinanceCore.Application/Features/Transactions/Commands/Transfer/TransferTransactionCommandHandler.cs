@@ -6,9 +6,9 @@ using MediatR;
 using FinanceCore.Application.DTOs.Transaction;
 using FinanceCore.Domain.Enums;
 
-namespace FinanceCore.Application.Features.Transactions.Commands.Create
+namespace FinanceCore.Application.Features.Transactions.Commands.Transfer
 {
-    public class TransferTransactionCommandHandler : IRequestHandler<TransferTransactionCommand,TransferDto>
+    public class TransferTransactionCommandHandler : IRequestHandler<TransferTransactionCommand,CreateTransferDto>
     {
         private readonly ITransactionRepository _transactionRepository;
         public TransferTransactionCommandHandler(ITransactionRepository transactionRepository)
@@ -16,7 +16,7 @@ namespace FinanceCore.Application.Features.Transactions.Commands.Create
             _transactionRepository = transactionRepository;
         }
 
-        public async Task<TransferDto> Handle(TransferTransactionCommand command, CancellationToken cancellationToken)
+        public async Task<CreateTransferDto> Handle(TransferTransactionCommand command, CancellationToken cancellationToken)
         { 
             var transaction = Transaction.Create(command.accountId,command.ToAccountId,command.amount,null,EnTransactionType.Transfer,DateTime.UtcNow,command.description);
             // Create Transaction

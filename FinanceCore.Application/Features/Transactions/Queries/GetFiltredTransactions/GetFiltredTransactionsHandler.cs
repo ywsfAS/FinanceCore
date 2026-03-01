@@ -1,5 +1,5 @@
 ﻿using FinanceCore.Application.Abstractions;
-using FinanceCore.Application.DTOs;
+using FinanceCore.Application.DTOs.Transaction;
 using MediatR;
 using System;
 using System.Collections.Generic;

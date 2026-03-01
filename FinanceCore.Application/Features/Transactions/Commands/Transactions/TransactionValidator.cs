@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FinanceCore.Application.Features.Transactions.Commands.Expense
+namespace FinanceCore.Application.Features.Transactions.Commands.Transactions
 {
-    internal class ExpenseValidator
+    internal class TransactionValidator
     {
     }
 }

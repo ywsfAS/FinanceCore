@@ -1,9 +1,8 @@
 ﻿using FinanceCore.Application.DTOs;
 using FinanceCore.Application.DTOs.Transaction;
-using FinanceCore.Application.Features.Transactions.Commands.Create;
+using FinanceCore.Application.Features.Transactions.Commands.Transfer;
 using FinanceCore.Application.Features.Transactions.Commands.Delete;
-using FinanceCore.Application.Features.Transactions.Commands.Expense;
-using FinanceCore.Application.Features.Transactions.Commands.Income;
+using FinanceCore.Application.Features.Transactions.Commands.Transactions;
 using FinanceCore.Application.Features.Transactions.Commands.Update;
 using FinanceCore.Application.Features.Transactions.Queries.GetFiltredTransactions;
 using FinanceCore.Application.Features.Transactions.Queries.GetTransactionById;
@@ -15,7 +14,7 @@ using System.Runtime.ExceptionServices;
 namespace FinanceCore.API.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/transactions")]
     public class TransactionsController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -28,30 +27,20 @@ namespace FinanceCore.API.Controllers
         /// <summary>
         /// Create a new transaction
         /// </summary>
-        [HttpPost("Create")]
+        [HttpPost("transfer")]
         [Produces("application/json")]
-        [ProducesResponseType(typeof(TransactionDto),StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(CreateTransferDto),StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateTransfer([FromBody] TransferTransactionCommand command)
         {
             var response = await _mediator.Send(command);
             return CreatedAtAction(nameof(GetTransactionById), new { id = response.CreditTransactionId }, response);
         }
-        [HttpPost("Income")]
+        [HttpPost("transactions")]
         [Produces("application/json")]
-        [ProducesResponseType(typeof(IncomeDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(Application.DTOs.Transaction.CreateTransactionDto), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> CreateIncome([FromBody] IncomeCommand command)
-        {
-            var response = await _mediator.Send(command);
-            return CreatedAtAction(nameof(GetTransactionById), new { id = response.AccountId }, response);
-        }
-
-        [HttpPost("Expense")]
-        [Produces("application/json")]
-        [ProducesResponseType(typeof(ExpenseDto), StatusCodes.Status201Created)]
-        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> CreateExpense([FromBody] ExpenseCommand command)
+        public async Task<IActionResult> CreateExpense([FromBody] TransactionCommand command)
         {
             var response = await _mediator.Send(command);
             return CreatedAtAction(nameof(GetTransactionById), new { id = response.Id }, response);
@@ -71,23 +60,11 @@ namespace FinanceCore.API.Controllers
             return Ok(transaction);
         }
 
+
         /// <summary>
         /// Get all transactions for an account
         /// </summary>
-        [HttpGet("account/{accountId}")]
-        [Produces("application/json")]
-        [ProducesResponseType(typeof(TransactionDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetTransactionsByAccountId(Guid accountId)
-        {
-            var query = new GetTransactionByIdQuery(accountId);
-            var transactions = await _mediator.Send(query);
-            return Ok(transactions);
-        }
-        /// <summary>
-        /// Get all transactions for an account
-        /// </summary>
-        [HttpGet("FiltredTransactions")]
+        [HttpGet()]
         [Produces("application/json")]
         [ProducesResponseType(typeof(IEnumerable<TransactionDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status404NotFound)]

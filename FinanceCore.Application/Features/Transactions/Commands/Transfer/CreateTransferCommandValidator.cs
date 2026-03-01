@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FinanceCore.Application.Features.Transactions.Commands.Create
+namespace FinanceCore.Application.Features.Transactions.Commands.Transfer
 {
     public class CreateTransferCommandValidator : AbstractValidator<TransferTransactionCommand>
     {

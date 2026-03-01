@@ -8,15 +8,15 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 
-namespace FinanceCore.Application.Features.Transactions.Commands.Expense
+namespace FinanceCore.Application.Features.Transactions.Commands.Transactions
 {
-    public class ExpenseHandler : IRequestHandler<ExpenseCommand , ExpenseDto>
+    public class TransactionHandler : IRequestHandler<TransactionCommand , CreateTransactionDto>
     {
         private readonly ITransactionRepository _transactionRepository;
         private readonly IAccountRepository _accountRepository;
         private readonly ICategoryRepository _categoryRepositroy;
         private readonly IBudgetRepository _budgetRepository;
-        public ExpenseHandler(ITransactionRepository transactionRepository,IBudgetRepository budgetRepository, IAccountRepository accountRepository, ICategoryRepository categoryRepositroy)
+        public TransactionHandler(ITransactionRepository transactionRepository,IBudgetRepository budgetRepository, IAccountRepository accountRepository, ICategoryRepository categoryRepositroy)
         {
             _transactionRepository = transactionRepository;
             _accountRepository = accountRepository;
@@ -25,7 +25,7 @@ namespace FinanceCore.Application.Features.Transactions.Commands.Expense
         }
 
 
-        public async Task<ExpenseDto> Handle(ExpenseCommand command , CancellationToken token)
+        public async Task<CreateTransactionDto> Handle(TransactionCommand command , CancellationToken token)
         {
             var account = await _accountRepository.GetByIdAsync(command.AccountId, token);
             if (account == null)
@@ -50,9 +50,13 @@ namespace FinanceCore.Application.Features.Transactions.Commands.Expense
             {
                 throw new BudgetExceededException(budget.Id , category.Name , budget.Amount , spent);
             }
-            var transaction = Transaction.Create(command.AccountId, null, command.Amount, command.CategoryId, EnTransactionType.Expense, DateTime.UtcNow, command.Description);
+            var transaction = Transaction.Create(command.AccountId, null, command.Amount, command.CategoryId,command.Type, DateTime.UtcNow, command.Description);
+            if (command.Type == EnTransactionType.Expense)
+            {
+                return await _transactionRepository.ExpenseAsync(transaction, token);
 
-            return await _transactionRepository.ExpenseAsync(transaction, token);
+            }
+            return await _transactionRepository.IncomeAsync(transaction, token);
 
 
         }

@@ -5,12 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FinanceCore.Application.DTOs
+namespace FinanceCore.Application.DTOs.Transaction
 {
     public record TransactionDto(
      Guid Id,
-     Guid? AccountId,
-     Guid? ToAccount,
+     Guid AccountId,
+     Guid? ToAccountId,
      Guid? CategoryId,
      decimal Amount,
      EnTransactionType Type,

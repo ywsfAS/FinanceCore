@@ -7,5 +7,12 @@ using System.Threading.Tasks;
 
 namespace FinanceCore.Application.DTOs.Transaction
 {
-    public record IncomeDto(Guid AccountId , Guid? CategoryId , decimal Amount , string Description , EnTransactionType Type = EnTransactionType.Income);
+    public record CreateTransactionDto(
+     Guid Id,
+     Guid AccountId,
+     Guid? CategoryId,
+     decimal Amount,
+     EnTransactionType Type,
+     DateTime Date,
+     string? Description);
 }

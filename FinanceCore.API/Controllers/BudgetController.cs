@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace FinanceCore.API.Controllers
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/budgets")]
     public class BudgetsController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -23,7 +23,7 @@ namespace FinanceCore.API.Controllers
         /// <summary>
         /// Create a new budget
         /// </summary>
-        [HttpPost("Create")]
+        [HttpPost()]
         [Produces("application/json")]
         [ProducesResponseType(typeof(BudgetDto), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
@@ -49,7 +49,7 @@ namespace FinanceCore.API.Controllers
         /// <summary>
         /// Get budget Progress
         /// </summary>
-        [HttpGet("{id}/Progress")]
+        [HttpGet("{id}/progress")]
         [Produces("application/json")]
         [ProducesResponseType(typeof(BudgetProgressDto), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
@@ -59,19 +59,7 @@ namespace FinanceCore.API.Controllers
             var budget = await _mediator.Send(query);
             return Ok(budget);
         }
-        /// <summary>
-        /// Get all budgets for a user
-        /// </summary>
-        [HttpGet("user/{userId}")]
-        [Produces("application/json")]
-        [ProducesResponseType(typeof(BudgetDto), StatusCodes.Status201Created)]
-        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetBudgetsByUserId(Guid userId)
-        {
-            var query = new GetBudgetByIdQuery(userId);
-            var budgets = await _mediator.Send(query);
-            return Ok(budgets);
-        }
+
 
         /// <summary>
         /// Update an existing budget
