@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 namespace FinanceCore.Application.Features.Budgets.Commands.Update
 {
     public record UpdateBudgetCommand(
+        Guid UserId,
         Guid Id,
         decimal Amount,
         EnCurrency Currency,

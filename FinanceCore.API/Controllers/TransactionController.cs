@@ -39,6 +39,7 @@ namespace FinanceCore.API.Controllers
         [Produces("application/json")]
         [ProducesResponseType(typeof(CreateTransferDto),StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> CreateTransfer([FromBody] TransferTransactionCommand command)
         {
             var UserId = GetUserId();
@@ -63,6 +64,7 @@ namespace FinanceCore.API.Controllers
         [Produces("application/json")]
         [ProducesResponseType(typeof(TransactionDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> GetTransactionById(Guid id)
         {
             var UserId = GetUserId();
@@ -79,6 +81,7 @@ namespace FinanceCore.API.Controllers
         [Produces("application/json")]
         [ProducesResponseType(typeof(IEnumerable<TransactionDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> GetTransactionsByFilters(Guid? CategoryId , DateTime? Start , DateTime? End , EnTransactionType? Type , int Page = 1 ,int PageSize = 10 )
         {
             var UserId = GetUserId();
@@ -94,6 +97,7 @@ namespace FinanceCore.API.Controllers
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> UpdateTransaction(Guid id, [FromBody] UpdateTransactionCommand command)
         {
             var UserId = GetUserId();
@@ -108,6 +112,7 @@ namespace FinanceCore.API.Controllers
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> DeleteTransaction(Guid id)
         {
             var UserId = GetUserId();

@@ -8,5 +8,5 @@ using System.Threading.Tasks;
 
 namespace FinanceCore.Application.Features.Budgets.Queries.GetBudgetById
 {
-    public record GetBudgetByIdQuery(Guid Id) : IRequest<BudgetDto>;
+    public record GetBudgetByIdQuery(Guid UserId,Guid Id) : IRequest<BudgetDto>;
 }

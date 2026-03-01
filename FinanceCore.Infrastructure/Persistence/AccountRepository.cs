@@ -1,5 +1,9 @@
-﻿using FinanceCore.Application.Abstractions;
+﻿using Dapper;
+using FinanceCore.Application.Abstractions;
+using FinanceCore.Application.DTOs;
+using FinanceCore.Application.DTOs.Transaction;
 using FinanceCore.Domain.Accounts;
+using FinanceCore.Domain.Enums;
 using FinanceCore.Infrastructure.context;
 using FinanceCore.Infrastructure.Mappers;
 using FinanceCore.Infrastructure.Models;
@@ -59,6 +63,32 @@ namespace FinanceCore.Infrastructure.Repositories
             await _connectionFactory.ExecuteNonQueryAsync(
                 "sp_DeleteAccount",
                 new { account.Id });
+        }
+        public async Task<Account?> GetByIdAndUserIdAsync(Guid UserId, Guid id, CancellationToken token = default)
+        {
+            var AccountDto = await GetDtoByIdAndUserIdAsync(UserId,id,token);
+            if(AccountDto == null) return null;
+            // Souldnt Take InitBalance ? 
+            return Account.Create(AccountDto.Id , AccountDto.Name , AccountDto.Type,AccountDto.Currency,AccountDto.Balance);
+
+        }
+        public async Task<AccountDto?> GetDtoByIdAndUserIdAsync(Guid UserId, Guid id, CancellationToken token = default)
+        {
+            using var connection = _connectionFactory.GetConnection();
+            var sql = @"SELECT * FROM Accounts WHERE";
+            var parameters = new DynamicParameters();
+            sql += " Id = @Id";
+            parameters.Add("Id", id);
+            sql += " AND UserId = @UserId";
+            parameters.Add("UserId", UserId);
+
+            var model = await connection.QuerySingleOrDefaultAsync<AccountModel>(sql, parameters);
+            if(model == null)
+            {
+                return null;
+            }
+            return new AccountDto(model.Id,model.UserId,model.Name,(EnAccountType)model.Type,model.Balance,(EnCurrency)model.CurrencyId,model.CreatedAt);
+
         }
     }
 }

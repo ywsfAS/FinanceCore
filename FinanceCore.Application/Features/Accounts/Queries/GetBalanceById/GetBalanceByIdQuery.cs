@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace FinanceCore.Application.Features.Accounts.Queries.GetBalanceById
 {
-    public record GetBalanceByIdQuery(Guid AccountId) : IRequest<AccountBalanceDto>;
+    public record GetBalanceByIdQuery(Guid UserId,Guid AccountId) : IRequest<AccountBalanceDto>;
     
     
 }

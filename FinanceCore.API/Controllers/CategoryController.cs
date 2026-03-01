@@ -41,6 +41,7 @@ namespace FinanceCore.API.Controllers
         [Produces("application/json")]
         [ProducesResponseType(typeof(CategoryDto), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> CreateCategory([FromBody] CreateCategoryRequest request)
         {
             var UserId = GetUserId();
@@ -56,6 +57,7 @@ namespace FinanceCore.API.Controllers
         [Produces("application/json")]
         [ProducesResponseType(typeof(CategoryDto), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> GetCategoryById(Guid id)
         {
             var UserId = GetUserId();
@@ -73,6 +75,7 @@ namespace FinanceCore.API.Controllers
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> UpdateCategory(Guid id, [FromBody] UpdateCategoryCommand command)
         {
             var UserId = GetUserId();
@@ -87,6 +90,7 @@ namespace FinanceCore.API.Controllers
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> DeleteCategory(Guid id)
         {
             var UserId = GetUserId();
@@ -101,6 +105,7 @@ namespace FinanceCore.API.Controllers
         [Produces("application/json")]
         [ProducesResponseType(typeof(CategoryDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> GetCategoriesByUserId(Guid? userId,string? Name , CategoryType? Type ,DateTime? Date, int Page = 1, int PageSize = 10)
         {
             var query = new GetFiltredCategoriesQuery(userId,Name,Type,Date ,Page, PageSize);

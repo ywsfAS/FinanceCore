@@ -7,5 +7,5 @@ using System.Threading.Tasks;
 
 namespace FinanceCore.Application.Features.Accounts.Commands.Delete
 {
-    public record DeleteAccountCommand(Guid Id) : IRequest;
+    public record DeleteAccountCommand(Guid UserId , Guid Id) : IRequest;
 }

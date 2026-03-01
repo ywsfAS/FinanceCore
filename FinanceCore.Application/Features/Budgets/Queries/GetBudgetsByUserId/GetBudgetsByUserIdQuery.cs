@@ -6,8 +6,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FinanceCore.Application.Features.Budgets.Queries.GetBudgetProgress
+namespace FinanceCore.Application.Features.Budgets.Queries.GetBudgetsByUserId
 {
-    public record GetBudgetProgressQuery(Guid UserId,Guid Id) : IRequest<BudgetProgressDto>;
-   
+    public record GetBudgetsByUserIdQuery(Guid UserId) : IRequest<IEnumerable<BudgetDto>?>;
+    
 }

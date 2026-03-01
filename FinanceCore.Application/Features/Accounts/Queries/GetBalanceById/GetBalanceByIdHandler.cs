@@ -19,8 +19,8 @@ namespace FinanceCore.Application.Features.Accounts.Queries.GetBalanceById
         }
         public async Task<AccountBalanceDto> Handle(GetBalanceByIdQuery Query , CancellationToken token)
         {
-            var account = await _accountRepository.GetByIdAsync(Query.AccountId, token);
-
+            var accounts = await _accountRepository.GetByUserIdAsync(Query.UserId, token);
+            var account = accounts.FirstOrDefault(account => account.Id == Query.AccountId);
             if (account is null)
                 throw new InvalidOperationException("Account not found.");
 

@@ -1,39 +1,38 @@
 ﻿using FinanceCore.Application.Abstractions;
 using FinanceCore.Application.DTOs;
+using FinanceCore.Application.Features.Accounts.Queries.GetAccountById;
 using MediatR;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FinanceCore.Application.Features.Accounts.Queries.GetAccountById
+namespace FinanceCore.Application.Features.Accounts.Queries.GetAccountsByUserId
 {
-    public class GetAccountByIdQueryHandler : IRequestHandler<GetAccountByIdQuery, AccountDto>
+    public class GetAccountsByUserIdHandler : IRequestHandler<GetAccountsByUserIdQuery,IEnumerable<AccountDto>?>
     {
         private readonly IAccountRepository _accountRepository;
 
-        public GetAccountByIdQueryHandler(IAccountRepository accountRepository)
+        public GetAccountsByUserIdHandler(IAccountRepository accountRepository)
         {
             _accountRepository = accountRepository;
         }
 
-        public async Task<AccountDto> Handle(GetAccountByIdQuery query, CancellationToken cancellationToken)
+        public async Task<IEnumerable<AccountDto>?> Handle(GetAccountsByUserIdQuery query, CancellationToken cancellationToken)
         {
             var accounts = await _accountRepository.GetByUserIdAsync(query.UserId, cancellationToken);
-            var account = accounts.FirstOrDefault(account => account.Id == query.Id);
-            if (account is null)
+            if (accounts is null)
                 throw new InvalidOperationException("Account not found.");
 
-            return new AccountDto(
+            return accounts.Select(account => new AccountDto(
                 account.Id,
                 account.UserId,
                 account.Name,
                 account.Type,
                 account.Balance.Amount,
                 account.Currency,
-                account.CreatedAt);
+                account.CreatedAt));
         }
     }
 }

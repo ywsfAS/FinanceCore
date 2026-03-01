@@ -19,7 +19,7 @@ namespace FinanceCore.Application.Features.Accounts.Commands.Delete
 
         public async Task Handle(DeleteAccountCommand command, CancellationToken cancellationToken)
         {
-            var account = await _accountRepository.GetByIdAsync(command.Id, cancellationToken);
+            var account = await _accountRepository.GetByIdAndUserIdAsync(command.UserId,command.Id, cancellationToken);
 
             if (account is null)
                 throw new InvalidOperationException("Account not found.");

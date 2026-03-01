@@ -3,6 +3,7 @@ using FinanceCore.Application.Abstractions;
 using FinanceCore.Application.DTOs;
 using FinanceCore.Domain.Budgets;
 using FinanceCore.Domain.Enums;
+using FinanceCore.Domain.Users;
 using FinanceCore.Infrastructure.context;
 using FinanceCore.Infrastructure.Mappers;
 using FinanceCore.Infrastructure.Models;
@@ -78,6 +79,16 @@ namespace FinanceCore.Infrastructure.Repositories
                 new { UserId = userId });
             return models.Select(model => BudgetMapper.MapToDomain(model));
         }
+        public async Task<IEnumerable<BudgetDto>?> GetDtoByUserIdAsync(Guid userId, CancellationToken cancellationToken = default)
+        {
+
+            var models = await _connectionFactory.ReadListAsync<BudgetModel>(
+               "sp_GetBudgetsByUserId",
+               new { UserId = userId });
+            if( models == null ) return null;
+            return models.Select(model => new BudgetDto(model.Id,model.UserId,model.CategoryId,model.Amount,(EnCurrency)model.CurrencyId , model.Period,model.StartDate , model.EndDate));
+
+        }
 
         public async Task AddAsync(Budget budget, CancellationToken cancellationToken = default)
         {
@@ -102,6 +113,32 @@ namespace FinanceCore.Infrastructure.Repositories
             await _connectionFactory.ExecuteNonQueryAsync(
                 "sp_DeleteBudget",
                 new { budget.Id });
+        }
+        public async Task<Budget?> GetByIdAndUserIdAsync(Guid userId, Guid id, CancellationToken token)
+        {
+            var budgetDto = await GetByIdAndUserIdAsync(userId,id,token);
+            if(budgetDto == null) return null;
+            return Budget.Create(budgetDto.Id,budgetDto.CategoryId,budgetDto.Name,budgetDto.Currency,budgetDto.Amount,budgetDto.Period,budgetDto.StartDate);
+            
+        }
+        public async Task<BudgetDto?> GetDtoByIdAndUserIdAsync(Guid userId, Guid id, CancellationToken toekn)
+        {
+            using var connection = _connectionFactory.GetConnection();
+            var sql = @"SELECT * FROM Budgets WHERE";
+            var parameters = new DynamicParameters();
+            sql += " Id = @Id";
+            parameters.Add("Id", id);
+            sql += " AND UserId = @UserId";
+            parameters.Add("UserId", userId);
+
+            var model = await connection.QuerySingleOrDefaultAsync<BudgetModel>(sql, parameters);
+            if (model == null)
+            {
+                return null;
+            }
+            return new BudgetDto(model.Id, model.UserId, model.CategoryId,model.Amount,(EnCurrency)model.CurrencyId,model.Period , model.StartDate ,model.EndDate);
+
+
         }
     }
 }

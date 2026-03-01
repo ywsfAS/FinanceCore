@@ -13,6 +13,9 @@ namespace FinanceCore.Application.Abstractions
         Task<Budget?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default);
         Task<BudgetDto?> GetByCategoryIdAsync(Guid userId, Guid categoryId, DateTime start, DateTime end);
         Task<IEnumerable<Budget>> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken = default);
+        Task<IEnumerable<BudgetDto>?> GetDtoByUserIdAsync(Guid userId, CancellationToken cancellationToken = default);
+        Task<BudgetDto?> GetDtoByIdAndUserIdAsync(Guid userId , Guid id , CancellationToken token);
+        Task<Budget?> GetByIdAndUserIdAsync(Guid userId, Guid id, CancellationToken token);
         Task AddAsync(Budget budget, CancellationToken cancellationToken = default);
         Task UpdateAsync(Budget budget, CancellationToken cancellationToken = default);
         Task DeleteAsync(Budget budget, CancellationToken cancellationToken = default);

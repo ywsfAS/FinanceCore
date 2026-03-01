@@ -13,22 +13,14 @@ namespace FinanceCore.Application.Features.Budgets.Queries.GetBudgetById
             _budgetRepository = budgetRepository;
         }
 
-        public async Task<BudgetDto> Handle(GetBudgetByIdQuery query, CancellationToken cancellationToken)
+        public async Task<BudgetDto?> Handle(GetBudgetByIdQuery query, CancellationToken cancellationToken)
         {
-            var budget = await _budgetRepository.GetByIdAsync(query.Id, cancellationToken);
+            var budget = await _budgetRepository.GetDtoByIdAndUserIdAsync(query.UserId,query.Id, cancellationToken);
 
             if (budget is null)
                 throw new BudgetNotFoundException(query.Id);
 
-            return new BudgetDto(
-                budget.Id,
-                budget.UserId,
-                budget.CategoryId,
-                budget.Amount.Amount,
-                budget.Currency,
-                budget.Period,
-                budget.StartDate,
-                budget.EndDate);
+            return budget;
         }
     }
 }

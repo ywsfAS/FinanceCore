@@ -24,7 +24,7 @@ namespace FinanceCore.Application.Features.Budgets.Queries.GetBudgetProgress
         public async Task<BudgetProgressDto> Handle(GetBudgetProgressQuery query , CancellationToken token)
         {
             // Get Budget
-            var budget = await _budgetRepository.GetByIdAsync(query.Id);
+            var budget = await _budgetRepository.GetByIdAndUserIdAsync(query.UserId,query.Id,token);
             if (budget == null) { 
                 throw new BudgetNotFoundException(query.Id);
             }

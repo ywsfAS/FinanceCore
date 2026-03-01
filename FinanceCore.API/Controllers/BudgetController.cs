@@ -35,6 +35,7 @@ namespace FinanceCore.API.Controllers
         [Produces("application/json")]
         [ProducesResponseType(typeof(BudgetDto), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> CreateBudget([FromBody] CreateBudgetRequest request)
         {
             var UserId = GetUserId();
@@ -50,10 +51,11 @@ namespace FinanceCore.API.Controllers
         [Produces("application/json")]
         [ProducesResponseType(typeof(BudgetDto), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> GetBudgetById(Guid id)
         {
             var UserId = GetUserId();
-            var query = new GetBudgetByIdQuery(id); // Should take UserId  
+            var query = new GetBudgetByIdQuery(UserId ,id);
             var budget = await _mediator.Send(query);
             return Ok(budget);
         }
@@ -64,10 +66,11 @@ namespace FinanceCore.API.Controllers
         [Produces("application/json")]
         [ProducesResponseType(typeof(BudgetProgressDto), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> GetBudgetProgressById(Guid id)
         {
             var UserId = GetUserId();
-            var query = new GetBudgetProgressQuery(id);
+            var query = new GetBudgetProgressQuery(UserId,id);
             var budget = await _mediator.Send(query);
             return Ok(budget);
         }
@@ -80,6 +83,7 @@ namespace FinanceCore.API.Controllers
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> UpdateBudget(Guid id,[FromBody] UpdateBudgetCommand command)
         {
             if (id != command.Id)
@@ -96,10 +100,11 @@ namespace FinanceCore.API.Controllers
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> DeleteBudget(Guid id)
         {
             var UserId = GetUserId();
-            var command = new DeleteBudgetCommand(id);
+            var command = new DeleteBudgetCommand(UserId ,id);
             await _mediator.Send(command);
             return NoContent();
         }

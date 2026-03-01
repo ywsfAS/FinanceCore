@@ -8,6 +8,6 @@ using System.Threading.Tasks;
 
 namespace FinanceCore.Application.Features.Transactions.Queries.GetTansactionsByAccountId
 {
-    public record GetTransactionsByAccountIdQuery(Guid Id, int Page , int PageSize ) : IRequest<IEnumerable<TransactionDto>?>;
+    public record GetTransactionsByAccountIdQuery(Guid UserId,Guid Id, int Page , int PageSize ) : IRequest<IEnumerable<TransactionDto>?>;
 
 }
