@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FinanceCore.Domain.Enums
 {
-    public enum EnGoalStatus
+    public enum EnGoalStatus : byte
     {
         Active = 1,
         Paused = 2,

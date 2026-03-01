@@ -1,6 +1,6 @@
 ﻿namespace FinanceCore.Domain.Enums;
 
-public enum BudgetPeriod
+public enum BudgetPeriod : byte
 {
     Weekly = 1,
     Monthly = 2,

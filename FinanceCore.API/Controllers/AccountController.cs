@@ -5,6 +5,7 @@ using FinanceCore.Application.Features.Accounts.Commands.Delete;
 using FinanceCore.Application.Features.Accounts.Commands.Update;
 using FinanceCore.Application.Features.Accounts.Queries.GetAccountById;
 using FinanceCore.Application.Features.Accounts.Queries.GetBalanceById;
+using FinanceCore.Application.Features.Transactions.Queries.GetTansactionsByAccountId;
 using FinanceCore.Application.Features.Transactions.Queries.GetTransactionById;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
@@ -109,11 +110,11 @@ namespace FinanceCore.API.Controllers
         /// </summary>
         [HttpGet("{accountId}/transactions")]
         [Produces("application/json")]
-        [ProducesResponseType(typeof(CreateTransactionDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IEnumerable<TransactionDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status404NotFound)]
-        public async Task<IActionResult> GetTransactionsByAccountId(Guid accountId)
+        public async Task<IActionResult> GetTransactionsByAccountId(Guid accountId , int Page , int PageSize)
         {
-            var query = new GetTransactionByIdQuery(accountId);
+            var query = new GetTransactionsByAccountIdQuery(accountId,Page,PageSize);
             var transactions = await _mediator.Send(query);
             return Ok(transactions);
         }

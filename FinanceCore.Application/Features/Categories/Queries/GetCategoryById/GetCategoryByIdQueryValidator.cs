@@ -1,6 +1,6 @@
 ﻿using System;
 using FluentValidation;
-namespace FinanceCore.Application.Features.Categories.Queries
+namespace FinanceCore.Application.Features.Categories.Queries.GetCategoryById
 {
     public class GetCategoryByIdQueryValidator  : AbstractValidator<GetCategoryByIdQuery>
     {

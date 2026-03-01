@@ -1,6 +1,6 @@
 ﻿namespace FinanceCore.Domain.Enums
 {
-    public enum EnCategory
+    public enum EnCategory : byte
     {
         Salary,
         Groceries,

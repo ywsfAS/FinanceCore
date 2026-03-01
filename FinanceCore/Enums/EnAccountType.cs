@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FinanceCore.Domain.Enums
 {
-    public enum EnAccountType
+    public enum EnAccountType : byte
     {
         Checking = 1,
         Savings = 2,

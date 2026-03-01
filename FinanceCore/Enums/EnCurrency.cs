@@ -1,6 +1,6 @@
 ﻿namespace FinanceCore.Domain.Enums
 {
-    public enum EnCurrency
+    public enum EnCurrency : byte
     {
         USD, // US Dollar
         EUR, // Euro

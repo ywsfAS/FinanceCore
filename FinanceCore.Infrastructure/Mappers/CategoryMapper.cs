@@ -13,11 +13,11 @@ namespace FinanceCore.Infrastructure.Mappers
     {
         public static CategoryModel MapToModel(Category category)
         {
-            return new CategoryModel {Id = category.Id , UserId = category.UserId , Name = category.Name , IsActive = category.IsActive , Type = (byte)category.Type , Description = category.Description , IsDefault = category.IsDefault , CreatedAt = category.CreatedAt , UpdatedAt = category.UpdatedAt };
+            return new CategoryModel {Id = category.Id , UserId = category.UserId , Name = category.Name , IsActive = category.IsActive , CategoryTypeId = (byte)category.Type , Description = category.Description , IsDefault = category.IsDefault , CreatedAt = category.CreatedAt , UpdatedAt = category.UpdatedAt };
         }
         public static Category MapToDomain(CategoryModel model)
         {
-            return Category.Create(model.Id, model.UserId, model.Name, (CategoryType)model.Type,model.IsActive,model.IsDefault,model.Description, model.CreatedAt , model.UpdatedAt);
+            return Category.Create(model.Id, model.UserId, model.Name, (CategoryType)model.CategoryTypeId,model.IsActive,model.IsDefault,model.Description, model.CreatedAt , model.UpdatedAt);
         }
     }
 }

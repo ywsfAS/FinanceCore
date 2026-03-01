@@ -1,9 +1,9 @@
 ﻿
 namespace FinanceCore.Domain.Enums;
 
-public enum CategoryType
+public enum CategoryType : byte
 {
-    Income = 1,
-    Expense = 2,
-    Both = 3  // For transfers or special categories
+    Income = 0,
+    Expense = 1,
+    Both = 2  // For transfers or special categories
 }

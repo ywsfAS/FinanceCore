@@ -4,6 +4,10 @@ using FinanceCore.Application.Features.Categories.Commands.Create;
 using FinanceCore.Application.Features.Categories.Commands.Delete;
 using FinanceCore.Application.Features.Categories.Commands.Update;
 using FinanceCore.Application.Features.Categories.Queries;
+using FinanceCore.Application.Features.Categories.Queries.GetCategoriesByUserId;
+using FinanceCore.Application.Features.Categories.Queries.GetCategoryById;
+using FinanceCore.Application.Features.Categories.Queries.GetFiltredCategories;
+using FinanceCore.Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -77,6 +81,19 @@ namespace FinanceCore.API.Controllers
             var command = new DeleteCategoryCommand(id);
             await _mediator.Send(command);
             return NoContent();
+        }
+        /// <summary>
+        /// Get all categories for a user
+        /// </summary>
+        [HttpGet("categories")]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(CategoryDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetCategoriesByUserId(Guid? userId,string? Name , CategoryType? Type ,DateTime? Date, int Page = 1, int PageSize = 10)
+        {
+            var query = new GetFiltredCategoriesQuery(userId,Name,Type,Date ,Page, PageSize);
+            var categories = await _mediator.Send(query);
+            return Ok(categories);
         }
     }
 }

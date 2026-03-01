@@ -20,6 +20,7 @@ namespace FinanceCore.Application.Abstractions
         Task AddAsync(Transaction transaction, CancellationToken token = default);
         Task UpdateAsync(Transaction transaction, CancellationToken token = default);
         Task DeleteAsync(Transaction transaction, CancellationToken token = default);
+        Task<IEnumerable<TransactionDto>?> FetchTransactionsByIdPageAsync(Guid AccountId, int Page, int PageSize);
 
     }
 }

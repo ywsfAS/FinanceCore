@@ -1,6 +1,8 @@
 ﻿using FinanceCore.Application.DTOs;
 using FinanceCore.Application.Features.Budgets.Queries.GetBudgetById;
 using FinanceCore.Application.Features.Categories.Queries;
+using FinanceCore.Application.Features.Categories.Queries.GetCategoriesByUserId;
+using FinanceCore.Application.Features.Categories.Queries.GetCategoryById;
 using FinanceCore.Application.Features.Users.Command.Delete;
 using FinanceCore.Application.Features.Users.Command.Update;
 using FinanceCore.Application.Features.Users.Queries.GetUserById;
@@ -103,11 +105,11 @@ namespace FinanceCore.API.Controllers
         /// </summary>
         [HttpGet("{userId}/categories")]
         [Produces("application/json")]
-        [ProducesResponseType(typeof(CategoryDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(CategoryDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> GetCategoriesByUserId(Guid userId)
+        public async Task<IActionResult> GetCategoriesByUserId(Guid userId,int Page = 1 , int PageSize = 10 )
         {
-            var query = new GetCategoryByIdQuery(userId);
+            var query = new GetCategoriesByUserIdQuery(userId,Page ,PageSize);
             var categories = await _mediator.Send(query);
             return Ok(categories);
         }

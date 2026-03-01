@@ -129,14 +129,23 @@ namespace FinanceCore.Infrastructure.Repositories
             int page,
             int pageSize)
         {
-            return await FetchTransactionsPageAsync(categoryId, start, end, type, page, pageSize);
+            return await FetchTransactionsPageAsync(null,categoryId, start, end, type, page, pageSize);
         }
-        private async Task<IEnumerable<TransactionDto>?> FetchTransactionsPageAsync(Guid? CategoryId , DateTime? Start , DateTime? End ,byte? Type , int Page , int PageSize)
+        public async Task<IEnumerable<TransactionDto>?> FetchTransactionsByIdPageAsync(Guid AccountId,int Page , int PageSize)
+        {
+            return await FetchTransactionsPageAsync(AccountId, null, null, null, null, Page, PageSize);
+        } 
+        private async Task<IEnumerable<TransactionDto>?> FetchTransactionsPageAsync(Guid? AccountId ,Guid? CategoryId , DateTime? Start , DateTime? End ,byte? Type , int Page , int PageSize)
         {
             using var connection = _connectionFactory.GetConnection();
             var sql = @"SELECT * FROM Transactions WHERE 1 = 1";
 
             var parameters = new DynamicParameters();
+            if (AccountId.HasValue)
+            {
+                sql += " AND AccountId = @AccountId";
+                parameters.Add("AccountId", AccountId);
+            }
 
             if (CategoryId.HasValue)
             {
@@ -183,7 +192,7 @@ namespace FinanceCore.Infrastructure.Repositories
 
             while (true)
             {
-                var pageTransactions = (await FetchTransactionsPageAsync(categoryId, start, end, type, page, pageSize)).ToList();
+                var pageTransactions = (await FetchTransactionsPageAsync(null,categoryId, start, end, type, page, pageSize)).ToList();
                 if (!pageTransactions.Any())
                     break;
 

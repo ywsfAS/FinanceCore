@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FinanceCore.Application.Features.Categories.Queries
+namespace FinanceCore.Application.Features.Categories.Queries.GetCategoryById
 {
     public record GetCategoryByIdQuery(Guid Id) : IRequest<CategoryDto>;
 }

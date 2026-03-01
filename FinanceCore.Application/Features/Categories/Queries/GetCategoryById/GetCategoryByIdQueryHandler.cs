@@ -2,7 +2,7 @@
 using FinanceCore.Application.DTOs;
 using MediatR;
 using FinanceCore.Domain.Exceptions;
-namespace FinanceCore.Application.Features.Categories.Queries
+namespace FinanceCore.Application.Features.Categories.Queries.GetCategoryById
 {
     public class GetCategoryByIdQueryHandler : IRequestHandler<GetCategoryByIdQuery, CategoryDto>
     {
