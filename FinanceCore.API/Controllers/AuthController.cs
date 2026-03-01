@@ -3,6 +3,7 @@ using FinanceCore.Application.DTOs.Auth;
 using FinanceCore.Application.Features.Auth.Commands.Login;
 using FinanceCore.Application.Features.Auth.Commands.Register;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FinanceCore.API.Controllers
@@ -11,7 +12,8 @@ namespace FinanceCore.API.Controllers
     /// Controller for authentication operations including user registration and login
     /// </summary>
     [ApiController]
-    [Route("api/auth")]
+    [Route("api/v1/auth")]
+    [AllowAnonymous]
     public class AuthController : ControllerBase
     {
         private readonly IMediator _mediator;

@@ -1,7 +1,10 @@
 using FinanceCore.Application;
 using FinanceCore.Infrastructure;
 using FluentValidation;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -17,6 +20,8 @@ builder.Services.AddInfrastructure(builder.Configuration);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+
 
 var app = builder.Build();
 
@@ -50,6 +55,10 @@ app.UseExceptionHandler(errorApp =>
     });
 });
 app.UseHttpsRedirection();
+
+
+
+
 app.UseAuthentication();
 app.UseAuthorization();
 

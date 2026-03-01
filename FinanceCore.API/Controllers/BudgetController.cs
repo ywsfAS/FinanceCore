@@ -1,16 +1,20 @@
-﻿using FinanceCore.Application.DTOs;
+﻿using FinanceCore.API.Requests.Budget;
+using FinanceCore.Application.DTOs;
 using FinanceCore.Application.Features.Budgets.Commands.Create;
 using FinanceCore.Application.Features.Budgets.Commands.Delete;
 using FinanceCore.Application.Features.Budgets.Commands.Update;
 using FinanceCore.Application.Features.Budgets.Queries.GetBudgetById;
 using FinanceCore.Application.Features.Budgets.Queries.GetBudgetProgress;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace FinanceCore.API.Controllers
 {
     [ApiController]
-    [Route("api/budgets")]
+    [Route("api/v1/budgets")]
+    [Authorize]
     public class BudgetsController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -19,16 +23,22 @@ namespace FinanceCore.API.Controllers
         {
             _mediator = mediator;
         }
+        private Guid GetUserId()
+        {
+            return Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        }
 
         /// <summary>
         /// Create a new budget
         /// </summary>
-        [HttpPost()]
+        [HttpPost]
         [Produces("application/json")]
         [ProducesResponseType(typeof(BudgetDto), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> CreateBudget([FromBody] CreateBudgetCommand command)
+        public async Task<IActionResult> CreateBudget([FromBody] CreateBudgetRequest request)
         {
+            var UserId = GetUserId();
+            var command = new CreateBudgetCommand(UserId, request.CategoryId, request.name, request.Amount, request.Currency, request.Period, request.StartDate);
             var budget = await _mediator.Send(command);
             return CreatedAtAction(nameof(GetBudgetById), new { id = budget.Id }, budget);
         }
@@ -42,7 +52,8 @@ namespace FinanceCore.API.Controllers
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetBudgetById(Guid id)
         {
-            var query = new GetBudgetByIdQuery(id);
+            var UserId = GetUserId();
+            var query = new GetBudgetByIdQuery(id); // Should take UserId  
             var budget = await _mediator.Send(query);
             return Ok(budget);
         }
@@ -55,6 +66,7 @@ namespace FinanceCore.API.Controllers
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetBudgetProgressById(Guid id)
         {
+            var UserId = GetUserId();
             var query = new GetBudgetProgressQuery(id);
             var budget = await _mediator.Send(query);
             return Ok(budget);
@@ -68,11 +80,11 @@ namespace FinanceCore.API.Controllers
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
-        public async Task<IActionResult> UpdateBudget(Guid id, [FromBody] UpdateBudgetCommand command)
+        public async Task<IActionResult> UpdateBudget(Guid id,[FromBody] UpdateBudgetCommand command)
         {
             if (id != command.Id)
                 return BadRequest("ID mismatch");
-
+            var UserId = GetUserId() ;
             await _mediator.Send(command);
             return NoContent();
         }
@@ -86,6 +98,7 @@ namespace FinanceCore.API.Controllers
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> DeleteBudget(Guid id)
         {
+            var UserId = GetUserId();
             var command = new DeleteBudgetCommand(id);
             await _mediator.Send(command);
             return NoContent();

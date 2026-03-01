@@ -1,4 +1,5 @@
 ﻿using FinanceCore.Application.DTOs;
+using FinanceCore.Application.Features.Accounts.Queries.GetAccountById;
 using FinanceCore.Application.Features.Budgets.Queries.GetBudgetById;
 using FinanceCore.Application.Features.Categories.Queries;
 using FinanceCore.Application.Features.Categories.Queries.GetCategoriesByUserId;
@@ -7,7 +8,9 @@ using FinanceCore.Application.Features.Users.Command.Delete;
 using FinanceCore.Application.Features.Users.Command.Update;
 using FinanceCore.Application.Features.Users.Queries.GetUserById;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace FinanceCore.API.Controllers
 {
@@ -15,7 +18,8 @@ namespace FinanceCore.API.Controllers
     /// Controller for managing user profile operations
     /// </summary>
     [ApiController]
-    [Route("api/users")]
+    [Route("api/v1/users")]
+    [Authorize]
     public class UsersController : ControllerBase
     {
         private readonly IMediator _mediator;
@@ -28,7 +32,10 @@ namespace FinanceCore.API.Controllers
         {
             _mediator = mediator;
         }
-
+        private Guid GetUserId()
+        {
+            return Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
+        }
         /// <summary>
         /// Retrieves a user by their unique identifier
         /// </summary>
@@ -42,6 +49,7 @@ namespace FinanceCore.API.Controllers
         [ProducesResponseType(typeof(ValidationErrorDto),StatusCodes.Status404NotFound)]
         public async Task<IActionResult> GetUserById(Guid id)
         {
+            var UserId = GetUserId();
             var query = new GetUserByIdQuery(id);
             var user = await _mediator.Send(query);
             return Ok(user);
@@ -63,9 +71,7 @@ namespace FinanceCore.API.Controllers
         [ProducesResponseType(typeof(ValidationErrorDto),StatusCodes.Status404NotFound)]
         public async Task<IActionResult> UpdateUser(Guid id, [FromBody] UpdateUserCommand command)
         {
-            if (id != command.Id)
-                return BadRequest("ID mismatch");
-
+            var UserId = GetUserId();
             await _mediator.Send(command);
             return NoContent();
         }
@@ -83,6 +89,7 @@ namespace FinanceCore.API.Controllers
         [ProducesResponseType(typeof(ValidationErrorDto),StatusCodes.Status404NotFound)]
         public async Task<IActionResult> DeleteUser(Guid id)
         {
+            var UserId = GetUserId();
             var command = new DeleteUserCommand(id);
             await _mediator.Send(command);
             return NoContent();
@@ -96,6 +103,7 @@ namespace FinanceCore.API.Controllers
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetBudgetsByUserId(Guid userId)
         {
+            var UserId = GetUserId();
             var query = new GetBudgetByIdQuery(userId);
             var budgets = await _mediator.Send(query);
             return Ok(budgets);
@@ -109,9 +117,25 @@ namespace FinanceCore.API.Controllers
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> GetCategoriesByUserId(Guid userId,int Page = 1 , int PageSize = 10 )
         {
+            var UserId = GetUserId();
             var query = new GetCategoriesByUserIdQuery(userId,Page ,PageSize);
             var categories = await _mediator.Send(query);
             return Ok(categories);
+        }
+
+        /// <summary>
+        /// Get all accounts for a user
+        /// </summary>
+        [HttpGet("{userId}/accounts")]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(AccountDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> GetAccountsByUserId(Guid userId)
+        {
+            var UserId = GetUserId();
+            var query = new GetAccountByIdQuery(userId);
+            var accounts = await _mediator.Send(query);
+            return Ok(accounts);
         }
     }
 }
