@@ -1,7 +1,7 @@
-﻿using FinanceCore.Domain.Accounts;
-using FinanceCore.Domain.Enums;
-using FinanceCore.Infrastructure.Models;
+﻿using FinanceCore.Application.Models;
+using FinanceCore.Domain.Accounts;
 using FinanceCore.Domain.Common;
+using FinanceCore.Domain.Enums;
 
 namespace FinanceCore.Infrastructure.Mappers
 {

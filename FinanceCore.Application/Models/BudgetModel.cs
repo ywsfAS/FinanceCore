@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FinanceCore.Infrastructure.Models
+namespace FinanceCore.Application.Models
 {
     public class BudgetModel
     {

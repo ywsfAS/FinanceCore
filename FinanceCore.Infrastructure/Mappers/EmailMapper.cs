@@ -1,4 +1,4 @@
-﻿using FinanceCore.Infrastructure.Models;
+﻿using FinanceCore.Application.Models;
 using FinanceCore.Domain.Common;
 namespace FinanceCore.Infrastructure.Mappers
 {

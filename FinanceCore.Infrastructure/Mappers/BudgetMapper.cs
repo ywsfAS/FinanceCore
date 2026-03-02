@@ -1,7 +1,7 @@
-﻿using FinanceCore.Domain.Budgets;
-using FinanceCore.Domain.Enums;
-using FinanceCore.Infrastructure.Models;
+﻿using FinanceCore.Application.Models;
+using FinanceCore.Domain.Budgets;
 using FinanceCore.Domain.Common;
+using FinanceCore.Domain.Enums;
 namespace FinanceCore.Infrastructure.Mappers
 {
     public static class BudgetMapper

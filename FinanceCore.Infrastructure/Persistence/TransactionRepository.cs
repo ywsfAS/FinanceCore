@@ -1,11 +1,12 @@
-﻿using FinanceCore.Application.Abstractions;
+﻿using Dapper;
+using FinanceCore.Application.Abstractions;
+using FinanceCore.Application.DTOs;
 using FinanceCore.Application.DTOs.Transaction;
-using Dapper;
+using FinanceCore.Application.Models;
+using FinanceCore.Domain.Enums;
 using FinanceCore.Domain.Transactions;
 using FinanceCore.Infrastructure.context;
 using FinanceCore.Infrastructure.Mappers;
-using FinanceCore.Infrastructure.Models;
-using FinanceCore.Domain.Enums;
 using Microsoft.AspNetCore.Identity;
 
 namespace FinanceCore.Infrastructure.Repositories
@@ -154,6 +155,22 @@ namespace FinanceCore.Infrastructure.Repositories
             // Sum amounts
             return transactions.Sum(t => t.Amount);
         }
+        public async Task<ReportModel?> GetMonthlySummary(Guid AccountId, DateTime Start , DateTime End)
+        {
+            using var connection = _connectionFactory.GetConnection();
+            var sql = @"
+                SELECT
+                    SUM(CASE WHEN TransactionType = 'Income' THEN Amount ELSE 0 END) AS TotalIncome,
+                    SUM(CASE WHEN TransactionType = 'Expense' THEN Amount ELSE 0 END) AS TotalExpenses,
+                FROM Transactions
+                WHERE AccountId = @AccountId
+                AND TransactionDate >= @StartDate
+                AND TransactionDate < @EndDate;";
+             return await connection.QueryFirstOrDefaultAsync<ReportModel>(sql, 
+                new { AccountId = AccountId , StartDate = Start , EndDate = End  });
+
+
+        }
         public async Task<IEnumerable<TransactionDto>?> GetFiltredTransactionsAsync(
             Guid? categoryId,
             DateTime? start,
@@ -235,5 +252,30 @@ namespace FinanceCore.Infrastructure.Repositories
 
             return allTransactions;
         }
+        public async Task<IEnumerable<SpendingByCategoryDto>> GetSpendingByCategory(
+            Guid userId, Guid? accountId, DateTime start, DateTime end)
+        {
+            using var connection = _connectionFactory.GetConnection();
+            var sql = @"
+            SELECT c.Name AS Category, SUM(t.Amount) AS Amount
+            FROM Transactions t
+            INNER JOIN Categories c ON c.Id = t.CategoryId
+            INNER JOIN Accounts a ON a.Id = t.AccountId
+                 WHERE t.TransactionTypeId = 2
+                 AND a.UserId = @UserId
+                 AND (@AccountId IS NULL OR t.AccountId = @AccountId)
+                 AND t.CreatedAt >= @StartDate
+                 AND t.CreatedAt < @EndDate
+             GROUP BY c.Name
+             ORDER BY Amount DESC";
+
+            return await connection.QueryAsync<SpendingByCategoryDto>(sql, new
+            {
+                UserId = userId,
+                AccountId = accountId,
+                StartDate = start,
+                EndDate = end
+            });
+        } 
     }
 }

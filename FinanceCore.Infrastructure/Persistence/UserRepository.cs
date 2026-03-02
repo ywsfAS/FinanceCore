@@ -1,7 +1,7 @@
 ﻿using FinanceCore.Application.Abstractions;
+using FinanceCore.Application.Models;
 using FinanceCore.Domain.Users;
 using FinanceCore.Infrastructure.context;
-using FinanceCore.Infrastructure.Models;
 using FinanceCore.Infrastructure.Mappers;
 
 namespace FinanceCore.Infrastructure.Repositories
@@ -17,7 +17,7 @@ namespace FinanceCore.Infrastructure.Repositories
 
         public async Task<User?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            var model = await _connectionFactory.ReadSingleAsync<UserModel,Guid>(
+            var model = await _connectionFactory.ReadSingleAsync<UserModel, Guid>(
                 "sp_GetUserById",
                 id);
             if (model == null) {

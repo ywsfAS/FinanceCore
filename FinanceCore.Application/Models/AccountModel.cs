@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace FinanceCore.Infrastructure.Models
+namespace FinanceCore.Application.Models
 {
     public class AccountModel
     {

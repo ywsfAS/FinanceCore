@@ -2,12 +2,11 @@
 using FinanceCore.Application.Abstractions;
 using FinanceCore.Application.DTOs;
 using FinanceCore.Application.DTOs.Transaction;
+using FinanceCore.Application.Models.FinanceCore.Infrastructure.Models;
 using FinanceCore.Domain.Categories;
 using FinanceCore.Domain.Enums;
 using FinanceCore.Infrastructure.context;
 using FinanceCore.Infrastructure.Mappers;
-using FinanceCore.Infrastructure.Models;
-using FinanceCore.Infrastructure.Models.FinanceCore.Infrastructure.Models;
 using System.ComponentModel.DataAnnotations;
 
 namespace FinanceCore.Infrastructure.Repositories

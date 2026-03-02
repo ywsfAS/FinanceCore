@@ -1,4 +1,6 @@
-﻿using FinanceCore.Application.DTOs.Transaction;
+﻿using FinanceCore.Application.DTOs;
+using FinanceCore.Application.DTOs.Transaction;
+using FinanceCore.Application.Models;
 using FinanceCore.Domain.Transactions;
 using System;
 using System.Collections.Generic;
@@ -22,7 +24,10 @@ namespace FinanceCore.Application.Abstractions
         Task DeleteAsync(Transaction transaction, CancellationToken token = default);
         Task<Transaction?> GetByIdAndUserId(Guid UserId , Guid Id , CancellationToken token = default);
         Task<TransactionDto?> GetDtoByIdAndUserId(Guid UserId , Guid Id , CancellationToken token = default);
+        Task<ReportModel?> GetMonthlySummary(Guid AccountId, DateTime Start, DateTime End);
         Task<IEnumerable<TransactionDto>?> FetchTransactionsByIdPageAsync(Guid AccountId, int Page, int PageSize);
+        Task<IEnumerable<SpendingByCategoryDto>> GetSpendingByCategory(
+            Guid userId, Guid? accountId, DateTime start, DateTime end);
 
     }
 }

@@ -2,11 +2,11 @@
 using FinanceCore.Application.Abstractions;
 using FinanceCore.Application.DTOs;
 using FinanceCore.Application.DTOs.Transaction;
+using FinanceCore.Application.Models;
 using FinanceCore.Domain.Accounts;
 using FinanceCore.Domain.Enums;
 using FinanceCore.Infrastructure.context;
 using FinanceCore.Infrastructure.Mappers;
-using FinanceCore.Infrastructure.Models;
 
 
 namespace FinanceCore.Infrastructure.Repositories
@@ -46,6 +46,21 @@ namespace FinanceCore.Infrastructure.Repositories
                 "sp_CreateAccount",
                 model
                );
+        }
+        public async Task<decimal> GetTotalBalanceAsync(Guid userId)
+        {
+            using var connection = _connectionFactory.GetConnection();
+            var sql = @"
+            SELECT ISNULL(SUM(Balance), 0) 
+            FROM Accounts
+            WHERE UserId = @UserId";
+
+            var total = await connection.ExecuteScalarAsync<decimal>(
+                sql,
+                new { UserId = userId }
+            );
+
+            return total;
         }
 
         public async Task UpdateAsync(Account account, CancellationToken token = default)

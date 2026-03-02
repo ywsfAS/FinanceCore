@@ -1,6 +1,6 @@
-﻿using FinanceCore.Domain.Categories;
+﻿using FinanceCore.Application.Models.FinanceCore.Infrastructure.Models;
+using FinanceCore.Domain.Categories;
 using FinanceCore.Domain.Enums;
-using FinanceCore.Infrastructure.Models.FinanceCore.Infrastructure.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;

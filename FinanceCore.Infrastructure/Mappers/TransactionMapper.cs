@@ -1,7 +1,7 @@
-﻿using FinanceCore.Domain.Enums;
-using FinanceCore.Domain.Transactions;
-using FinanceCore.Infrastructure.Models;
+﻿using FinanceCore.Application.Models;
 using FinanceCore.Domain.Common;
+using FinanceCore.Domain.Enums;
+using FinanceCore.Domain.Transactions;
 namespace FinanceCore.Infrastructure.Mappers
 {
     public static class TransactionMapper

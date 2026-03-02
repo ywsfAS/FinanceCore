@@ -1,12 +1,12 @@
 ﻿using Dapper;
 using FinanceCore.Application.Abstractions;
 using FinanceCore.Application.DTOs;
+using FinanceCore.Application.Models;
 using FinanceCore.Domain.Budgets;
 using FinanceCore.Domain.Enums;
 using FinanceCore.Domain.Users;
 using FinanceCore.Infrastructure.context;
 using FinanceCore.Infrastructure.Mappers;
-using FinanceCore.Infrastructure.Models;
 using System.ComponentModel.DataAnnotations;
 
 namespace FinanceCore.Infrastructure.Repositories
