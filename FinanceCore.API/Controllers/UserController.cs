@@ -1,4 +1,5 @@
-﻿using FinanceCore.Application.DTOs;
+﻿using FinanceCore.API.Requests.User;
+using FinanceCore.Application.DTOs;
 using FinanceCore.Application.Features.Accounts.Queries.GetAccountById;
 using FinanceCore.Application.Features.Accounts.Queries.GetAccountsByUserId;
 using FinanceCore.Application.Features.Budgets.Queries.GetBudgetById;
@@ -43,15 +44,15 @@ namespace FinanceCore.API.Controllers
         /// <returns>Returns the user details including name, email, and preferences</returns>
         /// <response code="200">User found and returned successfully</response>
         /// <response code="404">User not found</response>
-        [HttpGet("{id}")]
+        [HttpGet]
         [Produces("application/json")]
         [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ValidationErrorDto),StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> GetUserById(Guid id)
+        public async Task<IActionResult> GetUserById()
         {
             var UserId = GetUserId();
-            var query = new GetUserByIdQuery(id);
+            var query = new GetUserByIdQuery(UserId);
             var user = await _mediator.Send(query);
             return Ok(user);
         }
@@ -65,15 +66,16 @@ namespace FinanceCore.API.Controllers
         /// <response code="204">User updated successfully</response>
         /// <response code="400">Invalid input or ID mismatch</response>
         /// <response code="404">User not found</response>
-        [HttpPut("{id}")]
+        [HttpPut]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(typeof(ValidationErrorDto),StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> UpdateUser(Guid id, [FromBody] UpdateUserCommand command)
+        public async Task<IActionResult> UpdateUser([FromBody] UpdateUserRequest request)
         {
             var UserId = GetUserId();
+            var command = new UpdateUserCommand(UserId,request.Name,request.DefaultCurrency,request.TimeZone);
             await _mediator.Send(command);
             return NoContent();
         }
@@ -90,17 +92,17 @@ namespace FinanceCore.API.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ValidationErrorDto),StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> DeleteUser(Guid id)
+        public async Task<IActionResult> DeleteUser()
         {
             var UserId = GetUserId();
-            var command = new DeleteUserCommand(id);
+            var command = new DeleteUserCommand(UserId);
             await _mediator.Send(command);
             return NoContent();
         }
         /// <summary>
         /// Get all budgets for a user
         /// </summary>
-        [HttpGet("{userId}/budgets")]
+        [HttpGet("budgets")]
         [Produces("application/json")]
         [ProducesResponseType(typeof(IEnumerable<BudgetDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
@@ -115,15 +117,15 @@ namespace FinanceCore.API.Controllers
         /// <summary>
         /// Get all categories for a user
         /// </summary>
-        [HttpGet("{userId}/categories")]
+        [HttpGet("categories")]
         [Produces("application/json")]
         [ProducesResponseType(typeof(CategoryDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> GetCategoriesByUserId(Guid userId,int Page = 1 , int PageSize = 10 )
+        public async Task<IActionResult> GetCategoriesByUserId(int Page = 1 , int PageSize = 10 )
         {
             var UserId = GetUserId();
-            var query = new GetCategoriesByUserIdQuery(userId,Page ,PageSize);
+            var query = new GetCategoriesByUserIdQuery(UserId,Page ,PageSize);
             var categories = await _mediator.Send(query);
             return Ok(categories);
         }
@@ -131,15 +133,15 @@ namespace FinanceCore.API.Controllers
         /// <summary>
         /// Get all accounts for a user
         /// </summary>
-        [HttpGet("{userId}/accounts")]
+        [HttpGet("accounts")]
         [Produces("application/json")]
         [ProducesResponseType(typeof(AccountDto), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> GetAccountsByUserId(Guid userId)
+        public async Task<IActionResult> GetAccountsByUserId()
         {
             var UserId = GetUserId();
-            var query = new GetAccountsByUserIdQuery(userId);
+            var query = new GetAccountsByUserIdQuery(UserId);
             var accounts = await _mediator.Send(query);
             return Ok(accounts);
         }

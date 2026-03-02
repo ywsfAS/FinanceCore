@@ -120,7 +120,7 @@ namespace FinanceCore.API.Controllers
         public async Task<IActionResult> DeleteTransaction(Guid id)
         {
             var UserId = GetUserId();
-            var command = new DeleteTransactionCommand(id);
+            var command = new DeleteTransactionCommand(UserId,id);
             await _mediator.Send(command);
             return NoContent();
         }

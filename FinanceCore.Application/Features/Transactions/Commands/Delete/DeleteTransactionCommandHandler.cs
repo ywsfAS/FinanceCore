@@ -15,7 +15,7 @@ namespace FinanceCore.Application.Features.Transactions.Commands.Delete
 
         public async Task Handle(DeleteTransactionCommand command, CancellationToken cancellationToken)
         {
-            var transaction = await _transactionRepository.GetByIdAsync(command.Id, cancellationToken);
+            var transaction = await _transactionRepository.GetByIdAndUserId(command.UserId,command.Id, cancellationToken);
 
             if (transaction is null)
                 throw new TransactionNotFoundException(command.Id);
