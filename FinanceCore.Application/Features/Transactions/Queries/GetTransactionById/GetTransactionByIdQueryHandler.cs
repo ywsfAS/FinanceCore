@@ -17,7 +17,7 @@ namespace FinanceCore.Application.Features.Transactions.Queries.GetTransactionBy
 
         public async Task<TransactionDto> Handle(GetTransactionByIdQuery query, CancellationToken cancellationToken)
         {
-            var transaction = await _transactionRepository.GetByIdAsync(query.Id, cancellationToken);
+            var transaction = await _transactionRepository.GetDtoByIdAndUserId(query.UserId,query.Id, cancellationToken);
 
             if (transaction is null)
                 throw new TransactionNotFoundException(query.Id);
@@ -32,7 +32,7 @@ namespace FinanceCore.Application.Features.Transactions.Queries.GetTransactionBy
                 transaction.AccountId,
                 transaction.ToAccountId,
                 transaction.CategoryId,
-                transaction.Amount.Amount,
+                transaction.Amount,
                 transaction.Type,
                 transaction.Date,
                 transaction.Description);

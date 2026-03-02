@@ -8,5 +8,5 @@ using System.Threading.Tasks;
 
 namespace FinanceCore.Application.Features.Categories.Queries.GetCategoryById
 {
-    public record GetCategoryByIdQuery(Guid Id) : IRequest<CategoryDto>;
+    public record GetCategoryByIdQuery(Guid UserId ,Guid Id) : IRequest<CategoryDto>;
 }

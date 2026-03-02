@@ -76,8 +76,33 @@ namespace FinanceCore.Infrastructure.Repositories
             return await FetchCategoriessPageAsync(UserId,null,null,null, Page, PageSize);
 
         }
-        
+        public async Task<CategoryDto?> GetDtoCategoryByIdAndUserIdAsync(Guid UserId , Guid Id )
+        {
+            using var connection = _connectionFactory.GetConnection();
+            var sql = @"SELECT * FROM Categories WHERE ";
+            var parameters = new DynamicParameters();
+            sql += " AND UserId = @UserId";
+            parameters.Add("UserId", UserId);
+            sql += " AND Id = @Id";
+            parameters.Add("Id",Id);
 
+            var model = await connection.QuerySingleOrDefaultAsync<CategoryModel>(sql, parameters);
+            return new CategoryDto(model.Id,model.UserId, model.Name,(CategoryType)model.CategoryTypeId,model.Description);
+        }
+
+        public async Task<Category?> GetCategoryByIdAndUserIdAsync(Guid UserId, Guid Id)
+        {
+            using var connection = _connectionFactory.GetConnection();
+            var sql = @"SELECT * FROM Categories WHERE ";
+            var parameters = new DynamicParameters();
+            sql += " AND UserId = @UserId";
+            parameters.Add("UserId", UserId);
+            sql += " AND Id = @Id";
+            parameters.Add("Id", Id);
+
+            var model = await connection.QuerySingleOrDefaultAsync<CategoryModel>(sql, parameters);
+            return CategoryMapper.MapToDomain(model); 
+        }
 
         private async Task<IEnumerable<CategoryDto>?> FetchCategoriessPageAsync(Guid? UserId, string? Name , byte? Type ,DateTime? CreatedAt,int Page, int PageSize)
         {

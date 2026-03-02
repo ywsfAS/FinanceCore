@@ -7,5 +7,5 @@ using System.Threading.Tasks;
 
 namespace FinanceCore.Application.Features.Categories.Commands.Delete
 {
-    public record DeleteCategoryCommand(Guid Id) : IRequest;
+    public record DeleteCategoryCommand(Guid UserId , Guid Id) : IRequest;
 }

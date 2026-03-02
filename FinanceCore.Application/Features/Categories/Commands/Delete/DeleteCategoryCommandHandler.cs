@@ -15,12 +15,12 @@ namespace FinanceCore.Application.Features.Categories.Commands.Delete
 
         public async Task Handle(DeleteCategoryCommand command, CancellationToken cancellationToken)
         {
-            var category = await _categoryRepository.GetByIdAsync(command.Id, cancellationToken);
+            var category = await _categoryRepository.GetCategoryByIdAndUserIdAsync(command.UserId,command.Id);
 
             if (category is null)
                 throw new CategoryNotFoundException(command.Id);
 
-            await _categoryRepository.DeleteAsync(category, cancellationToken);
+            await _categoryRepository.DeleteAsync(category,cancellationToken);
         }
     }
 

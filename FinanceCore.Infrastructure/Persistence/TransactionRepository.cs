@@ -6,6 +6,7 @@ using FinanceCore.Infrastructure.context;
 using FinanceCore.Infrastructure.Mappers;
 using FinanceCore.Infrastructure.Models;
 using FinanceCore.Domain.Enums;
+using Microsoft.AspNetCore.Identity;
 
 namespace FinanceCore.Infrastructure.Repositories
 {
@@ -28,6 +29,38 @@ namespace FinanceCore.Infrastructure.Repositories
             }
             return TransactionMapper.MapToDomain(model);
         }
+        public async Task<TransactionDto?> GetDtoByIdAndUserId(Guid UserId , Guid Id , CancellationToken token)
+        {
+            using var connection = _connectionFactory.GetConnection();
+            var parameters = new DynamicParameters();
+            var sql = "SELECT * FROM transactions WHERE";
+            sql += " UserId = @UserId";
+            parameters.Add("UserId",UserId);
+            sql += " AND Id = @Id";
+            parameters.Add("Id",Id);
+
+            var model = await connection.QuerySingleOrDefaultAsync(sql, parameters);
+            if (model == null) {
+                return null;
+            }
+            return new TransactionDto(model.Id, model.AccountId, model.ToAccountId, model.CategoryId, model.Amount, model.Type, model.CreatedAt, model.Description);
+        }
+        public async Task<Transaction?> GetByIdAndUserId(Guid UserId, Guid Id, CancellationToken token = default)
+        {
+            using var connection = _connectionFactory.GetConnection();
+            var parameters = new DynamicParameters();
+            var sql = "SELECT * FROM transactions WHERE";
+            sql += " UserId = @UserId";
+            parameters.Add("UserId", UserId);
+            sql += " AND Id = @Id";
+            parameters.Add("Id", Id);
+
+            var model = await connection.QuerySingleOrDefaultAsync(sql, parameters);
+            if (model == null)
+            {
+                return null;
+            }
+            return TransactionMapper.MapToDomain(model);        }
 
         public async Task<IEnumerable<Transaction>> GetByAccountIdAsync(Guid accountId, CancellationToken token = default)
         {

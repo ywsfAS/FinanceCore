@@ -9,5 +9,5 @@ using System.Threading.Tasks;
 
 namespace FinanceCore.Application.Features.Transactions.Commands.Transactions
 {
-    public record TransactionCommand(Guid AccountId , Guid CategoryId ,EnTransactionType Type,decimal Amount , string? Description , DateTime TransactionDate) : IRequest<CreateTransactionDto>;
+    public record TransactionCommand(Guid UserId ,Guid AccountId , Guid CategoryId ,EnTransactionType Type,decimal Amount , string? Description , DateTime TransactionDate) : IRequest<CreateTransactionDto>;
 }

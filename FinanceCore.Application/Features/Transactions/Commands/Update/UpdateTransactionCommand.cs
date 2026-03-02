@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 namespace FinanceCore.Application.Features.Transactions.Commands.Update
 {
     public record UpdateTransactionCommand(
+        Guid userId,
         Guid Id,
         Guid? CategoryId,
         decimal Amount,

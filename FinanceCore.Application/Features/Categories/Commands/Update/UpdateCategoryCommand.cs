@@ -9,6 +9,7 @@ namespace FinanceCore.Application.Features.Categories.Commands.Update
 {
     public record UpdateCategoryCommand(
         Guid Id,
+        Guid UserId,
         string Name,
         string? Description = null) : IRequest;
 }

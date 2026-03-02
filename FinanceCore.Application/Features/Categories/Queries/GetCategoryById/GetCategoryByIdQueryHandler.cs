@@ -15,7 +15,7 @@ namespace FinanceCore.Application.Features.Categories.Queries.GetCategoryById
 
         public async Task<CategoryDto> Handle(GetCategoryByIdQuery query, CancellationToken cancellationToken)
         {
-            var category = await _categoryRepository.GetByIdAsync(query.Id, cancellationToken);
+            var category = await _categoryRepository.GetDtoCategoryByIdAndUserIdAsync(query.UserId,query.Id);
 
             if (category is null)
                 throw new CategoryNotFoundException(query.Id);

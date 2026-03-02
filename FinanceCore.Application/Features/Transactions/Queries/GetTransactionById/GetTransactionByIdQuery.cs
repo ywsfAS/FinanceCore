@@ -8,5 +8,5 @@ using System.Threading.Tasks;
 
 namespace FinanceCore.Application.Features.Transactions.Queries.GetTransactionById
 {
-    public record GetTransactionByIdQuery(Guid Id) : IRequest<TransactionDto>;
+    public record GetTransactionByIdQuery(Guid UserId ,Guid Id) : IRequest<TransactionDto>;
 }
