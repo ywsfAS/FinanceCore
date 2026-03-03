@@ -88,7 +88,7 @@ namespace FinanceCore.Domain.Accounts
                 UpdatedAt = null
             };
 
-            account.AddDomainEvent(new AccountCreatedEvent(
+            account.AddDomainEvent(new AccountCreated(
                 account.Id,
                 account.Name,
                 account.Type,

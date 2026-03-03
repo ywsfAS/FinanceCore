@@ -1,5 +1,6 @@
 ﻿using FinanceCore.Application.Abstractions;
 using FinanceCore.Application.DTOs;
+using FinanceCore.Application.Events;
 using FinanceCore.Domain.Accounts;
 using MediatR;
 using System;
@@ -13,10 +14,12 @@ namespace FinanceCore.Application.Features.Accounts.Commands.Create
     public class CreateAccountCommandHandler : IRequestHandler<CreateAccountCommand, AccountDto>
     {
         private readonly IAccountRepository _accountRepository;
+        private readonly IMediator _eventBus;
 
-        public CreateAccountCommandHandler(IAccountRepository accountRepositorsy)
+        public CreateAccountCommandHandler(IAccountRepository accountRepositorsy,IMediator eventBus)
         {
             _accountRepository = accountRepositorsy;
+            _eventBus = eventBus;
         }
 
         public async Task<AccountDto> Handle(CreateAccountCommand command, CancellationToken cancellationToken)
@@ -30,6 +33,8 @@ namespace FinanceCore.Application.Features.Accounts.Commands.Create
 
             await _accountRepository.AddAsync(account, cancellationToken);
 
+            await DomainEventDispatcher.DispatchAsync(_eventBus,account, cancellationToken);
+  
             return new AccountDto(account.Id,account.UserId,account.Name,account.Type,account.Balance,account.Currency,account.CreatedAt);
         }
     }

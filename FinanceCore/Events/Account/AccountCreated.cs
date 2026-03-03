@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace FinanceCore.Domain.Events.Account
 {
-    public record AccountCreatedEvent(
+    public record AccountCreated(
         Guid AccountId,
         string Name,
         EnAccountType Type,
