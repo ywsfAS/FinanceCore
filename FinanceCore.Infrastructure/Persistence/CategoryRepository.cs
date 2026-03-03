@@ -1,13 +1,12 @@
 ﻿using Dapper;
 using FinanceCore.Application.Abstractions;
 using FinanceCore.Application.DTOs;
-using FinanceCore.Application.DTOs.Transaction;
 using FinanceCore.Application.Models.FinanceCore.Infrastructure.Models;
 using FinanceCore.Domain.Categories;
 using FinanceCore.Domain.Enums;
+using FinanceCore.Domain.Users;
 using FinanceCore.Infrastructure.context;
 using FinanceCore.Infrastructure.Mappers;
-using System.ComponentModel.DataAnnotations;
 
 namespace FinanceCore.Infrastructure.Repositories
 {
@@ -31,7 +30,16 @@ namespace FinanceCore.Infrastructure.Repositories
             }
             return CategoryMapper.MapToDomain(model);
         }
-
+        public async Task<bool> IsExists(Guid userId, Guid id, CancellationToken token)
+        {
+            using var connection = _connectionFactory.GetConnection();
+            var sql = @"SELECT 1 FROM Categories WHERE UserId = @Id AND Id = @Id";
+            var parameters = new DynamicParameters();
+            parameters.Add("Id", id);
+            parameters.Add("UserId", userId);
+            var result = await connection.ExecuteScalarAsync<int?>(sql, parameters);
+            return result.HasValue;
+        }
         public async Task<IEnumerable<Category>> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken = default)
         {
             var models =  await _connectionFactory.ReadListAsync<CategoryModel>(
@@ -58,11 +66,11 @@ namespace FinanceCore.Infrastructure.Repositories
                 );
         }
 
-        public async Task DeleteAsync(Category category, CancellationToken cancellationToken = default)
+        public async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
         {
             await _connectionFactory.ExecuteNonQueryAsync(
                 "sp_DeleteCategory",
-                new { category.Id });
+                new { id });
         }
 
         public async Task<IEnumerable<CategoryDto>?> GetFiltredCategoriesAsync(Guid? UserId, string? Name , byte? Type ,DateTime? CreatedAt,int Page, int PageSize)
@@ -70,36 +78,36 @@ namespace FinanceCore.Infrastructure.Repositories
             return await FetchCategoriessPageAsync(UserId, Name, Type, CreatedAt, Page, PageSize);
 
         }
-        public async Task<IEnumerable<CategoryDto>?> GetCategoriesByUserIdAsync(Guid? UserId,int Page, int PageSize)
+        public async Task<IEnumerable<CategoryDto>?> GetCategoriesByUserIdAsync(Guid? UserId,int Page, int PageSize,CancellationToken token)
         {
             return await FetchCategoriessPageAsync(UserId,null,null,null, Page, PageSize);
 
         }
-        public async Task<CategoryDto?> GetDtoCategoryByIdAndUserIdAsync(Guid UserId , Guid Id )
+        private async Task<CategoryModel?> GetModelCategoryByIdAndUserIdAsync(Guid userId , Guid id)
         {
             using var connection = _connectionFactory.GetConnection();
             var sql = @"SELECT * FROM Categories WHERE ";
             var parameters = new DynamicParameters();
             sql += " AND UserId = @UserId";
-            parameters.Add("UserId", UserId);
+            parameters.Add("UserId", userId);
             sql += " AND Id = @Id";
-            parameters.Add("Id",Id);
+            parameters.Add("Id", id);
 
             var model = await connection.QuerySingleOrDefaultAsync<CategoryModel>(sql, parameters);
+            return model;
+
+        }
+        public async Task<CategoryDto?> GetDtoCategoryByIdAndUserIdAsync(Guid userId , Guid id)
+        {
+            var model = await  GetModelCategoryByIdAndUserIdAsync(userId,id);
+            if(model is null) { return null; }
             return new CategoryDto(model.Id,model.UserId, model.Name,(CategoryType)model.CategoryTypeId,model.Description);
         }
 
-        public async Task<Category?> GetCategoryByIdAndUserIdAsync(Guid UserId, Guid Id)
+        public async Task<Category?> GetCategoryByIdAndUserIdAsync(Guid userId, Guid id,CancellationToken token)
         {
-            using var connection = _connectionFactory.GetConnection();
-            var sql = @"SELECT * FROM Categories WHERE ";
-            var parameters = new DynamicParameters();
-            sql += " AND UserId = @UserId";
-            parameters.Add("UserId", UserId);
-            sql += " AND Id = @Id";
-            parameters.Add("Id", Id);
-
-            var model = await connection.QuerySingleOrDefaultAsync<CategoryModel>(sql, parameters);
+            var model = await GetModelCategoryByIdAndUserIdAsync(userId, id);
+            if (model is null) { return null; }
             return CategoryMapper.MapToDomain(model); 
         }
 

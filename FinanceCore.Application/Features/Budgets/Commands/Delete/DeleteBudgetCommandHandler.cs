@@ -14,12 +14,12 @@ namespace FinanceCore.Application.Features.Budgets.Commands.Delete
 
         public async Task Handle(DeleteBudgetCommand command, CancellationToken cancellationToken)
         {
-            var budget = await _budgetRepository.GetByIdAndUserIdAsync(command.UserId,command.Id, cancellationToken);
+            var result = await _budgetRepository.IsExists(command.UserId,command.Id, cancellationToken);
 
-            if (budget is null)
+            if (!result)
                 throw new BudgetNotFoundException(command.Id);
 
-            await _budgetRepository.DeleteAsync(budget, cancellationToken);
+            await _budgetRepository.DeleteAsync(command.Id, cancellationToken);
         }
     }
 }

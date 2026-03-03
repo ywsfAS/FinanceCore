@@ -14,7 +14,7 @@ namespace FinanceCore.Application.Features.Categories.Commands.Update
 
         public async Task Handle(UpdateCategoryCommand command, CancellationToken cancellationToken)
         {
-            var category = await _categoryRepository.GetCategoryByIdAndUserIdAsync(command.UserId,command.Id);
+            var category = await _categoryRepository.GetCategoryByIdAndUserIdAsync(command.UserId,command.Id , cancellationToken);
 
             if (category is null)
                 throw new CategoryNotFoundException(command.Id);

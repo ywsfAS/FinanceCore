@@ -19,7 +19,7 @@ namespace FinanceCore.Application.Features.Categories.Queries.GetCategoriesByUse
         public async Task<IEnumerable<CategoryDto>?> Handle(GetCategoriesByUserIdQuery query , CancellationToken token
          )
         {
-            return await  _categoryRepository.GetCategoriesByUserIdAsync(query.UserId, query.Page, query.PageSize);
+            return await  _categoryRepository.GetCategoriesByUserIdAsync(query.UserId, query.Page, query.PageSize,token);
         }
     }
 }

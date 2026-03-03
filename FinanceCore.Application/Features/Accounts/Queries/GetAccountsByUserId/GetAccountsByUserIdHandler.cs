@@ -21,18 +21,7 @@ namespace FinanceCore.Application.Features.Accounts.Queries.GetAccountsByUserId
 
         public async Task<IEnumerable<AccountDto>?> Handle(GetAccountsByUserIdQuery query, CancellationToken cancellationToken)
         {
-            var accounts = await _accountRepository.GetByUserIdAsync(query.UserId, cancellationToken);
-            if (accounts is null)
-                throw new InvalidOperationException("Account not found.");
-
-            return accounts.Select(account => new AccountDto(
-                account.Id,
-                account.UserId,
-                account.Name,
-                account.Type,
-                account.Balance.Amount,
-                account.Currency,
-                account.CreatedAt));
+            return await _accountRepository.GetDtoByUserIdAsync(query.UserId,cancellationToken);
         }
     }
 }

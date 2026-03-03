@@ -15,12 +15,12 @@ namespace FinanceCore.Application.Features.Transactions.Commands.Delete
 
         public async Task Handle(DeleteTransactionCommand command, CancellationToken cancellationToken)
         {
-            var transaction = await _transactionRepository.GetByIdAndUserId(command.UserId,command.Id, cancellationToken);
+            var result = await _transactionRepository.IsExists(command.UserId,command.Id, cancellationToken);
 
-            if (transaction is null)
+            if (!result)
                 throw new TransactionNotFoundException(command.Id);
 
-            await _transactionRepository.DeleteAsync(transaction, cancellationToken);
+            await _transactionRepository.DeleteAsync(command.Id, cancellationToken);
         }
     }
 

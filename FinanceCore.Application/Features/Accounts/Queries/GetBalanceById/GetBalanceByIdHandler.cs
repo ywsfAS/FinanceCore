@@ -17,14 +17,10 @@ namespace FinanceCore.Application.Features.Accounts.Queries.GetBalanceById
         public GetBalanceByIdHandler(IAccountRepository accountRepository) { 
               _accountRepository = accountRepository;
         }
-        public async Task<AccountBalanceDto> Handle(GetBalanceByIdQuery Query , CancellationToken token)
+        public async Task<AccountBalanceDto> Handle(GetBalanceByIdQuery query , CancellationToken token)
         {
-            var accounts = await _accountRepository.GetByUserIdAsync(Query.UserId, token);
-            var account = accounts.FirstOrDefault(account => account.Id == Query.AccountId);
-            if (account is null)
-                throw new InvalidOperationException("Account not found.");
-
-            return new AccountBalanceDto(account.Id, account.Name,account.Balance);
+            var balance = await _accountRepository.GetTotalBalanceAsync(query.UserId, token);
+            return new AccountBalanceDto(query.UserId,balance);
 
 
 

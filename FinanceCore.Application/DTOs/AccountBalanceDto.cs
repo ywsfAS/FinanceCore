@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace FinanceCore.Application.DTOs
 {
-    public record AccountBalanceDto(Guid AccountId , string Name , decimal Balance);
+    public record AccountBalanceDto(Guid AccountId , decimal Balance);
 }

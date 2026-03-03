@@ -3,11 +3,9 @@ using FinanceCore.Application.Abstractions;
 using FinanceCore.Application.DTOs;
 using FinanceCore.Application.DTOs.Transaction;
 using FinanceCore.Application.Models;
-using FinanceCore.Domain.Enums;
 using FinanceCore.Domain.Transactions;
 using FinanceCore.Infrastructure.context;
 using FinanceCore.Infrastructure.Mappers;
-using Microsoft.AspNetCore.Identity;
 
 namespace FinanceCore.Infrastructure.Repositories
 {
@@ -19,67 +17,81 @@ namespace FinanceCore.Infrastructure.Repositories
         {
             _connectionFactory = connectionFactory;
         }
+        private async Task<TransactionModel?> GetModelByIdAndUserIdAsync(Guid userId, Guid id, CancellationToken token = default)
+        {
+            using var connection = _connectionFactory.GetConnection();
+            var sql = @"SELECT * FROM transactions WHERE Id = @Id AND UserId = @eUserId";
+            var parameters = new DynamicParameters();
+            parameters.Add("Id", id);
+            parameters.Add("UserId", userId);
+            var model = await connection.QuerySingleOrDefaultAsync<TransactionModel>(sql, parameters);
+            return model;
 
+        }
+        public async Task<bool> IsExists(Guid userId, Guid id, CancellationToken token)
+        {
+            using var connection = _connectionFactory.GetConnection();
+            var sql = @"SELECT 1 FROM transactions WHERE UserId = @Id AND Id = @Id";
+            var parameters = new DynamicParameters();
+            parameters.Add("Id", id);
+            parameters.Add("UserId", userId);
+            var result = await connection.ExecuteScalarAsync<int?>(sql, parameters);
+            return result.HasValue;
+        }
         public async Task<Transaction?> GetByIdAsync(Guid id, CancellationToken token = default)
         {
-            var model =  await _connectionFactory.ReadSingleAsync<TransactionModel, Guid>(
+            var model = await _connectionFactory.ReadSingleAsync<TransactionModel, Guid>(
                 "sp_GetTransactionById",
                 id);
-            if (model == null) { 
-                return null;
-            }
-            return TransactionMapper.MapToDomain(model);
-        }
-        public async Task<TransactionDto?> GetDtoByIdAndUserId(Guid UserId , Guid Id , CancellationToken token)
-        {
-            using var connection = _connectionFactory.GetConnection();
-            var parameters = new DynamicParameters();
-            var sql = "SELECT * FROM transactions WHERE";
-            sql += " UserId = @UserId";
-            parameters.Add("UserId",UserId);
-            sql += " AND Id = @Id";
-            parameters.Add("Id",Id);
-
-            var model = await connection.QuerySingleOrDefaultAsync(sql, parameters);
-            if (model == null) {
-                return null;
-            }
-            return new TransactionDto(model.Id, model.AccountId, model.ToAccountId, model.CategoryId, model.Amount, model.Type, model.CreatedAt, model.Description);
-        }
-        public async Task<Transaction?> GetByIdAndUserId(Guid UserId, Guid Id, CancellationToken token = default)
-        {
-            using var connection = _connectionFactory.GetConnection();
-            var parameters = new DynamicParameters();
-            var sql = "SELECT * FROM transactions WHERE";
-            sql += " UserId = @UserId";
-            parameters.Add("UserId", UserId);
-            sql += " AND Id = @Id";
-            parameters.Add("Id", Id);
-
-            var model = await connection.QuerySingleOrDefaultAsync(sql, parameters);
             if (model == null)
             {
                 return null;
             }
-            return TransactionMapper.MapToDomain(model);        }
+            return TransactionMapper.MapToDomain(model);
+        }
+
+        public async Task<TransactionDto?> GetDtoByIdAndUserId(Guid userId, Guid id, CancellationToken token = default)
+        {
+            var model = await GetModelByIdAndUserIdAsync(userId, id, token);
+            if (model is null) return null;
+
+            return new TransactionDto(
+                model.Id,
+                model.AccountId,
+                model.ToAccountId,
+                model.CategoryId,
+                model.Amount,
+                model.Type,
+                model.CreatedAt,
+                model.Description);
+        }
+
+        public async Task<Transaction?> GetByIdAndUserId(Guid userId, Guid id, CancellationToken token = default)
+        {
+            var model = await GetModelByIdAndUserIdAsync(userId, id, token);
+            if (model == null) return null;
+
+            return TransactionMapper.MapToDomain(model);
+        }
 
         public async Task<IEnumerable<Transaction>> GetByAccountIdAsync(Guid accountId, CancellationToken token = default)
         {
-            var models =  await _connectionFactory.ReadListAsync<TransactionModel>(
+            var models = await _connectionFactory.ReadListAsync<TransactionModel>(
                 "sp_GetTransactionsByAccountId",
-                new {AccountId = accountId});
+                new { AccountId = accountId });
             return models.Select(model => TransactionMapper.MapToDomain(model));
         }
 
         public async Task AddAsync(Transaction transaction, CancellationToken token = default)
         {
             var model = TransactionMapper.MapToModel(transaction);
-             await _connectionFactory.ExecuteNonQueryAsync(
+            await _connectionFactory.ExecuteNonQueryAsync(
                 "sp_CreateTransaction",
                 model
-                );
+               );
         }
-        public async Task<CreateTransferDto> TransferAsync(Transaction transaction, CancellationToken token)
+
+        public async Task<CreateTransferDto> TransferAsync(Transaction transaction, CancellationToken token = default)
         {
             var model = TransactionMapper.MapToModel(transaction);
 
@@ -93,11 +105,12 @@ namespace FinanceCore.Infrastructure.Repositories
                     Amount = model.Amount,
                     Description = model.Description
                 }
-                );
+            );
 
-            return new CreateTransferDto(result.CreditTransactionId,result.DebitTransactionId,model.AccountId,model.ToAccountId,model.Amount,result.SourceBalance,result.DestinationBalance,result.TransferDate);
+            return new CreateTransferDto(result.CreditTransactionId, result.DebitTransactionId, model.AccountId, model.ToAccountId, model.Amount, result.SourceBalance, result.DestinationBalance, result.TransferDate);
         }
-        public async Task<CreateTransactionDto> IncomeAsync(Transaction transaction, CancellationToken token)
+
+        public async Task<CreateTransactionDto> IncomeAsync(Transaction transaction, CancellationToken token = default)
         {
             var model = TransactionMapper.MapToModel(transaction);
             var result = await _connectionFactory.QuerySingleAsync<TransactionModel>(
@@ -109,12 +122,11 @@ namespace FinanceCore.Infrastructure.Repositories
                     Amount = model.Amount,
                     Description = model?.Description,
                 }
-                );
-            return new CreateTransactionDto(result.Id ,model.AccountId,result.CategoryId , result.Amount ,model.Type,model.Date,result.Description);
-
-
+            );
+            return new CreateTransactionDto(result.Id, model.AccountId, result.CategoryId, result.Amount, model.Type, model.Date, result.Description);
         }
-        public async Task<CreateTransactionDto> ExpenseAsync(Transaction transaction, CancellationToken token)
+
+        public async Task<CreateTransactionDto> ExpenseAsync(Transaction transaction, CancellationToken token = default)
         {
             var model = TransactionMapper.MapToModel(transaction);
             var result = await _connectionFactory.QuerySingleAsync<TransactionModel>(
@@ -126,26 +138,24 @@ namespace FinanceCore.Infrastructure.Repositories
                     Amount = model.Amount,
                     Description = model?.Description,
                 }
-                );
-            return new CreateTransactionDto(result.Id ,model.AccountId,result.CategoryId , result.Amount ,model.Type,model.Date,result.Description);
-
-
+            );
+            return new CreateTransactionDto(result.Id, model.AccountId, result.CategoryId, result.Amount, model.Type, model.Date, result.Description);
         }
 
         public async Task UpdateAsync(Transaction transaction, CancellationToken token = default)
         {
-           var model = TransactionMapper.MapToModel(transaction);
+            var model = TransactionMapper.MapToModel(transaction);
             await _connectionFactory.ExecuteNonQueryAsync(
                 "sp_UpdateTransaction",
                 model
                );
         }
 
-        public async Task DeleteAsync(Transaction transaction, CancellationToken token = default)
+        public async Task DeleteAsync(Guid id, CancellationToken token = default)
         {
             await _connectionFactory.ExecuteNonQueryAsync(
                 "sp_DeleteTransaction",
-                new { transaction.Id });
+                new { id });
         }
         public async Task<decimal> GetTotalSpentAsync(Guid categoryId, DateTime start, DateTime end, byte type = 2)
         {

@@ -14,10 +14,11 @@ namespace FinanceCore.Application.Abstractions
         Task<IEnumerable<Category>> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken = default);
         Task AddAsync(Category category, CancellationToken cancellationToken = default);
         Task UpdateAsync(Category category, CancellationToken cancellationToken = default);
-        Task DeleteAsync(Category category, CancellationToken cancellationToken = default);
-        Task<CategoryDto?> GetDtoCategoryByIdAndUserIdAsync(Guid UserId, Guid Id);
-        Task<Category?> GetCategoryByIdAndUserIdAsync(Guid UserId , Guid Id );
-        Task<IEnumerable<CategoryDto>?> GetCategoriesByUserIdAsync(Guid? UserId, int Page, int PageSize);
-        Task<IEnumerable<CategoryDto>?> GetFiltredCategoriesAsync(Guid? UserId, string? Name, byte? Type, DateTime? CreatedAt, int Page, int PageSize);
+        Task DeleteAsync(Guid id, CancellationToken cancellationToken = default);
+        Task<CategoryDto?> GetDtoCategoryByIdAndUserIdAsync(Guid userId, Guid id);
+        Task<Category?> GetCategoryByIdAndUserIdAsync(Guid userId , Guid id , CancellationToken token );
+        Task<IEnumerable<CategoryDto>?> GetCategoriesByUserIdAsync(Guid? userId, int page, int pageSize , CancellationToken token);
+        Task<IEnumerable<CategoryDto>?> GetFiltredCategoriesAsync(Guid? userId, string? name, byte? type, DateTime? createdAt, int page, int pageSize);
+        Task<bool> IsExists(Guid userId, Guid id, CancellationToken token = default);
     }
 }

@@ -14,12 +14,12 @@ namespace FinanceCore.Application.Features.Users.Command.Delete
 
         public async Task Handle(DeleteUserCommand command, CancellationToken cancellationToken)
         {
-            var user = await _userRepository.GetByIdAsync(command.Id, cancellationToken);
+            var user = await _userRepository.IsExists(command.Id, cancellationToken);
 
-            if (user is null)
+            if (!user)
                 throw new UserNotFoundException(command.Id);
 
-            await _userRepository.DeleteAsync(user, cancellationToken);
+            await _userRepository.DeleteAsync(command.Id, cancellationToken);
         }
     }
 }

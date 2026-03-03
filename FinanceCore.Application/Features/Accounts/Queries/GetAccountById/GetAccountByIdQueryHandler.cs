@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace FinanceCore.Application.Features.Accounts.Queries.GetAccountById
 {
-    public class GetAccountByIdQueryHandler : IRequestHandler<GetAccountByIdQuery, AccountDto>
+    public class GetAccountByIdQueryHandler : IRequestHandler<GetAccountByIdQuery, AccountDto?>
     {
         private readonly IAccountRepository _accountRepository;
 
@@ -19,21 +19,9 @@ namespace FinanceCore.Application.Features.Accounts.Queries.GetAccountById
             _accountRepository = accountRepository;
         }
 
-        public async Task<AccountDto> Handle(GetAccountByIdQuery query, CancellationToken cancellationToken)
+        public async Task<AccountDto?> Handle(GetAccountByIdQuery query, CancellationToken cancellationToken)
         {
-            var accounts = await _accountRepository.GetByUserIdAsync(query.UserId, cancellationToken);
-            var account = accounts.FirstOrDefault(account => account.Id == query.Id);
-            if (account is null)
-                throw new InvalidOperationException("Account not found.");
-
-            return new AccountDto(
-                account.Id,
-                account.UserId,
-                account.Name,
-                account.Type,
-                account.Balance.Amount,
-                account.Currency,
-                account.CreatedAt);
+            return await _accountRepository.GetDtoByIdAndUserIdAsync(query.UserId,query.Id, cancellationToken);
         }
     }
 }

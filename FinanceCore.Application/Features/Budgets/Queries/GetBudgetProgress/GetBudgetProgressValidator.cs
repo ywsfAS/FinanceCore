@@ -6,7 +6,10 @@ using System.Threading.Tasks;
 
 namespace FinanceCore.Application.Features.Budgets.Queries.GetBudgetProgress
 {
-    internal class GetBudgetProgressValidator
+    public class GetBudgetProgressValidator
     {
+        public GetBudgetProgressValidator() { 
+        
+        }
     }
 }

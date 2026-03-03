@@ -27,18 +27,18 @@ namespace FinanceCore.Application.Features.Transactions.Commands.Transactions
 
         public async Task<CreateTransactionDto> Handle(TransactionCommand command , CancellationToken token)
         {
-            var account = await _accountRepository.GetByIdAsync(command.AccountId, token);
-            if (account == null)
+            var account = await _accountRepository.IsExists(command.UserId,command.AccountId, token);
+            if (!account)
             {
                 throw new AccountNotFoundException(command.AccountId);
             }
-            var category = await _categoryRepositroy.GetByIdAsync(command.CategoryId, token);
-            if (category == null)
+            var category = await _categoryRepositroy.GetCategoryByIdAndUserIdAsync(command.UserId,command.CategoryId, token);
+            if (category is null)
             {
                 throw new CategoryNotFoundException(command.CategoryId);
             }
             // Get Budget
-            var budget = await _budgetRepository.GetByCategoryIdAsync(account.UserId,category.Id,command.TransactionDate , command.TransactionDate);
+            var budget = await _budgetRepository.GetByCategoryIdAsync(command.UserId,command.CategoryId,command.TransactionDate , command.TransactionDate);
             var spent = await _transactionRepository.GetTotalSpentAsync(
                 budget.CategoryId,
                 budget.StartDate,

@@ -20,7 +20,7 @@ namespace FinanceCore.Application.Features.Transactions.Queries.GetTansactionsBy
         {
             // Get User Accounts 
             var account = await _accountRepository.GetDtoByIdAndUserIdAsync(query.UserId,query.Id);
-            if (account == null)
+            if (account is  null)
             {
                 throw new AccountNotFoundException(query.Id);
             }
