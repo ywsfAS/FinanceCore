@@ -4,11 +4,9 @@ using FinanceCore.Application.DTOs;
 using FinanceCore.Application.Models;
 using FinanceCore.Domain.Accounts;
 using FinanceCore.Domain.Enums;
-using FinanceCore.Domain.Users;
 using FinanceCore.Infrastructure.context;
 using FinanceCore.Infrastructure.Mappers;
 using System.Data;
-
 namespace FinanceCore.Infrastructure.Repositories
 {
     public class AccountRepository : IAccountRepository
@@ -36,7 +34,7 @@ namespace FinanceCore.Infrastructure.Repositories
                 id);
 
             if (model is null)
-                return null;
+                return null ;
 
             return AccountMapper.MapToDomain(model);
         }
@@ -61,7 +59,7 @@ namespace FinanceCore.Infrastructure.Repositories
             var models = await GetModelByUserIdAsync(userId, token);
             if (models is null)
                 return null;
-            return models.Select(model => new AccountDto(model.Id,model.UserId,model.Name,(EnAccountType)model.Type,model.Balance,(EnCurrency)model.CurrencyId,model.CreatedAt));
+            return models.Select(model => new AccountDto(model.Id,model.UserId,model.Name,(EnAccountType)model.AccountTypeId,model.Balance,(EnCurrency)model.CurrencyId,model.CreatedAt));
         }
 
         public async Task AddAsync(Account account, CancellationToken token = default)
@@ -90,10 +88,31 @@ namespace FinanceCore.Infrastructure.Repositories
 
         public async Task UpdateAsync(Account account, CancellationToken token = default)
         {
+            const string sql = @"
+            UPDATE Accounts
+            SET Name = @Name,
+            AccountTypeId = @AccountTypeId,
+            Balance = @Balance,
+            CurrencyId = @CurrencyId,
+            InitialBalance = @InitialBalance,
+            IsActive = @IsActive,
+            UpdatedAt = @UpdatedAt
+            WHERE Id = @Id
+          AND UserId = @UserId";
+
             var model = AccountMapper.MapToModel(account);
-            await _connectionFactory.ExecuteNonQueryAsync(
-                "sp_UpdateAccount",
-                model);
+
+            using var connection = _connectionFactory.GetConnection();
+
+            var affectedRows = await connection.ExecuteAsync(
+                new CommandDefinition(
+                    sql,
+                    model,
+                    cancellationToken: token,
+                    commandType: CommandType.Text));
+
+            if (affectedRows == 0)
+                throw new KeyNotFoundException("Account not found or does not belong to the user.");
         }
 
         // Updated: accept only the Id and use inline SQL (not stored procedure).
@@ -125,7 +144,7 @@ namespace FinanceCore.Infrastructure.Repositories
                 model.Id,
                 model.UserId,
                 model.Name,
-                (EnAccountType)model.Type,
+                (EnAccountType)model.AccountTypeId,
                 model.Balance,
                 (EnCurrency)model.CurrencyId,
                 model.CreatedAt);
@@ -137,7 +156,7 @@ namespace FinanceCore.Infrastructure.Repositories
                 SELECT Id,
                        UserId,
                        Name,
-                       Type,
+                       AccountTypeId,
                        Balance,
                        CurrencyId,
                        InitialBalance,

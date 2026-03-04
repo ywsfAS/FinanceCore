@@ -88,7 +88,7 @@ namespace FinanceCore.API.Controllers
         public async Task<IActionResult> UpdateAccount([FromBody] UpdateAccountRequest request)
         {
             var userId = GetUserId();
-            var command = new UpdateAccountCommand(userId, request.Name);
+            var command = new UpdateAccountCommand(userId,request.accountId, request.name);
             await _mediator.Send(command);
             return NoContent();
         }

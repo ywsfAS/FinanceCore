@@ -107,8 +107,9 @@ namespace FinanceCore.API.Controllers
         [ProducesResponseType(typeof(CategoryDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> GetCategoriesByUserId(Guid? userId,string? Name , CategoryType? Type ,DateTime? Date, int Page = 1, int PageSize = 10)
+        public async Task<IActionResult> GetCategoriesByUserId(string? Name , CategoryType? Type ,DateTime? Date, int Page = 1, int PageSize = 10)
         {
+            var userId = GetUserId();
             var query = new GetFiltredCategoriesQuery(userId,Name,Type,Date ,Page, PageSize);
             var categories = await _mediator.Send(query);
             return Ok(categories);

@@ -1,3 +1,4 @@
+using FinanceCore.API;
 using FinanceCore.Application;
 using FinanceCore.Infrastructure;
 using FluentValidation;
@@ -80,6 +81,7 @@ app.UseExceptionHandler(errorApp =>
         }
     });
 });
+app.UseMiddleware<GlobalExceptionMiddleware>();
 app.UseHttpsRedirection();
 
 

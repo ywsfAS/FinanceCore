@@ -1,11 +1,6 @@
 ﻿using FinanceCore.Application.Abstractions;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+using FinanceCore.Domain.Exceptions;
 namespace FinanceCore.Application.Features.Accounts.Commands.Update
 {
     public class UpdateAccountCommandHandler : IRequestHandler<UpdateAccountCommand>
@@ -19,10 +14,10 @@ namespace FinanceCore.Application.Features.Accounts.Commands.Update
 
         public async Task Handle(UpdateAccountCommand command, CancellationToken cancellationToken)
         {
-            var account = await _accountRepository.GetByIdAsync(command.Id, cancellationToken);
+            var account = await _accountRepository.GetByIdAndUserIdAsync(command.Id , command.accountId, cancellationToken);
 
             if (account is null)
-                throw new InvalidOperationException("Account not found.");
+                throw new AccountNotFoundException(command.accountId);
 
             account.UpdateDetails(command.Name);
 

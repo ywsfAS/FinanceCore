@@ -7,7 +7,7 @@ namespace FinanceCore.Application.Models
         public Guid Id { get; set; }
         public Guid UserId { get; set; }
         public string Name { get; set; } = string.Empty;
-        public byte Type { get; set; } 
+        public byte AccountTypeId { get; set; } 
         public decimal Balance { get; set; }
         public decimal InitialBalance { get; set; }
         public byte CurrencyId { get; set; }

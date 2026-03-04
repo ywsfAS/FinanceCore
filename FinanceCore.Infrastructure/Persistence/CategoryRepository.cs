@@ -7,6 +7,7 @@ using FinanceCore.Domain.Enums;
 using FinanceCore.Domain.Users;
 using FinanceCore.Infrastructure.context;
 using FinanceCore.Infrastructure.Mappers;
+using System.Data;
 
 namespace FinanceCore.Infrastructure.Repositories
 {
@@ -50,20 +51,68 @@ namespace FinanceCore.Infrastructure.Repositories
 
         public async Task AddAsync(Category category, CancellationToken cancellationToken = default)
         {
+            const string sql = @"
+        INSERT INTO Categories (
+            Id,
+            UserId,
+            Name,
+            CategoryTypeId,
+            Description,
+            IsActive,
+            IsDefault,
+            CreatedAt,
+            UpdatedAt
+        )
+        VALUES (
+            @Id,
+            @UserId,
+            @Name,
+            @CategoryTypeId,
+            @Description,
+            @IsActive,
+            @IsDefault,
+            @CreatedAt,
+            @UpdatedAt
+        );";
+
             var model = CategoryMapper.MapToModel(category);
-            await _connectionFactory.ExecuteNonQueryAsync(
-                "sp_CreateCategory",
-                model
-                );
+
+            using var connection = _connectionFactory.GetConnection();
+
+            await connection.ExecuteAsync(
+                new CommandDefinition(
+                    sql,
+                    model,
+                    cancellationToken: cancellationToken,
+                    commandType: CommandType.Text));
         }
 
         public async Task UpdateAsync(Category category, CancellationToken cancellationToken = default)
         {
+            const string sql = @"
+        UPDATE Categories
+        SET Name = @Name,
+            CategoryTypeId = @CategoryTypeId,
+            Description = @Description,
+            IsActive = @IsActive,
+            IsDefault = @IsDefault,
+            UpdatedAt = @UpdatedAt
+        WHERE Id = @Id
+          AND UserId = @UserId";
+
             var model = CategoryMapper.MapToModel(category);
-            await _connectionFactory.ExecuteNonQueryAsync(
-                "sp_UpdateCategory",
-                model
-                );
+
+            using var connection = _connectionFactory.GetConnection();
+
+            var affectedRows = await connection.ExecuteAsync(
+                new CommandDefinition(
+                    sql,
+                    model,
+                    cancellationToken: cancellationToken,
+                    commandType: CommandType.Text));
+
+            if (affectedRows == 0)
+                throw new Exception("Category not found.");
         }
 
         public async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
@@ -88,7 +137,7 @@ namespace FinanceCore.Infrastructure.Repositories
             using var connection = _connectionFactory.GetConnection();
             var sql = @"SELECT * FROM Categories WHERE ";
             var parameters = new DynamicParameters();
-            sql += " AND UserId = @UserId";
+            sql += "UserId = @UserId";
             parameters.Add("UserId", userId);
             sql += " AND Id = @Id";
             parameters.Add("Id", id);

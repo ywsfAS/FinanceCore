@@ -8,8 +8,8 @@ using System.Threading.Tasks;
 namespace FinanceCore.Application.Features.Categories.Commands.Update
 {
     public record UpdateCategoryCommand(
-        Guid Id,
         Guid UserId,
+        Guid Id,
         string Name,
         string? Description = null) : IRequest;
 }

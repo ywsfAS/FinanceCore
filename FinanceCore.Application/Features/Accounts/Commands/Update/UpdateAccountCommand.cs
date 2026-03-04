@@ -9,6 +9,7 @@ namespace FinanceCore.Application.Features.Accounts.Commands.Update
 {
     public record UpdateAccountCommand(
         Guid Id,
+        Guid accountId,
         string Name) : IRequest;
 
 }
