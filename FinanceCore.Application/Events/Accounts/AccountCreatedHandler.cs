@@ -2,7 +2,7 @@
 using MediatR;
 using Microsoft.Extensions.Logging;
 
-namespace FinanceCore.Application.Events
+namespace FinanceCore.Application.Events.Accounts
 {
     public class AccountCreatedEventHandler
         : INotificationHandler<AccountCreated>

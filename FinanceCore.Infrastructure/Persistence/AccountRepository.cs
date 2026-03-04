@@ -64,11 +64,48 @@ namespace FinanceCore.Infrastructure.Repositories
 
         public async Task AddAsync(Account account, CancellationToken token = default)
         {
+            const string sql = @"
+        INSERT INTO Accounts (
+            Id,
+            UserId,
+            Name,
+            AccountTypeId,
+            Balance,
+            CurrencyId,
+            InitialBalance,
+            IsActive,
+            CreatedAt,
+            UpdatedAt
+        )
+        VALUES (
+            @Id,
+            @UserId,
+            @Name,
+            @AccountTypeId,
+            @Balance,
+            @CurrencyId,
+            @InitialBalance,
+            @IsActive,
+            @CreatedAt,
+            @UpdatedAt
+        )";
+
+            // Map domain entity to DB model
             var model = AccountMapper.MapToModel(account);
-            await _connectionFactory.ExecuteNonQueryAsync(
-                "sp_CreateAccount",
-                model
-               );
+
+            using var connection = _connectionFactory.GetConnection();
+
+            var affectedRows = await connection.ExecuteAsync(
+                new CommandDefinition(
+                    sql,
+                    model,
+                    cancellationToken: token,
+                    commandType: CommandType.Text
+                )
+            );
+
+            if (affectedRows == 0)
+                throw new InvalidOperationException("Failed to insert account into the database.");
         }
         public async Task<decimal> GetTotalBalanceAsync(Guid userId, CancellationToken token)
         {

@@ -5,6 +5,7 @@ using MediatR;
 using FinanceCore.Domain.Common;
 using System.ComponentModel.DataAnnotations;
 using FinanceCore.Application.DTOs.Auth;
+using FinanceCore.Application.Events;
 
 namespace FinanceCore.Application.Features.Auth.Commands.Register
 {
@@ -13,11 +14,13 @@ namespace FinanceCore.Application.Features.Auth.Commands.Register
     {
         private readonly IUserRepository _userRepository;
         private readonly IPasswordHasher _hasher;
+        private readonly IMediator _eventBus;
 
-        public RegisterUserCommandHandler(IUserRepository userRepository , IPasswordHasher hasher)
+        public RegisterUserCommandHandler(IUserRepository userRepository , IPasswordHasher hasher, IMediator eventBus)
         {
             _userRepository = userRepository;
             _hasher = hasher;
+            _eventBus = eventBus;
         }
 
         public async Task<RegisterDto> Handle(RegisterUserCommand command, CancellationToken cancellationToken)
@@ -35,6 +38,7 @@ namespace FinanceCore.Application.Features.Auth.Commands.Register
                 HashedPassword);
             
             await _userRepository.AddAsync(user, cancellationToken);
+            await DomainEventDispatcher.DispatchAsync(_eventBus,user,cancellationToken);
             var Response = new RegisterDto(user.Id, user.Name, user.Email.Address);
             return Response;
         }

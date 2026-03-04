@@ -4,6 +4,7 @@ using FinanceCore.Infrastructure.Auth;
 using FinanceCore.Infrastructure.context;
 using FinanceCore.Infrastructure.context.ConnectionFactory;
 using FinanceCore.Infrastructure.Repositories;
+using FinanceCore.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -26,8 +27,8 @@ namespace FinanceCore.Infrastructure
 
             services.AddScoped<IConnectionFactory>(sp =>
             new SqlConnectionFactory(connectionString));
-            
 
+            services.AddScoped<IEmailService, EmailService>();
 
 
             services.AddScoped<IAccountRepository, AccountRepository>();
