@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
-VisualStudioVersion = 17.14.36310.24 d17.14
+VisualStudioVersion = 17.14.36310.24
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinanceCore.Domain", "FinanceCore\FinanceCore.Domain.csproj", "{7F5B23C0-AACB-463A-849F-2AA4A781B8D6}"
 EndProject
@@ -10,6 +10,10 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinanceCore.Infrastructure", "FinanceCore.Infrastructure\FinanceCore.Infrastructure.csproj", "{EA0A402C-1A05-43DD-94D2-028775D59C28}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinanceCore.API", "FinanceCore.API\FinanceCore.API.csproj", "{FC548B36-0396-4627-B717-A17473EACB89}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DomainCore.Domain.Tests", "DomainCore.Domain.Tests\DomainCore.Domain.Tests.csproj", "{85C2835E-C75A-425D-BA3B-D50C76B328B8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinanceCore.Application.Tests", "FinanceCore.Application.Tests\FinanceCore.Application.Tests.csproj", "{3FC88968-C2C9-44AC-9216-15081C14C0DC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,6 +37,14 @@ Global
 		{FC548B36-0396-4627-B717-A17473EACB89}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FC548B36-0396-4627-B717-A17473EACB89}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FC548B36-0396-4627-B717-A17473EACB89}.Release|Any CPU.Build.0 = Release|Any CPU
+		{85C2835E-C75A-425D-BA3B-D50C76B328B8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{85C2835E-C75A-425D-BA3B-D50C76B328B8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{85C2835E-C75A-425D-BA3B-D50C76B328B8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{85C2835E-C75A-425D-BA3B-D50C76B328B8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3FC88968-C2C9-44AC-9216-15081C14C0DC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3FC88968-C2C9-44AC-9216-15081C14C0DC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3FC88968-C2C9-44AC-9216-15081C14C0DC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3FC88968-C2C9-44AC-9216-15081C14C0DC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
