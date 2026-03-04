@@ -20,7 +20,7 @@ namespace FinanceCore.Infrastructure.Repositories
         public async Task<bool> IsExists(Guid userId,Guid id,CancellationToken token)
         {
             using var connection = _connectionFactory.GetConnection();
-            var sql = @"SELECT 1 FROM Accounts WHERE UserId = @Id AND Id = @Id";
+            var sql = @"SELECT 1 FROM Accounts WHERE UserId = @UserId AND Id = @Id";
             var parameters = new DynamicParameters();
             parameters.Add("Id", id);
             parameters.Add("UserId", userId);

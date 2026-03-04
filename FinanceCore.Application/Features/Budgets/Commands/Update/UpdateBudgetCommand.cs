@@ -11,9 +11,10 @@ namespace FinanceCore.Application.Features.Budgets.Commands.Update
     public record UpdateBudgetCommand(
         Guid UserId,
         Guid Id,
+        string Name,
         decimal Amount,
         EnCurrency Currency,
         BudgetPeriod Period,
-        DateTime StartDate,
-        DateTime EndDate) : IRequest;
+        DateTime StartDate
+        ) : IRequest;
 }

@@ -19,7 +19,7 @@ namespace FinanceCore.Application.Models
         public decimal Amount { get; set; }
         public byte CurrencyId { get; set; }   
 
-        public BudgetPeriod Period { get; set; }
+        public BudgetPeriod BudgetPeriodId { get; set; }
 
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }

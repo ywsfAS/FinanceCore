@@ -48,7 +48,7 @@ namespace FinanceCore.API.Controllers
             var response = await _mediator.Send(command);
             return CreatedAtAction(nameof(GetTransactionById), new { id = response.CreditTransactionId }, response);
         }
-        [HttpPost("transactions")]
+        [HttpPost]
         [Produces("application/json")]
         [ProducesResponseType(typeof(Application.DTOs.Transaction.CreateTransactionDto), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]

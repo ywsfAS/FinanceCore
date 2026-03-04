@@ -1,5 +1,7 @@
-﻿using FinanceCore.API.Requests.Budget;
+﻿using FinanceCore.API.Requests;
+using FinanceCore.API.Requests.Budget;
 using FinanceCore.Application.DTOs;
+using FinanceCore.Application.Features.Accounts.Commands.Update;
 using FinanceCore.Application.Features.Budgets.Commands.Create;
 using FinanceCore.Application.Features.Budgets.Commands.Delete;
 using FinanceCore.Application.Features.Budgets.Commands.Update;
@@ -84,11 +86,10 @@ namespace FinanceCore.API.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> UpdateBudget(Guid id,[FromBody] UpdateBudgetCommand command)
+        public async Task<IActionResult> UpdateBudget(Guid id,[FromBody] UpdateBudgetRequest request)
         {
-            if (id != command.Id)
-                return BadRequest("ID mismatch");
             var UserId = GetUserId() ;
+            var command = new UpdateBudgetCommand(UserId,id,request.Name,request.Amount,request.Currency,request.Period,request.StartDate);
             await _mediator.Send(command);
             return NoContent();
         }

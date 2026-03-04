@@ -38,7 +38,7 @@ namespace FinanceCore.Application.Features.Budgets.Commands.Create
 
             await _budgetRepository.AddAsync(budget, cancellationToken);
 
-            return new BudgetDto(budget.Id,budget.UserId,budget.CategoryId,budget.Amount,budget.Currency,budget.Period,budget.StartDate,budget.EndDate);
+            return new BudgetDto(budget.Id,budget.UserId,budget.Name,budget.CategoryId,budget.Amount,budget.Currency,budget.Period,budget.StartDate,budget.EndDate);
            
         }
     }

@@ -21,6 +21,7 @@ namespace FinanceCore.Application.Features.Budgets.Commands.Update
                 throw new BudgetNotFoundException(command.Id);
 
             budget.UpdateAmount(new Money(command.Amount));
+            budget.UpdateName(command.Name);
             budget.ExtendPeriod(command.Period);
    
             await _budgetRepository.UpdateAsync(budget, cancellationToken);

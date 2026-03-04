@@ -23,15 +23,6 @@ namespace FinanceCore.Application.Features.Budgets.Commands.Update
             RuleFor(x => x.Period)
                 .IsInEnum();
 
-            RuleFor(x => x.StartDate)
-                .NotEmpty()
-                .LessThan(x => x.EndDate)
-                .WithMessage("Start date must be before end date.");
-
-            RuleFor(x => x.EndDate)
-                .NotEmpty()
-                .GreaterThan(x => x.StartDate)
-                .WithMessage("End date must be after start date.");
         }
     }
 

@@ -77,10 +77,11 @@ namespace FinanceCore.Infrastructure.Repositories
             return new BudgetDto(
                 model.Id,
                 model.UserId,
+                model.Name,
                 model.CategoryId,
                 model.Amount,
                 (EnCurrency)model.CurrencyId,
-                model.Period,
+                model.BudgetPeriodId,
                 model.StartDate,
                 model.EndDate
             );
@@ -101,28 +102,49 @@ namespace FinanceCore.Infrastructure.Repositories
                "sp_GetBudgetsByUserId",
                new { UserId = userId });
             if( models == null ) return null;
-            return models.Select(model => new BudgetDto(model.Id,model.UserId,model.CategoryId,model.Amount,(EnCurrency)model.CurrencyId , model.Period,model.StartDate , model.EndDate));
+            return models.Select(model => new BudgetDto(model.Id,model.UserId,model.Name,model.CategoryId,model.Amount,(EnCurrency)model.CurrencyId , model.BudgetPeriodId,model.StartDate , model.EndDate));
 
         }
 
         public async Task AddAsync(Budget budget, CancellationToken cancellationToken = default)
         {
             var model = BudgetMapper.MapToModel(budget);
-            await _connectionFactory.ExecuteNonQueryAsync(
-                "sp_CreateBudget",
-                model
-                );
-        }
 
+            const string sql = @"INSERT INTO Budgets (
+            Id, UserId, CategoryId, Amount, CurrencyId,
+            BudgetPeriodId, StartDate, EndDate,
+            CreatedAt, UpdatedAt, Name
+            )
+            VALUES (
+            @Id, @UserId, @CategoryId, @Amount, @CurrencyId,
+            @BudgetPeriodId, @StartDate, @EndDate,
+            @CreatedAt, @UpdatedAt, @Name
+            );";
+
+            using var connection = _connectionFactory.GetConnection();
+            await connection.ExecuteAsync(sql, model);
+        }
         public async Task UpdateAsync(Budget budget, CancellationToken cancellationToken = default)
         {
             var model = BudgetMapper.MapToModel(budget);
-            await _connectionFactory.ExecuteNonQueryAsync(
-                "sp_UpdateBudget",
-                model
-             );
-        }
 
+            const string sql = @"
+        UPDATE Budgets
+        SET
+            CategoryId = @CategoryId,
+            Amount = @Amount,
+            CurrencyId = @CurrencyId,
+            BudgetPeriodId = @BudgetPeriodId,
+            StartDate = @StartDate,
+            EndDate = @EndDate,
+            UpdatedAt = @UpdatedAt,
+            Name = @Name
+        WHERE Id = @Id
+          AND UserId = @UserId;";
+
+            using var connection = _connectionFactory.GetConnection();
+            await connection.ExecuteAsync(sql, model);
+        }
         public async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
         {
             await _connectionFactory.ExecuteNonQueryAsync(
@@ -154,7 +176,7 @@ namespace FinanceCore.Infrastructure.Repositories
         {
             var model = await GetModelByIdAndUserIdAsync(userId,id,token);
             if(model is null) return null;
-            return new BudgetDto(model.Id, model.UserId, model.CategoryId,model.Amount,(EnCurrency)model.CurrencyId,model.Period , model.StartDate ,model.EndDate);
+            return new BudgetDto(model.Id, model.UserId,model.Name, model.CategoryId,model.Amount,(EnCurrency)model.CurrencyId,model.BudgetPeriodId , model.StartDate ,model.EndDate);
 
 
         }

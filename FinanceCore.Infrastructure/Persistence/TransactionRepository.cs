@@ -20,7 +20,22 @@ namespace FinanceCore.Infrastructure.Repositories
         private async Task<TransactionModel?> GetModelByIdAndUserIdAsync(Guid userId, Guid id, CancellationToken token = default)
         {
             using var connection = _connectionFactory.GetConnection();
-            var sql = @"SELECT * FROM transactions WHERE Id = @Id AND UserId = @eUserId";
+            var sql = @"SELECT
+                t.Id,
+                t.AccountId,
+                t.ToAccountId,
+                t.CategoryId,
+                t.Amount,
+                t.TransactionTypeId,
+                t.Date,
+                t.CreatedAt,
+                t.UpdatedAt,
+                t.Description
+            FROM Transactions t 
+            INNER JOIN Accounts a 
+            ON a.Id = t.AccountId
+            WHERE t.Id = @Id AND a.UserId = @UserId";
+
             var parameters = new DynamicParameters();
             parameters.Add("Id", id);
             parameters.Add("UserId", userId);
