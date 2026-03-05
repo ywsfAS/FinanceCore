@@ -156,8 +156,3 @@ Goals answer: "What am I saving for?"
 - Enable audit trails, notifications, analytics
 - Support eventual consistency patterns
 
-### 6. Rich Domain Models
-- Business logic lives in the domain entities
-- Entities protect their invariants
-- Factory methods ensure valid creation
-- No anemic domain models
