@@ -22,8 +22,6 @@ namespace FinanceCore.Application.Features.Accounts.Queries.GetBalanceById
             var balance = await _accountRepository.GetTotalBalanceAsync(query.UserId, token);
             return new AccountBalanceDto(query.UserId,balance);
 
-
-
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using FinanceCore.Application.Abstractions;
 using FinanceCore.Application.Features.Accounts.Commands.Delete;
+using FinanceCore.Domain.Exceptions;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -47,7 +48,7 @@ namespace FinanceCore.Application.Tests.Accounts
             var command = new DeleteAccountCommand(userId, accountId);
 
             // Act
-            await _handler.Handle(command, default);
+            await Assert.ThrowsAsync<AccountNotFoundException>(() => _handler.Handle(command, default));
 
             // Assert
             _accountRepository.Verify(
