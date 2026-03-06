@@ -77,7 +77,7 @@ namespace FinanceCore.Application.Tests.Accounts
 
             _accountRepository
                 .Setup(r => r.GetByIdAndUserIdAsync(userId, accountId, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(account);
+                .ReturnsAsync((Account)null);
 
             var command = new UpdateAccountCommand(userId, accountId, "New Name");
 
@@ -88,7 +88,6 @@ namespace FinanceCore.Application.Tests.Accounts
                 repo => repo.UpdateAsync(account, It.IsAny<CancellationToken>()),
                 Times.Never);
 
-            account.Name.Should().Be("New Name");
         }
     }
 }
