@@ -3,6 +3,7 @@ using FinanceCore.Application.Abstractions;
 using FinanceCore.Infrastructure.Auth;
 using FinanceCore.Infrastructure.context;
 using FinanceCore.Infrastructure.context.ConnectionFactory;
+using FinanceCore.Infrastructure.Persistence;
 using FinanceCore.Infrastructure.Repositories;
 using FinanceCore.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -30,8 +31,13 @@ namespace FinanceCore.Infrastructure
 
             services.AddScoped<IEmailService, EmailService>();
 
-
-            services.AddScoped<IAccountRepository, AccountRepository>();
+            services.AddMemoryCache();
+            services.AddScoped<AccountRepository>();
+            services.AddScoped<BudgetRepository>();
+            services.AddScoped<CategoryRepository>();
+            services.AddScoped<IAccountRepository,CacheAccountRepository>();
+            services.AddScoped<ICategoryRepository, CacheCategoryRepository>();
+            services.AddScoped<IBudgetRepository, CacheBudgetRepository>();
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<ITransactionRepository, TransactionRepository>();
             services.AddScoped<IBudgetRepository, BudgetRepository>();
