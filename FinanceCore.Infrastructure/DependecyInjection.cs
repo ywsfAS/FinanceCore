@@ -33,13 +33,15 @@ namespace FinanceCore.Infrastructure
 
             services.AddMemoryCache();
             services.AddScoped<AccountRepository>();
+            services.AddScoped<UserRepository>();
+            services.AddScoped<TransactionRepository>();
             services.AddScoped<BudgetRepository>();
             services.AddScoped<CategoryRepository>();
             services.AddScoped<IAccountRepository,CacheAccountRepository>();
             services.AddScoped<ICategoryRepository, CacheCategoryRepository>();
             services.AddScoped<IBudgetRepository, CacheBudgetRepository>();
-            services.AddScoped<IUserRepository, UserRepository>();
-            services.AddScoped<ITransactionRepository, TransactionRepository>();
+            services.AddScoped<IUserRepository, CacheUserRepository>();
+            services.AddScoped<ITransactionRepository, CacheTransactionRepository>();
             services.AddScoped<IBudgetRepository, BudgetRepository>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
 
