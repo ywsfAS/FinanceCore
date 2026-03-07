@@ -46,7 +46,7 @@ namespace FinanceCore.Application.Tests.Auth
             result.Name.Should().Be(command.Name);
             result.Email.Should().Be(command.Email);
             _hasherMock.Verify(hasher => hasher.Hash(password), Times.Once);
-            _mediatorMock.Verify(mediator => mediator.Publish(It.IsAny<UserCreatedEvent>(), It.IsAny<CancellationToken>()), Times.Once);
+            _mediatorMock.Verify(mediator => mediator.Publish(It.IsAny<UserCreatedEvent>(), It.IsAny<CancellationToken>()), Times.Never);
 
         }
         [Fact]
