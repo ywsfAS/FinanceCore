@@ -4,7 +4,7 @@ A personal finance management system built with **Clean Architecture** and **Dom
 
 ---
 
-# 📋 Overview
+# Overview
 
 FinanceCore helps users manage their personal finances by:
 
@@ -18,7 +18,7 @@ The system follows **Clean Architecture** to keep the domain independent from in
 
 ---
 
-# 🚀 Architecture
+# Architecture
 
 The project follows **Clean Architecture + Domain Driven Design + CQRS**.
 
@@ -34,7 +34,7 @@ Key architectural patterns used:
 
 ---
 
-# 🏗️ Project Structure
+#  Project Structure
 
 ```
 FinanceCore/
@@ -108,13 +108,13 @@ FinanceCore/
 
 ---
 
-# 📦 Domain Layer Components
+# Domain Layer Components
 
 The **Domain Layer** contains the core business logic and rules.
 
 ## Aggregates
 
-### 1️⃣ User
+###  User
 
 Represents a system user.
 
@@ -135,7 +135,7 @@ Features:
 
 ---
 
-### 2️⃣ Account
+### Account
 
 Represents a financial account.
 
@@ -163,7 +163,7 @@ Features:
 
 ---
 
-### 3️⃣ Transaction
+### Transaction
 
 Represents a financial transaction.
 
@@ -186,7 +186,7 @@ Transactions are stored separately from accounts for **scalability and performan
 
 ---
 
-### 4️⃣ Category
+### Category
 
 Used to categorize transactions.
 
@@ -213,7 +213,7 @@ Properties:
 
 ---
 
-### 5️⃣ Budget
+### Budget
 
 Defines spending limits.
 
@@ -238,7 +238,7 @@ Features:
 
 ---
 
-### 6️⃣ SavingsGoal
+### SavingsGoal
 
 Represents financial goals.
 
@@ -263,7 +263,7 @@ Features:
 
 ---
 
-# 💎 Value Objects
+# Value Objects
 
 ### Money
 
@@ -294,7 +294,7 @@ Validation:
 
 ---
 
-# ⚡ Domain Events
+# Domain Events
 
 Domain events capture important state changes.
 
@@ -339,7 +339,7 @@ Examples:
 
 ---
 
-# ⚠️ Domain Exceptions
+#  Domain Exceptions
 
 Custom exceptions for domain rule violations.
 
@@ -383,7 +383,7 @@ Custom exceptions for domain rule violations.
 
 ---
 
-# 🔢 Enums
+# Enums
 
 ### Currency
 
@@ -431,7 +431,7 @@ USD, EUR, GBP, MAD, etc.
 
 ---
 
-# 🧠 Application Layer
+# Application Layer
 
 The Application Layer implements **CQRS** using **MediatR**.
 
@@ -461,7 +461,7 @@ Features/
 
 ---
 
-# ⚙️ Infrastructure Layer
+# Infrastructure Layer
 
 Handles external concerns:
 
@@ -481,7 +481,7 @@ Components:
 
 ---
 
-# 🌐 API Layer
+#  API Layer
 
 The API layer exposes the application through **REST endpoints**.
 
@@ -503,7 +503,7 @@ Example controllers:
 
 ---
 
-# 🧪 Testing
+# Testing
 
 The solution includes unit tests for:
 
