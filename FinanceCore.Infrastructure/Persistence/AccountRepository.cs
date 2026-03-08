@@ -107,6 +107,18 @@ namespace FinanceCore.Infrastructure.Repositories
             if (affectedRows == 0)
                 throw new InvalidOperationException("Failed to insert account into the database.");
         }
+        public async Task<decimal> GetTotalBalanceByAccountIdAsync(Guid userId, Guid AccountId, CancellationToken token = default)
+        {
+            using var connection = _connectionFactory.GetConnection();
+            var sql = @"
+            SELECT ISNULL(SUM(Balance), 0) 
+            FROM Accounts
+            WHERE UserId = @UserId AND Id = @Id";
+
+            var total = await connection.ExecuteScalarAsync<decimal>(sql, new {UserId = userId,Id = AccountId});
+
+            return total;
+        }
         public async Task<decimal> GetTotalBalanceAsync(Guid userId, CancellationToken token)
         {
             using var connection = _connectionFactory.GetConnection();

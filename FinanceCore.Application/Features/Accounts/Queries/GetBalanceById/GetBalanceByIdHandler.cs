@@ -19,9 +19,9 @@ namespace FinanceCore.Application.Features.Accounts.Queries.GetBalanceById
         }
         public async Task<AccountBalanceDto> Handle(GetBalanceByIdQuery query , CancellationToken token)
         {
-            var balance = await _accountRepository.GetTotalBalanceAsync(query.UserId, token);
+            var balance = await _accountRepository.GetTotalBalanceByAccountIdAsync(query.UserId,query.AccountId, token);
             return new AccountBalanceDto(query.UserId,balance);
-
+ 
         }
     }
 }

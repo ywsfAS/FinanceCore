@@ -19,6 +19,7 @@ namespace FinanceCore.Application.Abstractions
         Task UpdateAsync(Account account, CancellationToken token = default);
         Task DeleteAsync(Guid accountId, CancellationToken token = default);
         Task<decimal> GetTotalBalanceAsync(Guid userId,CancellationToken token = default);
+        Task<decimal> GetTotalBalanceByAccountIdAsync(Guid userId,Guid AccountId,CancellationToken token = default);
         Task<bool> IsExists(Guid userId,Guid id,CancellationToken token = default);
     }
 }

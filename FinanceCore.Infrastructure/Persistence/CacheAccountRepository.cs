@@ -95,6 +95,16 @@ namespace FinanceCore.Infrastructure.Persistence
             });
 
         }
+        public Task<decimal> GetTotalBalanceByAccountIdAsync(Guid userId,Guid AccountId, CancellationToken token = default)
+        {
+            string key = $"TotalBalance_User_{userId}_Account{AccountId}";
+            return _memoryCache.GetOrCreateAsync(key, entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5);
+                return _accountRepository.GetTotalBalanceByAccountIdAsync(userId,AccountId, token);
+            });
+
+        }
         public Task<bool> IsExists(Guid userId, Guid id, CancellationToken token = default)
         {
             string key = $"AccountExists_User_{userId}_Account_{id}";
