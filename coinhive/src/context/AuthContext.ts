@@ -1,9 +1,19 @@
-import React, { createContext} from "react";
+import { createContext } from "react";
+import type { User } from "../entities/User";
 interface AuthContextType {
     user: User | null;
-    setUser: (user: User | null) => void;
+    isAuthenticated: boolean;
+    loading: boolean;
+    login: (token:string) => Promise<void>;
+    loginWithToken: (token: string) => Promise<void>;
+    logout: () => void;
+
 }
 export const AuthContext = createContext<AuthContextType>({
     user: null,
-    setUser: () => { }
+    isAuthenticated: false,
+    loading: true;
+    login: async () => { },
+    loginWithToken: async () => { },
+    logout: () => { }
 })

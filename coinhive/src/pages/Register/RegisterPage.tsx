@@ -10,7 +10,7 @@ import Image from "../../assets/image.jpeg";
 import Logo from "../../assets/logo.svg";
 import "./Register.css";
 
-export const RegisterPage = () => {
+const RegisterPage = () => {
     const { setUser } = useAuth();
 
     const [name, setName] = useState("");
@@ -79,3 +79,4 @@ export const RegisterPage = () => {
         </div>
     );
 };
+export default RegisterPage;
