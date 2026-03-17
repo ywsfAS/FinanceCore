@@ -1,0 +1,88 @@
+.form-side {
+    flex: 1;
+    display: flex;
+    padding: 20px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.side-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.title {
+    color: black;
+    font-weight: bold;
+    font-size: 30px;
+    margin-bottom: 12px;
+}
+
+.input {
+    width: 100%;
+}
+
+.container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: 32px;
+}
+
+.title-p {
+    margin-bottom: 35px;
+}
+
+.forgot-password {
+    color: #3f3e3ee8;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.forgot-password:hover {
+  color: cornflowerblue;
+}
+
+div.input p:first-child {
+    margin-bottom: 5px;
+}
+
+.global-container {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.logo-container {
+    height : 20%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  
+}
+
+.logo {
+    max-width: 100%;
+    max-height: 100%;
+    height : 52%
+}
+@media (max-width : 1205px){
+    .logo{
+        width : 30%;
+    }
+}
+.sign-up{
+    font-size : 14px;
+}
+.sign-up-link {
+    color: #3f3e3ee8;
+    font-weight : 600;
+    font-size: 14px;
+    cursor: pointer;
+}
+.sign-up-link:hover {
+        color: cornflowerblue;
+}
