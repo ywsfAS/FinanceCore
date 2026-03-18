@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { registerUser } from "../../use-cases/auth/signup";
 import { useAuth } from "../../hooks/Auth";
 import Input from "../../components/Input/Input";
 import Card from "../../components/Card/Card";
@@ -11,14 +10,13 @@ import Logo from "../../assets/logo.svg";
 import "./Register.css";
 
 const RegisterPage = () => {
-    const { setUser } = useAuth();
 
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [agreeTerms, setAgreeTerms] = useState(false);
-
+    const { register } = useAuth();
     const handleRegister = async () => {
         if (password !== confirmPassword) {
             alert("Passwords do not match!");
@@ -29,8 +27,9 @@ const RegisterPage = () => {
             return;
         }
 
-        const user = await registerUser(name, email, password );
-        setUser(user);
+        await register(name, email, password);
+       
+
     };
 
     return (

@@ -1,6 +1,4 @@
 import { useState } from "react";
-import { loginUser } from "../../use-cases/auth/login";
-import { useAuth } from "../../hooks/Auth";
 import Input from "../../components/Input/Input";
 import Card from "../../components/Card/Card";
 import SideImage from "../../components/SideImage/SideImage";
@@ -9,17 +7,13 @@ import Button from "../../components/Button/Button";
 import Image from "../../assets/image.jpeg";
 import Logo from "../../assets/logo.svg";
 import "./Login.css";
-export const LoginPage = () => {
-    const { setUser } = useAuth();
+ const LoginPage = () => {
+
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [rememberMe, setRememberMe] = useState(false);
 
-    const handleLogin = async () => {
-        const user = await loginUser(email, password);
-        setUser(user);
-    };
 
     return (
     <div className = "global-container">
@@ -46,7 +40,7 @@ export const LoginPage = () => {
                     />
                 <a className="forgot-password">Forgot password </a>
                 </div>
-                <Button type="submit" onClick={handleLogin}>Login</Button>
+                <Button type="submit" >Login</Button>
                 <p className="sign-up">Don't have an account? <a className="sign-up-link"> Sign Up</a> </p>
 
             </div>
@@ -55,3 +49,4 @@ export const LoginPage = () => {
         </div>
     );
 };
+export default LoginPage;

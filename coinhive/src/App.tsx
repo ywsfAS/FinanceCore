@@ -2,6 +2,7 @@ import './App.css'
 import RegisterPage  from './pages/Register/RegisterPage'
 import { useAuth } from "./hooks/Auth";
 import { useEffect } from 'react';
+import Navbar from './components/Navbar/Navbar';
 
 function App() {
     const { loginWithToken , loading } = useAuth();
@@ -19,9 +20,10 @@ function App() {
 
     if(!loading) return <div>Loading...</div>
   return (
-        <>
+      <>
+            <Navbar/>
             <RegisterPage/>
-        </>
+      </>
   )
 }
 
