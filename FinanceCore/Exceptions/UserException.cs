@@ -1,4 +1,4 @@
-﻿using FinanceCore.Domain.Enums;
+using FinanceCore.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,9 +17,15 @@ namespace FinanceCore.Domain.Exceptions
             UserId = userId;
         }
     }
-
-    // When user with email doesn't exist
-    public class UserNotFoundByEmailException : DomainException
+    public class UserIdNotProvidedException : DomainException
+    {
+        public UserIdNotProvidedException()
+            : base($"User Id Cannot be Empty")
+        {
+        }
+    }
+        // When user with email doesn't exist
+        public class UserNotFoundByEmailException : DomainException
     {
         public string Email { get; }
 

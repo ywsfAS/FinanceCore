@@ -1,5 +1,5 @@
 import './App.css'
-import { RegisterPage } from './pages/Register/RegisterPage'
+import RegisterPage  from './pages/Register/RegisterPage'
 import { useAuth } from "./hooks/Auth";
 import { useEffect } from 'react';
 
@@ -17,7 +17,7 @@ function App() {
     }, []);
 
 
-    if(loading) return <div>Loading...</div>
+    if(!loading) return <div>Loading...</div>
   return (
         <>
             <RegisterPage/>
