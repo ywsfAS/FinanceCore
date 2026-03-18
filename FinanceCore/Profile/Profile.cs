@@ -17,11 +17,12 @@ namespace FinanceCore.Domain.Profile
 
         public string FirstName { get; private set; }
         public string LastName { get; private set; }
+        public string Bio { get; private set; }
         public string? AvatarUrl { get; private set; }
         public EnCurrency Currency { get; private set; }
 
 
-        public static Profile Create(Guid userId, string firstName, string lastName)
+        public static Profile Create(Guid userId, string firstName, string lastName,string bio , string avatarUrl , EnCurrency currency)
         {
             if (userId == Guid.Empty)
                 throw new UserIdNotProvidedException();
@@ -34,6 +35,8 @@ namespace FinanceCore.Domain.Profile
                 UserId = userId,
                 FirstName = firstName,
                 LastName = lastName,
+                Bio = bio,
+                AvatarUrl = avatarUrl,
                 Currency = EnCurrency.USD
             };
 
