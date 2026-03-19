@@ -3,6 +3,7 @@ import RegisterPage  from './pages/Register/RegisterPage'
 import { useAuth } from "./hooks/Auth";
 import { useEffect } from 'react';
 import Navbar from './components/Navbar/Navbar';
+import ProfilePage from './pages/Profile/Profile';
 
 function App() {
     const { loginWithToken , loading } = useAuth();
@@ -22,7 +23,7 @@ function App() {
   return (
       <>
             <Navbar/>
-            <RegisterPage/>
+            <ProfilePage/>
       </>
   )
 }

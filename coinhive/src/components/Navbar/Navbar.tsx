@@ -11,7 +11,7 @@ const Navbar = () => {
                 <img className="nav-logo" src={Logo} alt="Logo" />
             </div>
             <div className="nav-center">
-                {(isAuthenticated) && (
+                {(isAuthenticated || true) && (
                     <div className="nav-links">
                         <Link to="/dashboard">Dashboard</Link>
                         <Link to="/transactions">Transactions</Link>

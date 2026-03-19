@@ -13,7 +13,9 @@
     <Folder Include="src\components\Button\" />
     <Folder Include="src\components\Checkbox\" />
     <Folder Include="src\components\Navbar\" />
+    <Folder Include="src\components\FinancialDetails\" />
+    <Folder Include="src\components\SpendingAnalytics\" />
+    <Folder Include="src\components\TagButtons\" />
     <Folder Include="src\components\SideImage\" />
-    <Folder Include="src\pages\Profile\" />
   </ItemGroup>
 </Project>
