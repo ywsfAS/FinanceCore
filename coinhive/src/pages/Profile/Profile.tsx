@@ -3,6 +3,9 @@ import SideImage from "../../components/SideImage/SideImage";
 import Logo from "../../assets/profile.jpeg";
 import UserTags from "../../components/TagButtons/TagButton";
 import "./Profile.css";
+import SpendingAnalytics from "../../components/SpendingAnalytics/SpendingAnalytics";
+import FinancialCard from "../../components/FinancialOverview/FinancialOverview";
+import FinancialTransaction from "../../components/FinancialTransaction/FinancialTransaction";
 export default function ProfilePage() {
 
     return (
@@ -35,20 +38,20 @@ export default function ProfilePage() {
                     </div>
                 </Card>
                 <Card>
-                    <h2>Spending Analytics</h2>
+                    <SpendingAnalytics/>
                 </Card>
                 <Card>
-                    <h2>Financial Details</h2>
+                    <FinancialCard/>
                 </Card>
 
             </div>
 
             <div className="profile-right-section">
                 <Card>
-                    <h2>Recent Transactions</h2>
+                    <FinancialTransaction/>
                 </Card>
                 <Card>
-                    <h2>Financial Goals</h2>
+                    <FinancialCard />
                 </Card>
             </div>
 
