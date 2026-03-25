@@ -13,9 +13,10 @@ export default function ProfilePage() {
 
             <div className="profile-left-section">
                 <Card>
+                 
                     <div className="profile-user-section">
                         <div className="profile-user-image">
-                            <SideImage src={Logo} />
+                            <img src={Logo} className="user-logo" />
                         </div>
                         <div className="profile-user-data">
                             <div className="user-header">
@@ -48,6 +49,7 @@ export default function ProfilePage() {
 
             <div className="profile-right-section">
                 <Card>
+                    
                     <FinancialTransaction/>
                 </Card>
                 <Card>

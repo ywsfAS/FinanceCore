@@ -1,4 +1,4 @@
-﻿using Dapper;
+using Dapper;
 using FinanceCore.Application.Abstractions;
 using FinanceCore.Infrastructure.Auth;
 using FinanceCore.Infrastructure.context;
@@ -45,6 +45,7 @@ namespace FinanceCore.Infrastructure
             services.AddScoped<IBudgetRepository, BudgetRepository>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IAuditRepository, AuditLogRepository>();
+            services.AddScoped<IProfileRepository, ProfileRepository>();
 
             services.AddScoped<IPasswordHasher, PasswordHasher>();
             services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();

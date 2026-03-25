@@ -22,10 +22,17 @@
     --shadow-card: 0 1px 3px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.06);
     --shadow-hover: 0 2px 8px rgba(0,0,0,0.06), 0 8px 28px rgba(0,0,0,0.09);
 }
+.title {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    color: var(--color-white);
+    margin-bottom: 20px;
+}
 .fb-section {
     width: 100%;
     font-family: var(--font);
-    padding: 5px;
+    padding: 20px;
     color: var(--ink);
 }
 .fb-grid {

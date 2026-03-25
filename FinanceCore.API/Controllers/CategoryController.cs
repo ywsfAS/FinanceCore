@@ -1,4 +1,4 @@
-﻿using FinanceCore.API.Requests.Category;
+using FinanceCore.API.Requests.Category;
 using FinanceCore.Application.DTOs;
 using FinanceCore.Application.DTOs.Auth;
 using FinanceCore.Application.Features.Categories.Commands.Create;
@@ -65,8 +65,6 @@ namespace FinanceCore.API.Controllers
             var category = await _mediator.Send(query);
             return Ok(category);
         }
-
-
 
         /// <summary>
         /// Update an existing category

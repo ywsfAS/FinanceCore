@@ -25,16 +25,17 @@ const details: DetailRow[] = [
 ];
 
 const transactions: Transaction[] = [
-    { icon: "??", name: "Salary Deposit",   date: "Apr 1 · 09:00", amount: "+$8,240.00", type: "credit", tag: "Salary",    tagVariant: "salary"    },
-    { icon: "??", name: "Carrefour Market", date: "Apr 3 · 14:22", amount: "-$94.50",    type: "debit",  tag: "Shopping",  tagVariant: "shopping"  },
-    { icon: "??", name: "Uber Eats",        date: "Apr 4 · 20:11", amount: "-$38.00",    type: "debit",  tag: "Food",      tagVariant: "food"      },
-    { icon: "??", name: "Casablanca Tram",  date: "Apr 5 · 08:05", amount: "-$7.20",     type: "debit",  tag: "Transport", tagVariant: "transport" },
-    { icon: "??", name: "Netflix",          date: "Apr 6 · 00:00", amount: "-$15.99",    type: "debit",  tag: "Subscript", tagVariant: "subscript" },
-    { icon: "??", name: "Savings Transfer", date: "Apr 7 · 11:30", amount: "-$500.00",   type: "debit",  tag: "Transfer",  tagVariant: "transfer"  },
+    { icon: "??", name: "Salary Deposit",   date: "Apr 1 Â· 09:00", amount: "+$8,240.00", type: "credit", tag: "Salary",    tagVariant: "salary"    },
+    { icon: "??", name: "Carrefour Market", date: "Apr 3 Â· 14:22", amount: "-$94.50",    type: "debit",  tag: "Shopping",  tagVariant: "shopping"  },
+    { icon: "??", name: "Uber Eats",        date: "Apr 4 Â· 20:11", amount: "-$38.00",    type: "debit",  tag: "Food",      tagVariant: "food"      },
+    { icon: "??", name: "Casablanca Tram",  date: "Apr 5 Â· 08:05", amount: "-$7.20",     type: "debit",  tag: "Transport", tagVariant: "transport" },
+    { icon: "??", name: "Netflix",          date: "Apr 6 Â· 00:00", amount: "-$15.99",    type: "debit",  tag: "Subscript", tagVariant: "subscript" },
+    { icon: "??", name: "Savings Transfer", date: "Apr 7 Â· 11:30", amount: "-$500.00",   type: "debit",  tag: "Transfer",  tagVariant: "transfer"  },
 ];
 export default function FinancialTransaction() {
     return (
         <div className="fb-section">
+            <h1 className="title">Transactions</h1>
             <div className="fb-grid">
 
                 {/* Account Details */}
