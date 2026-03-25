@@ -1,4 +1,4 @@
-﻿using FinanceCore.Domain.Enums;
+using FinanceCore.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,7 +14,7 @@ namespace FinanceCore.Application.DTOs
         Guid CategoryId,
         decimal Amount,
         EnCurrency Currency,
-        BudgetPeriod Period,
+        EnPeriod Period,
         DateTime StartDate,
         DateTime EndDate);
 }

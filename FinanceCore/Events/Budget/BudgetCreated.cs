@@ -1,4 +1,4 @@
-﻿using FinanceCore.Domain.Common;
+using FinanceCore.Domain.Common;
 using FinanceCore.Domain.Enums;
 using System;
 using System.Collections.Generic;
@@ -14,5 +14,5 @@ namespace FinanceCore.Domain.Events.Budget
         Guid UserId,
         Guid CategoryId,
         Money Amount,
-        BudgetPeriod Period) : DomainEvent;
+        EnPeriod Period) : DomainEvent;
 }

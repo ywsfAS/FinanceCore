@@ -1,4 +1,4 @@
-﻿using FinanceCore.Application.Abstractions;
+using FinanceCore.Application.Abstractions;
 using FinanceCore.Application.Features.Budgets.Commands.Create;
 using FinanceCore.Domain.Budgets;
 using FinanceCore.Domain.Categories;
@@ -44,7 +44,7 @@ namespace FinanceCore.Application.Tests.Budgets
                 "Test Budget",
                 1000,
                 EnCurrency.USD,
-                BudgetPeriod.Monthly,
+                EnPeriod.Monthly,
                 DateTime.UtcNow
                 );
             // Act
@@ -81,7 +81,7 @@ namespace FinanceCore.Application.Tests.Budgets
                 "Test Budget",
                 1000,
                 EnCurrency.USD,
-                BudgetPeriod.Monthly,
+                EnPeriod.Monthly,
                 DateTime.UtcNow
                 );
             // Act

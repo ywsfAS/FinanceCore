@@ -1,4 +1,4 @@
-﻿using FinanceCore.Domain.Common;
+using FinanceCore.Domain.Common;
 using FinanceCore.Domain.Enums;
 using FinanceCore.Domain.Events.Budget;
 using FinanceCore.Domain.Exceptions;
@@ -13,7 +13,7 @@ namespace FinanceCore.Domain.Budgets
         public string Name { get; private set; } = string.Empty;
         public EnCurrency Currency { get; private set; }
         public Money Amount { get; private set; }
-        public BudgetPeriod Period { get; private set; }
+        public EnPeriod Period { get; private set; }
         public DateTime StartDate { get; private set; }
         public DateTime EndDate { get; private set; }
         public DateTime CreatedAt { get; private set; }
@@ -28,7 +28,7 @@ namespace FinanceCore.Domain.Budgets
             string name,
             EnCurrency currency,
             Money amount,
-            BudgetPeriod period,
+            EnPeriod period,
             DateTime startDate,
             DateTime endDate,
             DateTime createdAt,
@@ -55,7 +55,7 @@ namespace FinanceCore.Domain.Budgets
             string name,
             EnCurrency currency,
             decimal amount,
-            BudgetPeriod period,
+            EnPeriod period,
             DateTime startDate,
             DateTime endDate,
             DateTime createdAt,
@@ -73,7 +73,7 @@ namespace FinanceCore.Domain.Budgets
             string name,
             EnCurrency currency,
             decimal amount,
-            BudgetPeriod period,
+            EnPeriod period,
             DateTime startDate)
         {
             if (userId == Guid.Empty)
@@ -94,7 +94,7 @@ namespace FinanceCore.Domain.Budgets
             if (amount <= 0)
                 throw new InvalidBudgetAmountException(amount);
 
-            if (!Enum.IsDefined(typeof(BudgetPeriod), period))
+            if (!Enum.IsDefined(typeof(EnPeriod), period))
                 throw new InvalidBudgetPeriodException(period);
 
             if (startDate < DateTime.UtcNow.AddYears(-1))
@@ -157,9 +157,9 @@ namespace FinanceCore.Domain.Budgets
             UpdatedAt = DateTime.UtcNow;
         }
 
-        public void ExtendPeriod(BudgetPeriod newPeriod)
+        public void ExtendPeriod(EnPeriod newPeriod)
         {
-            if (!Enum.IsDefined(typeof(BudgetPeriod), newPeriod))
+            if (!Enum.IsDefined(typeof(EnPeriod), newPeriod))
                 throw new InvalidBudgetPeriodException(newPeriod);
 
             var oldPeriod = Period;
@@ -180,14 +180,14 @@ namespace FinanceCore.Domain.Budgets
             return (EndDate - DateTime.UtcNow).Days;
         }
 
-        private static DateTime CalculateEndDate(DateTime startDate, BudgetPeriod period)
+        private static DateTime CalculateEndDate(DateTime startDate, EnPeriod period)
         {
             return period switch
             {
-                BudgetPeriod.Weekly => startDate.AddDays(7).AddSeconds(-1),
-                BudgetPeriod.Monthly => startDate.AddMonths(1).AddSeconds(-1),
-                BudgetPeriod.Quarterly => startDate.AddMonths(3).AddSeconds(-1),
-                BudgetPeriod.Yearly => startDate.AddYears(1).AddSeconds(-1),
+                EnPeriod.Weekly => startDate.AddDays(7).AddSeconds(-1),
+                EnPeriod.Monthly => startDate.AddMonths(1).AddSeconds(-1),
+                EnPeriod.Quarterly => startDate.AddMonths(3).AddSeconds(-1),
+                EnPeriod.Yearly => startDate.AddYears(1).AddSeconds(-1),
                 _ => throw new InvalidBudgetPeriodException(period)
             };
         }

@@ -1,4 +1,4 @@
-﻿using FinanceCore.Application.Abstractions;
+using FinanceCore.Application.Abstractions;
 using FinanceCore.Application.Features.Budgets.Commands.Update;
 using FinanceCore.Domain.Budgets;
 using FinanceCore.Domain.Enums;
@@ -37,12 +37,12 @@ namespace FinanceCore.Application.Tests.Budgets
                "Old Name",
                EnCurrency.USD,
                1000,
-               BudgetPeriod.Monthly,
+               EnPeriod.Monthly,
                DateTime.UtcNow,
                DateTime.UtcNow.AddMonths(1),
                DateTime.UtcNow
                );
-            var command = new UpdateBudgetCommand(userId, budgetId, "New Name", 2000, EnCurrency.USD, BudgetPeriod.Weekly, DateTime.UtcNow);
+            var command = new UpdateBudgetCommand(userId, budgetId, "New Name", 2000, EnCurrency.USD, EnPeriod.Weekly, DateTime.UtcNow);
             _budgetRepositoryMock.Setup(repo => repo.GetByIdAndUserIdAsync(userId, budgetId, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(budget);
             // Act
@@ -52,7 +52,7 @@ namespace FinanceCore.Application.Tests.Budgets
             budget.Name.Should().Be("New Name");
             budget.Amount.Amount.Should().Be(2000);
             budget.Currency.Should().Be(EnCurrency.USD);
-            budget.Period.Should().Be(BudgetPeriod.Weekly);
+            budget.Period.Should().Be(EnPeriod.Weekly);
 
         }
         [Fact]
@@ -69,12 +69,12 @@ namespace FinanceCore.Application.Tests.Budgets
                "Old Name",
                EnCurrency.USD,
                1000,
-               BudgetPeriod.Monthly,
+               EnPeriod.Monthly,
                DateTime.UtcNow,
                DateTime.UtcNow.AddMonths(1),
                DateTime.UtcNow
                );
-            var command = new UpdateBudgetCommand(userId, budgetId, "New Name", 2000, EnCurrency.USD, BudgetPeriod.Weekly, DateTime.UtcNow);
+            var command = new UpdateBudgetCommand(userId, budgetId, "New Name", 2000, EnCurrency.USD, EnPeriod.Weekly, DateTime.UtcNow);
             _budgetRepositoryMock.Setup(repo => repo.GetByIdAndUserIdAsync(userId, budgetId, It.IsAny<CancellationToken>()))
                 .ReturnsAsync((Budget)null);
             // Act
@@ -84,7 +84,7 @@ namespace FinanceCore.Application.Tests.Budgets
             budget.Name.Should().Be("Old Name");
             budget.Amount.Amount.Should().Be(1000);
             budget.Currency.Should().Be(EnCurrency.USD);
-            budget.Period.Should().Be(BudgetPeriod.Monthly);
+            budget.Period.Should().Be(EnPeriod.Monthly);
 
         }
 

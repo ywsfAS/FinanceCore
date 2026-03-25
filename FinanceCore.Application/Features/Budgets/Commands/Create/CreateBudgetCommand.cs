@@ -1,4 +1,4 @@
-﻿using FinanceCore.Application.DTOs;
+using FinanceCore.Application.DTOs;
 using FinanceCore.Domain.Enums;
 using MediatR;
 using System;
@@ -15,7 +15,7 @@ namespace FinanceCore.Application.Features.Budgets.Commands.Create
         string name ,
         decimal Amount,
         EnCurrency Currency,
-        BudgetPeriod Period,
+        EnPeriod Period,
         DateTime StartDate
         ) : IRequest<BudgetDto>;
 }

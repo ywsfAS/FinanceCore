@@ -1,4 +1,4 @@
-﻿using FinanceCore.Domain.Common;
+using FinanceCore.Domain.Common;
 using FinanceCore.Domain.Enums;
 using System;
 using System.Collections.Generic;
@@ -11,6 +11,6 @@ namespace FinanceCore.Domain.Events.Budget
     // Budget period changed
     public record BudgetPeriodChangedEvent(
         Guid BudgetId,
-        BudgetPeriod OldPeriod,
-        BudgetPeriod NewPeriod) : DomainEvent;
+        EnPeriod OldPeriod,
+        EnPeriod NewPeriod) : DomainEvent;
 }

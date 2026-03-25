@@ -1,4 +1,4 @@
-﻿using FinanceCore.Domain.Enums;
+using FinanceCore.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -19,7 +19,7 @@ namespace FinanceCore.Application.Models
         public decimal Amount { get; set; }
         public byte CurrencyId { get; set; }   
 
-        public BudgetPeriod BudgetPeriodId { get; set; }
+        public EnPeriod BudgetPeriodId { get; set; }
 
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }

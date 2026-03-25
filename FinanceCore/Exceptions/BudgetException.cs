@@ -1,4 +1,4 @@
-﻿using FinanceCore.Domain.Common;
+using FinanceCore.Domain.Common;
 using FinanceCore.Domain.Enums;
 using System;
 using System.Collections.Generic;
@@ -75,9 +75,9 @@ namespace FinanceCore.Domain.Exceptions
     // When budget period is invalid
     public class InvalidBudgetPeriodException : DomainException
     {
-        public BudgetPeriod Period { get; }
+        public EnPeriod Period { get; }
 
-        public InvalidBudgetPeriodException(BudgetPeriod period)
+        public InvalidBudgetPeriodException(EnPeriod period)
             : base($"Invalid budget period: {period}")
         {
             Period = period;
@@ -165,9 +165,9 @@ namespace FinanceCore.Domain.Exceptions
     {
         public Guid UserId { get; }
         public Guid CategoryId { get; }
-        public BudgetPeriod Period { get; }
+        public EnPeriod Period { get; }
 
-        public DuplicateBudgetException(Guid userId, Guid categoryId, BudgetPeriod period)
+        public DuplicateBudgetException(Guid userId, Guid categoryId, EnPeriod period)
             : base($"A {period} budget for category {categoryId} already exists for user {userId}")
         {
             UserId = userId;

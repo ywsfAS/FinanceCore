@@ -1,4 +1,4 @@
-﻿using FinanceCore.Domain.Enums;
+using FinanceCore.Domain.Enums;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -14,7 +14,7 @@ namespace FinanceCore.Application.Features.Budgets.Commands.Update
         string Name,
         decimal Amount,
         EnCurrency Currency,
-        BudgetPeriod Period,
+        EnPeriod Period,
         DateTime StartDate
         ) : IRequest;
 }

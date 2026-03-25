@@ -1,4 +1,4 @@
-﻿using FinanceCore.Domain.Enums;
+using FinanceCore.Domain.Enums;
 
 namespace FinanceCore.API.Requests
 {
@@ -6,7 +6,7 @@ namespace FinanceCore.API.Requests
         string Name ,
         decimal Amount,
         EnCurrency Currency,
-        BudgetPeriod Period,
+        EnPeriod Period,
         DateTime StartDate
        ); 
 }
