@@ -14,9 +14,9 @@ namespace FinanceCore.Application.Abstractions
         Task UpdateAsync(RecurringTransaction recurringTransaction);
         Task DeleteAsync(Guid id);
 
-        Task<List<RecurringTransaction>> GetActiveAsync();
-        Task<List<RecurringTransaction>> GetByAccountAsync(Guid accountId);
-        Task<List<RecurringTransaction>> GetByCategoryAsync(Guid categoryId);
-        Task<List<RecurringTransaction>> GetDueTransactionsAsync(DateTime currentDate);
+        Task<IEnumerable<RecurringTransaction>> GetActiveAsync();
+        Task<IEnumerable<RecurringTransaction>> GetByAccountAsync(Guid accountId);
+        Task<IEnumerable<RecurringTransaction>> GetByCategoryAsync(Guid categoryId);
+        Task<IEnumerable<RecurringTransaction>> GetDueTransactionsAsync(DateTime currentDate);
     }
 }
