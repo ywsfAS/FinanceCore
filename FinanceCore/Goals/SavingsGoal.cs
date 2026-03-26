@@ -1,4 +1,4 @@
-﻿using FinanceCore.Domain.Common;
+using FinanceCore.Domain.Common;
 using FinanceCore.Domain.Enums;
 using FinanceCore.Domain.Events;
 using FinanceCore.Domain.Events.Goal;
@@ -21,6 +21,7 @@ public class SavingsGoal : AggregateRoot
     private void  Goal() { }
 
     public static SavingsGoal Create(
+        Guid? Id,
         Guid userId,
         string name,
         Money targetAmount,
@@ -38,7 +39,7 @@ public class SavingsGoal : AggregateRoot
 
         var goal = new SavingsGoal
         {
-            Id = Guid.NewGuid(),
+            Id = Id ?? Guid.NewGuid(),
             UserId = userId,
             Name = name.Trim(),
             Description = description?.Trim(),
