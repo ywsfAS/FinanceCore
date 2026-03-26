@@ -68,7 +68,30 @@ namespace FinanceCore.Domain.RecurringTransaction
 
             return recurring;
         }
+        public void UpdateDetails(
+            Guid accountId,
+            Guid categoryId,
+            decimal amount,
+            string description,
+            EnTransactionType type,
+            DateTime startDate,
+            EnPeriod period,
+            int interval,
+            DateTime? endDate)
+        {
+            this.accountId = accountId;
+            this.categoryId = categoryId;
+            this.amount = amount;
+            this.description = description;
+            this.type = type;
+            this.startDate = startDate;
+            this.period = period;
+            this.interval = interval;
+            this.endDate = endDate;
 
+            // trigger domain event
+            AddDomainEvent(new RecurringTransactionUpdatedEvent(this.Id));
+        }
         private void _setIsActive(bool isActive)
         {
             this.isActive = isActive;
