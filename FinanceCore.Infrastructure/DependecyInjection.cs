@@ -1,6 +1,7 @@
 using Dapper;
 using FinanceCore.Application.Abstractions;
 using FinanceCore.Infrastructure.Auth;
+using FinanceCore.Infrastructure.BackgroundJobs;
 using FinanceCore.Infrastructure.context;
 using FinanceCore.Infrastructure.context.ConnectionFactory;
 using FinanceCore.Infrastructure.Persistence;
@@ -10,6 +11,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
+using Quartz;
 using System.Text;
 
 namespace FinanceCore.Infrastructure
@@ -20,6 +22,23 @@ namespace FinanceCore.Infrastructure
             this IServiceCollection services,
             IConfiguration config)
         {
+            services.AddQuartz(options =>
+            {
+                var jobKey = new JobKey("RecurringTransactionJob");
+                var triggerKey = new TriggerKey("RecurringTranactionTrigger");
+                options.AddJob<RecurringTransactionJob>(opts => opts.WithIdentity(jobKey));
+
+                options.AddTrigger(options =>
+                {
+                    options
+                    .ForJob(jobKey)
+                    .WithIdentity(triggerKey)
+                    .StartNow()
+                    .WithSimpleSchedule(x => x.WithIntervalInHours(2).RepeatForever());
+                });
+                });
+            services.AddQuartzHostedService(config => config.WaitForJobsToComplete = true);
+
             var connectionString =
                 config.GetConnectionString("DefaultConnection");
 
