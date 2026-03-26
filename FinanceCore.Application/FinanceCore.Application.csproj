@@ -18,7 +18,6 @@
 
   <ItemGroup>
     <Folder Include="Features\RecurringTransactions\queries\" />
-    <Folder Include="Features\SavingGoals\commands\" />
     <Folder Include="Features\SavingGoals\Queries\" />
   </ItemGroup>
 

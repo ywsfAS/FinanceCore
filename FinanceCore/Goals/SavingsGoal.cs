@@ -58,7 +58,17 @@ public class SavingsGoal : AggregateRoot
 
         return goal;
     }
+    public void UpdateDetails(string name, Money targetAmount, DateTime? targetDate, string? description, EnGoalStatus status)
+    {
+        Name = name;
+        TargetAmount = targetAmount;
+        TargetDate = targetDate;
+        Description = description;
+        Status = status;
+        UpdatedAt = DateTime.UtcNow;
 
+        AddDomainEvent(new SavingsGoalUpdatedEvent(Id));
+    }
     public void AddContribution(Money amount)
     {
         if (Status != EnGoalStatus.Active)
