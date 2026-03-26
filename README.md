@@ -14,7 +14,7 @@ FinanceCore helps users manage their personal finances by:
 - Creating savings goals and tracking progress
 - Managing finances in multiple currencies
 
-The system follows **Clean Architecture** to keep the domain independent from infrastructure and frameworks.
+The system follows **Clean Architecture** to keep the domain independent from infrastructure and frameworks, ensuring maintainability and testability.
 
 ---
 
@@ -26,7 +26,7 @@ Key architectural patterns used:
 
 - **Domain Driven Design (DDD)**
 - **CQRS (Command Query Responsibility Segregation)**
-- **Event Driven Architecture**
+- **Event-Driven Architecture**
 - **Repository Pattern**
 - **Decorator Pattern (Caching)**
 - **MediatR Pipeline Behaviors**
@@ -34,79 +34,64 @@ Key architectural patterns used:
 
 ---
 
+
 #  Project Structure
 
 ```
 FinanceCore/
 │
-├── FinanceCore.Domain/                 # Core business logic
+├── FinanceCore.Domain/ # Core business logic
+│ ├── Accounts/
+│ ├── Transactions/
+│ ├── RecurringTransactions/
+│ ├── Users/
+│ ├── Categories/
+│ ├── Budgets/
+│ ├── Goals/
+│ ├── Common/ # Base classes (AggregateRoot, Entity, ValueObject)
+│ ├── Events/ # Domain events
+│ ├── Exceptions/ # Domain exceptions
+│ └── Enums/ # Domain enums
 │
-│   ├── Accounts/
-│   ├── Transactions/
-│   ├── Users/
-│   ├── Categories/
-│   ├── Budgets/
-│   ├── Goals/
-│   │
-│   ├── Common/                         # Base classes
-│   │   ├── AggregateRoot
-│   │   ├── Entity
-│   │   └── ValueObject
-│   │
-│   ├── Events/                         # Domain events
-│   ├── Exceptions/                     # Domain exceptions
-│   └── Enums/                          # Domain enums
+├── FinanceCore.Application/ # Application use cases
+│ ├── Abstractions/ # Interfaces & contracts
+│ ├── DTOs/ # Data Transfer Objects
+│ ├── Models/ # Query models
+│ ├── Events/ # Event handlers
+│ ├── Features/ # CQRS features (Accounts, Transactions, Categories, Budgets, Reports)
+│ │ ├── Commands
+│ │ ├── Queries
+│ │ ├── Handlers
+│ │ └── Validators
+│ ├── ValidationBehavior.cs # MediatR pipeline validation
+│ └── DependencyInjection.cs
 │
+├── FinanceCore.Infrastructure/ # External concerns
+│ ├── Persistence/ # Repositories
+│ ├── Context/ 
+│ ├── BackgoundJobs/ #Quartz jobs (ex: Recurring transactions) 
+│ ├── Mappers/ # Domain ↔ Persistence mapping
+│ ├── Auth/ # JWT authentication
+│ ├── Services/ # Infrastructure services (Email service)
+│ └── DependencyInjection.cs
 │
-├── FinanceCore.Application/            # Application use cases
+├── FinanceCore.API/ # Presentation Layer
+│ ├── Controllers/ # REST API Controllers
+│ ├── Requests/ # API request models
+│ ├── GlobalExceptionMiddleware.cs
+│ └── Program.cs
 │
-│   ├── Abstractions/                   # Interfaces & contracts
-│   ├── DTOs/                           # Data Transfer Objects
-│   ├── Models/                         # Query models
-│   ├── Events/                         # Event handlers
-│   │
-│   ├── Features/                       # CQRS Features
-│   │   ├── Accounts/
-│   │   ├── Transactions/
-│   │   ├── Categories/
-│   │   ├── Budgets/
-│   │   └── Reports/
-│   │
-│   │   Each feature contains:
-│   │   - Commands
-│   │   - Queries
-│   │   - Handlers
-│   │   - Validators
-│   │
-│   ├── ValidationBehavior.cs           # MediatR pipeline validation
-│   └── DependencyInjection.cs
+├── FinanceCore.Application.Tests/ # Application layer tests
+├── DomainCore.Domain.Tests/ # Domain layer tests
 │
-│
-├── FinanceCore.Infrastructure/         # External concerns
-│
-│   ├── Persistence/                    # Repositories
-│   ├── Context/                        # EF DbContext
-│   ├── Mappers/                        # Domain ↔ Persistence mapping
-│   ├── Auth/                           # JWT authentication
-│   ├── Services/                       # Infrastructure services
-│   └── DependencyInjection.cs
-│
-│
-├── FinanceCore.API/                    # Presentation Layer
-│
-│   ├── Controllers/                    # REST API Controllers
-│   ├── Requests/                       # API request models
-│   ├── GlobalExceptionMiddleware.cs
-│   └── Program.cs
-│
-│
-├── FinanceCore.Application.Tests/      # Application layer tests
-├── DomainCore.Domain.Tests/            # Domain tests
+├── CoinHive/ # Frontend React application (Typescript)
+│ ├── src/
+│ ├── public/
+│ ├── package.json
+│ └── README.md
 │
 └── README.md
 ```
-
----
 
 # Domain Layer Components
 
@@ -114,11 +99,11 @@ The **Domain Layer** contains the core business logic and rules.
 
 ## Aggregates
 
-###  User
+### User
 
 Represents a system user.
 
-Properties:
+**Properties:**
 
 - Name
 - Email
@@ -126,7 +111,7 @@ Properties:
 - DefaultCurrency
 - TimeZone
 
-Features:
+**Features:**
 
 - Authentication
 - Profile management
@@ -139,15 +124,9 @@ Features:
 
 Represents a financial account.
 
-Examples:
+**Examples:** Checking, Savings, Credit, Cash, Investment
 
-- Checking
-- Savings
-- Credit
-- Cash
-- Investment
-
-Properties:
+**Properties:**
 
 - Name
 - Type
@@ -155,7 +134,7 @@ Properties:
 - Balance
 - InitialBalance
 
-Features:
+**Features:**
 
 - Balance tracking
 - Transfers
@@ -167,7 +146,7 @@ Features:
 
 Represents a financial transaction.
 
-Properties:
+**Properties:**
 
 - Amount
 - Type (Income / Expense)
@@ -175,14 +154,12 @@ Properties:
 - Description
 - Category
 
-Features:
+**Features:**
 
-- Create transactions
-- Update transactions
-- Void transactions
+- Create, update, and void transactions
 - Maintain audit history
 
-Transactions are stored separately from accounts for **scalability and performance**.
+> Transactions are stored separately from accounts for **scalability and performance**.
 
 ---
 
@@ -190,22 +167,12 @@ Transactions are stored separately from accounts for **scalability and performan
 
 Used to categorize transactions.
 
-Examples:
+**Examples:**
 
-Income Categories
+- **Income:** Salary, Freelance, Investments
+- **Expense:** Housing, Food, Transportation, Entertainment
 
-- Salary
-- Freelance
-- Investments
-
-Expense Categories
-
-- Housing
-- Food
-- Transportation
-- Entertainment
-
-Properties:
+**Properties:**
 
 - Name
 - Type
@@ -217,24 +184,16 @@ Properties:
 
 Defines spending limits.
 
-Properties:
+**Properties:**
 
 - Amount
 - SpentAmount
-- Period
+- Period (Weekly, Monthly, Quarterly, Yearly)
 
-Budget Periods:
-
-- Weekly
-- Monthly
-- Quarterly
-- Yearly
-
-Features:
+**Features:**
 
 - Spending tracking
-- Budget alerts
-- Threshold notifications
+- Budget alerts and threshold notifications
 
 ---
 
@@ -242,20 +201,16 @@ Features:
 
 Represents financial goals.
 
-Examples:
+**Examples:** Emergency Fund, Vacation, New Laptop
 
-- Emergency Fund
-- Vacation
-- New Laptop
-
-Properties:
+**Properties:**
 
 - Name
 - TargetAmount
 - CurrentAmount
 - TargetDate
 
-Features:
+**Features:**
 
 - Progress tracking
 - Contributions
@@ -269,16 +224,14 @@ Features:
 
 Represents an amount with currency.
 
-Properties:
+**Properties:**
 
 - Amount
 - Currency
 
-Operations:
+**Operations:**
 
-- Add
-- Subtract
-- ConvertTo
+- Add, Subtract, ConvertTo
 
 ---
 
@@ -286,7 +239,7 @@ Operations:
 
 Validated email value object.
 
-Validation:
+**Validation:**
 
 - Format
 - Length
@@ -298,142 +251,45 @@ Validation:
 
 Domain events capture important state changes.
 
-Examples:
+**Examples:**
 
-### User Events
-
-- UserCreated
-- UserEmailChanged
-- UserLoggedIn
-- UserDeactivated
-
-### Account Events
-
-- AccountCreated
-- AccountBalanceChanged
-- AccountTransfer
-
-### Transaction Events
-
-- TransactionCreated
-- TransactionVoided
-- TransactionAmountChanged
-
-### Category Events
-
-- CategoryCreated
-- CategoryUpdated
-- CategoryDeactivated
-
-### Budget Events
-
-- BudgetCreated
-- BudgetExceeded
-- BudgetThresholdReached
-
-### Goal Events
-
-- GoalCreated
-- GoalCompleted
-- GoalMilestoneReached
+- **User:** UserCreated, UserEmailChanged, UserLoggedIn, UserDeactivated
+- **Account:** AccountCreated, AccountBalanceChanged, AccountTransfer
+- **Transaction:** TransactionCreated, TransactionVoided, TransactionAmountChanged
+- **Category:** CategoryCreated, CategoryUpdated, CategoryDeactivated
+- **Budget:** BudgetCreated, BudgetExceeded, BudgetThresholdReached
+- **Goal:** GoalCreated, GoalCompleted, GoalMilestoneReached
 
 ---
 
-#  Domain Exceptions
+# Domain Exceptions
 
 Custom exceptions for domain rule violations.
 
-### User
-
-- UserNotFoundException
-- DuplicateEmailException
-- InvalidCredentialsException
-- UserAccountLockedException
-
-### Account
-
-- AccountNotFoundException
-- InsufficientBalanceException
-- InactiveAccountException
-- CurrencyMismatchException
-
-### Transaction
-
-- TransactionNotFoundException
-- VoidedTransactionException
-- InvalidTransactionAmountException
-
-### Category
-
-- CategoryNotFoundException
-- DuplicateCategoryException
-- DefaultCategoryModificationException
-
-### Budget
-
-- BudgetNotFoundException
-- BudgetExceededException
-- InvalidBudgetAmountException
-
-### Goal
-
-- GoalNotFoundException
-- InvalidGoalAmountException
-- GoalAlreadyCompletedException
+- **User:** UserNotFoundException, DuplicateEmailException, InvalidCredentialsException, UserAccountLockedException
+- **Account:** AccountNotFoundException, InsufficientBalanceException, InactiveAccountException, CurrencyMismatchException
+- **Transaction:** TransactionNotFoundException, VoidedTransactionException, InvalidTransactionAmountException
+- **Category:** CategoryNotFoundException, DuplicateCategoryException, DefaultCategoryModificationException
+- **Budget:** BudgetNotFoundException, BudgetExceededException, InvalidBudgetAmountException
+- **Goal:** GoalNotFoundException, InvalidGoalAmountException, GoalAlreadyCompletedException
 
 ---
 
 # Enums
 
-### Currency
-
-USD, EUR, GBP, MAD, etc.
-
-### AccountType
-
-- Checking
-- Savings
-- Credit
-- Cash
-- Investment
-- Loan
-- Other
-
-### TransactionType
-
-- Income
-- Expense
-
-### TransactionStatus
-
-- Completed
-- Voided
-
-### CategoryType
-
-- Income
-- Expense
-- Both
-
-### BudgetPeriod
-
-- Weekly
-- Monthly
-- Quarterly
-- Yearly
-
-### GoalStatus
-
-- Active
-- Paused
-- Completed
-- Cancelled
+- **Currency:** USD, EUR, GBP, MAD, etc.
+- **AccountType:** Checking, Savings, Credit, Cash, Investment, Loan, Other
+- **TransactionType:** Income, Expense
+- **TransactionStatus:** Completed, Voided
+- **CategoryType:** Income, Expense, Both
+- **BudgetPeriod:** Weekly, Monthly, Quarterly, Yearly
+- **GoalStatus:** Active, Paused, Completed, Cancelled
 
 ---
 
 # Application Layer
 
-The Application Layer implements **CQRS** using **MediatR**.
+Implements **CQRS** using **MediatR**.
 
 Each feature contains:
 
@@ -442,25 +298,20 @@ Each feature contains:
 - Handlers
 - Validators
 
-Example structure:
-
+**Example structure:**
 ```
 Features/
- ├── Accounts
- │    ├── CreateAccount
- │    ├── UpdateAccount
- │    ├── DeleteAccount
- │    └── GetAccountById
- │
- ├── Transactions
- │
- ├── Budgets
- │
- └── Reports
+├── Accounts
+│ ├── CreateAccount
+│ ├── UpdateAccount
+│ ├── DeleteAccount
+│ └── GetAccountById
+├── Transactions
+├── Budgets
+└── Reports
 ```
 
 ---
-
 # Infrastructure Layer
 
 Handles external concerns:
@@ -481,9 +332,9 @@ Components:
 
 ---
 
-#  API Layer
+# API Layer
 
-The API layer exposes the application through **REST endpoints**.
+Exposes the application through **REST endpoints**.
 
 Contains:
 
@@ -491,7 +342,7 @@ Contains:
 - Request models
 - Global exception middleware
 
-Example controllers:
+**Example controllers:**
 
 - AccountsController
 - TransactionsController
@@ -505,15 +356,13 @@ Example controllers:
 
 # Testing
 
-The solution includes unit tests for:
-
 ### Domain Tests
 
-```
+Located in:
 DomainCore.Domain.Tests
-```
 
-Testing:
+
+Tests:
 
 - Domain rules
 - Aggregates
@@ -521,67 +370,61 @@ Testing:
 
 ### Application Tests
 
-```
+Located in:
 FinanceCore.Application.Tests
-```
 
-Testing:
+
+Tests:
 
 - Command handlers
 - Query handlers
 - Business workflows
 
+---
+
 # Key Design Decisions
 
 ## Account and Transaction Separation
 
-Accounts maintain the current balance while transactions store historical financial records.  
-This separation improves scalability, simplifies reporting, and avoids loading large transaction histories when only balances are required.
+Accounts maintain current balances, transactions store historical records.  
+Improves scalability, simplifies reporting, and avoids heavy data loads.
 
 ---
 
 ## Categories
 
-Categories organize transactions into logical groups such as income and expenses.  
-They provide structured insights into spending behavior and financial patterns.
+Categories organize transactions into logical groups, providing structured insights into spending behavior.
 
 ---
 
 ## Budgets
 
-Budgets define spending limits for specific periods and categories.  
-They enable tracking planned versus actual spending and help maintain financial discipline.
+Budgets define spending limits for periods and categories, helping track planned vs actual spending.
 
 ---
 
 ## Savings Goals
 
-Savings goals represent financial targets with progress tracking and milestones.  
-They provide a structured way to save toward specific objectives.
+Savings goals represent financial targets with progress tracking and milestones, providing a structured way to save.
 
 ---
 
 ## Event-Driven Design
 
-Domain events capture significant state changes within the system.  
-They support features such as auditing, notifications, and analytics while keeping domain logic decoupled.
+Domain events capture significant state changes, enabling auditing, notifications, and analytics while keeping domain logic decoupled.
 
 ---
 
 # Future Improvements
 
-Planned improvements include:
-
 - Recurring transactions
 - Financial analytics dashboards
 - Shared budgets
 - Mobile integration
-
-The repository also includes **CoinHive**, a **TypeScript + React frontend project** that will integrate with the FinanceCore API.  
-The frontend is currently in development and will be added soon.
+- **CoinHive React frontend integration** (coming soon)
 
 ---
 
 # Author
 
-FinanceCore is a personal backend architecture project demonstrating **Domain-Driven Design, Clean Architecture, and CQRS** using **.NET 8**.
+FinanceCore is a personal backend architecture project by me (Youssef AS) demonstrating **Domain-Driven Design, Clean Architecture, and CQRS**
