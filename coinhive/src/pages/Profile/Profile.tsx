@@ -41,9 +41,8 @@ export default function ProfilePage() {
                 <Card>
                     <SpendingAnalytics/>
                 </Card>
-                <Card>
-                    <FinancialCard/>
-                </Card>
+                <FinancialCard/>
+            
 
             </div>
 

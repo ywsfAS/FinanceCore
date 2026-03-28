@@ -1,11 +1,13 @@
+/* Base card style */
 .card {
     display: flex;
+    flex-direction: row;
     width: 100%;
-    color : black;
     max-width: 900px;
+    color: black;
     margin: 50px auto;
     padding: 7px;
-    background-color: #ffffff;
+    background-color: #fff;
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
     border-radius: 12px;
     overflow: hidden;
@@ -17,8 +19,8 @@
     .card {
         flex-direction: column;
         justify-content: center;
-        max-width: 700px;
         align-items: center;
+        max-width: 700px;
         height: auto;
     }
 }
@@ -27,7 +29,13 @@
 @media (max-width: 600px) {
     .card {
         padding: 12px;
-        max-width : 400px;
+        max-width: 400px;
         gap: 20px;
     }
+}
+
+/* Variants */
+.center {
+    justify-content: center;
+    align-items: center;
 }

@@ -1,13 +1,17 @@
-import type { ReactNode } from "react";
-import "./Card.css";
-interface CardProps {
-    children: ReactNode,
-    className? : string,
+import type { CSSProperties, ReactNode } from "react";
+import styles from "./Card.module.css";
+
+
+type CardProps = {
+    children: ReactNode;
+    style?: CSSProperties;
+    variant?: string;
 
 }
-export default function Card({ children, className = "" }: CardProps) {
+export default function Card({ children, variant = 'default', style }: CardProps) {
+    const variantStyle = `${styles.card} ${styles[variant]}`;
     return (
-        <div className={`card ${className}`}>
+        <div className={variantStyle} style={style} >
             {children }    
         </div>
     )

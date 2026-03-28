@@ -1,69 +1,53 @@
+import { Topbar } from "../Topbar/Topbar";
+import { HeroBalance } from "../HeroBalance/HeroBalance";
+import { StatCard } from "../StatCard/StatCard";
+import Card from "../Card/Card";
+import { type ReactNode } from "react";
+import { StatsGrid } from "../StatsGrid/StatsGrid";
 
-import "./FinancialOverview.css";
+// Mini stats for HeroBalance
+const heroStats = [
+    { label: "Income", value: "8,240", positive: true },
+    { label: "Expenses", value: "3,180", positive: false },
+    { label: "Net", value: "5,060", positive: true },
+];
 
-
-interface StatCard {
+// Stat cards
+const stats: {
     label: string;
     value: string;
     change: string;
     direction: "up" | "down";
-    icon: string;
-    iconVariant: "green" | "red" | "blue";
-}
-
-
-const stats: StatCard[] = [
-    { label: "Monthly Income", value: "$8,240", change: "+12.4%", direction: "up", icon: "?", iconVariant: "green" },
-    { label: "Monthly Expenses", value: "$3,180", change: "-6.1%", direction: "down", icon: "?", iconVariant: "red" },
-    { label: "Savings Rate", value: "61.4%", change: "+3.2%", direction: "up", icon: "?", iconVariant: "blue" },
-];
-
+    icon: ReactNode;
+    iconVariant?: "green" | "red" | "blue";
+}[] = [
+        { label: "Monthly Income", value: "$8,240", change: "+12.4%", direction: "up", icon: "💰", iconVariant: "green" },
+        { label: "Monthly Expenses", value: "$3,180", change: "-6.1%", direction: "down", icon: "💸", iconVariant: "red" },
+        { label: "Savings Rate", value: "61.4%", change: "+3.2%", direction: "up", icon: "📈", iconVariant: "blue" },
+    ];
 
 export default function FinancialOverview() {
     return (
-        <div className="fc-page">
+        <Card>
+            {/* Topbar */}
+            <Topbar username="YS" date="Tuesday, April 2025" />
 
-                   <div className="fc-topbar">
-                <div className="fc-topbar-left">
-                    <h1>Overview</h1>
-                    <p>Tuesday, April 2025</p>
-                </div>
-                <div className="fc-avatar">YS</div>
-            </div>
-            <div className="fc-hero">
-                <p className="fc-hero-label">Total Balance</p>
-                <p className="fc-hero-balance"><span>$</span>12,450.00</p>
-                <div className="fc-hero-row">
-                    <div className="fc-hero-stat">
-                        <span className="fc-hero-stat-label">Income</span>
-                        <span className="fc-hero-stat-value positive">+$8,240</span>
-                    </div>
-                    <div className="fc-hero-stat">
-                        <span className="fc-hero-stat-label">Expenses</span>
-                        <span className="fc-hero-stat-value negative">-$3,180</span>
-                    </div>
-                    <div className="fc-hero-stat">
-                        <span className="fc-hero-stat-label">Net</span>
-                        <span className="fc-hero-stat-value positive">+$5,060</span>
-                    </div>
-                </div>
-            </div>
-
-            <div className="fc-stats">
+            {/* Hero Balance Card */}
+            <HeroBalance totalBalance="12,450.00" stats={heroStats} />
+     
+            {/* Stat Cards Grid */}
+            <StatsGrid columns={3} gap={16}>
                 {stats.map((s) => (
-                    <div className="fc-stat-card" key={s.label}>
-                        <div className="fc-stat-header">
-                            <span className="fc-stat-label">{s.label}</span>
-                            <div className={`fc-stat-icon ${s.iconVariant}`}>{s.icon}</div>
-                        </div>
-                        <div className="fc-stat-value">{s.value}</div>
-                        <span className={`fc-stat-change ${s.direction}`}>
-                            {s.direction === "up" ? "?" : "?"} {s.change}
-                        </span>
-                    </div>
+                   <StatCard
+                     label={s.label}
+                     value={s.value}
+                     change={s.change}
+                     direction={s.direction}
+                     icon={s.icon}
+                     iconVariant={s.iconVariant}
+                  />
                 ))}
-            </div>
-
-        </div>
+            </StatsGrid>
+        </Card>
     );
 }

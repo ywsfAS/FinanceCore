@@ -67,7 +67,7 @@ const RegisterPage = () => {
                         />
                     </div>
 
-                    <Button type="submit" onClick={handleRegister}>Register</Button>
+                    <Button type="submit" onClick={handleRegister} variant='primary'>Register</Button>
 
                     <p className="login-up">
                         Already have an account? <a className="login-up-link">Login</a>

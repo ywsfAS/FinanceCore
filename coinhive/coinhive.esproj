@@ -10,7 +10,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="src\components\Input\" />
-    <Folder Include="src\components\Button\" />
     <Folder Include="src\components\Checkbox\" />
     <Folder Include="src\components\Navbar\" />
     <Folder Include="src\components\SpendingAnalytics\" />

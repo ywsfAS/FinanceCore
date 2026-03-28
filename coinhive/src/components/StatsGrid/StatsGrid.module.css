@@ -1,0 +1,23 @@
+.statsGrid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* default 3 columns */
+    gap: 16px; /* default gap */
+    margin-bottom: 24px;
+}
+
+/* Responsive adjustments */
+
+/* Tablet / small laptop */
+@media (max-width: 1024px) {
+    .statsGrid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+/* Mobile */
+@media (max-width: 600px) {
+    .statsGrid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+}
