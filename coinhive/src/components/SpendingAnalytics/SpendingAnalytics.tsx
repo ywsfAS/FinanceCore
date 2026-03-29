@@ -1,25 +1,7 @@
-
-import {
-    PieChart,
-    Pie,
-    Cell,
-    BarChart,
-    Bar,
-    XAxis,
-    YAxis,
-    Tooltip,
-    ResponsiveContainer,
-    CartesianGrid,
-} from "recharts";
-import "./SpendingAnalytics.css";
-import type {
-    CategoryEntry,
-    MonthlyEntry,
-    CustomTooltipProps,
-    CustomBarTooltipProps,
-    SummaryItem,
-} from "./types";
-import { useState } from 'react';
+import { PieChartCard } from "../PieChartCard/PieChartCard";
+import { BarChartCard } from "../BarChartCard/BarChartCard";
+import type { CategoryEntry, MonthlyEntry, SummaryItem } from "../types";
+import styles from "./SpendingAnalytics.module.css";
 
 const categoryData: CategoryEntry[] = [
     { name: "Food", value: 400 },
@@ -38,210 +20,23 @@ const monthlyData: MonthlyEntry[] = [
 const COLORS: string[] = ["#6366f1", "#10b981", "#f59e0b", "#f43f5e"];
 const CATEGORY_ICONS: string[] = ["🍔", "🏠", "🚌", "📦"];
 
-const total: number = categoryData.reduce((sum, d) => sum + d.value, 0);
-
-
-function PieTooltip({ active, payload }: CustomTooltipProps) {
-    if (!active || !payload?.length) return null;
-    const entry = payload[0];
-    const name = entry.name ?? entry.payload?.name;
-    const value = entry.value ?? entry.payload?.value;
-    return (
-        <div className="sa-tooltip">
-            <div className="sa-tooltip-label">{name}</div>
-            <div className="sa-tooltip-value">${value?.toLocaleString()}</div>
-        </div>
-    );
-}
-
-function BarTooltip({ active, payload, label }: CustomBarTooltipProps) {
-    if (!active || !payload?.length) return null;
-    return (
-        <div className="sa-tooltip">
-            <div className="sa-tooltip-label">{label}</div>
-            <div className="sa-tooltip-value">${payload[0].value.toLocaleString()}</div>
-        </div>
-    );
-}
-
+const summaryItems: SummaryItem[] = [
+    { label: "Avg / Month", value: `$${Math.round(monthlyData.reduce((s, d) => s + d.amount, 0) / monthlyData.length)}` },
+    { label: "Peak Month", value: "Mar" },
+    { label: "Total", value: `$${monthlyData.reduce((s, d) => s + d.amount, 0).toLocaleString()}` },
+];
 
 export default function SpendingAnalytics() {
-    const [activeIndex, setActiveIndex] = useState<number | null>(null);
-
-    const activeCat: CategoryEntry | null =
-        activeIndex !== null ? categoryData[activeIndex] : null;
-
-    const summaryItems: SummaryItem[] = [
-        {
-            label: "Avg / Month",
-            value: `$${Math.round(
-                monthlyData.reduce((s, d) => s + d.amount, 0) / monthlyData.length
-            )}`,
-        },
-        { label: "Peak Month", value: "Mar" },
-        {
-            label: "Total",
-            value: `$${monthlyData.reduce((s, d) => s + d.amount, 0).toLocaleString()}`,
-        },
-    ];
-
     return (
-        <div className="sa-wrapper">
-            {/* Header */}
-            <div className="sa-header">
-                <h2 className="sa-title">Spending Analytics</h2>
-                <span className="sa-badge">April 2025</span>
+        <div className={styles.wrapper}>
+            <div className={styles.header}>
+                <h2 className={styles.title}>Spending Analytics</h2>
+                <span className={styles.badge}>April 2025</span>
             </div>
 
-            <div className="sa-grid">
-                {/* ── Pie Chart Card ── */}
-                <div className="sa-card">
-                    <p className="sa-card-title">By Category</p>
-
-                    <div className="sa-pie-wrap">
-                        <ResponsiveContainer width="100%" height={200}>
-                            <PieChart>
-                                <defs>
-                                    {COLORS.map((color, i) => (
-                                        <radialGradient
-                                            key={i}
-                                            id={`pie-grad-${i}`}
-                                            cx="50%"
-                                            cy="50%"
-                                            r="50%"
-                                        >
-                                            <stop offset="0%" stopColor={color} stopOpacity={1} />
-                                            <stop offset="100%" stopColor={color} stopOpacity={0.7} />
-                                        </radialGradient>
-                                    ))}
-                                </defs>
-                                <Pie
-                                    data={categoryData}
-                                    dataKey="value"
-                                    cx="50%"
-                                    cy="50%"
-                                    innerRadius={55}
-                                    outerRadius={85}
-                                    paddingAngle={3}
-                                    onMouseEnter={(_, index) => setActiveIndex(index)}
-                                    onMouseLeave={() => setActiveIndex(null)}
-                                >
-                                    {categoryData.map((_, index) => (
-                                        <Cell
-                                            key={index}
-                                            fill={`url(#pie-grad-${index})`}
-                                            stroke="transparent"
-                                            style={{
-                                                filter:
-                                                    activeIndex === index
-                                                        ? `drop-shadow(0 0 8px ${COLORS[index]})`
-                                                        : "none",
-                                                transition: "filter 0.2s, opacity 0.2s",
-                                                opacity:
-                                                    activeIndex !== null && activeIndex !== index
-                                                        ? 0.5
-                                                        : 1,
-                                            }}
-                                        />
-                                    ))}
-                                </Pie>
-                                <Tooltip content={<PieTooltip />} />
-                            </PieChart>
-                        </ResponsiveContainer>
-
-                        {/* Center stat */}
-                        <div className="sa-center-stat">
-                            <div className="sa-center-value">
-                                {activeCat ? `$${activeCat.value}` : `$${total}`}
-                            </div>
-                            <div className="sa-center-label">
-                                {activeCat ? activeCat.name : "Total"}
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Legend */}
-                    <div className="sa-legend">
-                        {categoryData.map((item, index) => (
-                            <div
-                                key={index}
-                                className={`sa-legend-item${activeIndex === index ? " sa-legend-item--active" : ""}`}
-                                onMouseEnter={() => setActiveIndex(index)}
-                                onMouseLeave={() => setActiveIndex(null)}
-                            >
-                                <span className="sa-legend-icon">{CATEGORY_ICONS[index]}</span>
-                                <span
-                                    className="sa-legend-dot"
-                                    style={{
-                                        background: COLORS[index],
-                                        boxShadow: `0 0 8px ${COLORS[index]}`,
-                                    }}
-                                />
-                                <span className="sa-legend-label">{item.name}</span>
-                                <span className="sa-legend-value">${item.value}</span>
-                                <span
-                                    className="sa-legend-pct"
-                                    style={{ color: COLORS[index] }}
-                                >
-                                    {Math.round((item.value / total) * 100)}%
-                                </span>
-                            </div>
-                        ))}
-                    </div>
-                </div>
-
-                {/* ── Bar Chart Card ── */}
-                <div className="sa-card">
-                    <p className="sa-card-title">Monthly Spending</p>
-
-                    <ResponsiveContainer width="100%" height={200}>
-                        <BarChart data={monthlyData} barSize={36}>
-                            <defs>
-                                <linearGradient id="bar-gradient" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="0%" stopColor="#6366f1" stopOpacity={1} />
-                                    <stop offset="100%" stopColor="#8b5cf6" stopOpacity={0.5} />
-                                </linearGradient>
-                            </defs>
-                            <CartesianGrid
-                                vertical={false}
-                                stroke="rgba(255,255,255,0.04)"
-                                strokeDasharray="4 4"
-                            />
-                            <XAxis
-                                dataKey="month"
-                                axisLine={false}
-                                tickLine={false}
-                                tick={{ fill: "#52525b", fontSize: 12, fontWeight: 600 }}
-                            />
-                            <YAxis
-                                axisLine={false}
-                                tickLine={false}
-                                tick={{ fill: "#52525b", fontSize: 11 }}
-                                tickFormatter={(v: number) => `$${v}`}
-                                width={45}
-                            />
-                            <Tooltip
-                                content={<BarTooltip />}
-                                cursor={{ fill: "rgba(255,255,255,0.03)" }}
-                            />
-                            <Bar
-                                dataKey="amount"
-                                fill="url(#bar-gradient)"
-                                radius={[6, 6, 0, 0]}
-                            />
-                        </BarChart>
-                    </ResponsiveContainer>
-
-                    {/* Summary strip */}
-                    <div className="sa-summary-row">
-                        {summaryItems.map((item, i) => (
-                            <div key={i} className="sa-summary-item">
-                                <div className="sa-summary-value">{item.value}</div>
-                                <div className="sa-summary-label">{item.label}</div>
-                            </div>
-                        ))}
-                    </div>
-                </div>
+            <div className={styles.grid}>
+                <PieChartCard data={categoryData} colors={COLORS} icons={CATEGORY_ICONS} />
+                <BarChartCard data={monthlyData} summaryItems={summaryItems} />
             </div>
         </div>
     );

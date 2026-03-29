@@ -1,0 +1,76 @@
+.card {
+    background: #fff;
+    padding: 16px;
+    border-radius: 12px;
+    color:black;
+}
+
+.title {
+    font-weight: 600;
+    margin-bottom: 12px;
+}
+
+.pieWrap {
+    position: relative;
+}
+
+.centerStat {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+}
+
+.centerValue {
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.centerLabel {
+    font-size: 12px;
+    color: #6b7280;
+}
+
+.legend {
+    margin-top: 12px;
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.legendItem {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+    .legendItem.active {
+        font-weight: 700;
+    }
+
+.legendIcon {
+    font-size: 16px;
+}
+
+.legendDot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.legendLabel {
+    margin-left: 4px;
+}
+
+.legendValue {
+    margin-left: 4px;
+    font-weight: 600;
+}
+
+.legendPct {
+    margin-left: auto;
+    font-size: 12px;
+}

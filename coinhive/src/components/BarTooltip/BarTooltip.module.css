@@ -1,0 +1,15 @@
+.tooltip {
+    background: #1f2937;
+    color: white;
+    padding: 8px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+}
+
+.label {
+    font-weight: 600;
+}
+
+.value {
+    margin-top: 2px;
+}
