@@ -4,6 +4,7 @@ import { StatCard } from "../StatCard/StatCard";
 import Card from "../Card/Card";
 import { type ReactNode } from "react";
 import { StatsGrid } from "../StatsGrid/StatsGrid";
+import "../../styles/utility.css";
 
 // Mini stats for HeroBalance
 const heroStats = [
@@ -26,9 +27,9 @@ const stats: {
         { label: "Savings Rate", value: "61.4%", change: "+3.2%", direction: "up", icon: "📈", iconVariant: "blue" },
     ];
 
-export default function FinancialOverview() {
+export default function FinancialCard() {
     return (
-        <Card>
+        <Card className='py-1 px-2' size='large'>
             {/* Topbar */}
             <Topbar username="YS" date="Tuesday, April 2025" />
 

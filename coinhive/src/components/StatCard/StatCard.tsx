@@ -1,5 +1,5 @@
 import styles from './StatCard.module.css';
-import { ReactNode } from 'react';
+import { type ReactNode } from 'react';
 
 type StatCardProps =  {
     label: string;

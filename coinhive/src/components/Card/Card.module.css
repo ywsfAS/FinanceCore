@@ -13,7 +13,9 @@
     overflow: hidden;
     gap: 70px;
 }
-
+.large {
+    max-width: 1180px
+}
 /* Tablet / small laptop */
 @media (max-width: 1205px) {
     .card {
@@ -22,6 +24,9 @@
         align-items: center;
         max-width: 700px;
         height: auto;
+    }
+    .large{
+        max-width:510px;
     }
 }
 
@@ -39,3 +44,4 @@
     justify-content: center;
     align-items: center;
 }
+

@@ -1,23 +1,23 @@
 .statsGrid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr); /* default 3 columns */
-    gap: 16px; /* default gap */
-    margin-bottom: 24px;
+    --columns: 3;
+    --gap: 16px;
+    grid-template-columns: repeat(var(--columns), 1fr);
+    gap: var(--gap);
 }
-
-/* Responsive adjustments */
 
 /* Tablet / small laptop */
 @media (max-width: 1024px) {
     .statsGrid {
-        grid-template-columns: repeat(2, 1fr);
+        --columns: 2 !important;  
+        
     }
 }
 
 /* Mobile */
 @media (max-width: 600px) {
     .statsGrid {
-        grid-template-columns: 1fr;
-        gap: 12px;
+        --columns: 1 !important; 
+        --gap: 12px; 
     }
 }
