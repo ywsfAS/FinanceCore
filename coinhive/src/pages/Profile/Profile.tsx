@@ -6,11 +6,12 @@ import "./Profile.css";
 import SpendingAnalytics from "../../components/SpendingAnalytics/SpendingAnalytics";
 import FinancialCard from "../../components/FinancialOverview/FinancialOverview";
 import FinancialTransaction from "../../components/FinancialTransaction/FinancialTransaction";
+import { BarChartCard } from "../../components/BarChartCard/BarChartCard";
 export default function ProfilePage() {
 
     return (
         <div className="profile-container">
-            <SpendingAnalytics/>
-        </div>
+            <FinancialTransaction />
+           </div>
     )
 }
