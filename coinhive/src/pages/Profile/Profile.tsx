@@ -1,17 +1,37 @@
-import Card from "../../components/Card/Card";
-import SideImage from "../../components/SideImage/SideImage";
+import styles from "./Profile.module.css";
 import Logo from "../../assets/profile.jpeg";
-import UserTags from "../../components/TagButtons/TagButton";
-import "./Profile.css";
-import SpendingAnalytics from "../../components/SpendingAnalytics/SpendingAnalytics";
+import Card from "../../components/Card/Card";
 import FinancialCard from "../../components/FinancialOverview/FinancialOverview";
 import FinancialTransaction from "../../components/FinancialTransaction/FinancialTransaction";
-import { BarChartCard } from "../../components/BarChartCard/BarChartCard";
-export default function ProfilePage() {
+import SpendingAnalytics from "../../components/SpendingAnalytics/SpendingAnalytics";
 
+export default function ProfilePage() {
     return (
-        <div className="profile-container">
-            <FinancialTransaction />
-           </div>
-    )
+        <div className={styles.container}>
+            <div className={styles.left}>
+                <div className={styles.user}>
+                    <img
+                        src={Logo}
+                        alt="User Avatar"
+                        className={styles.avatar}
+                    />
+                    <div className={styles.userInfo}>
+                        <h4 className={styles.userName}>John Doe</h4>
+                        <p className={styles.userRole}>Administrator</p>
+                        <p className={styles.userBio}>
+                            Passionate about web development and UI/UX design. Loves building user-friendly apps and learning new technologies.
+                        </p>
+                    </div>
+                </div>
+                <SpendingAnalytics />
+            </div>
+            <div className={styles.right}>
+                <FinancialCard/>
+                <FinancialTransaction/>
+            </div>
+
+ 
+
+        </div>
+    );
 }

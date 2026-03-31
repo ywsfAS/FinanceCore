@@ -29,7 +29,7 @@ const stats: {
 
 export default function FinancialCard() {
     return (
-        <Card className='py-1 px-2' size='large'>
+        <Card className='py-2 px-2 flex-col m-'>
             {/* Topbar */}
             <Topbar username="YS" date="Tuesday, April 2025" />
 

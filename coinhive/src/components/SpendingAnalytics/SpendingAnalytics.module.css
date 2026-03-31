@@ -3,6 +3,7 @@
     flex-direction: column;
     gap: 20px;
     color:black;
+    border-radius: 20px;
 }
 
 .header {

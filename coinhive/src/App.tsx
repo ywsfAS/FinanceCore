@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import Navbar from './components/Navbar/Navbar';
 import RegisterPage from './pages/Register/RegisterPage';
 import ProfilePage from './pages/Profile/Profile';
+import Footer from './components/Footer/Footer';
 
 function App() {
     const { loginWithToken, loading } = useAuth();
@@ -23,7 +24,8 @@ function App() {
     return (
         <>
             <Navbar />
-          <ProfilePage/>
+            <ProfilePage />
+            <Footer/>
         </>
     )
 }

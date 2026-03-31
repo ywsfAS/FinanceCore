@@ -29,11 +29,6 @@ const summaryItems: SummaryItem[] = [
 export default function SpendingAnalytics() {
     return (
         <div className={styles.wrapper}>
-            <div className={styles.header}>
-                <h2 className={styles.title}>Spending Analytics</h2>
-                <span className={styles.badge}>April 2025</span>
-            </div>
-
             <div className={styles.grid}>
                 <PieChartCard data={categoryData} colors={COLORS} icons={CATEGORY_ICONS} />
                 <BarChartCard data={monthlyData} summaryItems={summaryItems} />
