@@ -53,6 +53,7 @@ div.input p:first-child {
 .global-container {
     height: 100vh;
     display: flex;
+    background-color: #f5f6fa;
     justify-content: center;
     align-items: center;
 }

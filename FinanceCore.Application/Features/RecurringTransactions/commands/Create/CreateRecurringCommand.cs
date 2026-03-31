@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 namespace FinanceCore.Application.Features.RecurringTransactions.commands.Create
 {
     public record CreateRecurringCommand(
+        Guid userId,
         Guid accountId,
         Guid categoryId,
         decimal amount,

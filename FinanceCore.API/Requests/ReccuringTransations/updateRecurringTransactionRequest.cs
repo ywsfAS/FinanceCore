@@ -1,12 +1,8 @@
 using FinanceCore.Domain.Enums;
-using MediatR;
-using FinanceCore.Application.DTOs.RecurringTransaction;
-using System;
 
-namespace FinanceCore.Application.Features.RecurringTransaction.Commands.Update
+namespace FinanceCore.API.Requests.ReccuringTransations
 {
-    public record UpdateRecurringCommand(
-        Guid userId,
+    public record UpdateRecurringTransactionRequest(
         Guid Id,
         Guid AccountId,
         Guid CategoryId,
@@ -18,5 +14,5 @@ namespace FinanceCore.Application.Features.RecurringTransaction.Commands.Update
         DateTime StartDate,
         DateTime? EndDate,
         bool IsActive
-    ) : IRequest<CreateRecurringTransactionDto>;
+        );
 }

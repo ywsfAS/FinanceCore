@@ -6,6 +6,7 @@ using System;
 namespace FinanceCore.Application.Features.Goals.Commands.Update
 {
     public record UpdateSavingsGoalCommand(
+        Guid UserId,
         Guid Id,
         string Name,
         decimal TargetAmount,

@@ -3,6 +3,6 @@ using System;
 
 namespace FinanceCore.Application.Features.Goals.Commands.Delete
 {
-    public record DeleteSavingsGoalCommand(Guid Id) : IRequest;
+    public record DeleteSavingsGoalCommand(Guid userId , Guid Id) : IRequest;
 }
 

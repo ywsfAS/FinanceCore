@@ -3,5 +3,5 @@ using System;
 
 namespace FinanceCore.Application.Features.RecurringTransaction.Commands.Delete
 {
-    public record DeleteRecurringCommand(Guid Id) : IRequest;
+    public record DeleteRecurringCommand(Guid userId ,Guid Id) : IRequest;
 }

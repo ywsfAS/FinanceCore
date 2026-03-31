@@ -5,6 +5,7 @@ namespace FinanceCore.Application.DTOs.RecurringTransaction
 {
     public class CreateRecurringTransactionDto
     {
+        public Guid id { get; set; }
         public Guid AccountId { get; set; }
         public Guid CategoryId { get; set; }
 

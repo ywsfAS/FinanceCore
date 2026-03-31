@@ -16,9 +16,4 @@
     <PackageReference Include="MediatR" Version="14.1.0" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Features\RecurringTransactions\queries\" />
-    <Folder Include="Features\SavingGoals\Queries\" />
-  </ItemGroup>
-
 </Project>

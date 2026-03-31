@@ -24,7 +24,7 @@ function App() {
     return (
         <>
             <Navbar />
-            <ProfilePage />
+            <RegisterPage />
             <Footer/>
         </>
     )
