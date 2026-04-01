@@ -4,6 +4,7 @@ import { useEffect } from 'react';
 import Navbar from './components/Navbar/Navbar';
 import RegisterPage from './pages/Register/RegisterPage';
 import ProfilePage from './pages/Profile/Profile';
+import About from './pages/About/About';
 import Footer from './components/Footer/Footer';
 
 function App() {
@@ -24,7 +25,7 @@ function App() {
     return (
         <>
             <Navbar />
-            <RegisterPage />
+            <About/>
             <Footer/>
         </>
     )
