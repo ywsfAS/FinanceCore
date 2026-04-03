@@ -5,6 +5,7 @@ import Navbar from './components/Navbar/Navbar';
 import RegisterPage from './pages/Register/RegisterPage';
 import ProfilePage from './pages/Profile/Profile';
 import About from './pages/About/About';
+import Contact from './pages/Contact/Contact'
 import Footer from './components/Footer/Footer';
 
 function App() {
@@ -25,7 +26,7 @@ function App() {
     return (
         <>
             <Navbar />
-            <About/>
+            <Contact/>
             <Footer/>
         </>
     )
