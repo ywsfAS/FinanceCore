@@ -1,0 +1,207 @@
+.wrapper {
+    opacity: 0;
+    transform: translateY(28px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.wrapper.visible {
+     opacity: 1;
+     transform: translateY(0);
+}
+
+.wrapper.visible .channelCard {
+     opacity: 1;
+     transform: translateY(0);
+ }
+.header {
+    margin-bottom: 32px;
+}
+
+.eyebrow {
+    display: inline-block;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: #10b981;
+    margin-bottom: 14px;
+}
+
+.title {
+    font-family: 'Montserrat', sans-serif;
+    font-size: clamp(22px, 2.8vw, 34px);
+    font-weight: 800;
+    letter-spacing: -0.025em;
+    color: #0a0a0a;
+    margin: 0 0 12px;
+}
+
+.subtitle {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.7;
+    color: #6b7280;
+}
+
+.channels {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-bottom: 36px;
+}
+
+.channelCard {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    padding: 20px 22px;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    background: #ffffff;
+    opacity: 0;
+    transform: translateY(14px);
+    transition: opacity 0.5s ease, transform 0.5s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.channelCard:hover {
+    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.06);
+    border-color: #d1fae5;
+    transform: translateY(-2px) !important;
+ }
+.channelIcon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    font-size: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.channelBody {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.channelLabel {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #9ca3af;
+}
+
+.channelValue {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+}
+
+.channelDetail {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    color: #9ca3af;
+}
+
+.officesBlock {
+    margin-bottom: 28px;
+    padding: 24px;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    background: #fafafa;
+}
+
+.officesTitle {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: #9ca3af;
+    display: block;
+    margin-bottom: 16px;
+}
+
+.offices {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.officeCard {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+}
+
+.officeFlag {
+    font-size: 20px;
+    line-height: 1;
+    margin-top: 2px;
+}
+
+.officeCity {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    font-weight: 700;
+    color: #0a0a0a;
+    display: block;
+    margin-bottom: 2px;
+}
+
+.officeAddress {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    color: #6b7280;
+    display: block;
+}
+
+.faqNote {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    padding: 20px 22px;
+    border-radius: 14px;
+    background: #f0fdf4;
+    border: 1px solid #d1fae5;
+}
+
+.faqIcon {
+    font-size: 20px;
+    line-height: 1;
+    margin-top: 2px;
+}
+
+.faqText {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: #0a0a0a;
+    display: block;
+    margin-bottom: 3px;
+}
+
+.faqLink {
+    color: #10b981;
+    text-decoration: none;
+    transition: opacity 0.2s;
+}
+
+.faqLink:hover {
+    opacity: 0.75;
+}
+.faqSub {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 12px;
+    font-weight: 400;
+    color: #6b7280;
+    display: block;
+}
