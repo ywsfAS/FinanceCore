@@ -14,5 +14,6 @@
     <Folder Include="src\components\Navbar\" />
     <Folder Include="src\components\TagButtons\" />
     <Folder Include="src\components\SideImage\" />
+    <Folder Include="src\pages\ContactUs\" />
   </ItemGroup>
 </Project>
