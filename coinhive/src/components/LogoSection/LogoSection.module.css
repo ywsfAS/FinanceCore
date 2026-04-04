@@ -1,0 +1,47 @@
+.wrapper {
+    padding: 48px 0;
+    border-top: 1px solid #f0f0f0;
+    border-bottom: 1px solid #f0f0f0;
+    text-align: center;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.wrapper.visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.label {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: #9ca3af;
+    margin: 0 0 28px;
+}
+
+.logos {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+}
+
+.logo {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 13px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+    color: #d1d5db;
+    text-transform: uppercase;
+    transition: color 0.2s;
+    cursor: default;
+}
+
+.logo:hover {
+    color: #9ca3af;
+}

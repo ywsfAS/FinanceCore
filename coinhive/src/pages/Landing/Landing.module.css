@@ -1,0 +1,48 @@
+*, *::before, *::after {
+    box-sizing: border-box;
+}
+
+.page {
+    font-family: 'Montserrat', sans-serif;
+    background: #ffffff;
+    min-height: 100vh;
+    color: #0a0a0a;
+}
+
+.container {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 48px;
+}
+
+.altBg {
+    background: #fafafa;
+    border-top: 1px solid #f0f0f0;
+    border-bottom: 1px solid #f0f0f0;
+}
+
+.altBg .container {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 48px;
+}
+
+@media (max-width: 900px) {
+    .navLinks {
+        display: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .nav {
+        padding: 0 24px;
+    }
+
+    .container {
+        padding: 0 24px;
+    }
+
+    .altBg .container {
+        padding: 0 24px;
+    }
+}
