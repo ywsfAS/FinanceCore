@@ -4,6 +4,7 @@ import LogoSection from "../../components/LogoSection/LogoSection";
 import FeaturesSection from "../../components/FeaturesSection/FeaturesSection";
 import TestimonialsSection from  "../../components/TestimonialsSection/TestimonialsSection";
 import PricingSection from "../../components/Pricingsection/PricingSection";
+import CtaSection from "../../components/Ctasection/CtaSection";
 import  HowItWorks from "../../components/Howitworks/HowItWorks";
 import styles from "./Landing.module.css";
 
@@ -36,6 +37,11 @@ const Landing: React.FC = () => {
             {/* Pricing */}
             <div className={styles.container}>
                 <PricingSection />
+            </div>
+
+            {/* CTA */}
+            <div className={styles.container}>
+                <CtaSection />
             </div>
 
         </main>
