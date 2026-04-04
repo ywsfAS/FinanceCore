@@ -2,7 +2,9 @@ import React from "react";
 import HeroSection from "../../components/HeroSection/HeroSection";
 import LogoSection from "../../components/LogoSection/LogoSection";
 import FeaturesSection from "../../components/FeaturesSection/FeaturesSection";
-import HowItWorks from "../../components/Howitworks/HowItWorks";
+import TestimonialsSection from  "../../components/TestimonialsSection/TestimonialsSection";
+import PricingSection from "../../components/Pricingsection/PricingSection";
+import  HowItWorks from "../../components/Howitworks/HowItWorks";
 import styles from "./Landing.module.css";
 
 const Landing: React.FC = () => {
@@ -26,6 +28,14 @@ const Landing: React.FC = () => {
                 <div className={styles.container}>
                     <HowItWorks />
                 </div>
+            </div>
+
+            {/* Testimonials */}
+            <TestimonialsSection />
+
+            {/* Pricing */}
+            <div className={styles.container}>
+                <PricingSection />
             </div>
 
         </main>
