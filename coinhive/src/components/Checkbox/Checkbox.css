@@ -1,42 +1,62 @@
+:root {
+    /* Colors */
+    --color-black: #000000;
+    --color-primary: #4f8ef7;
+    --color-white: #ffffff;
+    /* Font sizes */
+    --font-size-base: 14px;
+    /* Spacing */
+    --gap-sm: 10px;
+    /* Checkbox sizes */
+    --checkbox-size: 18px;
+    --checkbox-border-width: 2px;
+    --checkbox-radius: 4px;
+    /* Checkmark tick */
+    --tick-left: 4px;
+    --tick-top: -1px;
+    --tick-width: 5px;
+    --tick-height: 10px;
+    --tick-border-width: 2px;
+}
+
 .checkbox-container {
     display: flex;
     align-items: center;
     cursor: pointer;
-    font-size: 14px;
-    gap: 10px;
-    color : black;
+    font-size: var(--font-size-base);
+    gap: var(--gap-sm);
+    color: var(--color-black);
     user-select: none;
 }
 
-/* Hide default checkbox */
-.checkbox-container input {
-    display: none;
-}
+    /* Hide default checkbox */
+    .checkbox-container input {
+        display: none;
+    }
 
 /* Custom square */
 .checkmark {
-    width: 18px;
-    height: 18px;
-    border: 2px solid #4f8ef7;
-    border-radius: 4px;
+    width: var(--checkbox-size);
+    height: var(--checkbox-size);
+    border: var(--checkbox-border-width) solid var(--color-primary);
+    border-radius: var(--checkbox-radius);
     display: inline-block;
     position: relative;
 }
 
 .checkbox-container input:checked + .checkmark {
-    background-color: #4f8ef7;
+    background-color: var(--color-primary);
 }
 
- /* Tick */
-.checkbox-container input:checked + .checkmark::after {
-   content: "";
-   position: absolute;
-   left: 4px;
-   top: -1px;
-   width: 5px;
-   height: 10px;
-   border: solid white;
-   border-width: 0 2px 2px 0;
-   transform: rotate(45deg);
-
-}
+    /* Tick */
+    .checkbox-container input:checked + .checkmark::after {
+        content: "";
+        position: absolute;
+        left: var(--tick-left);
+        top: var(--tick-top);
+        width: var(--tick-width);
+        height: var(--tick-height);
+        border: solid var(--color-white);
+        border-width: 0 var(--tick-border-width) var(--tick-border-width) 0;
+        transform: rotate(45deg);
+    }

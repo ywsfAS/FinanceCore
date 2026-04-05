@@ -10,7 +10,17 @@ const About: React.FC = () => {
         <main className={styles.page}>
 
             {/* Hero */}
-            <AboutHero />
+            <AboutHero
+                tag="Our Story"
+                title="Finance, Built Around"
+                para="We believe every financial decision deserves clarity, confidence, and
+                    the tools to act on it. We build software that puts you in control
+                    of your goals, your growth, and your tomorrow."
+                Stat1={{ name: "Active Users", value: "120K+"}}
+                Stat2={{ name: "Assets Tracked", value: "$2.4B"}}
+                Stat3={{ name: "Uptime", value: "99.9%"}}
+
+            />
 
             {/* Mission / Vision / Story sections */}
             <div className={styles.sections}>

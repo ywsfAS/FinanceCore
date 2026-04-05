@@ -1,8 +1,21 @@
 import React, { useEffect, useRef } from "react";
 import styles from "./AboutHero.module.css";
 
-// TODO : create a variants and costume props !
-const AboutHero: React.FC = () => {
+
+interface Stat {
+    name: string,
+    value : string,
+}
+interface AboutHeroProps {
+    title: string,
+    tag: string,
+    para: string,
+    Stat1: Stat,
+    Stat2: Stat,
+    Stat3 : Stat,
+
+}
+const AboutHero: React.FC<AboutHeroProps> = ({title , tag , para , Stat1 , Stat2 , Stat3}) => {
     const heroRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -18,31 +31,30 @@ const AboutHero: React.FC = () => {
             <div className={styles.gradientBlob} aria-hidden="true" />
 
             <div className={styles.inner}>
-                <span className={styles.eyebrow}>Our Story</span>
+                <span className={styles.eyebrow}>{tag}</span>
                 <h1 className={styles.title}>
-                    Finance, Built Around
+                    {title}
                     <br />
                     <span className={styles.accent}>Your Future</span>
                 </h1>
                 <p className={styles.tagline}>
-                    We believe every financial decision deserves clarity, confidence, and
-                    the tools to act on it. We build software that puts you in control —
-                    of your goals, your growth, and your tomorrow.
+                    {para}
+
                 </p>
                 <div className={styles.stats}>
                     <div className={styles.stat}>
-                        <span className={styles.statNumber}>120K+</span>
-                        <span className={styles.statLabel}>Active Users</span>
+                        <span className={styles.statNumber}>{Stat1.value}</span>
+                        <span className={styles.statLabel}>{Stat1.name}</span>
                     </div>
                     <div className={styles.statDivider} />
                     <div className={styles.stat}>
-                        <span className={styles.statNumber}>$2.4B</span>
-                        <span className={styles.statLabel}>Assets Tracked</span>
+                        <span className={styles.statNumber}>{Stat2.value}</span>
+                        <span className={styles.statLabel}>{Stat2.name}</span>
                     </div>
                     <div className={styles.statDivider} />
                     <div className={styles.stat}>
-                        <span className={styles.statNumber}>99.9%</span>
-                        <span className={styles.statLabel}>Uptime</span>
+                        <span className={styles.statNumber}>{Stat3.value}</span>
+                        <span className={styles.statLabel}>{Stat3.name}</span>
                     </div>
                 </div>
             </div>

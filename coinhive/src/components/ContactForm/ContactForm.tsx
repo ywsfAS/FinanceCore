@@ -45,13 +45,13 @@ const ContactForm: React.FC = () => {
     observer.observe(el);
     return () => observer.disconnect();
   }, []);
- 
+
+  // onchange we set from data form event e
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
     setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
   };
- 
   const handleBlur = (e: React.FocusEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
     setTouched((prev) => ({ ...prev, [e.target.name]: true }));
   };
@@ -71,7 +71,6 @@ const ContactForm: React.FC = () => {
       formData.subject &&
       formData.message.trim();
     if (!allValid) return;
- 
     setFormState("submitting");
     setTimeout(() => {
       setFormState("success");

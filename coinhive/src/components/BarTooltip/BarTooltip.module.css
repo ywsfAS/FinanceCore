@@ -1,15 +1,31 @@
+:root {
+    /* Colors */
+    --color-tooltip-bg: #1f2937;
+    --color-tooltip-text: #ffffff;
+    /* Padding */
+    --tooltip-padding: 8px 12px;
+    /* Border radius */
+    --tooltip-radius: 6px;
+    /* Font sizes */
+    --tooltip-font-size: 13px;
+    /* Font weights */
+    --fw-semibold: 600;
+    /* Spacing */
+    --value-margin-top: 2px;
+}
+
 .tooltip {
-    background: #1f2937;
-    color: white;
-    padding: 8px 12px;
-    border-radius: 6px;
-    font-size: 13px;
+    background: var(--color-tooltip-bg);
+    color: var(--color-tooltip-text);
+    padding: var(--tooltip-padding);
+    border-radius: var(--tooltip-radius);
+    font-size: var(--tooltip-font-size);
 }
 
 .label {
-    font-weight: 600;
+    font-weight: var(--fw-semibold);
 }
 
 .value {
-    margin-top: 2px;
+    margin-top: var(--value-margin-top);
 }
