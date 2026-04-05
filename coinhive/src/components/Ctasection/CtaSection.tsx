@@ -1,7 +1,17 @@
 import React, { useEffect, useRef } from "react";
 import styles from "./CtaSection.module.css";
 
-const CtaSection: React.FC = () => {
+interface CtaSectionProps {
+    title: string,
+    tag: string,
+    para: string,
+    mainBtnMsg: string,
+    secondBtnMsg: string,
+}
+
+const budgets = ["✓ No credit card", "✓ Cancel anytime", "✓ SOC 2 Certified", "✓ 99.9% uptime"];
+
+const CtaSection: React.FC<CtaSectionProps> = ({title , tag , para , mainBtnMsg , secondBtnMsg}) => {
     const ref = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -21,23 +31,19 @@ const CtaSection: React.FC = () => {
                 <div className={styles.blobLeft} aria-hidden="true" />
                 <div className={styles.blobRight} aria-hidden="true" />
                 <div className={styles.inner}>
-                    <span className={styles.eyebrow}>Get Started Today</span>
+                    <span className={styles.eyebrow}>{tag}</span>
                     <h2 className={styles.title}>
-                        Your Financial Future<br />Starts Right Now
+                        {title}<br />Starts Right Now
                     </h2>
                     <p className={styles.subtitle}>
-                        Join 120,000+ users who've taken control of their money with
-                        FinVault. Free forever. No credit card required.
+                        {para}
                     </p>
                     <div className={styles.actions}>
-                        <a href="#" className={styles.btnPrimary}>Create Free Account →</a>
-                        <a href="#" className={styles.btnSecondary}>Talk to Sales</a>
+                        <a href="#" className={styles.btnPrimary}>{mainBtnMsg}</a>
+                        <a href="#" className={styles.btnSecondary}>{secondBtnMsg}</a>
                     </div>
                     <div className={styles.guarantees}>
-                        <span>✓ No credit card</span>
-                        <span>✓ Cancel anytime</span>
-                        <span>✓ SOC 2 Certified</span>
-                        <span>✓ 99.9% uptime</span>
+                        {budgets.map(e => <span>{e}</span>) }
                     </div>
                 </div>
             </div>

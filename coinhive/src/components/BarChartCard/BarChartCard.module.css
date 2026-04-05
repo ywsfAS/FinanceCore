@@ -1,4 +1,5 @@
-:root {
+
+.card {
     /* Colors */
     --color-card-bg: #ffffff;
     --color-card-text: #000000;
@@ -17,9 +18,7 @@
     /* Font weights */
     --fw-semibold: 600;
     --fw-bold: 700;
-}
 
-.card {
     background: var(--color-card-bg);
     padding: var(--card-padding);
     border-radius: var(--card-radius);

@@ -8,7 +8,11 @@ interface Channel {
   detail: string;
   color: string;
 }
- 
+interface ContactInfo {
+    tag: string,
+    title: string,
+    description : string
+} 
 const channels: Channel[] = [
   {
     icon: "✉️",
@@ -39,7 +43,7 @@ const offices = [
   { city: "Dubai", address: "DIFC, Gate Avenue, Level 5", flag: "🇦🇪" },
 ];
  
-const ContactInfo: React.FC = () => {
+const ContactInfo: React.FC<ContactInfo> = ({title , tag , description }) => {
   const ref = useRef<HTMLDivElement>(null);
  
   useEffect(() => {
@@ -61,10 +65,10 @@ const ContactInfo: React.FC = () => {
   return (
     <div className={styles.wrapper} ref={ref}>
       <div className={styles.header}>
-        <span className={styles.eyebrow}>Contact Channels</span>
-        <h2 className={styles.title}>Other Ways to Reach Us</h2>
-        <p className={styles.subtitle}>
-          Prefer a different channel? We're available across multiple touchpoints.
+         <span className={styles.eyebrow}>{tag}</span>
+         <h2 className={styles.title}>{title}</h2>
+         <p className={styles.subtitle}>
+          {description }
         </p>
       </div>
  

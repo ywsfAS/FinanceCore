@@ -41,7 +41,13 @@ const Landing: React.FC = () => {
 
             {/* CTA */}
             <div className={styles.container}>
-                <CtaSection />
+                <CtaSection
+                    title="Your Financial Future"
+                    tag="Get Started Today"
+                    para="Join 120,000+ users who've taken control of their money with FinVault. Free forever. No credit card required."
+                    mainBtnMsg="Create Free Account →"
+                    secondBtnMsg="Talk to Sales"
+                />
             </div>
 
         </main>

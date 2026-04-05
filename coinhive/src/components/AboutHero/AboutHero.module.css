@@ -1,4 +1,6 @@
-:root {
+
+
+.hero {
     /* Colors */
     --color-bg: #ffffff;
     --color-primary: #10b981;
@@ -46,9 +48,8 @@
     --stats-gap-mobile: 20px;
     --stat-divider-width-mobile: 40px;
     --stat-divider-height-mobile: 1px;
-}
 
-.hero {
+
     position: relative;
     min-height: var(--hero-min-height);
     display: flex;

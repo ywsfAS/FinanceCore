@@ -1,4 +1,5 @@
-:root {
+
+.tooltip {
     /* Colors */
     --color-tooltip-bg: #1f2937;
     --color-tooltip-text: #ffffff;
@@ -12,9 +13,8 @@
     --fw-semibold: 600;
     /* Spacing */
     --value-margin-top: 2px;
-}
 
-.tooltip {
+
     background: var(--color-tooltip-bg);
     color: var(--color-tooltip-text);
     padding: var(--tooltip-padding);

@@ -1,4 +1,6 @@
-:root {
+
+
+.wrapper {
     /* Colors */
     --color-white: #ffffff;
     --color-black: #0a0a0a;
@@ -12,10 +14,8 @@
     --color-error: #ef4444;
     --color-success-bg: #f0fdf4;
     --color-success-border: #d1fae5;
-
     /* Fonts */
     --font-primary: 'Montserrat', sans-serif;
-
     /* Font sizes */
     --font-size-eyebrow: 10px;
     --font-size-title-min: 22px;
@@ -29,14 +29,12 @@
     --font-size-success-title: 22px;
     --font-size-success-text: 14px;
     --font-size-reset: 13px;
-
     /* Font weights */
     --fw-regular: 400;
     --fw-medium: 500;
     --fw-bold: 600;
     --fw-extra-bold: 700;
     --fw-black: 800;
-
     /* Spacing */
     --spacing-small: 6px;
     --spacing-sm: 10px;
@@ -47,25 +45,19 @@
     --spacing-inner: 13px 16px;
     --spacing-submit-padding: 16px 32px;
     --spacing-success-padding: 64px 40px;
-
     /* Border radius */
     --radius-small: 10px;
     --radius-md: 12px;
     --radius-pill: 100px;
     --radius-round: 50%;
-
     /* Transitions & Animations */
     --transition-fast: 0.2s ease;
     --transition-medium: 0.7s ease;
     --transition-slow: 0.8s ease;
     --spin-duration: 0.7s;
-
     /* Transform offsets */
     --translate-y-default: 28px;
     --translate-y-medium: 0;
-}
-
-.wrapper {
     opacity: 0;
     transform: translateY(var(--translate-y-default));
     transition: opacity var(--transition-medium), transform var(--transition-medium);

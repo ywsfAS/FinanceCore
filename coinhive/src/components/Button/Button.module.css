@@ -1,4 +1,6 @@
-:root {
+
+
+.button {
     /* Colors */
     --color-button-default: #444;
     --color-button-disabled: #a0c4ff;
@@ -25,9 +27,8 @@
     /* Transitions */
     --transition-opacity: 0.2s ease;
     --transition-transform: 0.1s ease;
-}
 
-.button {
+
     width: 100%;
     padding: var(--padding-medium);
     background-color: var(--color-button-default);

@@ -23,7 +23,11 @@ const Contact: React.FC = () => {
       {/* Form + Info side by side */}
       <div className={styles.mainGrid}>
         <ContactForm />
-        <ContactInfo />
+        <ContactInfo
+            tag="Contact Channels"
+            title="Other Ways to Reach Us"
+            description="Prefer a different channel? We're available across multiple touchpoints."
+        />
       </div>
  
       {/* FAQ */}

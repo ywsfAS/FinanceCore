@@ -1,4 +1,5 @@
-:root {
+
+.checkbox-container {
     /* Colors */
     --color-black: #000000;
     --color-primary: #4f8ef7;
@@ -17,9 +18,7 @@
     --tick-width: 5px;
     --tick-height: 10px;
     --tick-border-width: 2px;
-}
 
-.checkbox-container {
     display: flex;
     align-items: center;
     cursor: pointer;

@@ -1,4 +1,6 @@
-:root {
+
+
+.card {
     /* Colors */
     --color-black: #000000;
     --color-white: #ffffff;
@@ -17,9 +19,7 @@
     --card-max-width-tablet: 700px;
     --card-max-width-large-tablet: 510px;
     --card-max-width-mobile: 400px;
-}
 
-.card {
     display: flex;
     flex-direction: row;
     width: 100%;
