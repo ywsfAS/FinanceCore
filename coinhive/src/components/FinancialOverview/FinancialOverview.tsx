@@ -34,7 +34,7 @@ export default function FinancialCard() {
             <Topbar username="YS" date="Tuesday, April 2025" />
 
             {/* Hero Balance Card */}
-            <HeroBalance totalBalance="12,450.00" stats={heroStats} />
+            <HeroBalance title="Total Balance" totalBalance="12,450.00" stats={heroStats} />
      
             {/* Stat Cards Grid */}
             <StatsGrid columns={3} gap={16}>

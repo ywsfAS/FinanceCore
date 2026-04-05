@@ -12,7 +12,17 @@ const Landing: React.FC = () => {
     return (
         <main className={styles.page}>
             {/* Hero */}
-            <HeroSection />
+            <HeroSection
+                tag="AI-powered spending insights are live →"
+                title="Take Full Control of"
+                description="FinVault brings your accounts, budgets, goals, and investments into
+                    one secure dashboard — so you always know where you stand and where
+                    you're headed."
+                mainBtnText="Start for Free →"
+                secondBtnText=" Watch Demo"
+                note="Trusted users across 34 countries"
+
+            />
 
             {/* Social proof logos */}
             <div className={styles.container}>
@@ -32,7 +42,10 @@ const Landing: React.FC = () => {
             {/* How it works */}
             <div className={styles.altBg}>
                 <div className={styles.container}>
-                    <HowItWorks />
+                    <HowItWorks
+                        title="Up and Running in Minutes"
+                        subtitle="No financial expertise required. Finance Core guides you from signup to full clarity in four simple steps."
+                    />
                 </div>
             </div>
 

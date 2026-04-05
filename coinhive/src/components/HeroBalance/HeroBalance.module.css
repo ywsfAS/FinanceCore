@@ -1,23 +1,42 @@
 .hero {
-    background: #fff;
-    border-radius: 20px;
-    padding: 36px 40px;
-    margin-bottom: 24px;
+    /* Local variables */
+    --bg: #fff;
+    --radius: 20px;
+    --padding: 36px 40px;
+    --margin-bottom: 24px;
+    --fs-label: 11px;
+    --fs-balance: 44px;
+    --fs-stat-label: 11px;
+    --fs-stat-value: 16px;
+    --fw-medium: 500;
+    --fw-semibold: 600;
+    --fw-bold: 800;
+    --color-text-muted: #555;
+    --color-positive: #4ade80;
+    --color-negative: #f87171;
+    --gap-row: 32px;
+    --gap-stat: 4px;
+    --letter-spacing-wide: 1.5px;
+
+    background: var(--bg);
+    border-radius: var(--radius);
+    padding: var(--padding);
+    margin-bottom: var(--margin-bottom);
     position: relative;
     overflow: hidden;
 }
 
 .hero-label {
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 1.5px;
+    font-size: var(--fs-label);
+    font-weight: var(--fw-semibold);
+    letter-spacing: var(--letter-spacing-wide);
     text-transform: uppercase;
     margin: 0 0 10px;
 }
 
 .hero-balance {
-    font-size: 44px;
-    font-weight: 800;
+    font-size: var(--fs-balance);
+    font-weight: var(--fw-bold);
     font-family: monospace;
     margin: 0 0 24px;
     line-height: 1;
@@ -25,32 +44,32 @@
 
 .hero-row {
     display: flex;
-    gap: 32px;
+    gap: var(--gap-row);
 }
 
 .hero-stat {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: var(--gap-stat);
 }
 
 .hero-stat-label {
-    font-size: 11px;
-    color: #555;
+    font-size: var(--fs-stat-label);
+    color: var(--color-text-muted);
     text-transform: uppercase;
-    font-weight: 500;
+    font-weight: var(--fw-medium);
 }
 
 .hero-stat-value {
-    font-size: 16px;
-    font-weight: 600;
+    font-size: var(--fs-stat-value);
+    font-weight: var(--fw-semibold);
     font-family: monospace;
 }
 
-    .hero-stat-value.positive {
-        color: #4ade80;
-    }
+.hero-stat-value.positive {
+    color: var(--color-positive);
+}
 
-    .hero-stat-value.negative {
-        color: #f87171;
-    }
+.hero-stat-value.negative {
+    color: var(--color-negative);
+}

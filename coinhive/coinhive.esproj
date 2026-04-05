@@ -9,7 +9,6 @@
     <BuildOutputFolder>$(MSBuildProjectDirectory)\dist</BuildOutputFolder>
   </PropertyGroup>
   <ItemGroup>
-    <Folder Include="src\components\Input\" />
     <Folder Include="src\components\Checkbox\" />
     <Folder Include="src\components\Navbar\" />
     <Folder Include="src\components\TagButtons\" />

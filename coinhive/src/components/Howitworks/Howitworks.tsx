@@ -1,7 +1,14 @@
 import React, { useEffect, useRef } from "react";
 import styles from "./HowItWorks.module.css";
 
-const steps = [
+type Step = {
+    number: string;
+    title: string;
+    description: string;
+    icon: string;
+}
+
+const steps : Step[] = [
     {
         number: "01",
         title: "Create Your Account",
@@ -27,8 +34,13 @@ const steps = [
         icon: "📈",
     },
 ];
+interface HowItWorksProps {
+    title: string,
+    subtitle : string
+}
 
-const HowItWorks: React.FC = () => {
+
+const HowItWorks: React.FC<HowItWorksProps> = ({title , subtitle }) => {
     const ref = useRef < HTMLDivElement > (null);
 
     useEffect(() => {
@@ -46,10 +58,9 @@ const HowItWorks: React.FC = () => {
         <section className={styles.wrapper} ref={ref}>
             <div className={styles.header}>
                 <span className={styles.eyebrow}>How It Works</span>
-                <h2 className={styles.title}>Up and Running in Minutes</h2>
+                <h2 className={styles.title}>{title}</h2>
                 <p className={styles.subtitle}>
-                    No financial expertise required. FinVault guides you from signup to
-                    full clarity in four simple steps.
+                    {subtitle}
                 </p>
             </div>
 

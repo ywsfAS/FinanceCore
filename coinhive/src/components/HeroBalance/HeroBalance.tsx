@@ -7,14 +7,15 @@ type StatMini =  {
 }
 
 type HeroBalanceProps = {
+    title: string;
     totalBalance: string;
     stats: StatMini[];
 }
 
-export const HeroBalance = ({ totalBalance, stats }: HeroBalanceProps) => {
+export const HeroBalance = ({ title, totalBalance, stats }: HeroBalanceProps) => {
     return (
         <div className={styles.hero}>
-            <p className={styles['hero-label']}>Total Balance</p>
+            <p className={styles['hero-label']}>{title}</p>
             <p className={styles['hero-balance']}>
                 <span>$</span>{totalBalance}
             </p>

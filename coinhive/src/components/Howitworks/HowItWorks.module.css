@@ -1,54 +1,81 @@
 .wrapper {
-    padding: 96px 0;
+    /* ===== Local Variables ===== */
+    --color-bg: #ffffff;
+    --color-bg-success: #f0fdf4;
+    --color-primary: #10b981;
+    --color-border: #e5e7eb;
+    --color-text: #0a0a0a;
+    --color-text-secondary: #6b7280;
+    --font-family: 'Montserrat', sans-serif;
+    --fs-eyebrow: 10px;
+    --fs-title-min: 28px;
+    --fs-title-max: 48px;
+    --fs-subtitle: 16px;
+    --fs-step-number: 14px;
+    --fs-step-title: 18px;
+    --fs-step-desc: 14px;
+    --fs-icon: 28px;
+    --fw-regular: 400;
+    --fw-bold: 700;
+    --fw-extra-bold: 800;
+    --gap-step: 28px;
+    --gap-body: 18px;
+    --padding-wrapper: 96px 0;
+    --padding-eyebrow: 6px 16px;
+    --margin-header: 72px;
+    --margin-eyebrow: 16px;
+    --margin-title: 16px;
+    --radius-pill: 100px;
+    --transition-slow: 0.7s ease;
+    --transition-medium: 0.5s ease;
+
+     padding: var(--padding-wrapper);
     opacity: 0;
     transform: translateY(28px);
-    transition: opacity 0.7s ease, transform 0.7s ease;
+    transition: opacity var(--transition-slow), transform var(--transition-slow);
 }
 
 .wrapper.visible {
-    opacity: 1;
+   opacity: 1;
     transform: translateY(0);
 }
 
 .wrapper.visible .step {
-      opacity: 1;
+       opacity: 1;
        transform: translateY(0);
-}
+ }
 
 .header {
     text-align: center;
-    margin-bottom: 72px;
+    margin-bottom: var(--margin-header);
 }
 
 .eyebrow {
     display: inline-block;
-    font-family: 'Montserrat', sans-serif;
-    font-size: 10px;
-    font-weight: 700;
+    font-size: var(--fs-eyebrow);
+    font-weight: var(--fw-bold);
     letter-spacing: 0.2em;
     text-transform: uppercase;
-    color: #10b981;
-    margin-bottom: 16px;
-    padding: 6px 16px;
+    color: var(--color-primary);
+    margin-bottom: var(--margin-eyebrow);
+    padding: var(--padding-eyebrow);
     border: 1px solid rgba(16, 185, 129, 0.3);
-    border-radius: 100px;
+    border-radius: var(--radius-pill);
 }
 
 .title {
-    font-family: 'Montserrat', sans-serif;
-    font-size: clamp(28px, 4vw, 48px);
-    font-weight: 800;
+    font-size: clamp(var(--fs-title-min), 4vw, var(--fs-title-max));
+    font-weight: var(--fw-extra-bold);
     letter-spacing: -0.03em;
-    color: #0a0a0a;
-    margin: 0 0 16px;
+    color: var(--color-text);
+    margin: 0 0 var(--margin-title);
 }
 
 .subtitle {
-    font-family: 'Montserrat', sans-serif;
-    font-size: 16px;
-    font-weight: 400;
+    font-size: var(--fs-subtitle);
+    font-weight: var(--fw-regular);
     line-height: 1.7;
-    color: #6b7280;
+    color: var(--color-text-secondary);
     max-width: 480px;
     margin: 0 auto;
 }
@@ -63,11 +90,11 @@
 
 .step {
     display: flex;
-    gap: 28px;
+    gap: var(--gap-step);
     align-items: flex-start;
     opacity: 0;
     transform: translateY(16px);
-    transition: opacity 0.5s ease, transform 0.5s ease;
+    transition: opacity var(--transition-medium), transform var(--transition-medium);
 }
 
 .stepLeft {
@@ -81,12 +108,11 @@
     width: 48px;
     height: 48px;
     border-radius: 50%;
-    background: #f0fdf4;
-    border: 2px solid #10b981;
-    color: #10b981;
-    font-family: 'Montserrat', sans-serif;
-    font-size: 14px;
-    font-weight: 800;
+    background: var(--color-bg-success);
+    border: 2px solid var(--color-primary);
+    color: var(--color-primary);
+    font-size: var(--fs-step-number);
+    font-weight: var(--fw-extra-bold);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -98,14 +124,14 @@
     width: 2px;
     flex: 1;
     min-height: 40px;
-    background: linear-gradient(to bottom, #10b981, #e5e7eb);
+    background: linear-gradient(to bottom, var(--color-primary), var(--color-border));
     margin: 6px 0;
 }
 
 .stepBody {
     display: flex;
     align-items: flex-start;
-    gap: 18px;
+    gap: var(--gap-body);
     padding-bottom: 48px;
 }
 
@@ -114,26 +140,24 @@
 }
 
 .stepIcon {
-    font-size: 28px;
+    font-size: var(--fs-icon);
     line-height: 1;
     margin-top: 8px;
     flex-shrink: 0;
 }
 
 .stepTitle {
-    font-family: 'Montserrat', sans-serif;
-    font-size: 18px;
-    font-weight: 700;
+    font-size: var(--fs-step-title);
+    font-weight: var(--fw-bold);
     letter-spacing: -0.015em;
-    color: #0a0a0a;
+    color: var(--color-text);
     margin: 6px 0 8px;
 }
 
 .stepDesc {
-    font-family: 'Montserrat', sans-serif;
-    font-size: 14px;
-    font-weight: 400;
+    font-size: var(--fs-step-desc);
+    font-weight: var(--fw-regular);
     line-height: 1.7;
-    color: #6b7280;
+    color: var(--color-text-secondary);
     margin: 0;
 }
