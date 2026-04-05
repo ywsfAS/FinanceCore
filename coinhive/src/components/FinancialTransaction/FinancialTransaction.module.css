@@ -1,11 +1,12 @@
-:local(:root) {
-    --ink: #0a0a0f;
-}
+
+
 .section {
+    --ink: #0a0a0f;
+
     padding: 20px;
     background-color: white;
     color: var(--ink);
-    border-radius:20px;
+    border-radius: 20px;
 }
 
 .title {

@@ -21,7 +21,12 @@ const Landing: React.FC = () => {
 
             {/* Features */}
             <div className={styles.container}>
-                <FeaturesSection />
+                <FeaturesSection
+                    tag="Everything You Need"
+                    title="Built for the Way You Actually Live"
+                    description="No more juggling five apps. FinVault handles every aspect of your
+                    financial life in one clean, secure platform."
+                />
             </div>
 
             {/* How it works */}

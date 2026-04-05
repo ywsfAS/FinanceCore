@@ -1,72 +1,92 @@
 .footer {
-    border-top: 1px solid #e5e7eb;
-    padding: 64px 50px 32px;
-    background: #fafafa;
+    /* Local CSS variables */
+    --color-bg: #fafafa;
+    --color-border: #e5e7eb;
+    --color-primary: #10b981;
+    --color-text: #0a0a0a;
+    --color-text-secondary: #6b7280;
+    --color-text-muted: #9ca3af;
+    --font-family: 'Montserrat', sans-serif;
+    --fs-logo: 22px;
+    --fs-tagline: 13px;
+    --fs-link: 13px;
+    --fs-group-title: 10px;
+    --fs-bottom-text: 12px;
+    --radius-badge: 100px;
+    --gap-sm: 10px;
+    --gap-md: 12px;
+    --gap-lg: 48px;
+    --gap-xl: 64px;
+    --padding-footer: 64px 50px 32px;
+    --padding-bottom: 28px;
+    border-top: 1px solid var(--color-border);
+    padding: var(--padding-footer);
+    background: var(--color-bg);
 }
 
 .inner {
     display: flex;
     justify-content: space-between;
-    gap: 48px;
-    margin-bottom: 48px;
+    gap: var(--gap-lg);
+    margin-bottom: var(--gap-lg);
     flex-wrap: wrap;
 }
 
 .brand {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: var(--gap-sm);
     max-width: 220px;
 }
 
 .logo {
-    font-family: 'Montserrat', sans-serif;
-    font-size: 22px;
+    font-family: var(--font-family);
+    font-size: var(--fs-logo);
     font-weight: 800;
-    color: #0a0a0a;
+    color: var(--color-text);
     letter-spacing: -0.02em;
 }
 
 .tagline {
-    font-family: 'Montserrat', sans-serif;
-    font-size: 13px;
-    color: #9ca3af;
+    font-family: var(--font-family);
+    font-size: var(--fs-tagline);
+    color: var(--color-text-muted);
     line-height: 1.6;
     margin: 0;
 }
 
 .links {
     display: flex;
-    gap: 64px;
+    gap: var(--gap-xl);
     flex-wrap: wrap;
 }
 
 .linkGroup {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    gap: var(--gap-sm);
 }
 
-    .linkGroup a {
-        font-family: 'Montserrat', sans-serif;
-        font-size: 13px;
-        font-weight: 500;
-        color: #6b7280;
-        text-decoration: none;
-        transition: color 0.2s ease;
-    }
+.linkGroup a {
+    font-family: var(--font-family);
+     font-size: var(--fs-link);
+     font-weight: 500;
+     color: var(--color-text-secondary);
+     text-decoration: none;
+     transition: color 0.2s ease;
+}
 
-        .linkGroup a:hover {
-            color: #10b981;
-        }
+.linkGroup a:hover {
+     color: var(--color-primary);
+}
 
 .groupTitle {
-    font-family: 'Montserrat', sans-serif;
-    font-size: 10px;
+    font-family: var(--font-family);
+    font-size: var(--fs-group-title);
     font-weight: 700;
     letter-spacing: 0.15em;
     text-transform: uppercase;
-    color: #0a0a0a;
+    color: var(--color-text);
     margin-bottom: 4px;
 }
 
@@ -74,25 +94,25 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-top: 28px;
-    border-top: 1px solid #e5e7eb;
+    padding-top: var(--padding-bottom);
+    border-top: 1px solid var(--color-border);
     flex-wrap: wrap;
-    gap: 12px;
+    gap: var(--gap-md);
 }
 
-    .bottom span {
-        font-family: 'Montserrat', sans-serif;
-        font-size: 12px;
-        color: #9ca3af;
-    }
+.bottom span {
+    font-family: var(--font-family);
+     font-size: var(--fs-bottom-text);
+    color: var(--color-text-muted);
+ }
 
 .badge {
     font-size: 11px !important;
     font-weight: 600 !important;
-    color: #10b981 !important;
+    color: var(--color-primary) !important;
     background: #f0fdf4;
     padding: 4px 12px;
-    border-radius: 100px;
+    border-radius: var(--radius-badge);
     border: 1px solid #d1fae5;
 }
 

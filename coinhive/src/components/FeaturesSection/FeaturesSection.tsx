@@ -8,6 +8,11 @@ interface Feature {
     color: string;
     tag: string;
 }
+interface FeaturesSectionProps {
+    title: string,
+    tag: string,
+    description : string,
+}
 
 const features: Feature[] = [
     {
@@ -54,7 +59,7 @@ const features: Feature[] = [
     },
 ];
 
-const FeaturesSection: React.FC = () => {
+const FeaturesSection: React.FC<FeaturesSectionProps> = ({title , tag , description }) => {
     const ref = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -71,11 +76,11 @@ const FeaturesSection: React.FC = () => {
     return (
         <section className={styles.wrapper} ref={ref}>
             <div className={styles.header}>
-                <span className={styles.eyebrow}>Everything You Need</span>
-                <h2 className={styles.title}>Built for the Way You Actually Live</h2>
+                <span className={styles.eyebrow}>{tag}</span>
+                <h2 className={styles.title}>{title}</h2>
                 <p className={styles.subtitle}>
-                    No more juggling five apps. FinVault handles every aspect of your
-                    financial life in one clean, secure platform.
+                    {description}
+
                 </p>
             </div>
 

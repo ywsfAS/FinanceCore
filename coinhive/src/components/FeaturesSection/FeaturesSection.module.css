@@ -1,17 +1,42 @@
 .wrapper {
+    /* Local CSS variables */
+    --color-bg: #ffffff;
+    --color-border: #e5e7eb;
+    --color-border-light: #d1fae5;
+    --color-primary: #10b981;
+    --color-text: #0a0a0a;
+    --color-text-secondary: #6b7280;
+    --font-family: 'Montserrat', sans-serif;
+    --fs-xxs: 10px;
+    --fs-xs: 12px;
+    --fs-sm: 13px;
+    --fs-md: 16px;
+    --fs-title-min: 28px;
+    --fs-title-max: 48px;
+    --radius-small: 12px;
+    --radius-medium: 12px;
+    --radius-large: 20px;
+    --gap-sm: 12px;
+    --gap-md: 16px;
+    --gap-lg: 22px;
+    --transition-fast: 0.3s ease;
+    --transition-medium: 0.5s ease;
+    --transition-slow: 0.7s ease;
+ 
     padding: 96px 0;
     opacity: 0;
     transform: translateY(28px);
-    transition: opacity 0.7s ease, transform 0.7s ease;
+    transition: opacity var(--transition-slow), transform var(--transition-slow);
 }
+
 .wrapper.visible {
-    opacity: 1;
-    transform: translateY(0);
+     opacity: 1;
+     transform: translateY(0);
 }
 
 .wrapper.visible .card {
-    opacity: 1;
-    transform: translateY(0);
+     opacity: 1;
+     transform: translateY(0);
 }
 
 .header {
@@ -21,12 +46,12 @@
 
 .eyebrow {
     display: inline-block;
-    font-family: 'Montserrat', sans-serif;
-    font-size: 10px;
+    font-family: var(--font-family);
+    font-size: var(--fs-xxs);
     font-weight: 700;
     letter-spacing: 0.2em;
     text-transform: uppercase;
-    color: #10b981;
+    color: var(--color-primary);
     margin-bottom: 16px;
     padding: 6px 16px;
     border: 1px solid rgba(16, 185, 129, 0.3);
@@ -34,20 +59,20 @@
 }
 
 .title {
-    font-family: 'Montserrat', sans-serif;
-    font-size: clamp(28px, 4vw, 48px);
+    font-family: var(--font-family);
+    font-size: clamp(var(--fs-title-min), 4vw, var(--fs-title-max));
     font-weight: 800;
     letter-spacing: -0.03em;
-    color: #0a0a0a;
+    color: var(--color-text);
     margin: 0 0 16px;
 }
 
 .subtitle {
-    font-family: 'Montserrat', sans-serif;
-    font-size: 16px;
+    font-family: var(--font-family);
+    font-size: var(--fs-md);
     font-weight: 400;
     line-height: 1.7;
-    color: #6b7280;
+    color: var(--color-text-secondary);
     max-width: 520px;
     margin: 0 auto;
 }
@@ -55,26 +80,27 @@
 .grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 22px;
+    gap: var(--gap-lg);
 }
 
 .card {
-    background: #ffffff;
-    border: 1px solid #e5e7eb;
-    border-radius: 20px;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-large);
     padding: 32px 28px;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: var(--gap-sm);
     opacity: 0;
     transform: translateY(20px);
-    transition: opacity 0.5s ease, transform 0.5s ease, box-shadow 0.3s ease, border-color 0.3s ease;
+    transition: opacity var(--transition-medium), transform var(--transition-medium), box-shadow var(--transition-fast), border-color var(--transition-fast);
 }
-.card:hover {
-    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.07);
-    border-color: #d1fae5;
-    transform: translateY(-4px) !important;
-}
+
+    .card:hover {
+        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.07);
+        border-color: var(--color-border-light);
+        transform: translateY(-4px) !important;
+    }
 
 .cardTop {
     display: flex;
@@ -85,7 +111,7 @@
 .icon {
     width: 48px;
     height: 48px;
-    border-radius: 12px;
+    border-radius: var(--radius-small);
     font-size: 22px;
     display: flex;
     align-items: center;
@@ -93,8 +119,8 @@
 }
 
 .tag {
-    font-family: 'Montserrat', sans-serif;
-    font-size: 10px;
+    font-family: var(--font-family);
+    font-size: var(--fs-xxs);
     font-weight: 700;
     letter-spacing: 0.1em;
     text-transform: uppercase;
@@ -103,33 +129,34 @@
 }
 
 .cardTitle {
-    font-family: 'Montserrat', sans-serif;
+    font-family: var(--font-family);
     font-size: 17px;
     font-weight: 700;
     letter-spacing: -0.015em;
-    color: #0a0a0a;
+    color: var(--color-text);
     margin: 0;
 }
 
 .cardDesc {
-    font-family: 'Montserrat', sans-serif;
-    font-size: 13px;
+    font-family: var(--font-family);
+    font-size: var(--fs-sm);
     font-weight: 400;
     line-height: 1.75;
-    color: #6b7280;
+    color: var(--color-text-secondary);
     margin: 0;
     flex: 1;
 }
 
 .cardLink {
-    font-family: 'Montserrat', sans-serif;
-    font-size: 12px;
+    font-family: var(--font-family);
+    font-size: var(--fs-xs);
     font-weight: 700;
     text-decoration: none;
     letter-spacing: 0.02em;
-    transition: opacity 0.2s;
+    transition: opacity var(--transition-fast);
     margin-top: 4px;
 }
+
 .cardLink:hover {
     opacity: 0.7;
 }

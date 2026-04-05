@@ -1,4 +1,5 @@
-:local(:root) {
+
+.card {
     --white: #ffffff;
     --off-white: #f7f7f9;
     --surface: #f0f0f4;
@@ -10,9 +11,7 @@
     --radius-lg: 20px;
     --radius-sm: 10px;
     --shadow-card: 0 1px 3px rgba(0,0,0,0.04), 0 4px 16px rgba(0,0,0,0.06);
-}
 
-.card {
     background: var(--white);
     border-radius: var(--radius-lg);
     padding: 24px;
