@@ -1,15 +1,26 @@
+
+
+
 .tooltip {
-    background: #1f2937;
-    color: white;
-    padding: 8px 12px;
-    border-radius: 6px;
-    font-size: 13px;
+    --tooltip-bg: #1f2937;
+    --tooltip-text: #ffffff;
+    --tooltip-padding: 8px 12px;
+    --tooltip-radius: 6px;
+    --fs-tooltip: 13px;
+    --fw-semibold: 600;
+    --spacing-xs: 2px;
+
+    background: var(--tooltip-bg);
+    color: var(--tooltip-text);
+    padding: var(--tooltip-padding);
+    border-radius: var(--tooltip-radius);
+    font-size: var(--fs-tooltip);
 }
 
 .label {
-    font-weight: 600;
+    font-weight: var(--fw-semibold);
 }
 
 .value {
-    margin-top: 2px;
+    margin-top: var(--spacing-xs);
 }

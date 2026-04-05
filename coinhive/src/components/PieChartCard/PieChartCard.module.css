@@ -1,13 +1,36 @@
 .card {
-    background: #fff;
-    padding: 16px;
-    border-radius: 12px;
-    color:black;
+    --color-bg: #ffffff;
+    --color-text: #000000;
+    --color-text-muted: #6b7280;
+    --font-family: inherit;
+    --fs-title: 14px;
+    --fs-center-value: 18px;
+    --fs-center-label: 12px;
+    --fs-legend: 13px;
+    --fs-legend-icon: 16px;
+    --fs-legend-pct: 12px;
+    --fw-semibold: 600;
+    --fw-bold: 700;
+    --gap-legend: 12px;
+    --gap-legend-item: 6px;
+    --padding-card: 16px;
+    --margin-title: 12px;
+    --margin-legend-top: 12px;
+    --radius-card: 12px;
+    --size-dot: 12px;
+
+
+    background: var(--color-bg);
+    padding: var(--padding-card);
+    border-radius: var(--radius-card);
+    color: var(--color-text);
 }
 
 .title {
-    font-weight: 600;
-    margin-bottom: 12px;
+    font-family: var(--font-family);
+    font-size: var(--fs-title);
+    font-weight: var(--fw-semibold);
+    margin-bottom: var(--margin-title);
 }
 
 .pieWrap {
@@ -23,19 +46,19 @@
 }
 
 .centerValue {
-    font-size: 18px;
-    font-weight: 700;
+    font-size: var(--fs-center-value);
+    font-weight: var(--fw-bold);
 }
 
 .centerLabel {
-    font-size: 12px;
-    color: #6b7280;
+    font-size: var(--fs-center-label);
+    color: var(--color-text-muted);
 }
 
 .legend {
-    margin-top: 12px;
+    margin-top: var(--margin-legend-top);
     display: flex;
-    gap: 12px;
+    gap: var(--gap-legend);
     flex-wrap: wrap;
 }
 
@@ -43,20 +66,21 @@
     cursor: pointer;
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: var(--gap-legend-item);
+    font-size: var(--fs-legend);
 }
 
     .legendItem.active {
-        font-weight: 700;
+        font-weight: var(--fw-bold);
     }
 
 .legendIcon {
-    font-size: 16px;
+    font-size: var(--fs-legend-icon);
 }
 
 .legendDot {
-    width: 12px;
-    height: 12px;
+    width: var(--size-dot);
+    height: var(--size-dot);
     border-radius: 50%;
     display: inline-block;
 }
@@ -67,10 +91,10 @@
 
 .legendValue {
     margin-left: 4px;
-    font-weight: 600;
+    font-weight: var(--fw-semibold);
 }
 
 .legendPct {
     margin-left: auto;
-    font-size: 12px;
+    font-size: var(--fs-legend-pct);
 }

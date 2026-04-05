@@ -1,0 +1,380 @@
+.header {
+    --color-white: #ffffff;
+    --color-black: #0a0a0a;
+    --color-gray-100: #f9fafb;
+    --color-gray-200: #f3f4f6;
+    --color-gray-300: #e5e7eb;
+    --color-gray-400: #d1d5db;
+    --color-gray-500: #9ca3af;
+    --color-gray-600: #6b7280;
+    --color-gray-700: #374151;
+    --color-accent: #10b981;
+    --font-family: 'Montserrat', sans-serif;
+    --fs-logo: 19px;
+    --fs-nav: 13px;
+    --fs-btn: 12px;
+    --fs-mobile-link: 20px;
+    --fs-mobile-btn: 14px;
+    --fs-footer: 11px;
+    --fw-semibold: 600;
+    --fw-bold: 700;
+    --fw-extra-bold: 800;
+    --radius-sm: 8px;
+    --radius-md: 9px;
+    --radius-lg: 10px;
+    --radius-xl: 12px;
+    --radius-pill: 100px;
+    --transition-fast: 0.2s ease;
+    --transition-medium: 0.25s ease;
+    --transition-slow: 0.35s ease;
+    --header-height: 68px;
+
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 200;
+    height: var(--header-height);
+    background: rgba(255, 255, 255, 0.92);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border-bottom: 1px solid transparent;
+    transition: transform var(--transition-slow), border-color var(--transition-medium), box-shadow var(--transition-medium), background var(--transition-medium);
+}
+
+    /* ── States ── */
+.header.scrolled {
+     border-bottom-color: rgba(0, 0, 0, 0.07);
+     box-shadow: 0 2px 20px rgba(0, 0, 0, 0.06);
+     background: rgba(255, 255, 255, 0.97);
+}
+
+.header.hidden {
+     transform: translateY(-100%);
+}
+
+.header.menuOpen {
+     transform: translateY(0) !important;
+}
+
+/* ── Inner ── */
+.inner {
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 48px;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+}
+
+/* ── Logo ── */
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+    flex-shrink: 0;
+}
+
+.logoMark {
+    width: 32px;
+    height: 32px;
+    border-radius: var(--radius-sm);
+    background: var(--color-black);
+    color: var(--color-white);
+    font-family: var(--font-family);
+    font-size: 11px;
+    font-weight: var(--fw-extra-bold);
+    letter-spacing: 0.03em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background var(--transition-fast);
+}
+
+.logo:hover .logoMark {
+    background: var(--color-accent);
+}
+
+.logoText {
+    font-family: var(--font-family);
+    font-size: var(--fs-logo);
+    font-weight: var(--fw-extra-bold);
+    color: var(--color-black);
+    letter-spacing: -0.025em;
+}
+
+/* ── Desktop Nav ── */
+.desktopNav {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    flex: 1;
+    justify-content: center;
+}
+
+.navLink {
+    position: relative;
+    font-family: var(--font-family);
+    font-size: var(--fs-nav);
+    font-weight: var(--fw-semibold);
+    color: var(--color-gray-600);
+    text-decoration: none;
+    padding: 7px 14px;
+    border-radius: var(--radius-md);
+    transition: color var(--transition-fast), background var(--transition-fast);
+}
+
+.navLink:hover {
+     color: var(--color-black);
+     background: var(--color-gray-200);
+ }
+
+.navLinkActive {
+    color: var(--color-black) !important;
+    background: var(--color-gray-100);
+}
+
+.activeDot {
+    position: absolute;
+    bottom: 3px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--color-accent);
+}
+
+/* ── Desktop Actions ── */
+.desktopActions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-shrink: 0;
+}
+
+.loginBtn {
+    font-family: var(--font-family);
+    font-size: var(--fs-nav);
+    font-weight: var(--fw-semibold);
+    color: var(--color-gray-600);
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: var(--radius-md);
+    transition: color var(--transition-fast), background var(--transition-fast);
+}
+
+.loginBtn:hover {
+    color: var(--color-black);
+    background: var(--color-gray-200);
+}
+
+.ctaBtn {
+    font-family: var(--font-family);
+    font-size: var(--fs-btn);
+    font-weight: var(--fw-bold);
+    letter-spacing: 0.02em;
+    color: var(--color-white);
+    background: var(--color-black);
+    padding: 9px 20px;
+    border-radius: var(--radius-lg);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: background var(--transition-fast), transform var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.ctaBtn:hover {
+   background: var(--color-accent);
+   transform: translateY(-1px);
+   box-shadow: 0 6px 20px rgba(16, 185, 129, 0.25);
+}
+
+/* ── Hamburger ── */
+.hamburger {
+    display: none;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+    width: 40px;
+    height: 40px;
+    border-radius: var(--radius-lg);
+    background: none;
+    border: 1.5px solid var(--color-gray-300);
+    cursor: pointer;
+    transition: border-color var(--transition-fast), background var(--transition-fast);
+}
+
+.hamburger:hover {
+   background: var(--color-gray-100);
+   border-color: var(--color-gray-400);
+}
+
+.bar {
+    width: 16px;
+    height: 2px;
+    background: var(--color-gray-700);
+    border-radius: 2px;
+    transition: transform 0.3s ease, opacity 0.3s ease, width 0.3s ease;
+}
+
+.header.menuOpen .bar:nth-child(1) {
+    transform: translateY(7px) rotate(45deg);
+}
+
+.header.menuOpen .bar:nth-child(2) {
+    opacity: 0;
+    width: 0;
+}
+
+.header.menuOpen .bar:nth-child(3) {
+    transform: translateY(-7px) rotate(-45deg);
+}
+
+/* ── Mobile Drawer ── */
+.mobileDrawer {
+    position: fixed;
+    top: var(--header-height);
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 190;
+    background: var(--color-white);
+    display: flex;
+    flex-direction: column;
+    padding: 24px 28px 40px;
+    transform: translateX(100%);
+    opacity: 0;
+    transition: transform var(--transition-slow), opacity var(--transition-slow);
+    pointer-events: none;
+}
+
+.drawerOpen {
+    transform: translateX(0);
+    opacity: 1;
+    pointer-events: all;
+}
+
+.mobileNav {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.mobileLink {
+    font-family: var(--font-family);
+    font-size: var(--fs-mobile-link);
+    font-weight: var(--fw-bold);
+    color: var(--color-gray-500);
+    text-decoration: none;
+    padding: 14px 8px;
+    border-radius: var(--radius-xl);
+    transition: color var(--transition-fast), background var(--transition-fast), padding-left var(--transition-fast);
+}
+
+.mobileLink:hover {
+    color: var(--color-black);
+     background: var(--color-gray-100);
+     padding-left: 16px;
+    }
+
+.mobileLinkActive {
+    color: var(--color-black);
+}
+
+.mobileActions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding-top: 24px;
+    border-top: 1px solid var(--color-border);
+}
+
+.mobileLogin {
+    font-family: var(--font-family);
+    font-size: var(--fs-mobile-btn);
+    font-weight: var(--fw-bold);
+    color: var(--color-gray-700);
+    text-decoration: none;
+    padding: 14px;
+    border-radius: var(--radius-xl);
+    border: 1.5px solid var(--color-gray-300);
+    text-align: center;
+}
+
+.mobileLogin:hover {
+    border-color: var(--color-accent);
+    color: var(--color-accent);
+}
+
+.mobileCta {
+    font-family: var(--font-family);
+    font-size: var(--fs-mobile-btn);
+    font-weight: var(--fw-bold);
+    color: var(--color-white);
+    background: var(--color-black);
+    padding: 15px;
+    border-radius: var(--radius-xl);
+    text-align: center;
+}
+
+.mobileCta:hover {
+   background: var(--color-accent);
+}
+
+.mobileFooter {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    padding-top: 20px;
+    font-family: var(--font-family);
+    font-size: var(--fs-footer);
+    font-weight: var(--fw-semibold);
+    color: var(--color-gray-400);
+}
+
+/* ── Backdrop ── */
+.backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 180;
+    background: rgba(0, 0, 0, 0.25);
+    backdrop-filter: blur(2px);
+    animation: fadeIn 0.25s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) {
+    .desktopNav {
+        display: none;
+    }
+}
+
+@media (max-width: 680px) {
+    .desktopActions {
+        display: none;
+    }
+
+    .hamburger {
+        display: flex;
+    }
+}
+
+@media (max-width: 480px) {
+    .inner {
+        padding: 0 20px;
+    }
+}

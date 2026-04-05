@@ -10,7 +10,6 @@
   </PropertyGroup>
   <ItemGroup>
     <Folder Include="src\components\Checkbox\" />
-    <Folder Include="src\components\Navbar\" />
     <Folder Include="src\components\TagButtons\" />
     <Folder Include="src\components\SideImage\" />
   </ItemGroup>
