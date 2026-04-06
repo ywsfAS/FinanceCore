@@ -1,4 +1,4 @@
-.custom-input {
+.customInput {
     --input-bg: #f0f0f0;
     --input-border: #d1d5db;
     --input-border-focus: #ccc;
@@ -24,7 +24,7 @@
     transition: all var(--transition-fast);
 }
 
-.custom-input::placeholder {
+.customInput::placeholder {
    color: var(--input-placeholder);
 }
 
@@ -32,7 +32,7 @@
     border-color: var(--input-border-focus);
     box-shadow: 0 0 5px var(--input-shadow-focus);
     }
-input.custom-input:-webkit-autofill {
+input.customInput:-webkit-autofill {
     -webkit-box-shadow: 0 0 0px 1000px var(--input-bg) inset !important;
     -webkit-text-fill-color: #000 !important;
 }

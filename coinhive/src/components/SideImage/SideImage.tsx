@@ -1,4 +1,4 @@
-import "./SideImage.css";
+import styles from "./SideImage.module.css";
 
 interface SideImageProps {
     src: string;
@@ -7,7 +7,7 @@ interface SideImageProps {
 }
 
 export default function SideImage({ src, alt = "", className = "" }: SideImageProps) {
-    return <div className={`side-image ${className}`}>
+    return <div className={`${styles.sideImage} ${className}`}>
         <img src={src} alt={alt} />
     </div>;
 }

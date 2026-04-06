@@ -7,7 +7,7 @@ import Checkbox from "../../components/Checkbox/Checkbox";
 import Button from "../../components/Button/Button";
 import Image from "../../assets/image.jpeg";
 import Logo from "../../assets/logo.svg";
-import "./Register.css";
+import styles from  "./Register.module.css";
 
 const RegisterPage = () => {
 
@@ -33,33 +33,34 @@ const RegisterPage = () => {
     };
 
     return (
-        <div className="global-container">
-            <Card className="login-card">
-                <div className="form-side">
-                    <div className="logo-container">
-                        <img className="logo" src={Logo} alt="Logo" />
+        <div className={styles.globalContainer}>
+            <Card className={styles.loginCard}>
+                <div className={styles.formSide}>
+                    <div className={styles.logoContainer}>
+                        <img className={styles.logo} src={Logo} alt="Logo" />
                     </div>
-                    <h1 className="title">Create Account</h1>
-                    <p className="title-p">Join us and start managing your finances</p>
+                    <h1 className={styles.title}>Create Account</h1>
+                    <p className={styles.titleP}>Join us and start managing your finances</p>
 
-                    <div className="input">
+                    <div className={styles.input}>
                         <p>Name</p>
                         <Input type="text" placeholder="Enter your full name" value={name} onChange={(e) => setName(e.target.value)} />
                     </div>
-                    <div className="input">
+                    <div className={styles.input}>
+
                         <p>Email</p>
                         <Input type="email" placeholder="Enter your email" value={email} onChange={(e) => setEmail(e.target.value)} />
                     </div>
-                    <div className="input">
+                    <div className={styles.input}>
                         <p>Password</p>
                         <Input type="password" placeholder="Enter your password" value={password} onChange={(e) => setPassword(e.target.value)} />
                     </div>
-                    <div className="input">
+                    <div className={styles.input}>
                         <p>Confirm Password</p>
                         <Input type="password" placeholder="Confirm your password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
                     </div>
 
-                    <div className="container">
+                    <div className={styles.container}>
                         <Checkbox
                             label="I agree to the terms and conditions"
                             checked={agreeTerms}
@@ -69,8 +70,8 @@ const RegisterPage = () => {
 
                     <Button type="submit" onClick={handleRegister} variant='primary'>Register</Button>
 
-                    <p className="login-up">
-                        Already have an account? <a className="login-up-link">Login</a>
+                    <p className={styles.loginUp}>
+                        Already have an account? <a className={styles.loginUpLink}>Login</a>
                     </p>
                 </div>
                 <SideImage src={Image} alt="Register illustration" />

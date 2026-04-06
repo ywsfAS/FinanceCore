@@ -11,6 +11,5 @@
   <ItemGroup>
     <Folder Include="src\components\Checkbox\" />
     <Folder Include="src\components\TagButtons\" />
-    <Folder Include="src\components\SideImage\" />
   </ItemGroup>
 </Project>

@@ -1,5 +1,5 @@
 import React, { ChangeEvent } from "react";
-import "./Input.module.css";
+import styles from  "./Input.module.css";
 
 interface InputProps {
     type: string;
@@ -16,7 +16,7 @@ export default function Input({ type, placeholder = "", value, onChange, classNa
             placeholder={placeholder}
             value={value}
             onChange={onChange}
-            className={`custom-input ${className}`}
+            className={`${styles.customInput} ${className}`}
         />
     );
 }

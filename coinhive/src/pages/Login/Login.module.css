@@ -1,0 +1,99 @@
+
+.globalContainer {
+    --font-family: 'Montserrat', sans-serif;
+    --color-text: #000000;
+    --color-text-muted: #3f3e3ee8;
+    --color-hover: cornflowerblue;
+    --container-padding: 30px;
+    --container-gap: 32px;
+    --title-font-size: 30px;
+    --subtitle-margin: 35px;
+    --input-margin: 5px;
+    --logo-height: 52%;
+    --logo-width-mobile: 30%;
+    --sign-font-size: 14px;
+    --bg-color: #f5f6fa;
+    height: 100vh;
+    margin-top: 60px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--bg-color);
+}
+
+.formSide {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--container-padding);
+}
+
+.logoContainer {
+    height: 20%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo {
+    max-width: 100%;
+    max-height: 100%;
+    height: var(--logo-height);
+}
+
+@media (max-width: 1205px) {
+    .logo {
+        width: var(--logo-width-mobile);
+    }
+}
+
+.title {
+    color: var(--color-text);
+    font-weight: bold;
+    font-size: var(--title-font-size);
+    margin-bottom: 12px;
+}
+
+.titleP {
+    margin-bottom: var(--subtitle-margin);
+}
+
+.input p:first-child {
+    margin-bottom: var(--input-margin);
+}
+
+.container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-bottom: var(--container-gap);
+}
+
+.forgotPassword {
+    color: var(--color-text-muted);
+    font-size: var(--sign-font-size);
+    cursor: pointer;
+}
+
+ .forgotPassword:hover {
+    color: var(--color-hover);
+}
+
+.signUp {
+    font-size: var(--sign-font-size);
+}
+
+.signUpLink {
+    color: var(--color-text-muted);
+    font-weight: 600;
+    font-size: var(--sign-font-size);
+    cursor: pointer;
+}
+
+.signUpLink:hover {
+    color: var(--color-hover);
+}
+

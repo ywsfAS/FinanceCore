@@ -1,48 +1,42 @@
-*, *::before, *::after {
-    box-sizing: border-box;
-}
 
 .page {
-    font-family: 'Montserrat', sans-serif;
-    background: #ffffff;
+    --font-family: 'Montserrat', sans-serif;
+    --color-bg: #ffffff;
+    --color-text: #0a0a0a;
+    --color-alt-bg: #fafafa;
+    --color-border: #f0f0f0;
+    --container-width: 1080px;
+    --container-padding: 48px;
+    --container-padding-mobile: 24px;
+
+
+    font-family: var(--font-family);
+    background: var(--color-bg);
     min-height: 100vh;
-    color: #0a0a0a;
+    color: var(--color-text);
 }
 
 .container {
-    max-width: 1080px;
+    max-width: var(--container-width);
     margin: 0 auto;
-    padding: 0 48px;
+    padding: 0 var(--container-padding);
 }
 
 .altBg {
-    background: #fafafa;
-    border-top: 1px solid #f0f0f0;
-    border-bottom: 1px solid #f0f0f0;
+    background: var(--color-alt-bg);
+    border-top: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
 }
 
-.altBg .container {
-    max-width: 1080px;
-    margin: 0 auto;
-    padding: 0 48px;
-}
-
-@media (max-width: 900px) {
-    .navLinks {
-        display: none;
-    }
+ .altBg .container {
+   max-width: var(--container-width);
+   margin: 0 auto;
+   padding: 0 var(--container-padding);
 }
 
 @media (max-width: 768px) {
-    .nav {
-        padding: 0 24px;
-    }
-
-    .container {
-        padding: 0 24px;
-    }
-
+    .container,
     .altBg .container {
-        padding: 0 24px;
+        padding: 0 var(--container-padding-mobile);
     }
 }

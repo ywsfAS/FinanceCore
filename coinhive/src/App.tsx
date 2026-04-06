@@ -28,7 +28,7 @@ function App() {
     return (
         <>
             <Navbar />
-            <About />
+            <LoginPage />
             <Footer/>
         </>
     )

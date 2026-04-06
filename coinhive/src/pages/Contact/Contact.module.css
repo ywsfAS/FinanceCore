@@ -1,125 +1,60 @@
-*, *::before, *::after {
-    box-sizing: border-box;
-}
 
+
+/* ── Page wrapper ── */
 .page {
-    font-family: 'Montserrat', sans-serif;
-    background: #ffffff;
+    --font-family: 'Montserrat', sans-serif;
+    --color-bg: #ffffff;
+    --color-text: #0a0a0a;
+    --color-divider: #f0f0f0;
+    --max-width: 1080px;
+    --spacing-page-padding: 48px;
+    --spacing-page-padding-mobile: 24px;
+    --spacing-main-grid-gap: 64px;
+    --spacing-main-grid-gap-mobile: 48px;
+    --spacing-main-grid-padding-vertical: 64px;
+    --spacing-main-grid-padding-bottom: 80px;
+
+
+    font-family: var(--font-family);
+    background: var(--color-bg);
     min-height: 100vh;
-    color: #0a0a0a;
+    color: var(--color-text);
 }
 
-/* ── Navbar ── */
-.nav {
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 100;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 48px;
-    height: 68px;
-    background: rgba(255, 255, 255, 0.92);
-    backdrop-filter: blur(12px);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.06);
-}
-
-.navLogo {
-    font-family: 'Montserrat', sans-serif;
-    font-size: 20px;
-    font-weight: 800;
-    color: #0a0a0a;
-    letter-spacing: -0.02em;
-}
-
-.navLinks {
-    display: flex;
-    align-items: center;
-    gap: 28px;
-}
-
-    .navLinks a {
-        font-family: 'Montserrat', sans-serif;
-        font-size: 13px;
-        font-weight: 600;
-        color: #6b7280;
-        text-decoration: none;
-        letter-spacing: 0.01em;
-        transition: color 0.2s;
-    }
-
-        .navLinks a:hover,
-        .active {
-            color: #0a0a0a !important;
-        }
-
-.navCta {
-    background: #0a0a0a !important;
-    color: #ffffff !important;
-    padding: 9px 22px;
-    border-radius: 10px;
-    font-weight: 700 !important;
-    font-size: 12px !important;
-    letter-spacing: 0.03em !important;
-    transition: background 0.2s, transform 0.2s !important;
-}
-
-    .navCta:hover {
-        background: #10b981 !important;
-        transform: translateY(-1px);
-    }
-
-/* ── Main grid ── */
+/* ── Main grid for form + info ── */
 .mainGrid {
     display: grid;
     grid-template-columns: 1fr 1fr;
-    gap: 64px;
-    max-width: 1080px;
+    gap: var(--spacing-main-grid-gap);
+    max-width: var(--max-width);
     margin: 0 auto;
-    padding: 64px 48px 80px;
-}
-
-/* ── FAQ ── */
-.divider {
-    border: none;
-    border-top: 1px solid #f0f0f0;
-    margin: 0;
-}
-
-.faqWrapper {
-    max-width: 1080px;
-    margin: 0 auto;
-    padding: 0 48px;
-}
-
-/* ── Footer ── */
-.footerWrapper {
-    max-width: 1080px;
-    margin: 0 auto;
-    padding: 0 48px;
+    padding: var(--spacing-main-grid-padding-vertical) var(--spacing-page-padding) var(--spacing-main-grid-padding-bottom);
 }
 
 @media (max-width: 900px) {
     .mainGrid {
         grid-template-columns: 1fr;
-        gap: 48px;
-        padding: 48px 24px 64px;
+        gap: var(--spacing-main-grid-gap-mobile);
+        padding: 48px var(--spacing-page-padding-mobile) 64px;
     }
 }
 
+/* ── Divider line ── */
+.divider {
+    border: none;
+    border-top: 1px solid var(--color-divider);
+    margin: 0;
+}
+
+/* ── FAQ wrapper ── */
+.faqWrapper {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 var(--spacing-page-padding);
+}
+
 @media (max-width: 768px) {
-    .nav {
-        padding: 0 24px;
-    }
-
-    .navLinks a:not(.navCta):not(.active) {
-        display: none;
-    }
-
-    .faqWrapper,
-    .footerWrapper {
-        padding: 0 24px;
+    .faqWrapper {
+        padding: 0 var(--spacing-page-padding-mobile);
     }
 }
