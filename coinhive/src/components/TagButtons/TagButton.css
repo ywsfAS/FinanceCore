@@ -1,25 +1,47 @@
+
+/* Container */
 .user-tags {
+    /* Spacing */
+    --tags-gap: 8px;
+    --tags-margin-top: 10px;
+    --tag-padding: 6px 12px;
+    /* Colors */
+    --tag-bg: #f3f4f6;
+    --tag-bg-hover: #e5e7eb;
+    --tag-bg-active: #111111;
+    --tag-text: #333333;
+    --tag-text-active: #ffffff;
+    /* Typography */
+    --tag-font-size: 13px;
+    /* Radius */
+    --tag-radius: 20px;
+    /* Transition */
+    --transition-fast: 0.2s ease;
+
     display: flex;
     flex-wrap: wrap;
-    gap: 8px;
-    margin-top: 10px;
+    gap: var(--tags-gap);
+    margin-top: var(--tags-margin-top);
 }
 
+/* Tag */
 .tag {
-    padding: 6px 12px;
-    font-size: 13px;
-    background-color: #f3f4f6;
-    color: #333;
-    border-radius: 20px;
+    padding: var(--tag-padding);
+    font-size: var(--tag-font-size);
+    background-color: var(--tag-bg);
+    color: var(--tag-text);
+    border-radius: var(--tag-radius);
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all var(--transition-fast);
 }
 
+    /* Hover */
 .tag:hover {
-     background-color: #e5e7eb;
+    background-color: var(--tag-bg-hover);
 }
 
+    /* Active */
 .tag.active {
-   background-color: #111;
-   color: #fff;
+    background-color: var(--tag-bg-active);
+    color: var(--tag-text-active);
 }
