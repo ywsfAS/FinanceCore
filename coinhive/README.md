@@ -1,73 +1,114 @@
-# React + TypeScript + Vite
+# CoinHive
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+CoinHive is a modular React + TypeScript frontend project for FinanceCore, designed to provide interactive dashboards, financial analytics, and user interfaces for finance management. The project leverages component-based architecture, modern styling, and React Router for seamless navigation.
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+## 🗂 Project Structure
 
-## React Compiler
+```text
+coinhive/
+├─ .vscode/                  # VSCode workspace settings
+├─ node_modules/             # NPM dependencies
+├─ public/                   # Static assets
+├─ src/
+│  ├─ assets/                # Images, logos, icons
+│  ├─ components/            # Reusable React components
+│  │  ├─ AboutHero/
+│  │  ├─ AboutSection/
+│  │  ├─ BarChartCard/
+│  │  ├─ BarTooltip/
+│  │  ├─ Button/
+│  │  ├─ Card/
+│  │  ├─ Checkbox/
+│  │  ├─ ContactForm/
+│  │  ├─ ContactHero/
+│  │  ├─ ContactInfo/
+│  │  ├─ Ctasection/
+│  │  ├─ Faqsection/
+│  │  ├─ FeaturesSection/
+│  │  ├─ FinancialOverview/
+│  │  ├─ FinancialTransaction/
+│  │  ├─ Footer/
+│  │  ├─ HeroBalance/
+│  │  ├─ HeroSection/
+│  │  ├─ Howitworks/
+│  │  ├─ Input/
+│  │  ├─ LogoSection/
+│  │  ├─ Navbar/
+│  │  ├─ PieChartCard/
+│  │  ├─ PieTooltip/
+│  │  ├─ Pricingsection/
+│  │  ├─ SideImage/
+│  │  ├─ SpendingAnalytics/
+│  │  ├─ StatCard/
+│  │  ├─ StatsGrid/
+│  │  ├─ TagButtons/
+│  │  ├─ TeamSection/
+│  │  ├─ TestimonialsSection/
+│  │  └─ ValueSection/
+│  ├─ context/               # React Context providers
+│  ├─ entities/              # Domain entities or models
+│  ├─ hooks/                 # Custom React hooks
+│  ├─ pages/                 # Page-level components
+│  ├─ routes/                # App routing configuration
+│  ├─ services/              # API or utility services
+│  ├─ styles/                # Global and shared styles
+│  ├─ use-cases/             # Business logic / use-case implementations
+│  ├─ App.tsx
+│  ├─ App.css
+│  ├─ index.css
+│  └─ main.tsx
+├─ coinhive.esproj            # Project configuration
+├─ package.json
+├─ package-lock.json
+├─ tsconfig.app.json
+├─ tsconfig.json
+├─ tsconfig.node.json
+├─ vite.config.ts
+├─ README.md
+└─ CHANGELOG.md
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
 ```
+# CoinHive Project Overview
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+##  Technologies Used
+- **React 18** – Component-based frontend  
+- **TypeScript** – Type-safe JavaScript  
+- **Vite** – Fast development server and build tool  
+- **React Router** – Page navigation  
+- **Module CSS Variables** – For local scope scalable styling  
+- **Custom Components** – Buttons, cards, charts, inputs, and more  
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+---
+
+##  Features
+- **Landing Page:** Hero section, features, logos, testimonials, pricing, CTA  
+- **About Page:** Team, mission, values, story sections  
+- **Authentication:** Register and login pages  
+- **Dynamic Components:** Reusable UI components like Cards, Charts, Hero sections  
+- **Responsive Design:** Mobile-first layouts  
+- **Finance Dashboard Components:** SpendingAnalytics, FinancialOverview, FinancialTransaction  
+- **Charts:** PieChartCard, BarChartCard, and custom tooltips  
+- **Forms:** Input fields, checkboxes, buttons with validation  
+- **Routing:** Pages linked using React Router (`Routes`, `Route`, `NavLink`)  
+
+---
+
+## 🏗 Project Setup
+
+1. **Install Dependencies**  
+```bash
+npm install
+npm run dev
 ```
+## 📁 Folder Conventions
+- **components/** – Reusable UI elements
+- **pages/** – Page-level components (Landing, About, Login, Register)
+- **hooks/** – Custom hooks for state and side effects  
+- **context/** – React Context providers
+- **services/** – API or business logic
+- **use-cases/** – Domain-specific use cases
+- **entities/** – Data models
+- **styles/** – Global and shared CSS

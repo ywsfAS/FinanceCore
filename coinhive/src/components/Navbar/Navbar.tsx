@@ -52,9 +52,9 @@ const Navbar: React.FC<NavbarProps> = ({ activePage = "home" }) => {
                 <div className={styles.inner}>
 
                     {/* ── Logo ── */}
-                    <a href="/" className={styles.logo} aria-label="FinVault home">
-                        <span className={styles.logoMark}>FV</span>
-                        <span className={styles.logoText}>FinVault</span>
+                    <a href="/" className={styles.logo} aria-label="FinanceCore home">
+                        <span className={styles.logoMark}>FC</span>
+                        <span className={styles.logoText}>FinanceCore</span>
                     </a>
 
                     {/* ── Desktop nav links ── */}

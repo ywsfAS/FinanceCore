@@ -1,6 +1,7 @@
 import './App.css'
 import { useAuth } from "./hooks/Auth";
 import { useEffect } from 'react';
+import { Route, Routes } from "react-router-dom";
 import Navbar from './components/Navbar/Navbar';
 import RegisterPage from './pages/Register/RegisterPage';
 import ProfilePage from './pages/Profile/Profile';
@@ -28,7 +29,15 @@ function App() {
     return (
         <>
             <Navbar />
-            <LoginPage />
+            <Routes>
+                <Route path="/" element={<Landing />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/register" element={<RegisterPage />} />
+                <Route path="/login" element={<LoginPage />} />
+                <Route path="/profile" element={<ProfilePage/> }/>
+
+            </Routes>
             <Footer/>
         </>
     )
