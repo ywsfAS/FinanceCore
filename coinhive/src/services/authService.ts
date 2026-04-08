@@ -1,6 +1,6 @@
 import type { User } from "../entities/User";
 
-const auth_URL = "/api/auth";
+const auth_URL = "https://localhost:7143/api/v1/auth";
 
 export const authService = {
 
@@ -17,7 +17,7 @@ export const authService = {
     register: async (name: string, email: string, password: string): Promise<User> => {
         const res = await fetch(`${auth_URL}/register`, {
             method: "POST",
-            headers: { "conent-type": "aplication/json" },
+            headers: { "Content-type": "application/json" },
             body: JSON.stringify({name,email,password}),
         });
         if (!res.ok) throw new Error("Register failed");

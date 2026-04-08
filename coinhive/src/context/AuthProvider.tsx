@@ -2,7 +2,8 @@ import {useState} from "react";
 import type { ReactNode } from "react";
 import type { User } from "../entities/User";
 import { AuthContext } from "./AuthContext";
-import { registerUser } from "../use-cases/auth/signup"
+import { registerUser} from "../use-cases/auth/signup"
+import { loginUser } from "../use-cases/auth/login";
 
 
 type AuthProviderProps = {
@@ -14,6 +15,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     const [loading, setLoading] = useState<boolean>(true);
 
     const login = async (token: string) => {
+        console.log(token);
         localStorage.setItem("token", token);
         await loginWithToken(token);
     };
@@ -25,7 +27,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
     const loginWithToken = async (token: string) => {
         try {
-            const res = await fetch("", {
+            const res = await fetch("https://localhost:7143/api/v1/users", {
                 headers: {
                     Authorization: `Bearer ${token}`
                 }
@@ -41,7 +43,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             setLoading(false);
         }
     };
+    const loginWithCredentials = async (email : string , password : string) => {
+        const { token} = await loginUser(email, password);
+        await login(token!);
 
+    }
     const register = async (name: string, email: string, password: string) => {
         const {token} = await registerUser(name, email, password);
         await login(token!);
@@ -56,7 +62,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
                 login,
                 loginWithToken,
                 logout,
-                register
+                register,
+                loginWithCredentials,
             }}
         >
             {children}

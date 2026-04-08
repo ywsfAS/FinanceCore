@@ -8,6 +8,7 @@ interface AuthContextType {
     loginWithToken: (token: string) => Promise<void>;
     logout: () => void;
     register: (name: string, email: string, password: string) => Promise<void>;
+    loginWithCredentials: (email: string, password: string) => Promise<void>;
 
 }
 export const AuthContext = createContext<AuthContextType>({
@@ -17,5 +18,6 @@ export const AuthContext = createContext<AuthContextType>({
     login: async () => { },
     loginWithToken: async () => { },
     logout: () => { },
-    register: async () => { }
+    register: async () => { },
+    loginWithCredentials: async () => { },
 })

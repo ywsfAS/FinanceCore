@@ -24,7 +24,7 @@ namespace FinanceCore.Application.Features.RecurringTransactions.commands.Create
             CreateRecurringCommand command,
             CancellationToken cancellationToken)
         {
-            var recurring = RecurringTransaction.Create(
+            var recurring = Domain.RecurringTransaction.RecurringTransaction.Create(
                 command.accountId,
                 command.categoryId,
                 command.amount,

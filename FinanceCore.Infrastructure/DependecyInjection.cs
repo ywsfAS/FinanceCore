@@ -64,6 +64,8 @@ namespace FinanceCore.Infrastructure
             services.AddScoped<IBudgetRepository, BudgetRepository>();
             services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IAuditRepository, AuditLogRepository>();
+            services.AddScoped<IRecurringTransactionRepository , RecurringTransactionRepository>();
+            services.AddScoped<ISavingsGoalRepository,SavingsGoalRepository>();
             services.AddScoped<IProfileRepository, ProfileRepository>();
 
             services.AddScoped<IPasswordHasher, PasswordHasher>();

@@ -1,4 +1,4 @@
-﻿using FinanceCore.Application.Abstractions;
+using FinanceCore.Application.Abstractions;
 using FinanceCore.Domain.Audit;
 using FinanceCore.Domain.Events.User;
 using MediatR;
@@ -14,7 +14,7 @@ namespace FinanceCore.Application.Events.Users.UserCreated
         }
         public async Task Handle(UserCreatedEvent notification, CancellationToken cancellationToken)
         {
-            var audit = new AuditLog("User Created", notification.Name, notification.UserId, DateTime.UtcNow
+            var audit = new AuditLog("User Created",notification.Name, notification.UserId, DateTime.UtcNow
             );
             await _auditRepository.LogAsync(audit, cancellationToken);
         }

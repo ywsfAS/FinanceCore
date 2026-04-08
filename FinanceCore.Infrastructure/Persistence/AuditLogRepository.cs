@@ -1,4 +1,4 @@
-﻿using Dapper;
+using Dapper;
 using FinanceCore.Application.Abstractions;
 using FinanceCore.Domain.Audit;
 using FinanceCore.Infrastructure.context;
@@ -23,7 +23,6 @@ namespace FinanceCore.Infrastructure.Persistence
             Action,
             UserId,
             EntityName,
-            Details,
             CreatedAt
         )
         VALUES
@@ -32,7 +31,6 @@ namespace FinanceCore.Infrastructure.Persistence
             @Action,
             @UserId,
             @EntityName,
-            @Details,
             @CreatedAt
         );";
 

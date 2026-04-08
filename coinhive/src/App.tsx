@@ -23,9 +23,6 @@ function App() {
         }
         runAuth();
     }, []);
-
-
-    if (!loading) return <div>Loading...</div>
     return (
         <>
             <Navbar />

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,7 +11,7 @@ namespace FinanceCore.Application.Models
         public Guid Id { get; set; }
         public string Action { get; set; } = string.Empty;
         public string EntityName { get; set; } = string.Empty;
-        public Guid EntityId { get; set; }
+        public Guid UserId { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 }

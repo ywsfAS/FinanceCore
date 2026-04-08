@@ -1,4 +1,4 @@
-﻿using FinanceCore.Application.Models;
+using FinanceCore.Application.Models;
 using FinanceCore.Domain.Audit;
 
 namespace FinanceCore.Infrastructure.Persistence.Mappers
@@ -12,7 +12,7 @@ namespace FinanceCore.Infrastructure.Persistence.Mappers
                 Id = domain.Id,
                 Action = domain.Action,
                 EntityName = domain.EntityName,
-                EntityId = domain.EntityId,
+                UserId = domain.EntityId,
                 CreatedAt = domain.CreatedAt
             };
         }
@@ -22,7 +22,7 @@ namespace FinanceCore.Infrastructure.Persistence.Mappers
             var audit = new AuditLog(
                 model.Action,
                 model.EntityName,
-                model.EntityId,
+                model.UserId,
                 model.CreatedAt
             );
             return audit;
