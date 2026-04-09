@@ -5,7 +5,7 @@
     --color-button-default: #444;
     --color-button-disabled: #a0c4ff;
     --color-white: #ffffff;
-    --color-primary: deeppink;
+    --color-primary: #10b981;
     --color-secondary: #0070f3;
     --color-success: #28a745;
     --color-warning: #ffc107;
@@ -27,8 +27,6 @@
     /* Transitions */
     --transition-opacity: 0.2s ease;
     --transition-transform: 0.1s ease;
-
-
     width: 100%;
     padding: var(--padding-medium);
     background-color: var(--color-button-default);

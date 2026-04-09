@@ -8,6 +8,7 @@ import Button from "../../components/Button/Button";
 import Image from "../../assets/image.jpeg";
 import Logo from "../../assets/logo.svg";
 import styles from  "./Register.module.css";
+import { useTheme } from "../../hooks/Theme";
 
 const RegisterPage = () => {
 
@@ -17,6 +18,7 @@ const RegisterPage = () => {
     const [confirmPassword, setConfirmPassword] = useState("");
     const [agreeTerms, setAgreeTerms] = useState(false);
     const { register } = useAuth();
+    const { theme } = useTheme();
     const handleRegister = async () => {
         if (password !== confirmPassword) {
             alert("Passwords do not match!");
@@ -33,8 +35,8 @@ const RegisterPage = () => {
     };
 
     return (
-        <div className={styles.globalContainer}>
-            <Card className={styles.loginCard}>
+        <div className={`${styles.globalContainer} ${theme === 'dark' && styles.dark }`}>
+            <Card className={styles.loginCard} variant={theme === 'dark' ? "darkMode" : ""}>
                 <div className={styles.formSide}>
                     <div className={styles.logoContainer}>
                         <img className={styles.logo} src={Logo} alt="Logo" />

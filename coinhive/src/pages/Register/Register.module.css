@@ -22,7 +22,10 @@
     align-items: center;
     background-color: var(--bg-color);
 }
-
+.dark {
+    --bg-color: #000000d9;
+    --color-text: white;
+}
 .formSide {
     flex: 1;
     display: flex;

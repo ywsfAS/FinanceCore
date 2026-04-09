@@ -2,8 +2,8 @@ import {useState} from "react";
 import type { ReactNode } from "react";
 import type { User } from "../entities/User";
 import { AuthContext } from "./AuthContext";
-import { registerUser} from "../use-cases/auth/signup"
-import { loginUser } from "../use-cases/auth/login";
+import { registerUser} from "../../use-cases/auth/signup"
+import { loginUser } from "../../use-cases/auth/login";
 
 
 type AuthProviderProps = {

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styles from "./Navbar.module.css";
+import { useTheme } from "../../hooks/Theme";
 
 type NavPage = "home" | "about" | "contact" | "pricing" | "profile";
 
@@ -20,6 +21,9 @@ const Navbar: React.FC<NavbarProps> = ({ activePage = "home" }) => {
     const [menuOpen, setMenuOpen] = useState(false);
     const [visible, setVisible] = useState(true);
     const [lastScrollY, setLastScrollY] = useState(0);
+
+    // theme
+    const { theme , toggleTheme } = useTheme();
 
     /* ── scroll: shadow + hide-on-scroll-down ── */
     useEffect(() => {
@@ -44,6 +48,7 @@ const Navbar: React.FC<NavbarProps> = ({ activePage = "home" }) => {
             <header
                 className={[
                     styles.header,
+                    theme === 'dark' ? styles.dark : "",
                     scrolled ? styles.scrolled : "",
                     !visible ? styles.hidden : "",
                     menuOpen ? styles.menuOpen : "",
@@ -80,6 +85,7 @@ const Navbar: React.FC<NavbarProps> = ({ activePage = "home" }) => {
                     <div className={styles.desktopActions}>
                         <a href="/login" className={styles.loginBtn}>Log In</a>
                         <a href="/register" className={styles.ctaBtn}>Get Started Free</a>
+                        <a className={styles.loginBtn} onClick={toggleTheme}>{theme}</a>
                     </div>
 
                     {/* ── Mobile hamburger ── */}
@@ -120,6 +126,7 @@ const Navbar: React.FC<NavbarProps> = ({ activePage = "home" }) => {
                 <div className={styles.mobileActions}>
                     <a href="/login" className={styles.mobileLogin} onClick={() => setMenuOpen(false)}>Log In</a>
                     <a href="/register" className={styles.mobileCta} onClick={() => setMenuOpen(false)}>Get Started Free</a>
+
                 </div>
 
                 <div className={styles.mobileFooter}>

@@ -24,7 +24,6 @@
     cursor: pointer;
     font-size: var(--font-size-base);
     gap: var(--gap-sm);
-    color: var(--color-black);
     user-select: none;
 }
 

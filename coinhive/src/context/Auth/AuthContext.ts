@@ -1,5 +1,5 @@
 import { createContext } from "react";
-import type { User } from "../entities/User";
+import type { User } from "../../entities/User";
 interface AuthContextType {
     user: User | null;
     isAuthenticated: boolean;

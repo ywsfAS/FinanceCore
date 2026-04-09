@@ -8,12 +8,15 @@ import Image from "../../assets/image.jpeg";
 import Logo from "../../assets/logo.svg";
 import styles from "./Login.module.css";
 import { useAuth } from "../../hooks/Auth";
+import { useTheme } from "../../hooks/Theme";
 const LoginPage = () => {
 
-    const { loginWithCredentials , user } = useAuth();
+    const { loginWithCredentials, user } = useAuth();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [rememberMe, setRememberMe] = useState(false);
+
+    const {theme} = useTheme();
     const handleLogin = async () => {
         if (!email || email.trim().length === 0) {
             alert("email can't be empty");
@@ -22,13 +25,13 @@ const LoginPage = () => {
         if (!password|| password.trim().length === 0) {
             alert("password can't be empty");
         }
-        loginWithCredentials(email,password);
-    }
+        loginWithCredentials(email, password);
+      }
     console.log(user);
 
     return (
-    <div className={styles.globalContainer}>
-        <Card className="login-card">
+        <div className={`${styles.globalContainer} ${theme === 'dark' && styles.dark} `}>
+            <Card className="login-card" variant={ theme === 'dark' ? "darkMode" : ""}>
                 <div className={styles.formSide}>
                     <div className={styles.logoContainer}>
                         <img className={styles.logo} src={Logo} alt="" />

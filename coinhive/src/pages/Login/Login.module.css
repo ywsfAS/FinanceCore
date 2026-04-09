@@ -15,11 +15,15 @@
     --bg-color: #f5f6fa;
     height: 100vh;
     display: flex;
+    color : var(--color-text);
     justify-content: center;
     align-items: center;
     background-color: var(--bg-color);
 }
-
+.dark {
+    --bg-color: #000000d9;
+    --color-text: white;
+}
 .formSide {
     flex: 1;
     display: flex;
@@ -49,7 +53,6 @@
 }
 
 .title {
-    color: var(--color-text);
     font-weight: bold;
     font-size: var(--title-font-size);
     margin-bottom: 12px;
@@ -72,7 +75,6 @@
 }
 
 .forgotPassword {
-    color: var(--color-text-muted);
     font-size: var(--sign-font-size);
     cursor: pointer;
 }
@@ -95,4 +97,6 @@
 .signUpLink:hover {
     color: var(--color-hover);
 }
-
+.input{
+    width:100%;
+}

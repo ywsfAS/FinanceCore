@@ -1,9 +1,11 @@
 import React from "react";
 import styles from "./Footer.module.css";
+import { useTheme } from "../../hooks/Theme";
 
 const Footer: React.FC = () => {
+    const { theme } = useTheme();
     return (
-        <footer className={styles.footer}>
+        <footer className={`${styles.footer} ${theme === 'dark' && styles.dark}`}>
             <div className={styles.inner}>
                 <div className={styles.brand}>
                     <span className={styles.logo}>Finance Core</span>
