@@ -5,8 +5,8 @@ import Card from "../../components/Card/Card";
 import SideImage from "../../components/SideImage/SideImage";
 import Checkbox from "../../components/Checkbox/Checkbox";
 import Button from "../../components/Button/Button";
-import Image from "../../assets/image.jpeg";
-import Logo from "../../assets/logo.svg";
+import Image from "../../assets/side.png";
+import Logo from "../../assets/Logo.png";
 import styles from  "./Register.module.css";
 import { useTheme } from "../../hooks/Theme";
 

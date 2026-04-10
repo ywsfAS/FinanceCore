@@ -1,0 +1,27 @@
+import { getProfile } from "../use-cases/profile/profile";
+import { useAuth } from "./Auth";
+import { useState, useEffect } from "react";
+
+
+export const useProfile = () => {
+    const { user: { token } } = useAuth();
+    const [loading, setLoading] = useState(true);
+    const [profile, setProfile] = useState(null);
+    useEffect(() => {
+        const fetchProfile = async () => {
+
+            try {
+                const data = await getProfile(token);
+                setProfile(data);
+            }
+            catch (err) {
+                console.log(err);
+            }
+            finally {
+                setLoading(false);
+            }
+        }
+        if(token) fetchProfile();
+    }, [token])
+    return { profile, loading };
+}

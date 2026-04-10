@@ -5,10 +5,12 @@ import FinancialCard from "../../components/FinancialOverview/FinancialOverview"
 import FinancialTransaction from "../../components/FinancialTransaction/FinancialTransaction";
 import SpendingAnalytics from "../../components/SpendingAnalytics/SpendingAnalytics";
 import { useAuth } from "../../hooks/Auth";
+import { useProfile } from "../../hooks/Profile";
 
 
 export default function ProfilePage() {
     const { user } = useAuth();
+    const { profile } = useProfile();
     return (
         <div className={styles.container}>
             <div className={styles.left}>

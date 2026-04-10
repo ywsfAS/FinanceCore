@@ -10,18 +10,13 @@ import Contact from './pages/Contact/Contact'
 import Footer from './components/Footer/Footer';
 import Landing from './pages/Landing/Landing';
 import LoginPage from './pages/Login/LoginPage';
+import ProtectedRoute from './routes/ProtectedRoute';
 
 function App() {
-    const { loginWithToken, loading } = useAuth();
+    const { user, loginWithToken} = useAuth();
     // On Mount
     useEffect(() => {
-        const runAuth = async () => {
-            const token: string | null = localStorage.getItem("token");
-            if (token) {
-                await loginWithToken(token);
-            }
-        }
-        runAuth();
+        if(user?.token) loginWithToken(user.token);
     }, []);
     return (
         <>
@@ -32,7 +27,10 @@ function App() {
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/register" element={<RegisterPage />} />
                 <Route path="/login" element={<LoginPage />} />
-                <Route path="/profile" element={<ProfilePage/> }/>
+               
+                <Route element={<ProtectedRoute/> }>
+                    <Route path="/profile" element={<ProfilePage/> }/>
+                </Route> 
 
             </Routes>
             <Footer/>

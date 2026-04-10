@@ -19,7 +19,7 @@ namespace FinanceCore.Infrastructure.Persistence
         {
             using var connection = _connectionFactory.GetConnection();
             var parameters = new DynamicParameters();
-            var sql = "SELECT * FROM Profile WHERE UserId = @UserId";
+            var sql = "SELECT * FROM Profiles WHERE UserId = @UserId";
             parameters.Add("UserId", id);
             var model = await connection.QuerySingleOrDefaultAsync<ProfileModel>(sql,parameters);
             return model;
@@ -28,7 +28,7 @@ namespace FinanceCore.Infrastructure.Persistence
         {
             using var connection = _connectionFactory?.GetConnection();
             var parameters = new DynamicParameters();
-            var sql = "SELECT 1 FROM Profile WHERE Id = @Id";
+            var sql = "SELECT 1 FROM Profiles WHERE Id = @Id";
             parameters.Add("Id",id);
             var result = await connection.ExecuteScalarAsync<int>(sql,parameters);
             return result > 0;
@@ -36,7 +36,7 @@ namespace FinanceCore.Infrastructure.Persistence
         public async Task<IEnumerable<ProfileModel>> GetAllAsync()
         {
             using var connection = _connectionFactory?.GetConnection();
-            var sql = "SELECT * FROM Profile";
+            var sql = "SELECT * FROM Profiles";
             var result = await connection.QueryAsync<ProfileModel>(sql);
             return result;
         }
@@ -44,7 +44,7 @@ namespace FinanceCore.Infrastructure.Persistence
         {
             using var connection = _connectionFactory?.GetConnection();
             var parameters = new DynamicParameters();
-            var sql = "DELETE * FROM Profile WHERE Id = @id";
+            var sql = "DELETE * FROM Profiles WHERE Id = @id";
             parameters.Add("id",id);
             var result = await connection.ExecuteAsync(sql,parameters);
           

@@ -1,21 +1,27 @@
-import {useState } from "react";
+import { useState } from "react";
 import Input from "../../components/Input/Input";
 import Card from "../../components/Card/Card";
 import SideImage from "../../components/SideImage/SideImage";
 import Checkbox from "../../components/Checkbox/Checkbox";
 import Button from "../../components/Button/Button";
-import Image from "../../assets/image.jpeg";
-import Logo from "../../assets/logo.svg";
+import Image from "../../assets/side.png";
+import Logo from "../../assets/Logo.png";
 import styles from "./Login.module.css";
 import { useAuth } from "../../hooks/Auth";
 import { useTheme } from "../../hooks/Theme";
 const LoginPage = () => {
 
+    const messages = {
+        success: "Welcome back",
+        error: "Invalid email or password"
+    }
+
+
     const { loginWithCredentials, user } = useAuth();
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [rememberMe, setRememberMe] = useState(false);
-
+    const [status , setStatus] = useState<"error"|"success"|null>(null);
     const {theme} = useTheme();
     const handleLogin = async () => {
         if (!email || email.trim().length === 0) {
@@ -25,7 +31,14 @@ const LoginPage = () => {
         if (!password|| password.trim().length === 0) {
             alert("password can't be empty");
         }
-        loginWithCredentials(email, password);
+        try {
+
+            await loginWithCredentials(email, password);
+            setStatus("success");
+        }
+        catch {
+            setStatus("error");
+        }
       }
     console.log(user);
 
@@ -55,8 +68,8 @@ const LoginPage = () => {
                 <a className={styles.forgotPassword}>Forgot password </a>
                 </div>
                     <Button type="submit" onClick={handleLogin}>Login</Button>
-                <p className={styles.signUp}>Don't have an account? <a className={styles.signUpLink}> Sign Up</a> </p>
-
+                <p className={styles.signUp}>Don't have an account? <a className={styles.signUpLink} > Sign Up</a> </p>
+                    {status && <p className={status === "error" ? styles.error : styles.success}>{messages[status]}</p>}
             </div>
             <SideImage src={Image} alt="Login illustration" />
             </Card>

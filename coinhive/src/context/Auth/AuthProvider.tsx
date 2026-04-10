@@ -1,6 +1,6 @@
 import {useState} from "react";
 import type { ReactNode } from "react";
-import type { User } from "../entities/User";
+import type { User } from "../../entities/User";
 import { AuthContext } from "./AuthContext";
 import { registerUser} from "../../use-cases/auth/signup"
 import { loginUser } from "../../use-cases/auth/login";
@@ -25,7 +25,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         setUser(null);
     };
 
-    const loginWithToken = async (token: string) => {
+    const loginWithToken = async (token: string | null) => {
         try {
             const res = await fetch("https://localhost:7143/api/v1/users", {
                 headers: {
@@ -36,6 +36,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
             if (!res.ok) throw new Error("Invalid token");
 
             const userData: User = await res.json();
+            if (token) userData.token = token;
             setUser(userData);
         } catch {
             logout();
