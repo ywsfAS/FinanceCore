@@ -1,5 +1,7 @@
-﻿using FinanceCore.Application.DTOs;
+using FinanceCore.Application.DTOs;
 using FinanceCore.Application.Features.Report.GetMonthlySummary;
+using FinanceCore.Application.Features.Report.GetMonthlySummaryPerAccount;
+using FinanceCore.Application.Features.Report.GetMonthlySummaryPerUser;
 using FinanceCore.Application.Features.Report.GetNetWorth;
 using FinanceCore.Application.Features.Report.GetSpendingByCategory;
 using MediatR;
@@ -33,6 +35,19 @@ namespace FinanceCore.API.Controllers
         {
             var UserId = GetUserId();
             var query = new GetMonthlySummaryQuery(UserId, id, year, month);
+            var response = await _mediator.Send(query);
+            return Ok(response);
+
+        }
+        [HttpGet("monthly-summary-per-user")]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(IEnumerable<MonthlySummaryDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> GetMonthlySummaryPerUser(int year, int month)
+        {
+            var UserId = GetUserId();
+            var query = new GetMonthlySummaryQueryUser(UserId,year, month);
             var response = await _mediator.Send(query);
             return Ok(response);
 
