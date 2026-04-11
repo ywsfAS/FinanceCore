@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import styles from "./Navbar.module.css";
 import { useTheme } from "../../hooks/Theme";
+import { Link } from "react-router-dom";
+import Button from "../Button/Button";
 
 type NavPage = "home" | "about" | "contact" | "pricing" | "profile";
 
@@ -10,10 +12,10 @@ interface NavbarProps {
 
 const navLinks: { label: string; href: string; page: NavPage }[] = [
     { label: "Product", href: "#", page: "home" },
-    { label: "Profile", href: "#", page: "features" },
-    { label: "Pricing", href: "#", page: "pricing" },
-    { label: "About", href: "#", page: "about" },
-    { label: "Contact", href: "#", page: "contact" },
+    { label: "Profile", href: "/profile", page: "profile" },
+    { label: "Pricing", href: "/pricing", page: "pricing" },
+    { label: "About", href: "/about", page: "about" },
+    { label: "Contact", href: "/contact", page: "contact" },
 ];
 
 const Navbar: React.FC<NavbarProps> = ({ activePage = "home" }) => {
@@ -65,9 +67,9 @@ const Navbar: React.FC<NavbarProps> = ({ activePage = "home" }) => {
                     {/* ── Desktop nav links ── */}
                     <nav className={styles.desktopNav} aria-label="Main navigation">
                         {navLinks.map((link) => (
-                            <a
+                            <Link
                                 key={link.page}
-                                href={link.href}
+                                to={link.href}
                                 className={[
                                     styles.navLink,
                                     activePage === link.page ? styles.navLinkActive : "",
@@ -77,15 +79,15 @@ const Navbar: React.FC<NavbarProps> = ({ activePage = "home" }) => {
                                 {activePage === link.page && (
                                     <span className={styles.activeDot} aria-hidden="true" />
                                 )}
-                            </a>
+                            </Link>
                         ))}
                     </nav>
 
                     {/* ── Desktop CTAs ── */}
                     <div className={styles.desktopActions}>
-                        <a href="/login" className={styles.loginBtn}>Log In</a>
-                        <a href="/register" className={styles.ctaBtn}>Get Started Free</a>
-                        <a className={styles.loginBtn} onClick={toggleTheme}>{theme}</a>
+                        <Link to="/login" className={styles.loginBtn}>LogIn</Link>
+                        <Link to="/register" className={styles.ctaBtn}>Get Started Free</Link>
+                        <Button onClick={toggleTheme} variant="primary" size="small">{theme}</Button>
                     </div>
 
                     {/* ── Mobile hamburger ── */}
@@ -130,7 +132,7 @@ const Navbar: React.FC<NavbarProps> = ({ activePage = "home" }) => {
                 </div>
 
                 <div className={styles.mobileFooter}>
-                    <span>🔒 SOC 2 Certified</span>
+                    <span>SOC 2 Certified</span>
                     <span>·</span>
                     <span>99.9% Uptime</span>
                 </div>

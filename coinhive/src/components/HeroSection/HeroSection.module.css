@@ -1,16 +1,16 @@
 .hero {
     position: relative;
-    background: #ffffff;
+    background: var(--background);
     overflow: hidden;
     opacity: 0;
     transform: translateY(24px);
     transition: opacity 0.8s ease, transform 0.8s ease;
 }
 
-.hero.visible {
-    opacity: 1;
-    transform: translateY(0);
-}
+    .hero.visible {
+        opacity: 1;
+        transform: translateY(0);
+    }
 
 .gridOverlay {
     position: absolute;
@@ -52,7 +52,6 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0;
 }
 
 .announcement {
@@ -60,24 +59,25 @@
     align-items: center;
     gap: 10px;
     padding: 7px 16px 7px 8px;
-    border: 1px solid #e5e7eb;
+    border: 1px solid var(--border);
     border-radius: 100px;
-    background: #fafafa;
-    font-family: 'Montserrat', sans-serif;
+    background: var(--soft-bg);
     font-size: 12px;
     font-weight: 600;
-    color: #374151;
+    color: var(--muted-foreground);
     text-decoration: none;
     margin-bottom: 32px;
     transition: border-color 0.2s, box-shadow 0.2s;
 }
-.announcement:hover {
-    border-color: #10b981;
-    box-shadow: 0 2px 12px rgba(16, 185, 129, 0.12);
- }
+
+    .announcement:hover {
+        border-color: var(--primary);
+        box-shadow: 0 2px 12px rgba(16, 185, 129, 0.12);
+    }
+
 .announcementBadge {
-    background: #10b981;
-    color: #ffffff;
+    background: var(--primary);
+    color: var(--surface);
     font-size: 10px;
     font-weight: 800;
     letter-spacing: 0.05em;
@@ -86,25 +86,23 @@
 }
 
 .title {
-    font-family: 'Montserrat', sans-serif;
     font-size: clamp(42px, 6.5vw, 80px);
     font-weight: 800;
     line-height: 1.08;
     letter-spacing: -0.035em;
-    color: #0a0a0a;
+    color: var(--foreground);
     margin: 0 0 28px;
 }
 
 .accent {
-    color: #10b981;
+    color: var(--primary);
 }
 
 .tagline {
-    font-family: 'Montserrat', sans-serif;
     font-size: clamp(15px, 1.8vw, 18px);
     font-weight: 400;
     line-height: 1.75;
-    color: #6b7280;
+    color: var(--muted-foreground);
     max-width: 580px;
     margin: 0 0 40px;
 }
@@ -119,46 +117,46 @@
 }
 
 .btnPrimary {
-    font-family: 'Montserrat', sans-serif;
     font-size: 14px;
     font-weight: 700;
     letter-spacing: 0.02em;
-    color: #ffffff;
-    background: #0a0a0a;
+    color: var(--surface);
+    background: var(--foreground);
     padding: 15px 32px;
     border-radius: 12px;
     text-decoration: none;
     transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
 }
 
-.btnPrimary:hover {
-        background: #10b981;
+    .btnPrimary:hover {
+        background: var(--primary);
         transform: translateY(-2px);
         box-shadow: 0 10px 28px rgba(16, 185, 129, 0.28);
     }
 
 .btnSecondary {
-    font-family: 'Montserrat', sans-serif;
     font-size: 14px;
     font-weight: 600;
-    color: #374151;
-    background: #ffffff;
+    color: var(--muted-foreground);
+    background: var(--surface);
     padding: 14px 28px;
     border-radius: 12px;
-    border: 1.5px solid #e5e7eb;
+    border: 1.5px solid var(--border);
     text-decoration: none;
     display: flex;
     align-items: center;
     gap: 10px;
     transition: border-color 0.2s, transform 0.2s;
 }
-.btnSecondary:hover {
-    border-color: #10b981;
-    transform: translateY(-2px);
- }
+
+    .btnSecondary:hover {
+        border-color: var(--primary);
+        transform: translateY(-2px);
+    }
+
 .playIcon {
     font-size: 10px;
-    color: #10b981;
+    color: var(--primary);
 }
 
 .trust {
@@ -176,34 +174,33 @@
     width: 30px;
     height: 30px;
     border-radius: 50%;
-    border: 2px solid #ffffff;
+    border: 2px solid var(--surface);
     margin-left: -8px;
 }
 
-.avatar:first-child {
-   margin-left: 0;
-}
+    .avatar:first-child {
+        margin-left: 0;
+    }
 
 .trustText {
-    font-family: 'Montserrat', sans-serif;
     font-size: 13px;
     font-weight: 500;
-    color: #6b7280;
+    color: var(--muted-foreground);
 }
 
-.trustText strong {
-   color: #0a0a0a;
-   font-weight: 700;
-}
+    .trustText strong {
+        color: var(--foreground);
+        font-weight: 700;
+    }
 
 .mockup {
     width: 100%;
     max-width: 800px;
     border-radius: 16px;
-    border: 1px solid #e5e7eb;
-    box-shadow: 0 32px 80px rgba(0, 0, 0, 0.10);
+    border: 1px solid var(--border);
+    box-shadow: var(--shadow);
     overflow: hidden;
-    background: #ffffff;
+    background: var(--surface);
 }
 
 .mockupBar {
@@ -211,8 +208,8 @@
     align-items: center;
     gap: 6px;
     padding: 12px 16px;
-    background: #f9fafb;
-    border-bottom: 1px solid #e5e7eb;
+    background: var(--soft-bg);
+    border-bottom: 1px solid var(--border);
 }
 
 .dot {
@@ -222,10 +219,9 @@
 }
 
 .mockupUrl {
-    font-family: 'Montserrat', sans-serif;
     font-size: 11px;
     font-weight: 500;
-    color: #9ca3af;
+    color: var(--stat-label);
     margin-left: 8px;
 }
 
@@ -236,27 +232,25 @@
 
 .mockupSidebar {
     width: 140px;
-    background: #fafafa;
-    border-right: 1px solid #f0f0f0;
+    background: var(--soft-bg);
+    border-right: 1px solid var(--border);
     padding: 16px 12px;
     display: flex;
     flex-direction: column;
     gap: 4px;
-    flex-shrink: 0;
 }
 
 .mockupNavItem {
-    font-family: 'Montserrat', sans-serif;
     font-size: 11px;
     font-weight: 600;
-    color: #9ca3af;
+    color: var(--stat-label);
     padding: 7px 10px;
     border-radius: 8px;
 }
 
 .mockupNavActive {
-    background: #f0fdf4;
-    color: #10b981;
+    background: var(--soft-bg);
+    color: var(--primary);
 }
 
 .mockupContent {
@@ -274,7 +268,7 @@
 }
 
 .mockupCard {
-    background: #f9fafb;
+    background: var(--soft-bg);
     border-radius: 10px;
     padding: 12px;
     display: flex;
@@ -283,16 +277,14 @@
 }
 
 .mockupCardLabel {
-    font-family: 'Montserrat', sans-serif;
     font-size: 9px;
     font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.08em;
-    color: #9ca3af;
+    color: var(--stat-label);
 }
 
 .mockupCardValue {
-    font-family: 'Montserrat', sans-serif;
     font-size: 16px;
     font-weight: 800;
     letter-spacing: -0.02em;
@@ -300,14 +292,9 @@
 
 .mockupCardBar {
     height: 3px;
-    background: #e5e7eb;
+    background: var(--border);
     border-radius: 2px;
     margin-top: 4px;
-}
-
-.mockupCardFill {
-    height: 100%;
-    border-radius: 2px;
 }
 
 .mockupChart {

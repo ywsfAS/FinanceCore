@@ -5,6 +5,7 @@ import Card from "../Card/Card";
 import { type ReactNode } from "react";
 import { StatsGrid } from "../StatsGrid/StatsGrid";
 import "../../styles/utility.css";
+import { useTheme } from "../../hooks/Theme";
 
 // Mini stats for HeroBalance
 const heroStats = [
@@ -28,8 +29,9 @@ const stats: {
     ];
 
 export default function FinancialCard() {
+    const { theme } = useTheme();
     return (
-        <Card className='py-2 px-2 flex-col m-'>
+        <Card className='py-2 px-2 flex-col ' theme={theme} >
             {/* Topbar */}
             <Topbar username="YS" date="Tuesday, April 2025" />
 

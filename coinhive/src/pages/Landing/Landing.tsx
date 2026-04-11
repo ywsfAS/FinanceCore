@@ -34,7 +34,7 @@ const Landing: React.FC = () => {
                 <FeaturesSection
                     tag="Everything You Need"
                     title="Built for the Way You Actually Live"
-                    description="No more juggling five apps. FinVault handles every aspect of your
+                    description="No more juggling five apps. FinanceCore handles every aspect of your
                     financial life in one clean, secure platform."
                 />
             </div>
@@ -44,7 +44,7 @@ const Landing: React.FC = () => {
                 <div className={styles.container}>
                     <HowItWorks
                         title="Up and Running in Minutes"
-                        subtitle="No financial expertise required. Finance Core guides you from signup to full clarity in four simple steps."
+                        subtitle="No financial expertise required. FinanceCore guides you from signup to full clarity in four simple steps."
                     />
                 </div>
             </div>
@@ -62,7 +62,7 @@ const Landing: React.FC = () => {
                 <CtaSection
                     title="Your Financial Future"
                     tag="Get Started Today"
-                    para="Join 120,000+ users who've taken control of their money with FinVault. Free forever. No credit card required."
+                    para="Join 120,000+ users who've taken control of their money with FinanceCore. Free forever. No credit card required."
                     mainBtnMsg="Create Free Account →"
                     secondBtnMsg="Talk to Sales"
                 />

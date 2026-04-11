@@ -1,8 +1,5 @@
 
 .globalContainer {
-    --font-family: 'Montserrat', sans-serif;
-    --color-text: #000000;
-    --color-text-muted: #3f3e3ee8;
     --color-hover: cornflowerblue;
     --container-padding: 30px;
     --container-gap: 32px;
@@ -12,17 +9,12 @@
     --logo-height: 52%;
     --logo-width-mobile: 30%;
     --sign-font-size: 14px;
-    --bg-color: #f5f6fa;
     height: 100vh;
     display: flex;
     color : var(--color-text);
     justify-content: center;
     align-items: center;
-    background-color: var(--bg-color);
-}
-.dark {
-    --bg-color: #000000d9;
-    --color-text: white;
+    background-color: var(--background);
 }
 .formSide {
     flex: 1;

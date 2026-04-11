@@ -2,8 +2,8 @@
 
 .wrapper {
     /* Colors */
-    --color-white: #ffffff;
-    --color-black: #0a0a0a;
+    --color-white : white;
+    --color-black : black;
     --color-gray-100: #fafafa;
     --color-gray-200: #e5e7eb;
     --color-gray-300: #d1d5db;
@@ -14,8 +14,6 @@
     --color-error: #ef4444;
     --color-success-bg: #f0fdf4;
     --color-success-border: #d1fae5;
-    /* Fonts */
-    --font-primary: 'Montserrat', sans-serif;
     /* Font sizes */
     --font-size-eyebrow: 10px;
     --font-size-title-min: 22px;
@@ -84,16 +82,14 @@
 }
 
 .title {
-    font-family: var(--font-primary);
     font-size: clamp(var(--font-size-title-min), 2.8vw, var(--font-size-title-max));
     font-weight: var(--fw-black);
     letter-spacing: -0.025em;
-    color: var(--color-black);
+    color: var(--color-text);
     margin: 0 0 var(--spacing-md);
 }
 
 .subtitle {
-    font-family: var(--font-primary);
     font-size: var(--font-size-subtitle);
     font-weight: var(--fw-regular);
     line-height: 1.7;
@@ -119,7 +115,6 @@
 }
 
 .label {
-    font-family: var(--font-primary);
     font-size: var(--font-size-label);
     font-weight: var(--fw-bold);
     color: var(--color-gray-700);
@@ -127,10 +122,9 @@
 }
 
 .input {
-    font-family: var(--font-primary);
     font-size: var(--font-size-input);
     font-weight: var(--fw-medium);
-    color: var(--color-black);
+    color: var(--color-text);
     background: var(--color-gray-100);
     border: 1.5px solid var(--color-gray-200);
     border-radius: var(--radius-md);
@@ -148,7 +142,7 @@
 
 .input:focus {
     border-color: var(--color-accent);
-    background: var(--color-white);
+    background: var(--baground);
     box-shadow: 0 0 0 3px var(--color-accent-light);
 }
 
@@ -162,7 +156,6 @@
 
 .select {
     cursor: pointer;
-    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239ca3af' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
     background-repeat: no-repeat;
     background-position: right 16px center;
     padding-right: 40px;
@@ -175,19 +168,17 @@
 }
 
 .error {
-    font-family: var(--font-primary);
     font-size: var(--font-size-error);
     font-weight: var(--fw-bold);
     color: var(--color-error);
 }
 
 .submit {
-    font-family: var(--font-primary);
     font-size: var(--font-size-submit);
     font-weight: var(--fw-extra-bold);
     letter-spacing: 0.02em;
     color: var(--color-white);
-    background: var(--color-black);
+    background: var(--primary);
     border: none;
     border-radius: var(--radius-md);
     padding: var(--spacing-submit-padding);

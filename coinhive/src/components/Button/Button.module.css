@@ -78,6 +78,7 @@
 
 /* Sizes */
 .small {
+    --spacing-bottom : 0;
     padding: var(--padding-small);
     font-size: var(--font-size-small);
 }

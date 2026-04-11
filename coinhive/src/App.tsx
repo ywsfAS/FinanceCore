@@ -1,4 +1,3 @@
-import './App.css'
 import { useAuth } from "./hooks/Auth";
 import { useEffect } from 'react';
 import { Route, Routes } from "react-router-dom";

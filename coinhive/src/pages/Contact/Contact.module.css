@@ -2,10 +2,6 @@
 
 /* ── Page wrapper ── */
 .page {
-    --font-family: 'Montserrat', sans-serif;
-    --color-bg: #ffffff;
-    --color-text: #0a0a0a;
-    --color-divider: #f0f0f0;
     --max-width: 1080px;
     --spacing-page-padding: 48px;
     --spacing-page-padding-mobile: 24px;
@@ -15,8 +11,7 @@
     --spacing-main-grid-padding-bottom: 80px;
 
 
-    font-family: var(--font-family);
-    background: var(--color-bg);
+    background: var(--background);
     min-height: 100vh;
     color: var(--color-text);
 }
@@ -39,12 +34,6 @@
     }
 }
 
-/* ── Divider line ── */
-.divider {
-    border: none;
-    border-top: 1px solid var(--color-divider);
-    margin: 0;
-}
 
 /* ── FAQ wrapper ── */
 .faqWrapper {

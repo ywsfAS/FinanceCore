@@ -1,4 +1,4 @@
-import { useState , useEffect } from "react"
+import { useState , useEffect , type ReactNode } from "react"
 import { ThemeContext } from "./ThemeContext";
 type ThemeProiderProps = {
     children : ReactNode
@@ -10,6 +10,7 @@ export const ThemeProvider = ({children} : ThemeProiderProps) => {
 
     useEffect(() => {
         localStorage.setItem("theme", theme);
+        document.body.setAttribute('data-theme', theme);
     }, [theme])
     const toggleTheme = () => {
         setTheme((prev) => prev === "light" ? "dark" : "light");

@@ -1,20 +1,9 @@
 
-/* Wrapper */
 .wrapper {
-    /* Colors */
-    --color-bg-section: #fafafa;
-    --color-bg-card: #ffffff;
-    --color-border: #e5e7eb;
-    --color-border-light: #d1fae5;
     --color-border-soft: #f0f0f0;
-    --color-primary: #10b981;
-    --color-text: #0a0a0a;
-    --color-text-secondary: #6b7280;
-    --color-text-muted: #9ca3af;
     --color-text-strong: #374151;
     --color-stars: #f59e0b;
     /* Typography */
-    --font-family: 'Montserrat', sans-serif;
     --fs-eyebrow: 10px;
     --fs-title-min: 28px;
     --fs-title-max: 48px;
@@ -47,7 +36,7 @@
 
 
     padding: var(--padding-wrapper);
-    background: var(--color-bg-section);
+    background: var(--background);
     opacity: 0;
     transform: translateY(28px);
     transition: opacity var(--transition-slow), transform var(--transition-slow);
@@ -69,12 +58,11 @@
 
 .eyebrow {
     display: inline-block;
-    font-family: var(--font-family);
     font-size: var(--fs-eyebrow);
     font-weight: var(--fw-bold);
     letter-spacing: 0.2em;
     text-transform: uppercase;
-    color: var(--color-primary);
+    color: var(--primary);
     margin-bottom: 16px;
     padding: 6px 16px;
     border: 1px solid rgba(16, 185, 129, 0.3);
@@ -82,7 +70,6 @@
 }
 
 .title {
-    font-family: var(--font-family);
     font-size: clamp(var(--fs-title-min), 4vw, var(--fs-title-max));
     font-weight: var(--fw-extra-bold);
     letter-spacing: -0.03em;
@@ -91,7 +78,6 @@
 }
 
 .subtitle {
-    font-family: var(--font-family);
     font-size: var(--fs-subtitle);
     font-weight: var(--fw-regular);
     line-height: 1.7;
@@ -105,11 +91,12 @@
     display: grid;
     grid-template-columns: repeat(var(--columns), 1fr);
     gap: var(--gap-grid);
+    padding : 0 30px;
 }
 
 /* Card */
 .card {
-    background: var(--color-bg-card);
+    background-color: white;
     border: 1px solid var(--color-border);
     border-radius: var(--radius-card);
     padding: var(--padding-card);
@@ -136,7 +123,6 @@
 
 /* Quote */
 .quote {
-    font-family: var(--font-family);
     font-size: var(--fs-quote);
     font-weight: var(--fw-medium);
     line-height: 1.75;
@@ -158,7 +144,6 @@
     width: 40px;
     height: 40px;
     border-radius: var(--radius-avatar);
-    font-family: var(--font-family);
     font-size: var(--fs-name);
     font-weight: var(--fw-extra-bold);
     display: flex;
@@ -168,7 +153,6 @@
 }
 
 .name {
-    font-family: var(--font-family);
     font-size: var(--fs-name);
     font-weight: var(--fw-bold);
     color: var(--color-text);
@@ -177,7 +161,6 @@
 }
 
 .role {
-    font-family: var(--font-family);
     font-size: var(--fs-role);
     font-weight: var(--fw-medium);
     color: var(--color-text-muted);

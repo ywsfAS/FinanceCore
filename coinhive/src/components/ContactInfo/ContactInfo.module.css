@@ -1,17 +1,5 @@
 
 .wrapper {
-    /* Colors */
-    --color-bg: #ffffff;
-    --color-bg-alt: #fafafa;
-    --color-bg-success: #f0fdf4;
-    --color-primary: #10b981;
-    --color-border: #e5e7eb;
-    --color-border-light: #d1fae5;
-    --color-text: #0a0a0a;
-    --color-text-secondary: #6b7280;
-    --color-text-muted: #9ca3af;
-    /* Font family */
-    --font-family: 'Montserrat', sans-serif;
     /* Font sizes */
     --fs-xxs: 10px;
     --fs-xs: 11px;
@@ -53,7 +41,7 @@
     --transition-fast: 0.3s ease;
     --transition-medium: 0.5s ease;
     --transition-slow: 0.7s ease;
-
+    
     opacity: 0;
     transform: translateY(28px);
     transition: opacity var(--transition-slow), transform var(--transition-slow);
@@ -75,17 +63,15 @@
 
 .eyebrow {
     display: inline-block;
-    font-family: var(--font-family);
     font-size: var(--fs-xxs);
     font-weight: var(--fw-bold);
     letter-spacing: 0.2em;
     text-transform: uppercase;
-    color: var(--color-primary);
+    color: var(--primary);
     margin-bottom: var(--margin-bottom-eyebrow);
 }
 
 .title {
-    font-family: var(--font-family);
     font-size: clamp(var(--fs-title-min), 2.8vw, var(--fs-title-max));
     font-weight: var(--fw-extra-bold);
     letter-spacing: -0.025em;
@@ -94,7 +80,6 @@
 }
 
 .subtitle {
-    font-family: var(--font-family);
     font-size: var(--fs-lg);
     font-weight: var(--fw-regular);
     line-height: 1.7;
@@ -115,14 +100,13 @@
     padding: var(--padding-card);
     border: 1px solid var(--color-border);
     border-radius: var(--radius-large);
-    background: var(--color-bg);
     opacity: 0;
     transform: translateY(14px);
     transition: opacity var(--transition-medium), transform var(--transition-medium), box-shadow var(--transition-fast), border-color var(--transition-fast);
 }
 
 .channelCard:hover {
-    box-shadow: 0 8px 28px rgba(0, 0, 0, 0.06);
+    box-shadow: var(--shadow);
    border-color: var(--color-border-light);
     transform: translateY(-2px) !important;
 }
@@ -145,7 +129,6 @@
 }
 
 .channelLabel {
-    font-family: var(--font-family);
     font-size: var(--fs-xs);
     font-weight: var(--fw-bold);
     letter-spacing: 0.1em;
@@ -154,14 +137,12 @@
 }
 
 .channelValue {
-    font-family: var(--font-family);
     font-size: var(--fs-channel-number);
     font-weight: var(--fw-bold);
     letter-spacing: -0.01em;
 }
 
 .channelDetail {
-    font-family: var(--font-family);
     font-size: var(--fs-sm);
     font-weight: var(--fw-regular);
     color: var(--color-text-muted);
@@ -176,7 +157,6 @@
 }
 
 .officesTitle {
-    font-family: var(--font-family);
     font-size: var(--fs-xs);
     font-weight: var(--fw-bold);
     letter-spacing: 0.15em;
@@ -205,7 +185,6 @@
 }
 
 .officeCity {
-    font-family: var(--font-family);
     font-size: var(--fs-md);
     font-weight: var(--fw-bold);
     color: var(--color-text);
@@ -214,7 +193,6 @@
 }
 
 .officeAddress {
-    font-family: var(--font-family);
     font-size: var(--fs-xs);
     font-weight: var(--fw-regular);
     color: var(--color-text-secondary);
@@ -238,7 +216,6 @@
 }
 
 .faqText {
-    font-family: var(--font-family);
     font-size: var(--fs-md);
     font-weight: var(--fw-semibold);
     color: var(--color-text);
@@ -247,7 +224,6 @@
 }
 
 .faqLink {
-    color: var(--color-primary);
     text-decoration: none;
     transition: opacity var(--transition-fast);
 }
@@ -257,7 +233,6 @@
     }
 
 .faqSub {
-    font-family: var(--font-family);
     font-size: var(--fs-sm);
     font-weight: var(--fw-regular);
     color: var(--color-text-secondary);

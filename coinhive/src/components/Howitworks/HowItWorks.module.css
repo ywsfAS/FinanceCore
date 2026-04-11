@@ -1,12 +1,5 @@
 .wrapper {
-    /* ===== Local Variables ===== */
-    --color-bg: #ffffff;
     --color-bg-success: #f0fdf4;
-    --color-primary: #10b981;
-    --color-border: #e5e7eb;
-    --color-text: #0a0a0a;
-    --color-text-secondary: #6b7280;
-    --font-family: 'Montserrat', sans-serif;
     --fs-eyebrow: 10px;
     --fs-title-min: 28px;
     --fs-title-max: 48px;
@@ -29,7 +22,7 @@
     --transition-slow: 0.7s ease;
     --transition-medium: 0.5s ease;
 
-     padding: var(--padding-wrapper);
+    padding: var(--padding-wrapper);
     opacity: 0;
     transform: translateY(28px);
     transition: opacity var(--transition-slow), transform var(--transition-slow);
@@ -109,8 +102,8 @@
     height: 48px;
     border-radius: 50%;
     background: var(--color-bg-success);
-    border: 2px solid var(--color-primary);
-    color: var(--color-primary);
+    border: 2px solid var(--primary);
+    color: var(--primary);
     font-size: var(--fs-step-number);
     font-weight: var(--fw-extra-bold);
     display: flex;

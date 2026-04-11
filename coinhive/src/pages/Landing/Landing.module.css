@@ -1,17 +1,11 @@
 
 .page {
-    --font-family: 'Montserrat', sans-serif;
-    --color-bg: #ffffff;
-    --color-text: #0a0a0a;
-    --color-alt-bg: #fafafa;
-    --color-border: #f0f0f0;
     --container-width: 1080px;
     --container-padding: 48px;
     --container-padding-mobile: 24px;
 
 
-    font-family: var(--font-family);
-    background: var(--color-bg);
+    background: var(--background);
     min-height: 100vh;
     color: var(--color-text);
 }
@@ -23,7 +17,6 @@
 }
 
 .altBg {
-    background: var(--color-alt-bg);
     border-top: 1px solid var(--color-border);
     border-bottom: 1px solid var(--color-border);
 }

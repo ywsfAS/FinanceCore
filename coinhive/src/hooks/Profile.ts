@@ -1,3 +1,4 @@
+import type { Profile } from "../entities/profile";
 import { getProfile } from "../use-cases/profile/profile";
 import { useAuth } from "./Auth";
 import { useState, useEffect } from "react";
@@ -6,7 +7,7 @@ import { useState, useEffect } from "react";
 export const useProfile = () => {
     const { user: { token } } = useAuth();
     const [loading, setLoading] = useState(true);
-    const [profile, setProfile] = useState(null);
+    const [profile, setProfile] = useState<Profile | null>(null);
     useEffect(() => {
         const fetchProfile = async () => {
 

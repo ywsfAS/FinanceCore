@@ -6,28 +6,30 @@ import FinancialTransaction from "../../components/FinancialTransaction/Financia
 import SpendingAnalytics from "../../components/SpendingAnalytics/SpendingAnalytics";
 import { useAuth } from "../../hooks/Auth";
 import { useProfile } from "../../hooks/Profile";
+import { useTheme } from "../../hooks/Theme";
 
 
 export default function ProfilePage() {
-    const { user } = useAuth();
     const { profile } = useProfile();
+    const { theme } = useTheme();
+    console.log(profile);
     return (
-        <div className={styles.container}>
+        <div className={`${ styles.container } ${ theme === 'dark' && styles.dark}`}>
             <div className={styles.left}>
-                <div className={styles.user}>
+                <Card theme={theme} variant='col'>
                     <img
                         src={Logo}
                         alt="User Avatar"
                         className={styles.avatar}
                     />
                     <div className={styles.userInfo}>
-                        <h4 className={styles.userName}>{user?.name}</h4>
+                        <h4 className={styles.userName}>{`${profile?.firstName} ${profile?.lastName}`}</h4>
                         <p className={styles.userRole}>Administrator</p>
                         <p className={styles.userBio}>
-                            Passionate about web development and UI/UX design. Loves building user-friendly apps and learning new technologies.
+                            {profile?.bio }  
                         </p>
                     </div>
-                </div>
+                </Card>
                 <SpendingAnalytics />
             </div>
             <div className={styles.right}>

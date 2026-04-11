@@ -1,43 +1,48 @@
-
-
 .card {
-    /* Colors */
-    --color-black: #000000;
-    --color-white: #ffffff;
-    /* Card spacing */
+    /* Spacing */
     --card-padding-base: 7px;
     --card-padding-mobile: 12px;
     --card-gap-base: 70px;
     --card-gap-mobile: 20px;
-    /* Card border radius */
+    /* Radius */
     --card-radius: 20px;
-    /* Box shadow */
-    --card-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-    /* Card max-widths */
+    /* Max widths */
     --card-max-width-default: 900px;
     --card-max-width-large: 1180px;
     --card-max-width-tablet: 700px;
     --card-max-width-large-tablet: 510px;
     --card-max-width-mobile: 400px;
-
     display: flex;
     flex-direction: row;
     width: 100%;
     max-width: var(--card-max-width-default);
-    color: var(--color-black);
+    background: var(--surface);
+    color: var(--surface-foreground);
+    box-shadow: var(--shadow);
     padding: var(--card-padding-base);
-    background-color: var(--color-white);
-    box-shadow: var(--card-shadow);
     border-radius: var(--card-radius);
     overflow: hidden;
     gap: var(--card-gap-base);
 }
 
+/* Variants */
 .large {
     max-width: var(--card-max-width-large);
 }
 
-/* Tablet / small laptop */
+.center {
+    justify-content: center;
+    align-items: center;
+}
+
+.col {
+    flex-direction: column;
+    padding: 20px;
+    justify-content: center;
+    align-items: center;
+}
+
+/* Tablet */
 @media (max-width: 1205px) {
     .card {
         flex-direction: column;
@@ -59,14 +64,4 @@
         max-width: var(--card-max-width-mobile);
         gap: var(--card-gap-mobile);
     }
-}
-
-/* Variants */
-.center {
-    justify-content: center;
-    align-items: center;
-}
-.darkMode{
-    background-color: black;
-    color:white;
 }

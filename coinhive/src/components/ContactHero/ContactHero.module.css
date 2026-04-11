@@ -11,8 +11,6 @@
     --color-accent-light: rgba(16, 185, 129, 0.1);
     --color-accent-border: rgba(16, 185, 129, 0.3);
     --color-grid: rgba(16, 82, 64, 0.04);
-    /* Fonts */
-    --font-primary: 'Montserrat', sans-serif;
     /* Font sizes */
     --font-size-eyebrow: 11px;
     --font-size-title-min: 38px;
@@ -45,16 +43,16 @@
     min-height: var(--hero-min-height);
     display: flex;
     align-items: center;
-    background: var(--color-white);
+    background: var(--background);
     overflow: hidden;
     opacity: 0;
     transform: translateY(24px);
     transition: opacity 0.8s ease, transform 0.8s ease;
 }
 
-    .hero.visible {
-        opacity: 1;
-        transform: translateY(0);
+.hero.visible {
+    opacity: 1;
+    transform: translateY(0);
     }
 
 .gridOverlay {
@@ -87,7 +85,6 @@
 
 .eyebrow {
     display: inline-block;
-    font-family: var(--font-primary);
     font-size: var(--font-size-eyebrow);
     font-weight: 700;
     letter-spacing: 0.2em;
@@ -100,7 +97,6 @@
 }
 
 .title {
-    font-family: var(--font-primary);
     font-size: clamp(var(--font-size-title-min), 5.5vw, var(--font-size-title-max));
     font-weight: 800;
     line-height: 1.1;
@@ -114,7 +110,6 @@
 }
 
 .tagline {
-    font-family: var(--font-primary);
     font-size: clamp(var(--font-size-tagline-min), 1.7vw, var(--font-size-tagline-max));
     font-weight: 400;
     line-height: 1.75;
@@ -139,7 +134,6 @@
     border: 1px solid var(--color-gray-200);
     border-radius: var(--radius-pill);
     background: var(--color-gray-100);
-    font-family: var(--font-primary);
     font-size: var(--font-size-badge);
     font-weight: 600;
     color: var(--color-gray-700);
