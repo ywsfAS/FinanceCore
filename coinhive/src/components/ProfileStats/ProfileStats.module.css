@@ -1,6 +1,11 @@
 
 
 .grid {
+    --expense-color : #f87171;
+    --income-color : #34d399;
+    --net-color : #a5b4fc;
+
+
     margin-top: 10px;
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -41,13 +46,13 @@
     margin-bottom: 4px;
 }
 .box.income {
-    color: #34d399;
+    color: var(--income-color)
 }
 .box.expense {
-    color: #f87171;
+    color: var(--expense-color);
 }
 .box.net {
-    color: #a5b4fc;
+    color: var(--net-color);
 }
 .box .change {
     font-size: 11px;

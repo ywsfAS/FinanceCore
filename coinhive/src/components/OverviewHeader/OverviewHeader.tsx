@@ -1,10 +1,15 @@
 import styles from './OverviewHeader.module.css';
 
-export default function OverviewHeader() {
+type OverviewHeaderProps = {
+    title: string,
+    description : string,
+}
+
+export default function OverviewHeader({title,description} : OverviewHeaderProps ) {
     return (
         <div className={styles.header}>
-            <h3 className={styles.title}>Financial Overview</h3>
-            <span className={styles.desc}>April 2026 · Last updated just now</span>
+            <h3 className={styles.title}>{title}</h3>
+            <span className={styles.desc}>{description}</span>
         </div>
     );
 }

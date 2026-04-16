@@ -10,7 +10,9 @@ interface Transaction {
     bgVar: string;
     sign: string;
 }
-
+type TransactionCardProps = {
+    transactions? : Transaction[]
+}
 const TRANSACTIONS: Transaction[] = [
     { id: 1, name: 'Salary Deposit', date: 'Apr 1, 2026 · Direct deposit', amount: '$8,450', positive: true, category: 'Income', bgVar: 'var(--bg-tx-income)', sign: '+' },
     { id: 2, name: 'Rent Payment', date: 'Apr 2, 2026 · Bank transfer', amount: '$1,400', positive: false, category: 'Housing', bgVar: 'var(--bg-tx-expense)', sign: '−' },
@@ -19,7 +21,7 @@ const TRANSACTIONS: Transaction[] = [
     { id: 5, name: 'Netflix / Spotify', date: 'Apr 10, 2026 · Subscription', amount: '$28', positive: false, category: 'Subs', bgVar: 'var(--bg-tx-expense)', sign: '−' },
 ];
 
-export default function TransactionCard() {
+export default function TransactionCard({transactions = TRANSACTIONS} : TransactionCardProps ) {
     return (
         <div className={styles.card}>
             <div className={styles.header}>
@@ -27,7 +29,7 @@ export default function TransactionCard() {
                 <span className={styles.viewAll}>View all →</span>
             </div>
 
-            {TRANSACTIONS.map((tx) => (
+            {transactions.map((tx) => (
                 <div key={tx.id} className={styles.item}>
                     <div className={styles.ico} style={{ background: tx.bgVar }}>
                         {tx.sign}

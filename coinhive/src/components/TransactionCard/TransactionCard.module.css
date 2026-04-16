@@ -1,5 +1,8 @@
 
 .card {
+    --neg-color : #f87171;
+    --pos-color : #34d399;
+
     margin-top: 10px;
     padding: 20px;
     border-radius: 5px;
@@ -63,10 +66,10 @@
     font-weight: 600
 }
 .neg {
-    color: #f87171
+    color: var(--neg-color);
 }
 .pos {
-    color: #34d399
+    color: var(--pos-color);
 }
 .cat {
     font-size: 10px;
