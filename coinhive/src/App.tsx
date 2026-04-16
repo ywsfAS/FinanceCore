@@ -27,9 +27,7 @@ function App() {
                 <Route path="/register" element={<RegisterPage />} />
                 <Route path="/login" element={<LoginPage />} />
                
-                <Route element={<ProtectedRoute/> }>
-                    <Route path="/profile" element={<ProfilePage/> }/>
-                </Route> 
+                <Route path="/profile" element={<ProfilePage/> }/>
 
             </Routes>
             <Footer/>

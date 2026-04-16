@@ -1,0 +1,66 @@
+.section {
+    --chart-purple: purple;
+    --chart-blue : blue;
+    --chart-green : green;
+    --chart-orange : orange;
+
+
+    display: grid;
+    grid-template-columns: 1fr 1.9fr;
+    gap: 5px;
+
+    margin-top: 10px;
+    color:var(--color-text);
+    box-shadow : var(--shadow);
+}
+
+@media (max-width: 860px) {
+    .section {
+        grid-template-columns: 1fr;
+    }
+}
+
+.chartCard {
+    background-color: var(--background);
+    padding: 18px;
+    border-radius: 5px;
+}
+
+.chartTitle {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 3px;
+}
+
+.chartDesc {
+    font-size: 11px;
+    color: #64748b;
+    margin-bottom: 16px;
+}
+
+.legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 14px;
+}
+
+.legendItem {
+    font-size: 10px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 2px;
+    flex-shrink: 0;
+}
+
+.canvasWrap {
+    position: relative;
+    flex: 1;
+    min-height: 220px;
+}
