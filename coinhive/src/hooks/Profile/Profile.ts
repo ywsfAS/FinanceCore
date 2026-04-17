@@ -1,5 +1,5 @@
-import type { Profile } from "../entities/profile";
-import { getProfile } from "../use-cases/profile/profile";
+import type { Profile } from "../../entities/profile";
+import { getProfile } from "../../use-cases/profile/profile";
 import { useAuth } from "./Auth";
 import { useState, useEffect } from "react";
 
