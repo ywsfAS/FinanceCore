@@ -2,24 +2,41 @@ import styles from './ProfileCard.module.css';
 import Image from "../../assets/profle.jpeg";
 
 const NAV_ITEMS = ['Overview', 'Transactions', 'Investments', 'Budgets', 'Reports'];
+type profileProps = {
+    profileData : profileData | null,
+}
+interface profileData {
+    firstName: string,
+    lastName: string,
+    role: string,
+    srcUrl?: string,
+    bio : string
+}
+const defaultProfile : profileData = {
+    firstName: 'Jordan',
+    lastName: 'Mitchell',
+    role: 'ADMINISTRATOR · PREMIUM',
+    bio: 'Financial analyst &amp; personal finance enthusiast. Tracking goals since 2021. Building toward early financial independence.',
 
-export default function ProfileCard() {
+}
+export default function ProfileCard({ profileData }: profileProps) {
+    const data = profileData ?? defaultProfile;
+    const name = data.firstName + ' ' + data.lastName;
     return (
         <aside className={styles.card}>
             <div className={styles.avatar}>
                     <img
                         src={Image}
-                        alt="Jordan Mitchell"
+                         alt={name }
                         className={styles.image}
                     />
                 <span className={styles.status} />
             </div>
 
-            <h2 className={styles.name}>Jordan Mitchell</h2>
-            <p className={styles.role}>ADMINISTRATOR · PREMIUM</p>
+            <h2 className={styles.name}>{name}</h2>
+            <p className={styles.role}>{defaultProfile.role}</p>
             <p className={styles.bio}>
-                Financial analyst &amp; personal finance enthusiast. Tracking goals
-                since 2021. Building toward early financial independence.
+                {data.bio }
             </p>
 
             <div className={styles.divider} />
