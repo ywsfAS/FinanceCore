@@ -1,22 +1,9 @@
 
 import { useState, useEffect } from "react";
-
+import { request } from "../helper";
 const BASE_URL = "/api/v1/accounts";
 
-async function request(url, options = {}) {
-    const res = await fetch(url, {
-        headers: {
-            "Content-Type": "application/json",
-        },
-        ...options,
-    });
 
-    if (!res.ok) {
-        throw new Error("Request failed");
-    }
-
-    return res.json();
-}
 
 export function useCreateAccount() {
     const [loading, setLoading] = useState(false);
