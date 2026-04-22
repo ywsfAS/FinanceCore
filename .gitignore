@@ -12,6 +12,7 @@ obj/
 
 # Rider
 .idea/
-
+# uploads
+wwwroot/
 # Others
 *.log

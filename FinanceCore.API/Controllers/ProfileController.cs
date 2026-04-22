@@ -1,4 +1,5 @@
 using FinanceCore.API.Requests.Profile;
+using FinanceCore.Application.Abstractions;
 using FinanceCore.Application.DTOs;
 using FinanceCore.Application.Features.Profiles.Commands.Create;
 using FinanceCore.Application.Features.Profiles.Commands.Delete;
@@ -16,9 +17,11 @@ namespace FinanceCore.API.Controllers
     public class ProfileController : ControllerBase
     {
         private readonly IMediator _mediator;
-        public ProfileController(IMediator mediator)
+        private readonly IImageStorage _imageStorage;
+        public ProfileController(IMediator mediator,IImageStorage imageStorage)
         {
             _mediator = mediator;
+            _imageStorage = imageStorage;
         }
         private Guid GetUserId()
         {
@@ -48,6 +51,26 @@ namespace FinanceCore.API.Controllers
             var profile = await _mediator.Send(command);
             return Ok(profile);
         }
+
+        [HttpPost("profile-image")]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> UploadProfileImage(IFormFile file)
+        {
+            var userId = GetUserId();
+            if(file is null || file.Length == 0)
+            {
+                return BadRequest("Invalid file");
+            }
+            using var stream = file.OpenReadStream();
+            var path = await _imageStorage.SaveImage(stream, file.FileName, userId);
+
+            return Ok(new {path});
+        }
+
+
         [HttpDelete]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]

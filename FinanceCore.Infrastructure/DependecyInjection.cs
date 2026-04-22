@@ -49,7 +49,7 @@ namespace FinanceCore.Infrastructure
             new SqlConnectionFactory(connectionString));
 
             services.AddScoped<IEmailService, EmailService>();
-
+            services.AddScoped<IImageStorage, LocalImageStorage>();
             services.AddMemoryCache();
             services.AddScoped<AccountRepository>();
             services.AddScoped<UserRepository>();
