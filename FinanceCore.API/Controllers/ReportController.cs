@@ -4,6 +4,7 @@ using FinanceCore.Application.Features.Report.GetMonthlySummaryPerAccount;
 using FinanceCore.Application.Features.Report.GetMonthlySummaryPerUser;
 using FinanceCore.Application.Features.Report.GetNetWorth;
 using FinanceCore.Application.Features.Report.GetSpendingByCategory;
+using FinanceCore.Application.Features.Report.GetSpendingByCategoryPerUser;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -52,6 +53,20 @@ namespace FinanceCore.API.Controllers
             return Ok(response);
 
         }
+        [HttpGet("spending-category-per-user")]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(IEnumerable<SpendingByCategoryDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> GetSpendingCategoryPerUser(int year, int month)
+        {
+            var UserId = GetUserId();
+            var query = new GetSpendingByCategoryPerUserQuery(UserId,year, month);
+            var response = await _mediator.Send(query);
+            return Ok(response);
+
+        }
+
         [HttpGet("spending-by-category")]
         [Produces("application/json")]
         [ProducesResponseType(typeof(IEnumerable<SpendingByCategoryDto>), StatusCodes.Status200OK)]

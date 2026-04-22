@@ -1,8 +1,9 @@
-﻿using Dapper;
+using Dapper;
 using FinanceCore.Application.Abstractions;
 using FinanceCore.Application.DTOs;
 using FinanceCore.Application.DTOs.Transaction;
 using FinanceCore.Application.Models;
+using FinanceCore.Domain.Enums;
 using FinanceCore.Domain.Transactions;
 using FinanceCore.Infrastructure.context;
 using FinanceCore.Infrastructure.Mappers;
@@ -301,6 +302,39 @@ namespace FinanceCore.Infrastructure.Repositories
                 StartDate = start,
                 EndDate = end
             });
-        } 
+        }
+        public async Task<List<SpendingByCategoryDto>> GetSpendingByCategoryForUser(
+            Guid userId, DateTime start, DateTime end)
+        {
+            var sql = @"
+            SELECT 
+            c.Name AS CategoryName,
+            SUM(t.Amount) AS Amount
+            FROM Transactions t
+            INNER JOIN Accounts a ON t.AccountId = a.Id
+            INNER JOIN Categories c ON t.CategoryId = c.Id
+            WHERE 
+            a.UserId = @UserId
+            AND t.Date >= @Start
+            AND t.Date < @End
+            AND t.Type = @ExpenseType
+        GROUP BY c.Name
+        ORDER BY Amount DESC;
+            ";
+
+            using var connection = _connectionFactory.GetConnection();
+
+            var result = await connection.QueryAsync<SpendingByCategoryDto>(
+                sql,
+                new
+                {
+                    UserId = userId,
+                    Start = start,
+                    End = end,
+                    ExpenseType = EnTransactionType.Expense
+                });
+
+            return result.ToList();
+        }
     }
 }

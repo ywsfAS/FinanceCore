@@ -1,6 +1,6 @@
 import React from "react";
 import styles from "./Footer.module.css";
-import { useTheme } from "../../hooks/Theme";
+import { useTheme } from "../../hooks/Theme/Theme";
 
 const Footer: React.FC = () => {
     const { theme } = useTheme();

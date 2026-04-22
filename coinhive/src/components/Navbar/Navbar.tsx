@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import styles from "./Navbar.module.css";
-import { useTheme } from "../../hooks/Theme";
+import { useTheme } from "../../hooks/Theme/Theme";
 import { Link } from "react-router-dom";
 import Button from "../Button/Button";
 

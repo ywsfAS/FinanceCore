@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useAuth } from "../../hooks/Auth";
+import { useAuth } from "../../hooks/Auth/Auth";
 import Input from "../../components/Input/Input";
 import Card from "../../components/Card/Card";
 import SideImage from "../../components/SideImage/SideImage";
@@ -8,7 +8,7 @@ import Button from "../../components/Button/Button";
 import Image from "../../assets/side.png";
 import Logo from "../../assets/Logo.png";
 import styles from  "./Register.module.css";
-import { useTheme } from "../../hooks/Theme";
+import { useTheme } from "../../hooks/Theme/Theme";
 
 const RegisterPage = () => {
 

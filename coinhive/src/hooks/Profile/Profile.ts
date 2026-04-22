@@ -1,6 +1,6 @@
 import type { Profile } from "../../entities/profile";
 import { getProfile } from "../../use-cases/profile/profile";
-import { useAuth } from "./Auth";
+import { useAuth } from "../Auth/Auth";
 import { useState, useEffect } from "react";
 
 

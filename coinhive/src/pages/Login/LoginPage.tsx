@@ -7,8 +7,8 @@ import Button from "../../components/Button/Button";
 import Image from "../../assets/side.png";
 import Logo from "../../assets/Logo.png";
 import styles from "./Login.module.css";
-import { useAuth } from "../../hooks/Auth";
-import { useTheme } from "../../hooks/Theme";
+import { useAuth } from "../../hooks/Auth/Auth";
+import { useTheme } from "../../hooks/Theme/Theme";
 const LoginPage = () => {
 
     const messages = {
