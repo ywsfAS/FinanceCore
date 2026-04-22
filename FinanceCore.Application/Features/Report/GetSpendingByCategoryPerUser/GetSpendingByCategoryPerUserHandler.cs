@@ -23,7 +23,6 @@ namespace FinanceCore.Application.Features.Report.GetSpendingByCategoryPerUser
             DateTime start = new DateTime(query.year, query.month, 1);
             DateTime end = start.AddMonths(1);
             return await _transactionRepository.GetSpendingByCategoryForUser(query.userId, start, end);           
-
         }
 
 

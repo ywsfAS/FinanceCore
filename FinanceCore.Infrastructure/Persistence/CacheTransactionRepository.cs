@@ -1,4 +1,4 @@
-﻿using FinanceCore.Application.Abstractions;
+using FinanceCore.Application.Abstractions;
 using FinanceCore.Application.DTOs;
 using FinanceCore.Application.DTOs.Transaction;
 using FinanceCore.Application.Models;
@@ -137,6 +137,15 @@ namespace FinanceCore.Infrastructure.Persistence
             {
                 entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
                 return _transactionRepository.GetSpendingByCategory(userId, accountId, start, end);
+            });
+        }
+        public Task<List<SpendingByCategoryDto>> GetSpendingByCategoryForUser(Guid userId , DateTime start , DateTime end)
+        {
+            var key = $"SpendingByCategoryForUser_{userId}_{start}_{end}";
+            return _memoryCache.GetOrCreateAsync(key, entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(20);
+                return _transactionRepository.GetSpendingByCategoryForUser(userId, start, end);
             });
         }
         public Task<bool> IsExists(Guid userId, Guid id, CancellationToken token = default)

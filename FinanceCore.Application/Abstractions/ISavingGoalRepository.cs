@@ -6,6 +6,7 @@ namespace FinanceCore.Application.Abstractions
     {
         Task<SavingsGoal?> GetByIdAsync(Guid id);
         Task<IEnumerable<SavingsGoal>> GetByUserIdAsync(Guid userId);
+        Task<SavingsGoal?> GetByIdAndUserIdAsync(Guid userId, Guid id);
 
         Task AddAsync(SavingsGoal goal);
         Task UpdateAsync(SavingsGoal goal);

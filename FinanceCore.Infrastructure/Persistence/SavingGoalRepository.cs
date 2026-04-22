@@ -30,6 +30,20 @@ namespace FinanceCore.Infrastructure.Persistence
             return model == null ? null : SavingsGoalMapper.MapToDomain(model);
         }
 
+
+        public async Task<SavingsGoal?> GetByIdAndUserIdAsync(Guid userId,Guid id)
+        {
+            using var connection = _connectionFactory.GetConnection();
+
+            const string sql = "SELECT * FROM SavingsGoals WHERE Id = @Id AND UserId = @UserId";
+
+            var model = await connection.QuerySingleOrDefaultAsync<SavingsGoalModel>(
+                sql,
+                new { Id = id , UserId = userId});
+
+            return model == null ? null : SavingsGoalMapper.MapToDomain(model);
+        }
+
         public async Task<IEnumerable<SavingsGoal>> GetByUserIdAsync(Guid userId)
         {
             using var connection = _connectionFactory.GetConnection();
