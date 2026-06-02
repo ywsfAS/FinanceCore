@@ -4,12 +4,13 @@ import type { User } from "../../entities/User";
 import { AuthContext } from "./AuthContext";
 import { registerUser} from "../../use-cases/auth/signup"
 import { loginUser } from "../../use-cases/auth/login";
+import {authService} from "../../services/authService";
 
 
 type AuthProviderProps = {
     children: ReactNode;
 };
-
+const {forgetPassword , resetPassword} = authService;
 export const AuthProvider = ({ children }: AuthProviderProps) => {
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
@@ -65,6 +66,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
                 logout,
                 register,
                 loginWithCredentials,
+                forgetPassword,
+                resetPassword
+                
             }}
         >
             {children}

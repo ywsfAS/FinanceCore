@@ -10,6 +10,8 @@ import Footer from './components/Footer/Footer';
 import Landing from './pages/Landing/Landing';
 import LoginPage from './pages/Login/LoginPage';
 import ProtectedRoute from './routes/ProtectedRoute';
+import ForgotPasswordPage from "./pages/ForgotPasswordPage/ForgotpasswordpagE";
+import ResetPasswordPage from "./pages/ResetPasswordPage/Resetpasswordpage";
 
 function App() {
     const { user, loginWithToken} = useAuth();
@@ -26,7 +28,8 @@ function App() {
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/register" element={<RegisterPage />} />
                 <Route path="/login" element={<LoginPage />} />
-               
+                <Route path="/forget-password" element={<ForgotPasswordPage/> } />
+                <Route path="/reset-password" element={<ResetPasswordPage/> } />
                 <Route path="/profile" element={<ProfilePage/> }/>
 
             </Routes>

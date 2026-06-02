@@ -13,7 +13,25 @@ export const authService = {
         if (!res.ok) throw new Error("Login failed");
         return res.json();
     },
+    forgetPassword: async (email: string): Promise<{message : string}> => {
+        const res = await fetch(`${auth_URL}/forgot-password`, {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({ email: { address: email } }),
+        });
+        if (!res.ok) throw new Error("Forget Password Failed");
+        return res.json();
 
+    },
+    resetPassword: async (newPassword: string , token : string): Promise<{ message: string }> => {
+        const res = await fetch(`${auth_URL}/reset-password`, {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({ token, newPassword }),
+        });
+        if (!res.ok) throw new Error("Reset Password Failed");
+        return res.json();
+    },
     register: async (name: string, email: string, password: string): Promise<User> => {
         const res = await fetch(`${auth_URL}/register`, {
             method: "POST",

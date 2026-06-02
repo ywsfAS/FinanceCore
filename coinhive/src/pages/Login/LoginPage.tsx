@@ -9,7 +9,7 @@ import { Link } from "react-router-dom";
 
 const LoginPage = () => {
     const messages = {
-        success: "Welcome back 👋",
+        success: "Welcome back",
         error: "Invalid email or password",
     };
 
@@ -85,7 +85,7 @@ const LoginPage = () => {
                         checked={rememberMe}
                         onChange={(e) => setRememberMe(e.target.checked)}
                     />
-                    <a className={styles.forgotPassword}>Forgot password?</a>
+                    <Link  to="/forget-password"   className={styles.forgotPassword}>Forgot password?</Link>
                 </div>
 
                 {/* Submit */}
