@@ -77,7 +77,7 @@ namespace FinanceCore.Infrastructure
             var jwtSettings =
                 config.GetSection("JwtSettings")
                       .Get<JwtSettings>();
-
+            
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme =
@@ -101,7 +101,8 @@ namespace FinanceCore.Infrastructure
                                 Encoding.UTF8.GetBytes(jwtSettings.Secret))
                     };
             });
-
+            var emailSection = config.GetSection("EmailSettings");
+            services.Configure<EmailSettings>(emailSection);
 
             return services;
         }

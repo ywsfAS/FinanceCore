@@ -5,6 +5,7 @@ using FinanceCore.Application.Features.Accounts.Commands.Create;
 using FinanceCore.Application.Features.Accounts.Commands.Delete;
 using FinanceCore.Application.Features.Accounts.Commands.Update;
 using FinanceCore.Application.Features.Accounts.Queries.GetAccountById;
+using FinanceCore.Application.Features.Accounts.Queries.GetAccountByName;
 using FinanceCore.Application.Features.Accounts.Queries.GetBalanceById;
 using FinanceCore.Application.Features.Transactions.Queries.GetTansactionsByAccountId;
 using MediatR;
@@ -74,6 +75,22 @@ namespace FinanceCore.API.Controllers
         {
             var userId = GetUserId();
             var query = new GetBalanceByIdQuery(userId,AccountId);
+            var account = await _mediator.Send(query);
+            return Ok(account);
+        }
+
+        /// <summary>
+        /// Get account By name
+        /// </summary>
+        [HttpGet("name")]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(IEnumerable<AccountDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IEnumerable<AccountDto>), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> GetAccountsByName(string name)
+        {
+            var userId = GetUserId();
+            var query = new GetAccountByNameQuery(userId,name);
             var account = await _mediator.Send(query);
             return Ok(account);
         }

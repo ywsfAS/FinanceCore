@@ -1,5 +1,5 @@
-﻿using FinanceCore.Domain.Exceptions;
-
+using FinanceCore.Domain.Exceptions;
+using FluentValidation;
 namespace FinanceCore.API
 {
     public class GlobalExceptionMiddleware
@@ -34,12 +34,12 @@ namespace FinanceCore.API
 
             var response = new
             {
-                error = ex.Message
+                error = ex.Message,
             };
 
             switch (ex)
             {
-                case DomainException:
+                case DomainException or ValidationException:
                     context.Response.StatusCode = StatusCodes.Status400BadRequest;
                     break;
 

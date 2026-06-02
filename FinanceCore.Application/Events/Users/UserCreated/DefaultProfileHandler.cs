@@ -22,7 +22,7 @@ namespace FinanceCore.Application.Events.Users.UserCreated
         }
         public async Task Handle(UserCreatedEvent notification , CancellationToken token)
         {
-            var command = new CreateProfileCommand(notification.UserId,"New", "User","New User Bio","avatarUrl",EnCurrency.USD);
+            var command = new CreateProfileCommand(notification.UserId,notification.Name,"AS","No Bio","avatarUrl",EnCurrency.USD);
             var profile = Domain.Profile.Profile.Create(command.userId,command.firstName,command.lastName,command.bio,command.avatarUrl,command.curreny);
 
            await _profileRepository.AddAsync(profile,token);

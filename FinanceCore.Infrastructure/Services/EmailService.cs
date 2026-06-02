@@ -1,4 +1,4 @@
-﻿using FinanceCore.Application.Abstractions;
+using FinanceCore.Application.Abstractions;
 using FinanceCore.Domain.Common;
 using Microsoft.Extensions.Options;
 using System;
@@ -23,11 +23,12 @@ namespace FinanceCore.Infrastructure.Services
             message.To.Add(email.Address);
             message.Subject = subject;
             message.Body = body;
+            message.From = new MailAddress(_emailSettings.Username);
 
-            var client = new SmtpClient(_emailSettings.SmtpServer);
-            client.Port = _emailSettings.SmtpPort;
+            var client = new SmtpClient(_emailSettings.Host);
+            client.Port = _emailSettings.Port;
             client.EnableSsl = _emailSettings.EnableSsl;
-            client.Credentials = new NetworkCredential(_emailSettings.SmtpUsername, _emailSettings.SmtpPassword);
+            client.Credentials = new NetworkCredential(_emailSettings.Username, _emailSettings.Password);
 
             await client.SendMailAsync(message);
         

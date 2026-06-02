@@ -1,4 +1,4 @@
-﻿using Dapper;
+using Dapper;
 using FinanceCore.Application.Abstractions;
 using FinanceCore.Application.DTOs;
 using FinanceCore.Application.Models;
@@ -6,6 +6,7 @@ using FinanceCore.Domain.Accounts;
 using FinanceCore.Domain.Enums;
 using FinanceCore.Infrastructure.context;
 using FinanceCore.Infrastructure.Mappers;
+using Microsoft.AspNetCore.Routing;
 using System.Data;
 namespace FinanceCore.Infrastructure.Repositories
 {
@@ -45,6 +46,22 @@ namespace FinanceCore.Infrastructure.Repositories
             new { UserId = id });
             return models;
 
+        }
+        private async Task<IEnumerable<AccountModel>?> GetModelByUserIdAndNameAsync(Guid id,string name, CancellationToken token = default)
+        {
+            using var connection = _connectionFactory.GetConnection();
+
+            const string sql = @"SELECT * FROM Accounts WHERE  UserId = @Id AND Name = @Name";
+            var command = new CommandDefinition(sql, new { Id = id, Name = name }, cancellationToken: token, commandType: CommandType.Text);
+            var models = await connection.QueryAsync<AccountModel>(command);
+            return models;
+
+        }
+       public async Task<IEnumerable<AccountDto>?> GetDtoByNameAsync(Guid id , string name , CancellationToken token) {
+            var accountModels = await GetModelByUserIdAndNameAsync(id,name,token);
+            if (accountModels is null) return null;
+            var accountDtos = accountModels.Select(model => new AccountDto(model.Id, model.UserId, model.Name, (EnAccountType)model.AccountTypeId, model.Balance, (EnCurrency)model.CurrencyId, model.CreatedAt));
+            return accountDtos;
         }
 
         public async Task<IEnumerable<Account>?> GetByUserIdAsync(Guid userId, CancellationToken token = default)
