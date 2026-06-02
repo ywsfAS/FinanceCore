@@ -36,7 +36,6 @@ const Footer: React.FC = () => {
             </div>
             <div className={styles.bottom}>
                 <span>© {new Date().getFullYear()} Finance Core. All rights reserved.</span>
-                <span className={styles.badge}>🔒 SOC 2 Certified</span>
             </div>
         </footer>
     );

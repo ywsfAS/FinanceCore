@@ -1,17 +1,14 @@
 import { useState } from "react";
 import { useAuth } from "../../hooks/Auth/Auth";
 import Input from "../../components/Input/Input";
-import Card from "../../components/Card/Card";
-import SideImage from "../../components/SideImage/SideImage";
 import Checkbox from "../../components/Checkbox/Checkbox";
 import Button from "../../components/Button/Button";
-import Image from "../../assets/side.png";
 import Logo from "../../assets/Logo.png";
-import styles from  "./Register.module.css";
+import styles from "./Register.module.css";
 import { useTheme } from "../../hooks/Theme/Theme";
+import { Link } from "react-router-dom";
 
 const RegisterPage = () => {
-
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -19,6 +16,7 @@ const RegisterPage = () => {
     const [agreeTerms, setAgreeTerms] = useState(false);
     const { register } = useAuth();
     const { theme } = useTheme();
+
     const handleRegister = async () => {
         if (password !== confirmPassword) {
             alert("Passwords do not match!");
@@ -28,57 +26,101 @@ const RegisterPage = () => {
             alert("You must agree to the terms and conditions.");
             return;
         }
-
         await register(name, email, password);
-       
-
     };
 
     return (
-        <div className={`${styles.globalContainer} ${theme === 'dark' && styles.dark }`}>
-            <Card className={styles.loginCard} variant={theme === 'dark' ? "darkMode" : ""}>
-                <div className={styles.formSide}>
-                    <div className={styles.logoContainer}>
-                        <img className={styles.logo} src={Logo} alt="Logo" />
-                    </div>
-                    <h1 className={styles.title}>Create Account</h1>
-                    <p className={styles.titleP}>Join us and start managing your finances</p>
+        <div className={`${styles.globalContainer} ${theme === "dark" ? styles.dark : ""}`}>
+            {/* Card */}
+            <div className={styles.card}>
 
-                    <div className={styles.input}>
-                        <p>Name</p>
-                        <Input type="text" placeholder="Enter your full name" value={name} onChange={(e) => setName(e.target.value)} />
+                {/* Brand */}
+                <div className={styles.brand}>
+                    <div className={styles.brandIcon}>
+                        <svg viewBox="0 0 20 20">
+                            <path d="M10 2L3 7v6l7 5 7-5V7l-7-5z" />
+                        </svg>
                     </div>
-                    <div className={styles.input}>
-
-                        <p>Email</p>
-                        <Input type="email" placeholder="Enter your email" value={email} onChange={(e) => setEmail(e.target.value)} />
-                    </div>
-                    <div className={styles.input}>
-                        <p>Password</p>
-                        <Input type="password" placeholder="Enter your password" value={password} onChange={(e) => setPassword(e.target.value)} />
-                    </div>
-                    <div className={styles.input}>
-                        <p>Confirm Password</p>
-                        <Input type="password" placeholder="Confirm your password" value={confirmPassword} onChange={(e) => setConfirmPassword(e.target.value)} />
-                    </div>
-
-                    <div className={styles.container}>
-                        <Checkbox
-                            label="I agree to the terms and conditions"
-                            checked={agreeTerms}
-                            onChange={(e) => setAgreeTerms(e.target.checked)}
-                        />
-                    </div>
-
-                    <Button type="submit" onClick={handleRegister} variant='primary'>Register</Button>
-
-                    <p className={styles.loginUp}>
-                        Already have an account? <a className={styles.loginUpLink}>Login</a>
-                    </p>
+                    <span className={styles.brandName}>FinanceCore</span>
                 </div>
-                <SideImage src={Image} alt="Register illustration" />
-            </Card>
+
+                {/* Heading */}
+                <h1 className={styles.title}>Create account</h1>
+                <p className={styles.titleP}>Join us and start managing your finances</p>
+
+                {/* Name */}
+                <div className={styles.inputField}>
+                    <label htmlFor="reg-name">Full name</label>
+                    <Input
+                        type="text"
+                        placeholder="Enter your full name"
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
+                    />
+                </div>
+
+                {/* Email */}
+                <div className={styles.inputField}>
+                    <label htmlFor="reg-email">Email address</label>
+                    <Input
+                        type="email"
+                        placeholder="you@example.com"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                    />
+                </div>
+
+                {/* Password */}
+                <div className={styles.inputField}>
+                    <label htmlFor="reg-password">Password</label>
+                    <Input
+                        type="password"
+                        placeholder="Enter your password"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                    />
+                </div>
+
+                {/* Confirm Password */}
+                <div className={styles.inputField}>
+                    <label htmlFor="reg-confirm">Confirm password</label>
+                    <Input
+                        type="password"
+                        placeholder="Confirm your password"
+                        value={confirmPassword}
+                        onChange={(e) => setConfirmPassword(e.target.value)}
+                    />
+                </div>
+
+                {/* Terms */}
+                <div className={styles.container}>
+                    <Checkbox
+                        label="I agree to the terms and conditions"
+                        checked={agreeTerms}
+                        onChange={(e) => setAgreeTerms(e.target.checked)}
+                    />
+                </div>
+
+                {/* Submit */}
+                <Button
+                    type="submit"
+                    variant="primary"
+                    className={styles.btnPrimary}
+                    onClick={handleRegister}
+                >
+                    Create account
+                </Button>
+
+                {/* Footer */}
+                <p className={styles.loginUp}>
+                    Already have an account?{" "}
+                    <Link to="/login" className={styles.loginUpLink}>
+                        Sign in
+                    </Link>
+                </p>
+            </div>
         </div>
     );
 };
+
 export default RegisterPage;

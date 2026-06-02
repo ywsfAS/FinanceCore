@@ -16,3 +16,4 @@ obj/
 wwwroot/
 # Others
 *.log
+/FinanceCore.API/appsettings.json

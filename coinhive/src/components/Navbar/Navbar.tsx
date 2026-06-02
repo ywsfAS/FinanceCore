@@ -3,6 +3,7 @@ import styles from "./Navbar.module.css";
 import { useTheme } from "../../hooks/Theme/Theme";
 import { Link } from "react-router-dom";
 import Button from "../Button/Button";
+import { Moon , Sun } from "lucide-react";
 
 type NavPage = "home" | "about" | "contact" | "pricing" | "profile";
 
@@ -24,10 +25,8 @@ const Navbar: React.FC<NavbarProps> = ({ activePage = "home" }) => {
     const [visible, setVisible] = useState(true);
     const [lastScrollY, setLastScrollY] = useState(0);
 
-    // theme
     const { theme , toggleTheme } = useTheme();
 
-    /* ── scroll: shadow + hide-on-scroll-down ── */
     useEffect(() => {
         const onScroll = () => {
             const y = window.scrollY;
@@ -39,7 +38,6 @@ const Navbar: React.FC<NavbarProps> = ({ activePage = "home" }) => {
         return () => window.removeEventListener("scroll", onScroll);
     }, [lastScrollY]);
 
-    /* ── lock body scroll when mobile menu is open ── */
     useEffect(() => {
         document.body.style.overflow = menuOpen ? "hidden" : "";
         return () => { document.body.style.overflow = ""; };
@@ -58,13 +56,11 @@ const Navbar: React.FC<NavbarProps> = ({ activePage = "home" }) => {
             >
                 <div className={styles.inner}>
 
-                    {/* ── Logo ── */}
                     <a href="/" className={styles.logo} aria-label="FinanceCore home">
                         <span className={styles.logoMark}>FC</span>
                         <span className={styles.logoText}>FinanceCore</span>
                     </a>
 
-                    {/* ── Desktop nav links ── */}
                     <nav className={styles.desktopNav} aria-label="Main navigation">
                         {navLinks.map((link) => (
                             <Link
@@ -83,14 +79,12 @@ const Navbar: React.FC<NavbarProps> = ({ activePage = "home" }) => {
                         ))}
                     </nav>
 
-                    {/* ── Desktop CTAs ── */}
                     <div className={styles.desktopActions}>
                         <Link to="/login" className={styles.loginBtn}>LogIn</Link>
                         <Link to="/register" className={styles.ctaBtn}>Get Started Free</Link>
-                        <Button onClick={toggleTheme} variant="primary" size="small">{theme}</Button>
+                        <Button onClick={toggleTheme} variant="purple" size="small">{theme === 'dark' ? <Moon size={20} /> : <Sun size={20} /> }</Button>
                     </div>
 
-                    {/* ── Mobile hamburger ── */}
                     <button
                         className={styles.hamburger}
                         onClick={() => setMenuOpen((o) => !o)}
@@ -104,7 +98,6 @@ const Navbar: React.FC<NavbarProps> = ({ activePage = "home" }) => {
                 </div>
             </header>
 
-            {/* ── Mobile drawer ── */}
             <div
                 className={[styles.mobileDrawer, menuOpen ? styles.drawerOpen : ""].join(" ")}
                 aria-hidden={!menuOpen}
@@ -138,7 +131,6 @@ const Navbar: React.FC<NavbarProps> = ({ activePage = "home" }) => {
                 </div>
             </div>
 
-            {/* ── Mobile backdrop ── */}
             {menuOpen && (
                 <div
                     className={styles.backdrop}

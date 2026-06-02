@@ -9,6 +9,7 @@
     --color-secondary: #0070f3;
     --color-success: #28a745;
     --color-warning: #ffc107;
+    --color-purple: #995cff;
     --color-warning-text: #333;
     /* Font sizes */
     --font-size-small: 0.8rem;
@@ -65,7 +66,10 @@
     background-color: var(--color-secondary);
     color: var(--color-white);
 }
-
+.purple{
+    background-color : var(--color-purple);
+    color : var(--color-white);
+}
 .success {
     background-color: var(--color-success);
     color: var(--color-white);
