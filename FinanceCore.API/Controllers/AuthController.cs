@@ -1,7 +1,8 @@
-﻿using FinanceCore.Application.DTOs;
+using FinanceCore.Application.DTOs;
 using FinanceCore.Application.DTOs.Auth;
 using FinanceCore.Application.Features.Auth.Commands.Login;
 using FinanceCore.Application.Features.Auth.Commands.Register;
+using FinanceCore.Application.Features.PasswordReset;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -67,5 +68,25 @@ namespace FinanceCore.API.Controllers
             var response = await _mediator.Send(command);
             return Ok(response);
         }
+
+        [HttpPost("forgot-password")]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ValidationErrorDto),StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordCommand command)
+        {
+            await _mediator.Send(command);
+            return Ok("Reset link sent successfuly");
+        }
+        [HttpPost("reset-password")]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ValidationErrorDto),StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordCommand command)
+        {
+            await _mediator.Send(command);
+            return Ok("Password reset successful");
+        }
+
     }
 }

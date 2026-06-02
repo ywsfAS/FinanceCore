@@ -5,7 +5,7 @@ import styles from "./Button.module.css";
 type ButtonProps = {
     children: ReactNode;
     onClick?: () => void;
-    variant?: 'primary' | 'secondary' | 'success' | 'warning';
+    variant?: 'primary' | 'secondary' | 'success' | 'warning'| 'purple';
     size?: 'small' | 'medium' | 'large';
     fullwidth?: boolean;
     disabled?: boolean;

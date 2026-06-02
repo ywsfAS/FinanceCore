@@ -181,7 +181,6 @@ namespace FinanceCore.Infrastructure.Repositories
                 throw new KeyNotFoundException("Account not found or does not belong to the user.");
         }
 
-        // Updated: accept only the Id and use inline SQL (not stored procedure).
         public async Task DeleteAsync(Guid id, CancellationToken token = default)
         {
             const string sql = @"
