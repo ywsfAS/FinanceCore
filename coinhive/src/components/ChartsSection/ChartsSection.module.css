@@ -4,14 +4,13 @@
     --chart-green : green;
     --chart-orange : orange;
 
-
-    display: grid;
-    grid-template-columns: 1fr 1.9fr;
+    display : flex;
+    flex-direction : column-reverse;
+  
     gap: 5px;
 
     margin-top: 10px;
     color:var(--color-text);
-    box-shadow : var(--shadow);
 }
 
 @media (max-width: 860px) {
@@ -23,7 +22,8 @@
 .chartCard {
     background-color: var(--background);
     padding: 18px;
-    border-radius: 5px;
+    border-radius: 25px;
+    box-shadow : var(--shadow);
 }
 
 .chartTitle {
@@ -62,5 +62,5 @@
 .canvasWrap {
     position: relative;
     flex: 1;
-    min-height: 220px;
+    min-height: 260px;
 }

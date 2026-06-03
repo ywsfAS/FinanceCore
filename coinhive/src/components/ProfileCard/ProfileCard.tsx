@@ -1,7 +1,10 @@
 import styles from './ProfileCard.module.css';
-import Image from "../../assets/profle.jpeg";
+import Image from "../../assets/pfp.jpeg";
+import { PanelsTopLeft, BadgeDollarSign, Wallet, ClipboardMinus, Bitcoin } from "lucide-react";
+import {useState} from 'react';
 
-const NAV_ITEMS = ['Overview', 'Transactions', 'Investments', 'Budgets', 'Reports'];
+const NAV_ITEMS = [{ name: 'Overview', icon: <PanelsTopLeft size={20} /> }, { name: 'Transactions', icon: <BadgeDollarSign  size={20}/> },
+    { name: 'Investments', icon: < Bitcoin size={20}/> }, { name: 'Budgets', icon: <Wallet size={20}/> }, { name: 'Reports', icon: <ClipboardMinus size={20}/> }];
 type profileProps = {
     profileData : profileData | null,
 }
@@ -15,13 +18,14 @@ interface profileData {
 const defaultProfile : profileData = {
     firstName: 'Jordan',
     lastName: 'Mitchell',
-    role: 'ADMINISTRATOR · PREMIUM',
+    role: 'Software Engineer',
     bio: 'Financial analyst &amp; personal finance enthusiast. Tracking goals since 2021. Building toward early financial independence.',
 
 }
 export default function ProfileCard({ profileData }: profileProps) {
     const data = profileData ?? defaultProfile;
     const name = data.firstName + ' ' + data.lastName;
+    const [active, setActive] = useState(0);
     return (
         <aside className={styles.card}>
             <div className={styles.avatar}>
@@ -36,7 +40,7 @@ export default function ProfileCard({ profileData }: profileProps) {
             <h2 className={styles.name}>{name}</h2>
             <p className={styles.role}>{defaultProfile.role}</p>
             <p className={styles.bio}>
-                {data.bio }
+                {data.bio} Software developer focused on building scalable and maintainable applications with modern technologies.
             </p>
 
             <div className={styles.divider} />
@@ -56,9 +60,10 @@ export default function ProfileCard({ profileData }: profileProps) {
 
             <nav className={styles.nav}>
                 {NAV_ITEMS.map((item, i) => (
-                    <div key={item} className={`${styles.navItem} ${i === 0 ? styles.navActive : ''}`}>
-                        <span className={styles.navDot} />
-                        {item}
+                    <div key={item.name} className={`${styles.navItem} ${i === active ? styles.navActive : ''}`} onClick={() => {
+                    setActive(i)} }>
+                        {item.icon }
+                        {item.name}
                     </div>
                 ))}
             </nav>

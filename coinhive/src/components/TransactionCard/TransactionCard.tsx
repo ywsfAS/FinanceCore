@@ -1,5 +1,5 @@
 import styles from './TransactionCard.module.css';
-
+import {CircleArrowRight} from 'lucide-react';
 interface Transaction {
     id: number;
     name: string;
@@ -26,7 +26,7 @@ export default function TransactionCard({transactions = TRANSACTIONS} : Transact
         <div className={styles.card}>
             <div className={styles.header}>
                 <span className={styles.title}>Recent Transactions</span>
-                <span className={styles.viewAll}>View all →</span>
+                <span className={styles.viewAll}><CircleArrowRight size={20} /></span>
             </div>
 
             {transactions.map((tx) => (

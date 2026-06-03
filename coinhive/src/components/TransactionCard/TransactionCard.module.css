@@ -5,7 +5,7 @@
 
     margin-top: 10px;
     padding: 20px;
-    border-radius: 5px;
+    border-radius: 25px;
     background: var(--background);
     border: 1px solid rgba(255, 255, 255, 0.08);
     color: var(--color-text);
@@ -21,7 +21,7 @@
 .card .title {
     font-size: 13px;
     font-weight: 600;
-    color: #cbd5e1
+    color: var(--color-text);
 }
 .card .viewAll {
     font-size: 11px;
@@ -54,7 +54,7 @@
 .name {
     font-size: 13px;
     font-weight: 500;
-    color: #cbd5e1
+    color: var(--color-text)
 }
 .date {
     font-size: 11px;

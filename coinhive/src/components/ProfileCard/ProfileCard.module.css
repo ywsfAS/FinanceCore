@@ -1,6 +1,6 @@
 
 .card {
-    margin-top:60px;
+    margin-top: 60px;
     display: flex;
     gap: 0;
     overflow: hidden;
@@ -8,8 +8,8 @@
     justify-content: center;
     flex-direction: column;
     background-color: var(--background);
-    border-radius: 5px;
-    padding: 18px 15px;
+    border-radius: 20px;
+    padding: 40px 15px;
     box-shadow: var(--shadow);
 }
 .card .avatar {
@@ -24,17 +24,14 @@
     border-radius: 50%;
     border: 3px solid white;
 }
-.card .status{
-
-}
 .card .name {
     color: var(--color-text);
-    font-size: 18px;
-    font-weight: 400;
+    font-size: 16px;
+    font-weight: 600;
     margin-bottom: 5px;
 }
 .card .role {
-    font-size: 14px;
+    font-size: 10px;
     color: #8b92a8;
     margin-bottom: 10px;
 }
@@ -48,17 +45,19 @@
     max-width:80%;
 }
 .card .divider {
-    width: 80%;
-    border: 1px solid #80808067;
-    margin-bottom: 10px;
+        width: 80%;
+        border: 1px solid #a9a9a929;
+        margin-bottom: 10px;
 }
-.card .statsBox {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    margin-bottom: 10px;
-    padding: 10px 5px;
-    column-gap: 3px;
-}
+    .card .statsBox {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        margin-bottom: 10px;
+        padding: 10px 5px;
+        column-gap: 3px;
+        background-color: #ededed59;
+        border-radius: 10px;
+    }
 .card .statItem {
     display: flex;
     flex-direction: column;
@@ -90,19 +89,16 @@
     gap: 10px;
     padding: 10px 14px;
     border-radius: 10px;
-    font-size: 13px;
+    font-size: 14px;
+    font-weight : 500;
     color: var(--color-text);
     cursor: pointer;
     transition: all 0.2s;
 }
 .card .navItem.navActive {
-    color: #c4b5fd;
-    border: 1px solid rgba(139, 92, 246, 0.2);
+    background-color: #c194ff80;
+    color: mediumpurple;
 }
-.card .navItem .navDot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: currentColor;
-     opacity: 0.6;
+.navItem:hover {
+    background-color: #cbcbcb80;
 }

@@ -17,7 +17,7 @@
     position: relative;
     overflow: hidden;
     cursor: pointer;
-    border-radius: 5px;
+    border-radius: 25px;
     background-color: var(--background);
     box-shadow : var(--shadow);
 }
@@ -35,7 +35,7 @@
 .box .label {
     font-size: 11px;
     color: #64748b;
-    font-weight: 500;
+    font-weight: 600;
     letter-spacing: 0.4px;
     text-transform: uppercase;
     margin-bottom: 4px;
@@ -46,7 +46,20 @@
     margin-bottom: 4px;
 }
 .box.income {
-    color: var(--income-color)
+    color: var(--income-color);   
+}
+.box.income .icon{
+    background-color: var(--income-color);
+    color : white;
+}
+
+.box.expense .icon{
+    background-color: var(--expense-color);
+    color : white;
+}
+.box.net .icon{
+    background-color: var(--net-color);
+    color : white;
 }
 .box.expense {
     color: var(--expense-color);

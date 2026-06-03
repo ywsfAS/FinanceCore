@@ -72,9 +72,8 @@ const ContactForm: React.FC = () => {
       formData.message.trim();
     if (!allValid) return;
     setFormState("submitting");
-    setTimeout(() => {
-      setFormState("success");
-    }, 1600);
+    
+    setFormState("success");
   };
  
   return (

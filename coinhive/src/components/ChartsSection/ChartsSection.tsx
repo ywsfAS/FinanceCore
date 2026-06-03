@@ -29,15 +29,12 @@ const BAR_LEGEND = [
 
 export default function ChartsSection() {
     const barRef = useRef<HTMLCanvasElement>(null);
-    const pieRef = useRef<HTMLCanvasElement>(null);
     const barChart = useRef<Chart | null>(null);
-    const pieChart = useRef<Chart | null>(null);
 
     useEffect(() => {
-        if (!barRef.current || !pieRef.current) return;
+        if (!barRef.current) return;
 
         barChart.current?.destroy();
-        pieChart.current?.destroy();
 
         barChart.current = new Chart(barRef.current, {
             type: 'bar',
@@ -50,7 +47,7 @@ export default function ChartsSection() {
                         backgroundColor: 'rgba(109,40,217,0.7)',
                         borderRadius: 3,
                         borderSkipped: false,
-                        barThickness: 18,
+                        barThickness: 38,
                     },
                     {
                         label: 'Expenses',
@@ -58,7 +55,7 @@ export default function ChartsSection() {
                         backgroundColor: 'rgba(248,113,113,0.6)',
                         borderRadius: 3,
                         borderSkipped: false,
-                        barThickness: 18,
+                        barThickness: 38,
                     },
                 ],
             },
@@ -72,8 +69,8 @@ export default function ChartsSection() {
                 scales: {
                     x: {
                         ticks: { color: '#475569', font: { size: 11 } },
-                        grid: { display: false },
-                        border: { display: false },
+                        grid: { display: true, color: 'rgba(148, 163, 184, 0.15)'  },
+                        border: { display: true },
                     },
                     y: {
                         ticks: {
@@ -81,71 +78,21 @@ export default function ChartsSection() {
                             font: { size: 11 },
                             callback: (value) => '$' + Number(value).toLocaleString(),
                         },
-                        grid: { color: 'rgba(255,255,255,0.04)' },
-                        border: { display: false },
+                        grid: { color: 'rgba(148, 163, 184, 0.15)' },
+                        border: { display: true },
                     },
                 },
                 animation: { duration: 900 },
             },
         });
-           pieChart.current = new Chart(pieRef.current, {
-            type: 'doughnut',
-            data: {
-                labels: ['Housing', 'Food', 'Transport', 'Subscriptions', 'Other'],
-                datasets: [{
-                    data: [38, 22, 15, 12, 13],
-                    backgroundColor: [
-                        '#6d28d9', 
-                        '#3b82f6', 
-                        '#22c55e', 
-                        '#f59e0b', 
-                        '#ef4444', 
-                    ],
-                    borderWidth: 1,
-                    borderColor: 'rgba(10,14,26,0.8)',
-                    hoverOffset: 6,
-                }],
-            },
-            options: {
-                responsive: true,
-                maintainAspectRatio: false,
-                cutout: '68%',
-                plugins: {
-                    legend: { display: false },
-                    tooltip: {
-                        callbacks: {
-                            label: (c) => ` ${c.label}: ${c.parsed}%`,
-                        },
-                    },
-                },
-                animation: { animateRotate: true, duration: 1000 },
-            },
-        });
 
         return () => {
             barChart.current?.destroy();
-            pieChart.current?.destroy();
         };
     }, []);
 
     return (
         <div className={styles.section}>
-            {/* Pie */}
-            <div className={styles.chartCard}>
-                <div className={styles.chartTitle}>Spending by Category</div>
-                <div className={styles.chartDesc}>April 2026</div>
-                <div className={styles.legend}>
-                    {PIE_LEGEND.map(({ color, label }) => (
-                        <span key={label} className={styles.legendItem}>
-                            <span className={styles.dot} style={{ background: color }} />
-                            {label}
-                        </span>
-                    ))}
-                </div>
-                <div className={styles.canvasWrap}>
-                    <canvas ref={pieRef} />
-                </div>
-            </div>
 
             {/* Bar */}
             <div className={styles.chartCard}>
