@@ -1,0 +1,25 @@
+using FinanceCore.Application.Abstractions;
+using FinanceCore.Domain.ContactMessage;
+using MediatR;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace FinanceCore.Application.Features.Contact.Commands.Create
+{
+     public class CreateContactMessageHandler :IRequestHandler<CreateContactMessageCommand>
+    {
+        private readonly IContactMessageRepository _contactMessageRepository;
+        public CreateContactMessageHandler(IContactMessageRepository contactMessageRepository) { 
+            _contactMessageRepository = contactMessageRepository;
+        }
+        public async Task Handle(CreateContactMessageCommand cmd , CancellationToken token)
+        {
+            var message = new ContactMessage(cmd.FullName,cmd.Email,cmd.Subject,cmd.Message,DateTime.UtcNow);
+            await _contactMessageRepository.AddAsync(message,token);
+        }
+
+    }
+}
