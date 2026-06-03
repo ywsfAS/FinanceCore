@@ -13,14 +13,12 @@ const Landing: React.FC = () => {
         <main className={styles.page}>
             {/* Hero */}
             <HeroSection
-                tag="AI-powered spending insights are live →"
                 title="Take Full Control of"
-                description="FinVault brings your accounts, budgets, goals, and investments into
-                    one secure dashboard — so you always know where you stand and where
+                description="FinanceCore brings your accounts, budgets, goals, and investments into
+                    one secure dashboard so you always know where you stand and where
                     you're headed."
-                mainBtnText="Start for Free →"
+                mainBtnText="Start for Free"
                 secondBtnText=" Watch Demo"
-                note="Trusted users across 34 countries"
 
             />
 
@@ -32,7 +30,6 @@ const Landing: React.FC = () => {
             {/* Features */}
             <div className={styles.container}>
                 <FeaturesSection
-                    tag="Everything You Need"
                     title="Built for the Way You Actually Live"
                     description="No more juggling five apps. FinanceCore handles every aspect of your
                     financial life in one clean, secure platform."
@@ -40,14 +37,14 @@ const Landing: React.FC = () => {
             </div>
 
             {/* How it works */}
-            <div className={styles.altBg}>
+            
                 <div className={styles.container}>
                     <HowItWorks
                         title="Up and Running in Minutes"
                         subtitle="No financial expertise required. FinanceCore guides you from signup to full clarity in four simple steps."
                     />
                 </div>
-            </div>
+           
 
             {/* Testimonials */}
             <TestimonialsSection />
@@ -61,9 +58,8 @@ const Landing: React.FC = () => {
             <div className={styles.container}>
                 <CtaSection
                     title="Your Financial Future"
-                    tag="Get Started Today"
                     para="Join 120,000+ users who've taken control of their money with FinanceCore. Free forever. No credit card required."
-                    mainBtnMsg="Create Free Account →"
+                    mainBtnMsg="Create Free Account"
                     secondBtnMsg="Talk to Sales"
                 />
             </div>

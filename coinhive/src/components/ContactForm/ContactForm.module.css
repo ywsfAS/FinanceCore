@@ -93,7 +93,7 @@
     font-size: var(--font-size-subtitle);
     font-weight: var(--fw-regular);
     line-height: 1.7;
-    color: var(--color-gray-400);
+    color: var(--color-text-secondary);
 }
 
 .form {
@@ -117,14 +117,14 @@
 .label {
     font-size: var(--font-size-label);
     font-weight: var(--fw-bold);
-    color: var(--color-gray-700);
+    color: var(--color-text-secondary);
     letter-spacing: 0.03em;
 }
 
 .input {
     font-size: var(--font-size-input);
     font-weight: var(--fw-medium);
-    color: var(--color-text);
+    color: var(--color-text-secondary);
     background: var(--color-gray-100);
     border: 1.5px solid var(--color-gray-200);
     border-radius: var(--radius-md);

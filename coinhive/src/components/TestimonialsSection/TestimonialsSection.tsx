@@ -12,7 +12,7 @@ interface Testimonial {
 
 const testimonials: Testimonial[] = [
     {
-        quote: "FinVault replaced four apps I was using. My net worth went up 18% the first year just because I could actually see where my money was going.",
+        quote: "FinanceCore replaced four apps I was using. My net worth went up 18% the first year just because I could actually see where my money was going.",
         name: "Layla Hassan",
         role: "Freelance Designer, Dubai",
         initials: "LH",
@@ -20,7 +20,7 @@ const testimonials: Testimonial[] = [
         stars: 5,
     },
     {
-        quote: "The AI insights are genuinely useful — it caught a subscription I forgot about and flagged that I was overspending on dining before I even noticed.",
+        quote: "The AI insights are genuinely useful it caught a subscription I forgot about and flagged that I was overspending on dining before I even noticed.",
         name: "Tom Eriksson",
         role: "Software Engineer, Stockholm",
         initials: "TE",
@@ -33,14 +33,6 @@ const testimonials: Testimonial[] = [
         role: "Product Manager, London",
         initials: "PN",
         color: "#8b5cf6",
-        stars: 5,
-    },
-    {
-        quote: "Security was my biggest concern. Knowing it's SOC 2 certified and read-only access made the decision easy. My bank data never felt so safe.",
-        name: "Carlos Mendez",
-        role: "CFO, Mexico City",
-        initials: "CM",
-        color: "#f59e0b",
         stars: 5,
     },
     {
@@ -78,10 +70,9 @@ const TestimonialsSection: React.FC = () => {
     return (
         <section className={styles.wrapper} ref={ref}>
             <div className={styles.header}>
-                <span className={styles.eyebrow}>What Users Say</span>
                 <h2 className={styles.title}>Real People, Real Results</h2>
                 <p className={styles.subtitle}>
-                    Over 120,000 users have transformed how they manage money with FinVault.
+                    Over 120,000 users have transformed how they manage money with FinanceCore.
                 </p>
             </div>
 

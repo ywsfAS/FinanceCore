@@ -40,25 +40,6 @@
         transform: translateY(0);
     }
 
-.gridOverlay {
-    position: absolute;
-    inset: 0;
-    background-image: linear-gradient(rgba(16, 82, 64, 0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(16, 82, 64, 0.04) 1px, transparent 1px);
-    background-size: 48px 48px;
-    pointer-events: none;
-}
-
-.gradientBlob {
-    position: absolute;
-    top: -160px;
-    right: -160px;
-    width: 600px;
-    height: 600px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(16, 185, 129, 0.10) 0%, transparent 70%);
-    pointer-events: none;
-}
-
 .inner {
     position: relative;
     z-index: 1;
@@ -67,20 +48,6 @@
     padding: var(--hero-padding-top) var(--hero-padding-horizontal) var(--hero-padding-bottom);
     text-align: center;
 }
-
-.eyebrow {
-    display: inline-block;
-    font-size: 11px;
-    font-weight: var(--fw-semibold);
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--primary);
-    margin-bottom: var(--eyebrow-margin-bottom);
-    padding: var(--eyebrow-padding);
-    border: 1px solid var(--border);
-    border-radius: 100px;
-}
-
 .title {
     font-size: clamp(var(--title-font-size-min), 6vw, var(--title-font-size-max));
     font-weight: var(--fw-bold);

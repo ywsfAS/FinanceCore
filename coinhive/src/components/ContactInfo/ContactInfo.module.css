@@ -209,11 +209,6 @@
     border: 1px solid var(--color-border-light);
 }
 
-.faqIcon {
-    font-size: 20px;
-    line-height: 1;
-    margin-top: 2px;
-}
 
 .faqText {
     font-size: var(--fs-md);
@@ -226,12 +221,13 @@
 .faqLink {
     text-decoration: none;
     transition: opacity var(--transition-fast);
+    color : var(--primary);
+    font-size : var(--fs-md);
 }
 
-    .faqLink:hover {
-        opacity: 0.75;
-    }
-
+.faqLink:hover {
+    opacity: 0.75;
+}
 .faqSub {
     font-size: var(--fs-sm);
     font-weight: var(--fw-regular);

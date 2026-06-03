@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import styles from "./HeroSection.module.css";
+import Button from "../Button/Button";
 
 const dashboardData = [
     { label: "Net Worth", value: "$84,320", color: "#10b981" },
@@ -7,17 +8,15 @@ const dashboardData = [
     { label: "Savings Rate", value: "34%", color: "#8b5cf6" },
 ];
 const navItems= ["Dashboard", "Transactions", "Goals", "Analytics", "Settings"];
-const colors = ["#10b981", "#3b82f6", "#8b5cf6", "#f59e0b"];
 const barHeight = [40, 65, 50, 80, 60, 90, 75, 95, 70, 88, 82, 100];
 interface HeroSectionProps {
-    tag: string,
     title: string,
     description: string,
     note: string,
     mainBtnText: string,
     secondBtnText : string,
 }
-const HeroSection: React.FC<HeroSectionProps> = ({tag , title , description , note , mainBtnText , secondBtnText }) => {
+const HeroSection: React.FC<HeroSectionProps> = ({title , description , mainBtnText , secondBtnText }) => {
     const ref = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -27,15 +26,8 @@ const HeroSection: React.FC<HeroSectionProps> = ({tag , title , description , no
 
     return (
         <section className={styles.hero} ref={ref}>
-            <div className={styles.gridOverlay} aria-hidden="true" />
-            <div className={styles.blobLeft} aria-hidden="true" />
-            <div className={styles.blobRight} aria-hidden="true" />
 
             <div className={styles.inner}>
-                <a href="#" className={styles.announcement}>
-                    <span className={styles.announcementBadge}>New</span>
-                    <span>{tag}</span>
-                </a>
 
                 <h1 className={styles.title}>
                     {title}<br />
@@ -47,23 +39,11 @@ const HeroSection: React.FC<HeroSectionProps> = ({tag , title , description , no
                 </p>
 
                 <div className={styles.actions}>
-                    <a href="#" className={styles.btnPrimary}>{mainBtnText}</a>
-                    <a href="#" className={styles.btnSecondary}>
+                    <Button  variant="primary" className={styles.btnPrimary}>{mainBtnText}</Button>
+                    <Button  className={styles.btnSecondary}>
                         <span className={styles.playIcon}>▶</span>{secondBtnText}
-                    </a>
+                    </Button>
                 </div>
-
-                <div className={styles.trust}>
-                    <div className={styles.avatarStack}>
-                        {colors.map((c, i) => (
-                            <div key={i} className={styles.avatar} style={{ background: c, zIndex: 4 - i }} />
-                        ))}
-                    </div>
-                    <span className={styles.trustText}>
-                        <strong>120,000+</strong>{note}
-                    </span>
-                </div>
-
                 <div className={styles.mockup} aria-hidden="true">
                     <div className={styles.mockupBar}>
                         <span className={styles.dot} style={{ background: "#ef4444" }} />

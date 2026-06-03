@@ -1,56 +1,30 @@
+/* FeaturesSection.module.css */
 .wrapper {
-    --fs-xxs: 10px;
-    --fs-xs: 12px;
-    --fs-sm: 13px;
-    --fs-md: 16px;
-    --fs-title-min: 28px;
-    --fs-title-max: 48px;
-    --radius-small: 12px;
-    --radius-medium: 12px;
     --radius-large: 20px;
-    --gap-sm: 12px;
-    --gap-md: 16px;
-    --gap-lg: 22px;
-    --transition-fast: 0.3s ease;
-    --transition-medium: 0.5s ease;
-    --transition-slow: 0.7s ease;
- 
+    --transition-fast: 0.25s ease;
+    --transition-medium: 0.45s ease;
+    --transition-slow: 0.65s ease;
     padding: 96px 0;
     opacity: 0;
     transform: translateY(28px);
     transition: opacity var(--transition-slow), transform var(--transition-slow);
 }
-
 .wrapper.visible {
-     opacity: 1;
-     transform: translateY(0);
+    opacity: 1;
+    transform: translateY(0);
 }
-
 .wrapper.visible .card {
-     opacity: 1;
-     transform: translateY(0);
+   opacity: 1;
+    transform: translateY(0);
 }
 
 .header {
     text-align: center;
-    margin-bottom: 64px;
-}
-
-.eyebrow {
-    display: inline-block;
-    font-size: var(--fs-xxs);
-    font-weight: 700;
-    letter-spacing: 0.2em;
-    text-transform: uppercase;
-    color: var(--primary);
-    margin-bottom: 16px;
-    padding: 6px 16px;
-    border: 1px solid rgba(16, 185, 129, 0.3);
-    border-radius: 100px;
+    margin-bottom: 72px;
 }
 
 .title {
-    font-size: clamp(var(--fs-title-min), 4vw, var(--fs-title-max));
+    font-size: clamp(28px, 4vw, 48px);
     font-weight: 800;
     letter-spacing: -0.03em;
     color: var(--color-text);
@@ -58,8 +32,7 @@
 }
 
 .subtitle {
-    font-size: var(--fs-md);
-    font-weight: 400;
+    font-size: 16px;
     line-height: 1.7;
     color: var(--color-text-secondary);
     max-width: 520px;
@@ -69,54 +42,38 @@
 .grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: var(--gap-lg);
+    gap: 20px;
 }
 
 .card {
     border: 1px solid var(--color-border);
     border-radius: var(--radius-large);
-    padding: 32px 28px;
+    padding: 36px 30px 30px;
     display: flex;
     flex-direction: column;
-    gap: var(--gap-sm);
+    gap: 14px;
     opacity: 0;
     transform: translateY(20px);
-    transition: opacity var(--transition-medium), transform var(--transition-medium), box-shadow var(--transition-fast), border-color var(--transition-fast);
+    transition: opacity var(--transition-medium), transform var(--transition-medium), border-color var(--transition-fast);
 }
 
     .card:hover {
-        box-shadow: 0 12px 40px rgba(0, 0, 0, 0.07);
         border-color: var(--color-border-light);
         transform: translateY(-4px) !important;
     }
 
-.cardTop {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
-
 .icon {
-    width: 48px;
-    height: 48px;
-    border-radius: var(--radius-small);
-    font-size: 22px;
+    width: 50px;
+    height: 50px;
+    border-radius: 14px;
     display: flex;
     align-items: center;
     justify-content: center;
-}
-
-.tag {
-    font-size: var(--fs-xxs);
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    padding: 4px 10px;
-    border-radius: 100px;
+    margin-bottom: 4px;
 }
 
 .cardTitle {
-    font-size: 17px;
+    font-size: 16px;
     font-weight: 700;
     letter-spacing: -0.015em;
     color: var(--color-text);
@@ -124,8 +81,7 @@
 }
 
 .cardDesc {
-    font-size: var(--fs-sm);
-    font-weight: 400;
+    font-size: 13.5px;
     line-height: 1.75;
     color: var(--color-text-secondary);
     margin: 0;
@@ -133,16 +89,20 @@
 }
 
 .cardLink {
-    font-size: var(--fs-xs);
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12.5px;
     font-weight: 700;
     text-decoration: none;
-    letter-spacing: 0.02em;
-    transition: opacity var(--transition-fast);
+    letter-spacing: 0.01em;
     margin-top: 4px;
+    transition: gap var(--transition-fast), opacity var(--transition-fast);
 }
 
 .cardLink:hover {
-    opacity: 0.7;
+    gap: 8px;
+    opacity: 0.8;
 }
 
 @media (max-width: 960px) {

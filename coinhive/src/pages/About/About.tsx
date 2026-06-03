@@ -3,6 +3,8 @@ import AboutHero from "../../components/AboutHero/AboutHero";
 import AboutSection from "../../components/AboutSection/AboutSection";
 import TeamSection from "../../components/TeamSection/TeamSection";
 import ValuesSection from "../../components/ValueSection/ValueSection";
+import FeaturesSection from "../../components/FeaturesSection/FeaturesSection";
+
 import styles from "./About.module.css";
 
 const About: React.FC = () => {
@@ -11,7 +13,6 @@ const About: React.FC = () => {
 
             {/* Hero */}
             <AboutHero
-                tag="Our Story"
                 title="Finance, Built Around"
                 para="We believe every financial decision deserves clarity, confidence, and
                     the tools to act on it. We build software that puts you in control
@@ -43,7 +44,10 @@ const About: React.FC = () => {
             </div>
             {/* Values */}
             <div className={styles.valuesWrapper}>
-                <ValuesSection />
+                <FeaturesSection
+                    title="Our Core Values"
+                    description="From budgeting and saving to investing and tracking expenses, FinanceCore adapts to the way people actually manage money every day."
+                />
             </div>
 
             {/* Team */}

@@ -1,11 +1,8 @@
 
 .page {
     --container-width: 1080px;
-    --container-padding: 48px;
-    --container-padding-mobile: 24px;
-
-
-    background: var(--background);
+    --container-padding: 10px;
+    --container-padding-mobile: 20px;
     min-height: 100vh;
     color: var(--color-text);
 }
@@ -14,11 +11,6 @@
     max-width: var(--container-width);
     margin: 0 auto;
     padding: 0 var(--container-padding);
-}
-
-.altBg {
-    border-top: 1px solid var(--color-border);
-    border-bottom: 1px solid var(--color-border);
 }
 
  .altBg .container {

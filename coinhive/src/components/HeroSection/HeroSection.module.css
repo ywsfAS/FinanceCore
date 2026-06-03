@@ -7,40 +7,11 @@
     transition: opacity 0.8s ease, transform 0.8s ease;
 }
 
-    .hero.visible {
-        opacity: 1;
-        transform: translateY(0);
-    }
+.hero.visible {
+    opacity: 1;
+    transform: translateY(0);
+ }
 
-.gridOverlay {
-    position: absolute;
-    inset: 0;
-    background-image: linear-gradient(rgba(16, 82, 64, 0.04) 1px, transparent 1px), linear-gradient(90deg, rgba(16, 82, 64, 0.04) 1px, transparent 1px);
-    background-size: 48px 48px;
-    pointer-events: none;
-}
-
-.blobLeft {
-    position: absolute;
-    top: -200px;
-    left: -200px;
-    width: 600px;
-    height: 600px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(16, 185, 129, 0.08) 0%, transparent 70%);
-    pointer-events: none;
-}
-
-.blobRight {
-    position: absolute;
-    bottom: -100px;
-    right: -200px;
-    width: 500px;
-    height: 500px;
-    border-radius: 50%;
-    background: radial-gradient(circle, rgba(59, 130, 246, 0.07) 0%, transparent 70%);
-    pointer-events: none;
-}
 
 .inner {
     position: relative;
@@ -121,18 +92,18 @@
     font-weight: 700;
     letter-spacing: 0.02em;
     color: var(--surface);
-    background: var(--foreground);
+    background-color: var(--primary);
     padding: 15px 32px;
     border-radius: 12px;
     text-decoration: none;
     transition: background 0.2s, transform 0.2s, box-shadow 0.2s;
+    border : none;
 }
-
-    .btnPrimary:hover {
-        background: var(--primary);
-        transform: translateY(-2px);
-        box-shadow: 0 10px 28px rgba(16, 185, 129, 0.28);
-    }
+.btnPrimary:hover {
+   background: var(--primary);
+   transform: translateY(-2px);
+   box-shadow: 0 10px 28px rgba(16, 185, 129, 0.28);
+}
 
 .btnSecondary {
     font-size: 14px;

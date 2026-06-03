@@ -3,15 +3,13 @@ import styles from "./CtaSection.module.css";
 
 interface CtaSectionProps {
     title: string,
-    tag: string,
     para: string,
     mainBtnMsg: string,
     secondBtnMsg: string,
 }
 
-const budgets = ["✓ No credit card", "✓ Cancel anytime", "✓ SOC 2 Certified", "✓ 99.9% uptime"];
 
-const CtaSection: React.FC<CtaSectionProps> = ({title , tag , para , mainBtnMsg , secondBtnMsg}) => {
+const CtaSection: React.FC<CtaSectionProps> = ({title , para , mainBtnMsg , secondBtnMsg}) => {
     const ref = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -31,7 +29,6 @@ const CtaSection: React.FC<CtaSectionProps> = ({title , tag , para , mainBtnMsg 
                 <div className={styles.blobLeft} aria-hidden="true" />
                 <div className={styles.blobRight} aria-hidden="true" />
                 <div className={styles.inner}>
-                    <span className={styles.eyebrow}>{tag}</span>
                     <h2 className={styles.title}>
                         {title}<br />Starts Right Now
                     </h2>
@@ -41,9 +38,6 @@ const CtaSection: React.FC<CtaSectionProps> = ({title , tag , para , mainBtnMsg 
                     <div className={styles.actions}>
                         <a href="#" className={styles.btnPrimary}>{mainBtnMsg}</a>
                         <a href="#" className={styles.btnSecondary}>{secondBtnMsg}</a>
-                    </div>
-                    <div className={styles.guarantees}>
-                        {budgets.map(e => <span>{e}</span>) }
                     </div>
                 </div>
             </div>

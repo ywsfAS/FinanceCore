@@ -83,7 +83,6 @@ const PricingSection: React.FC = () => {
     return (
         <section className={styles.wrapper} ref={ref}>
             <div className={styles.header}>
-                <span className={styles.eyebrow}>Pricing</span>
                 <h2 className={styles.title}>Simple, Transparent Pricing</h2>
                 <p className={styles.subtitle}>
                     No hidden fees. No surprises. Upgrade or cancel anytime.

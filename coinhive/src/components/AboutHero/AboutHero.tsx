@@ -8,14 +8,13 @@ interface Stat {
 }
 interface AboutHeroProps {
     title: string,
-    tag: string,
     para: string,
     Stat1: Stat,
     Stat2: Stat,
     Stat3 : Stat,
 
 }
-const AboutHero: React.FC<AboutHeroProps> = ({title , tag , para , Stat1 , Stat2 , Stat3}) => {
+const AboutHero: React.FC<AboutHeroProps> = ({title , para , Stat1 , Stat2 , Stat3}) => {
     const heroRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -27,11 +26,7 @@ const AboutHero: React.FC<AboutHeroProps> = ({title , tag , para , Stat1 , Stat2
 
     return (
         <section className={styles.hero} ref={heroRef}>
-            <div className={styles.gridOverlay} aria-hidden="true" />
-            <div className={styles.gradientBlob} aria-hidden="true" />
-
             <div className={styles.inner}>
-                <span className={styles.eyebrow}>{tag}</span>
                 <h1 className={styles.title}>
                     {title}
                     <br />

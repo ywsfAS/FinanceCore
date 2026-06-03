@@ -1,72 +1,48 @@
 .wrapper {
-    --color-bg-success: #f0fdf4;
-    --fs-eyebrow: 10px;
-    --fs-title-min: 28px;
-    --fs-title-max: 48px;
-    --fs-subtitle: 16px;
-    --fs-step-number: 14px;
-    --fs-step-title: 18px;
-    --fs-step-desc: 14px;
-    --fs-icon: 28px;
-    --fw-regular: 400;
-    --fw-bold: 700;
-    --fw-extra-bold: 800;
-    --gap-step: 28px;
-    --gap-body: 18px;
-    --padding-wrapper: 96px 0;
-    --padding-eyebrow: 6px 16px;
-    --margin-header: 72px;
-    --margin-eyebrow: 16px;
-    --margin-title: 16px;
-    --radius-pill: 100px;
-    --transition-slow: 0.7s ease;
-    --transition-medium: 0.5s ease;
-
-    padding: var(--padding-wrapper);
+    padding: 96px 0;
     opacity: 0;
     transform: translateY(28px);
-    transition: opacity var(--transition-slow), transform var(--transition-slow);
+    transition: opacity 0.7s ease, transform 0.7s ease;
 }
 
 .wrapper.visible {
-   opacity: 1;
+    opacity: 1;
     transform: translateY(0);
 }
 
 .wrapper.visible .step {
-       opacity: 1;
-       transform: translateY(0);
- }
+    opacity: 1;
+    transform: translateY(0);
+}
 
 .header {
     text-align: center;
-    margin-bottom: var(--margin-header);
+    margin-bottom: 72px;
 }
 
 .eyebrow {
     display: inline-block;
-    font-size: var(--fs-eyebrow);
-    font-weight: var(--fw-bold);
+    font-size: 10px;
+    font-weight: 700;
     letter-spacing: 0.2em;
     text-transform: uppercase;
     color: var(--color-primary);
-    margin-bottom: var(--margin-eyebrow);
-    padding: var(--padding-eyebrow);
+    margin-bottom: 16px;
+    padding: 6px 16px;
     border: 1px solid rgba(16, 185, 129, 0.3);
-    border-radius: var(--radius-pill);
+    border-radius: 100px;
 }
 
 .title {
-    font-size: clamp(var(--fs-title-min), 4vw, var(--fs-title-max));
-    font-weight: var(--fw-extra-bold);
+    font-size: clamp(28px, 4vw, 48px);
+    font-weight: 800;
     letter-spacing: -0.03em;
     color: var(--color-text);
-    margin: 0 0 var(--margin-title);
+    margin: 0 0 16px;
 }
 
 .subtitle {
-    font-size: var(--fs-subtitle);
-    font-weight: var(--fw-regular);
+    font-size: 16px;
     line-height: 1.7;
     color: var(--color-text-secondary);
     max-width: 480px;
@@ -74,20 +50,19 @@
 }
 
 .steps {
-    max-width: 640px;
+    max-width: 600px;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
-    gap: 0;
 }
 
 .step {
     display: flex;
-    gap: var(--gap-step);
+    gap: 24px;
     align-items: flex-start;
     opacity: 0;
     transform: translateY(16px);
-    transition: opacity var(--transition-medium), transform var(--transition-medium);
+    transition: opacity 0.5s ease, transform 0.5s ease;
 }
 
 .stepLeft {
@@ -95,62 +70,66 @@
     flex-direction: column;
     align-items: center;
     flex-shrink: 0;
+    width: 48px;
 }
 
-.stepNumber {
+.circle {
     width: 48px;
     height: 48px;
     border-radius: 50%;
-    background: var(--color-bg-success);
-    border: 2px solid var(--primary);
-    color: var(--primary);
-    font-size: var(--fs-step-number);
-    font-weight: var(--fw-extra-bold);
+    border: 1px solid var(--color-border);
+    background: var(--color-bg);
     display: flex;
     align-items: center;
     justify-content: center;
-    letter-spacing: -0.02em;
+    color: var(--color-text-secondary);
     flex-shrink: 0;
+    transition: border-color 0.2s, color 0.2s;
 }
 
-.connector {
-    width: 2px;
+.step:hover .circle {
+    border-color: var(--color-border-light);
+    color: var(--color-text);
+}
+
+.line {
+    width: 1px;
     flex: 1;
-    min-height: 40px;
-    background: linear-gradient(to bottom, var(--color-primary), var(--color-border));
-    margin: 6px 0;
+    min-height: 48px;
+    background: var(--color-border);
+    margin: 5px 0;
 }
 
-.stepBody {
-    display: flex;
-    align-items: flex-start;
-    gap: var(--gap-body);
-    padding-bottom: 48px;
+.body {
+    flex: 1;
+    padding-bottom: 44px;
 }
 
-.step:last-child .stepBody {
+.step:last-child .body {
     padding-bottom: 0;
 }
 
-.stepIcon {
-    font-size: var(--fs-icon);
-    line-height: 1;
-    margin-top: 8px;
-    flex-shrink: 0;
+.number {
+    display: block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    color: var(--color-text-tertiary);
+    margin-bottom: 5px;
+    padding-top: 12px;
 }
 
 .stepTitle {
-    font-size: var(--fs-step-title);
-    font-weight: var(--fw-bold);
+    font-size: 16px;
+    font-weight: 700;
     letter-spacing: -0.015em;
     color: var(--color-text);
-    margin: 6px 0 8px;
+    margin: 0 0 7px;
 }
 
 .stepDesc {
-    font-size: var(--fs-step-desc);
-    font-weight: var(--fw-regular);
-    line-height: 1.7;
+    font-size: 13.5px;
+    line-height: 1.75;
     color: var(--color-text-secondary);
     margin: 0;
 }
