@@ -5,6 +5,9 @@ namespace FinanceCore.Application.Features.SavingGoals.commands.delete
 {
     public class DeleteSavingsGoalValidator : AbstractValidator<DeleteSavingsGoalCommand>
     {
-        public DeleteSavingsGoalValidator() { }
+        public DeleteSavingsGoalValidator() {
+            RuleFor(x => x.Id).NotEmpty();
+            RuleFor(x => x.userId).NotEmpty();
+        }
     }
 }

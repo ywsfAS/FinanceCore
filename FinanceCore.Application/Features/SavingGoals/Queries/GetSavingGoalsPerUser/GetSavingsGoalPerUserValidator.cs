@@ -9,6 +9,8 @@ namespace FinanceCore.Application.Features.SavingGoals.Queries.GetSavingGoalsPer
 {
     public class GetSavingsGoalPerUserValidator : AbstractValidator<GetSavingsGoalPerUserQuery>
     {
-        public GetSavingsGoalPerUserValidator() { }
+        public GetSavingsGoalPerUserValidator() {
+            RuleFor(x => x.userId).NotEmpty();
+        }
     }
 }

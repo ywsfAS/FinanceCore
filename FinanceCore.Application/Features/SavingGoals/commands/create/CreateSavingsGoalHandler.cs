@@ -29,7 +29,7 @@ namespace FinanceCore.Application.Features.Goals.Commands.Create
                 null,
                 command.UserId,
                 command.Name,
-                new Money(command.TargetAmount),
+                new Money(command.TargetAmount,command.Currency),
                 command.TargetDate,
                 command.Description
             );
@@ -45,6 +45,7 @@ namespace FinanceCore.Application.Features.Goals.Commands.Create
                 goal.Description,
                 goal.TargetAmount.Amount,
                 goal.CurrentAmount.Amount,
+                goal.TargetAmount.Currency,
                 goal.TargetDate,
                 goal.Status,
                 goal.CreatedAt,

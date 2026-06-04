@@ -10,6 +10,7 @@ namespace FinanceCore.Application.Features.Goals.Commands.Create
         Guid UserId,
         string Name,
         decimal TargetAmount,
+        EnCurrency Currency,
         DateTime? TargetDate = null,
         string? Description = null
     ) : IRequest<SavingsGoalDto>;

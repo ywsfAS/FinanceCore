@@ -19,7 +19,7 @@ namespace FinanceCore.Application.Features.SavingGoals.Queries.GetSavingGoalsPer
         public async Task<IEnumerable<SavingsGoalDto>> Handle(GetSavingsGoalPerUserQuery query , CancellationToken token)
         {
             var goals = await _savingGoalRepository.GetByUserIdAsync(query.userId);
-            var result = goals.Select((goal) => new SavingsGoalDto(goal.Id, goal.UserId, goal.Name, goal.Description, goal.TargetAmount, goal.CurrentAmount, goal.TargetDate, goal.Status, goal.CreatedAt, goal.UpdatedAt, goal.CompletedAt));
+            var result = goals.Select((goal) => new SavingsGoalDto(goal.Id, goal.UserId, goal.Name, goal.Description, goal.TargetAmount.Amount, goal.CurrentAmount.Amount,goal.TargetAmount.Currency, goal.TargetDate, goal.Status, goal.CreatedAt, goal.UpdatedAt, goal.CompletedAt));
             return result;
         }
     }

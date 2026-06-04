@@ -1,5 +1,6 @@
 using FinanceCore.Application.Abstractions;
 using FinanceCore.Application.Events;
+using FinanceCore.Domain.Exceptions;
 using FinanceCore.Domain.Goals;
 using MediatR;
 using System;
@@ -22,8 +23,8 @@ namespace FinanceCore.Application.Features.Goals.Commands.Delete
         public async Task Handle(DeleteSavingsGoalCommand command, CancellationToken cancellationToken)
         {
             var goal = await _goalRepository.GetByIdAsync(command.Id);
-            if (goal == null)
-                throw new InvalidOperationException("Savings goal not found.");
+            if (goal is null)
+                throw new GoalNotFoundException(command.Id);
 
             await _goalRepository.DeleteAsync(command.Id);
 

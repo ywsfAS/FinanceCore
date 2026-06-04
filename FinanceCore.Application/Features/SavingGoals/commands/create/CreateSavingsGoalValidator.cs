@@ -10,6 +10,12 @@ namespace FinanceCore.Application.Features.SavingGoals.commands.create
 {
     public class CreateSavingsGoalValidator : AbstractValidator<CreateSavingsGoalCommand>
     {
-        public CreateSavingsGoalValidator() { }
+        public CreateSavingsGoalValidator() {
+            RuleFor(x => x.Name).NotEmpty();
+            RuleFor(x => x.Currency).IsInEnum();
+            RuleFor(x => x.UserId).NotEmpty();
+            RuleFor(x => x.TargetAmount).NotEmpty().GreaterThan(0);
+        
+        }
     }
 }

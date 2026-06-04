@@ -10,6 +10,7 @@ namespace FinanceCore.Application.DTOs.Goal
         string? Description,
         decimal TargetAmount,
         decimal CurrentAmount,
+        EnCurrency Currency,
         DateTime? TargetDate,
         EnGoalStatus Status,
         DateTime CreatedAt,
