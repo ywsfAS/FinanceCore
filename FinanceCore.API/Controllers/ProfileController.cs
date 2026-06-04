@@ -3,6 +3,8 @@ using FinanceCore.Application.Abstractions;
 using FinanceCore.Application.DTOs;
 using FinanceCore.Application.Features.Profiles.Commands.Create;
 using FinanceCore.Application.Features.Profiles.Commands.Delete;
+using FinanceCore.Application.Features.Profiles.Commands.ProfileImage;
+using FinanceCore.Application.Features.Profiles.Commands.Update;
 using FinanceCore.Application.Features.Profiles.Queries;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -17,11 +19,9 @@ namespace FinanceCore.API.Controllers
     public class ProfileController : ControllerBase
     {
         private readonly IMediator _mediator;
-        private readonly IImageStorage _imageStorage;
-        public ProfileController(IMediator mediator,IImageStorage imageStorage)
+        public ProfileController(IMediator mediator)
         {
             _mediator = mediator;
-            _imageStorage = imageStorage;
         }
         private Guid GetUserId()
         {
@@ -44,33 +44,43 @@ namespace FinanceCore.API.Controllers
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> CreateProfile(createProfileRequest request)
+        public async Task<IActionResult> CreateProfile(CreateProfileRequest request)
         {
             var UserId = GetUserId();
-            var command = new CreateProfileCommand(UserId, request.firstName , request.lastName , request.bio , request.avatarUrl , request.curreny);
+            var command = new CreateProfileCommand(UserId, request.FirstName , request.LastName , request.Bio , request.Currency);
             var profile = await _mediator.Send(command);
             return Ok(profile);
         }
 
-        [HttpPost("profile-image")]
+
+        [HttpPut]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> UpdateProfile(UpdateProfileRequest request)
+        {
+            var UserId = GetUserId();
+            var command = new UpdateProfileCommand(UserId, request.FirstName , request.LastName , request.Bio ,request.Currency);
+            await _mediator.Send(command);
+            return Ok("Profile is Updated!");
+        }
+        [HttpPost("profile-image")]
         public async Task<IActionResult> UploadProfileImage(IFormFile file)
         {
-            var userId = GetUserId();
-            if(file is null || file.Length == 0)
-            {
+            if (file is null || file.Length == 0)
                 return BadRequest("Invalid file");
-            }
+
             using var stream = file.OpenReadStream();
-            var path = await _imageStorage.SaveImage(stream, file.FileName, userId);
 
-            return Ok(new {path});
+            var path = await _mediator.Send(
+                new UploadProfileImageCommand(
+                    GetUserId(),
+                    stream,
+                    file.FileName));
+
+            return Ok(new { path });
         }
-
-
         [HttpDelete]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]

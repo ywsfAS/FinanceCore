@@ -2,5 +2,5 @@ using FinanceCore.Domain.Enums;
 
 namespace FinanceCore.API.Requests.Profile
 {
-    public record createProfileRequest(string firstName, string lastName, string bio, string? avatarUrl, EnCurrency curreny);
+    public record CreateProfileRequest(string FirstName, string LastName, string Bio, EnCurrency Currency);
 }

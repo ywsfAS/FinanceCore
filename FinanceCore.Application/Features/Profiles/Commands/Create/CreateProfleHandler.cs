@@ -6,6 +6,7 @@ using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -20,16 +21,16 @@ namespace FinanceCore.Application.Features.Profiles.Commands.Create
         }
         public async Task<ProfileDto> Handle(CreateProfileCommand command , CancellationToken token)
         {
-            var profile = Profile.Create(command.userId , command.firstName , command.lastName , command.bio , command.avatarUrl , command.curreny );
+            var profile = Profile.Create(command.UserId, command.FirstName, command.LastName, command.Bio, "Not Selected", command.Curreny);
             await _profileRepository.AddAsync(profile,token);
             return new ProfileDto
             {
-                UserId = command.userId,
-                FirstName = command.firstName,
-                LastName = command.lastName,
-                Bio = command.bio,
-                AvatarUrl = command.avatarUrl,
-                Currency = command.curreny,
+                UserId = profile.UserId,
+                FirstName = profile.FirstName,
+                LastName = profile.LastName,
+                Bio = profile.Bio,
+                AvatarUrl = profile.AvatarUrl,
+                Currency = profile.Currency,
             };
 
         }

@@ -59,6 +59,17 @@ namespace FinanceCore.Domain.Exceptions
                 ProvidedAvatar = providedAvatar;
             }
         }
+
+        public class InvalidBioException : DomainException
+        {
+            public string ProvidedBio { get; }
+
+            public InvalidBioException(string bio)
+                : base($"Invalid Bio")
+            {
+                ProvidedBio = bio;
+            }
+        }
         public class UnsupportedCurrencyException : DomainException
         {
             public string ProvidedCurrency { get; }

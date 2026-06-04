@@ -15,21 +15,37 @@ namespace FinanceCore.Infrastructure.Persistence
         public ProfileRepository(IConnectionFactory connectionFactory) { 
             _connectionFactory = connectionFactory;
         }   
-        public async Task<ProfileModel?> GetProfileByUserIdAsync(Guid id)
+        private async Task<ProfileModel?> GetProfileModelByUserIdAsync(Guid id)
         {
             using var connection = _connectionFactory.GetConnection();
             var parameters = new DynamicParameters();
-            var sql = "SELECT * FROM Profiles WHERE UserId = @UserId";
+            var sql = @"SELECT * FROM Profiles WHERE UserId = @UserId";
             parameters.Add("UserId", id);
             var model = await connection.QuerySingleOrDefaultAsync<ProfileModel>(sql,parameters);
             return model;
         }
+        public async Task<Profile?> GetProfileByUserIdAsync(Guid userId)
+        {
+            var profileModel = await GetProfileModelByUserIdAsync(userId);
+            if (profileModel is null) return null;
+            var profile = ProfileMapper.MapToDomain(profileModel);
+            return profile;
+        } 
         public async Task<bool> ExistsAsync(Guid id)
         {
             using var connection = _connectionFactory?.GetConnection();
             var parameters = new DynamicParameters();
             var sql = "SELECT 1 FROM Profiles WHERE Id = @Id";
             parameters.Add("Id",id);
+            var result = await connection.ExecuteScalarAsync<int>(sql,parameters);
+            return result > 0;
+        }
+        public async Task<bool> ExistsByUserIdAsync(Guid userId)
+        {
+            using var connection = _connectionFactory?.GetConnection();
+            var parameters = new DynamicParameters();
+            var sql = "SELECT 1 FROM Profiles WHERE UserId = @Id";
+            parameters.Add("Id",userId);
             var result = await connection.ExecuteScalarAsync<int>(sql,parameters);
             return result > 0;
         }

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace FinanceCore.Application.Features.Profiles.Commands.Create
 {
-    public record CreateProfileCommand(Guid userId, string firstName, string lastName, string bio , string? avatarUrl , EnCurrency curreny) : IRequest<ProfileDto>;
+    public record CreateProfileCommand(Guid UserId, string FirstName, string LastName, string Bio ,EnCurrency Curreny) : IRequest<ProfileDto>;
 
 
     

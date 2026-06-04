@@ -65,11 +65,19 @@ namespace FinanceCore.Domain.Profile
 
             AddDomainEvent(new ProfileAvatarUpdatedEvent(UserId, avatarUrl));
         }
+        public void UpdateBio(string bio)
+        {
+            if (string.IsNullOrWhiteSpace(bio))
+                throw new InvalidBioException(bio);
+            Bio = bio;
+
+            AddDomainEvent(new ProfileBioUpdatedEvent(UserId,Bio));
+        }
 
         public void ChangeCurrency(EnCurrency currency)
         {
 
-            if (Enum.IsDefined(currency))
+            if (!Enum.IsDefined(typeof(EnCurrency),currency))
                 throw new UnsupportedCurrencyException(currency.ToString());
 
             if (Currency == currency)

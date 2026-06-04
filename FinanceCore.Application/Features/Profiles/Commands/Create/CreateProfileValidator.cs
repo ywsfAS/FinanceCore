@@ -10,10 +10,11 @@ namespace FinanceCore.Application.Features.Profiles.Commands.Create
     public class CreateProfileValidator : AbstractValidator<CreateProfileCommand>
     {
         public CreateProfileValidator() {
-            RuleFor(x => x.userId).NotEmpty();
-            RuleFor(x => x.avatarUrl).NotEmpty();
-            RuleFor(x => x.bio).NotEmpty();
-            RuleFor(x => x.curreny).NotEmpty().IsInEnum();
+            RuleFor(x => x.UserId).NotEmpty();
+            RuleFor(x => x.FirstName).NotEmpty();
+            RuleFor(x => x.LastName).NotEmpty();
+            RuleFor(x => x.Bio).NotEmpty();
+            RuleFor(x => x.Curreny).NotEmpty().IsInEnum();
         }
     }
 }
