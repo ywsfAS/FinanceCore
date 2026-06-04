@@ -17,7 +17,7 @@ namespace FinanceCore.Infrastructure.Persistence
             _connectionFactory = connectionFactory;
         }
 
-        public async Task<SavingsGoal?> GetByIdAsync(Guid id)
+        public async Task<SavingsGoal?> GetByIdAsync(Guid id, CancellationToken token)
         {
             using var connection = _connectionFactory.GetConnection();
 
@@ -31,7 +31,7 @@ namespace FinanceCore.Infrastructure.Persistence
         }
 
 
-        public async Task<SavingsGoal?> GetByIdAndUserIdAsync(Guid userId,Guid id)
+        public async Task<SavingsGoal?> GetByIdAndUserIdAsync(Guid userId,Guid id, CancellationToken token)
         {
             using var connection = _connectionFactory.GetConnection();
 
@@ -44,7 +44,7 @@ namespace FinanceCore.Infrastructure.Persistence
             return model == null ? null : SavingsGoalMapper.MapToDomain(model);
         }
 
-        public async Task<IEnumerable<SavingsGoal>> GetByUserIdAsync(Guid userId)
+        public async Task<IEnumerable<SavingsGoal>> GetByUserIdAsync(Guid userId, CancellationToken token)
         {
             using var connection = _connectionFactory.GetConnection();
 
@@ -57,7 +57,7 @@ namespace FinanceCore.Infrastructure.Persistence
             return models.Select(SavingsGoalMapper.MapToDomain);
         }
 
-        public async Task AddAsync(SavingsGoal goal)
+        public async Task AddAsync(SavingsGoal goal , CancellationToken token)
         {
             using var connection = _connectionFactory.GetConnection();
 
@@ -69,8 +69,9 @@ namespace FinanceCore.Infrastructure.Persistence
             Description,
             TargetAmount,
             CurrentAmount,
+            CurrencyId,
             TargetDate,
-            Status,
+            StatusId,
             CreatedAt,
             UpdatedAt,
             CompletedAt
@@ -82,19 +83,19 @@ namespace FinanceCore.Infrastructure.Persistence
             @Description,
             @TargetAmount,
             @CurrentAmount,
+            @CurrencyId,
             @TargetDate,
-            @Status,
+            @StatusId,
             @CreatedAt,
             @UpdatedAt,
             @CompletedAt
             );";
-
             var model = SavingsGoalMapper.MapToModel(goal);
-
-            await connection.ExecuteAsync(sql, model);
+            var command = new CommandDefinition(sql,model, cancellationToken : token);
+            await connection.ExecuteAsync(command);
         }
 
-        public async Task UpdateAsync(SavingsGoal goal)
+        public async Task UpdateAsync(SavingsGoal goal,CancellationToken token)
         {
             using var connection = _connectionFactory.GetConnection();
 
@@ -105,18 +106,19 @@ namespace FinanceCore.Infrastructure.Persistence
             Description = @Description,
             TargetAmount = @TargetAmount,
             CurrentAmount = @CurrentAmount,
+            CurrencyId = @CurrencyId
             TargetDate = @TargetDate,
-            Status = @Status,
+            StatusId = @StatusId,
             UpdatedAt = @UpdatedAt,
             CompletedAt = @CompletedAt
             WHERE Id = @Id;";
 
             var model = SavingsGoalMapper.MapToModel(goal);
-
-            await connection.ExecuteAsync(sql, model);
+            var command = new CommandDefinition(sql,model,cancellationToken: token);
+            await connection.ExecuteAsync(command);
         }
 
-        public async Task DeleteAsync(Guid id)
+        public async Task DeleteAsync(Guid id, CancellationToken token)
         {
             using var connection = _connectionFactory.GetConnection();
 
@@ -125,7 +127,7 @@ namespace FinanceCore.Infrastructure.Persistence
             await connection.ExecuteAsync(sql, new { Id = id });
         }
 
-        public async Task<bool> ExistsAsync(Guid id)
+        public async Task<bool> ExistsAsync(Guid id, CancellationToken token)
         {
             using var connection = _connectionFactory.GetConnection();
 

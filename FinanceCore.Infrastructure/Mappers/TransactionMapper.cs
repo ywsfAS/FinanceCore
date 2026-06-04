@@ -1,4 +1,4 @@
-﻿using FinanceCore.Application.Models;
+using FinanceCore.Application.Models;
 using FinanceCore.Domain.Common;
 using FinanceCore.Domain.Enums;
 using FinanceCore.Domain.Transactions;
@@ -14,7 +14,7 @@ namespace FinanceCore.Infrastructure.Mappers
     public static Transaction MapToDomain(TransactionModel model)
         {
 
-            return Transaction.Create(model.Id, model.AccountId, model.ToAccountId,new Money(model.Amount), model.CategoryId ,model.Type, model.Date, model.Description, model.CreatedAt,model.UpdatedAt);
+            return Transaction.Load(model.Id, model.AccountId, model.ToAccountId,new Money(model.Amount), model.CategoryId ,model.Type, model.Date, model.Description, model.CreatedAt,model.UpdatedAt);
 
         }
     }

@@ -19,8 +19,8 @@ namespace FinanceCore.Application.Models
         public decimal CurrentAmount { get; set; }
 
         public DateTime? TargetDate { get; set; }
-
-        public EnGoalStatus Status { get; set; }
+        public byte CurrencyId { get; set; }
+        public byte StatusId { get; set; }
 
         public DateTime CreatedAt { get; set; }
         public DateTime? UpdatedAt { get; set; }

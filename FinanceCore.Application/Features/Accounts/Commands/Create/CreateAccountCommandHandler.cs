@@ -1,4 +1,4 @@
-﻿using FinanceCore.Application.Abstractions;
+using FinanceCore.Application.Abstractions;
 using FinanceCore.Application.DTOs;
 using FinanceCore.Application.Events;
 using FinanceCore.Domain.Accounts;
@@ -28,14 +28,13 @@ namespace FinanceCore.Application.Features.Accounts.Commands.Create
                 command.UserId,
                 command.Name,
                 command.Type,
-                command.Currency,
                 command.InitialBalance);
 
             await _accountRepository.AddAsync(account, cancellationToken);
 
             await DomainEventDispatcher.DispatchAsync(_eventBus,account, cancellationToken);
   
-            return new AccountDto(account.Id,account.UserId,account.Name,account.Type,account.Balance,account.Currency,account.CreatedAt);
+            return new AccountDto(account.Id,account.UserId,account.Name,account.Type,account.Balance.Amount,account.Balance.Currency,account.CreatedAt);
         }
     }
 }

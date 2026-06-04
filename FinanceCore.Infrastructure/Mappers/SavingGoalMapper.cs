@@ -17,35 +17,33 @@ namespace FinanceCore.Infrastructure.Mappers
                 Description = domain.Description,
                 TargetAmount = domain.TargetAmount.Amount,
                 CurrentAmount = domain.CurrentAmount.Amount,
+                CurrencyId = (byte)domain.TargetAmount.Currency,
                 TargetDate = domain.TargetDate,
-                Status = domain.Status,
+                StatusId = (byte)domain.Status,
                 CreatedAt = domain.CreatedAt,
                 UpdatedAt = domain.UpdatedAt,
                 CompletedAt = domain.CompletedAt
             };
         }
-
-        public static SavingsGoal MapToDomain(SavingsGoalModel model)
+        public static SavingsGoal MapToDomain(
+    SavingsGoalModel model)
         {
-            var goal = SavingsGoal.Create(
+            return SavingsGoal.Load(
                 model.Id,
                 model.UserId,
                 model.Name,
-                new Money(model.TargetAmount),
+                model.Description,
+                new Money(
+                    model.TargetAmount,
+                    (EnCurrency)model.CurrencyId),
+                new Money(
+                    model.CurrentAmount,
+                    (EnCurrency)model.CurrencyId),
                 model.TargetDate,
-                model.Description
-            );
-            if (model.CurrentAmount > 0)
-            {
-                goal.AddContribution(new Money(model.CurrentAmount));
-            }
-
-            if (model.Status == EnGoalStatus.Completed)
-            {
-                goal.AddContribution(new Money(0));  
-            }
-
-            return goal;
+                (EnGoalStatus)model.StatusId,
+                model.CreatedAt,
+                model.UpdatedAt,
+                model.CompletedAt);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using FinanceCore.Application.Abstractions;
+using FinanceCore.Application.Abstractions;
 using FinanceCore.Application.DTOs;
 using MediatR;
 using FinanceCore.Domain.Exceptions;
@@ -34,11 +34,11 @@ namespace FinanceCore.Application.Features.Budgets.Queries.GetBudgetProgress
                 budget.EndDate,
                 (byte)EnTransactionType.Expense
             );
-            var remaining = budget.Amount - spent;
-            var percentageUsed = (spent / budget.Amount) * 100;
-            var isExceeded = spent > budget.Amount;
+            var remaining = budget.Amount.Amount - spent;
+            var percentageUsed = (spent / budget.Amount.Amount) * 100;
+            var isExceeded = spent > budget.Amount.Amount;
 
-            return new BudgetProgressDto(budget.Amount, spent, remaining, percentageUsed, isExceeded);
+            return new BudgetProgressDto(budget.Amount.Amount, spent, remaining, percentageUsed, isExceeded);
 
         }
     }

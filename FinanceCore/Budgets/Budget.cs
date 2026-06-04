@@ -11,7 +11,6 @@ namespace FinanceCore.Domain.Budgets
         public Guid UserId { get; private set; }
         public Guid CategoryId { get; private set; }
         public string Name { get; private set; } = string.Empty;
-        public EnCurrency Currency { get; private set; }
         public Money Amount { get; private set; }
         public EnPeriod Period { get; private set; }
         public DateTime StartDate { get; private set; }
@@ -26,7 +25,6 @@ namespace FinanceCore.Domain.Budgets
             Guid userId,
             Guid categoryId,
             string name,
-            EnCurrency currency,
             Money amount,
             EnPeriod period,
             DateTime startDate,
@@ -38,7 +36,6 @@ namespace FinanceCore.Domain.Budgets
             UserId = userId;
             CategoryId = categoryId;
             Name = name;
-            Currency = currency;
             Amount = amount;
             Period = period;
             StartDate = startDate;
@@ -62,8 +59,8 @@ namespace FinanceCore.Domain.Budgets
             DateTime? updatedAt = null)
         {
             return new Budget(
-                budgetId, userId, categoryId, name, currency,
-                new Money(amount), period, startDate, endDate, createdAt, updatedAt);
+                budgetId, userId, categoryId, name,
+                new Money(amount,currency), period, startDate, endDate, createdAt, updatedAt);
         }
 
         // Create new budget
@@ -71,8 +68,7 @@ namespace FinanceCore.Domain.Budgets
             Guid userId,
             Guid categoryId,
             string name,
-            EnCurrency currency,
-            decimal amount,
+            Money amount,
             EnPeriod period,
             DateTime startDate)
         {
@@ -91,7 +87,7 @@ namespace FinanceCore.Domain.Budgets
             if (name.Length < 2)
                 throw new InvalidBudgetNameException(name, "Budget name must be at least 2 characters");
 
-            if (amount <= 0)
+            if (amount.IsLessOrEqual(Money.Zero(amount.Currency)))
                 throw new InvalidBudgetAmountException(amount);
 
             if (!Enum.IsDefined(typeof(EnPeriod), period))
@@ -109,8 +105,7 @@ namespace FinanceCore.Domain.Budgets
                 UserId = userId,
                 CategoryId = categoryId,
                 Name = name.Trim(),
-                Currency = currency,
-                Amount = new Money(amount),
+                Amount = amount,
                 Period = period,
                 StartDate = startDate,
                 EndDate = endDate,
@@ -121,7 +116,7 @@ namespace FinanceCore.Domain.Budgets
                 budget.Id,
                 budget.UserId,
                 budget.CategoryId,
-                budget.Amount.Amount,
+                budget.Amount,
                 budget.Period));
 
             return budget;
@@ -130,13 +125,13 @@ namespace FinanceCore.Domain.Budgets
         public void UpdateAmount(Money newAmount)
         {
             if (newAmount.Amount <= 0)
-                throw new InvalidBudgetAmountException(newAmount.Amount);
+                throw new InvalidBudgetAmountException(newAmount);
 
             var oldAmount = Amount;
             Amount = newAmount;
             UpdatedAt = DateTime.UtcNow;
 
-            AddDomainEvent(new BudgetAmountUpdatedEvent(Id, oldAmount.Amount, newAmount.Amount));
+            AddDomainEvent(new BudgetAmountUpdatedEvent(Id, oldAmount, newAmount));
         }
 
         public void UpdateName(string newName)

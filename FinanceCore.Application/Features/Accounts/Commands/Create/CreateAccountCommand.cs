@@ -1,4 +1,5 @@
-﻿using FinanceCore.Application.DTOs;
+using FinanceCore.Application.DTOs;
+using FinanceCore.Domain.Common;
 using FinanceCore.Domain.Enums;
 using MediatR;
 using System;
@@ -13,7 +14,6 @@ namespace FinanceCore.Application.Features.Accounts.Commands.Create
         Guid UserId,
         string Name,
         EnAccountType Type,
-        EnCurrency Currency,
-        decimal InitialBalance = 0) : IRequest<AccountDto>;
+        Money InitialBalance) : IRequest<AccountDto>;
 
 }

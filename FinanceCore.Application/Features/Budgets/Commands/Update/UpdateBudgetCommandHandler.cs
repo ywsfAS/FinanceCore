@@ -1,4 +1,4 @@
-﻿using FinanceCore.Application.Abstractions;
+using FinanceCore.Application.Abstractions;
 using FinanceCore.Domain.Common;
 using MediatR;
 using FinanceCore.Domain.Exceptions;
@@ -20,7 +20,7 @@ namespace FinanceCore.Application.Features.Budgets.Commands.Update
             if (budget is null)
                 throw new BudgetNotFoundException(command.Id);
 
-            budget.UpdateAmount(new Money(command.Amount));
+            budget.UpdateAmount(command.Amount);
             budget.UpdateName(command.Name);
             budget.ExtendPeriod(command.Period);
    

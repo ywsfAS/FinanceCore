@@ -1,4 +1,4 @@
-﻿using FinanceCore.Domain.Common;
+using FinanceCore.Domain.Common;
 using FinanceCore.Domain.Enums;
 using FinanceCore.Domain.Events.Transaction;
 using FinanceCore.Domain.Exceptions;
@@ -46,11 +46,11 @@ namespace FinanceCore.Domain.Transactions
         }
 
         // Reconstitute from persistence
-        public static Transaction Create(
+        public static Transaction Load(
             Guid transactionId,
             Guid accountId,
             Guid? toAccountId,
-            decimal amount,
+            Money amount,
             Guid? categoryId,
             EnTransactionType type,
             DateTime date,
@@ -60,7 +60,7 @@ namespace FinanceCore.Domain.Transactions
         {
             return new Transaction(
                 transactionId, accountId, toAccountId,
-                new Money(amount), categoryId, type,
+                amount, categoryId, type,
                 date, description, createdAt, updatedAt);
         }
 
@@ -68,7 +68,7 @@ namespace FinanceCore.Domain.Transactions
         public static Transaction Create(
             Guid accountId,
             Guid? toAccountId,
-            decimal amount,
+            Money amount,
             Guid? categoryId,
             EnTransactionType type,
             DateTime? date = null,
@@ -89,7 +89,7 @@ namespace FinanceCore.Domain.Transactions
             if (categoryId == Guid.Empty)
                 throw new InvalidTransactionCategoryException();
 
-            if (amount <= 0)
+            if (amount.IsLessOrEqual(Money.Zero(amount.Currency)))
                 throw new InvalidTransactionAmountException(amount);
 
             var transactionDate = date ?? DateTime.UtcNow;
@@ -105,7 +105,7 @@ namespace FinanceCore.Domain.Transactions
                 Id = Guid.NewGuid(),
                 AccountId = accountId,
                 ToAccountId = toAccountId,
-                Amount = new Money(amount),
+                Amount = amount,
                 CategoryId = categoryId,
                 Type = type,
                 Date = transactionDate,
@@ -117,7 +117,7 @@ namespace FinanceCore.Domain.Transactions
                 transaction.Id,
                 transaction.AccountId,
                 transaction.ToAccountId,
-                transaction.Amount.Amount,
+                transaction.Amount,
                 transaction.Type,
                 transaction.Date));
 
@@ -125,29 +125,34 @@ namespace FinanceCore.Domain.Transactions
         }
 
         public void Update(
-            decimal? amount = null,
+            Money? amount = null,
             Guid? categoryId = null,
             DateTime? date = null,
             string? description = null)
         {
             var hasChanges = false;
-
-            if (amount.HasValue && amount.Value != Amount.Amount)
+            if (amount is not null && !amount.Equals(Amount))
             {
-                if (amount.Value <= 0)
-                    throw new InvalidTransactionAmountException(amount.Value);
+                if (amount.IsLessOrEqual(Money.Zero(amount.Currency)))
+                    throw new InvalidTransactionAmountException(amount);
 
                 var oldAmount = Amount;
-                Amount = new Money(amount.Value);
+
+                Amount = amount;
+
                 hasChanges = true;
 
-                AddDomainEvent(new TransactionAmountChangedEvent(
-                    Id, AccountId, oldAmount.Amount, Amount.Amount));
+                AddDomainEvent(
+                    new TransactionAmountChangedEvent(
+                        Id,
+                        AccountId,
+                        oldAmount,
+                        Amount));
             }
 
             if (categoryId.HasValue && categoryId.Value != CategoryId)
             {
-                if (categoryId.Value == Guid.Empty)
+                if ( categoryId.HasValue &&categoryId.Value == Guid.Empty)
                     throw new InvalidTransactionCategoryException(categoryId.Value, "Category ID cannot be empty");
 
                 var oldCategoryId = CategoryId;

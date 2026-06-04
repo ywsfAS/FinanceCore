@@ -59,6 +59,34 @@ public class SavingsGoal : AggregateRoot
 
         return goal;
     }
+    public static SavingsGoal Load(
+    Guid id,
+    Guid userId,
+    string name,
+    string? description,
+    Money targetAmount,
+    Money currentAmount,
+    DateTime? targetDate,
+    EnGoalStatus status,
+    DateTime createdAt,
+    DateTime? updatedAt,
+    DateTime? completedAt)
+    {
+        return new SavingsGoal
+        {
+            Id = id,
+            UserId = userId,
+            Name = name,
+            Description = description,
+            TargetAmount = targetAmount,
+            CurrentAmount = currentAmount,
+            TargetDate = targetDate,
+            Status = status,
+            CreatedAt = createdAt,
+            UpdatedAt = updatedAt,
+            CompletedAt = completedAt
+        };
+    }
     public void UpdateDetails(string name, Money targetAmount, DateTime? targetDate, string? description)
     {
 

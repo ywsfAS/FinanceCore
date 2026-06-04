@@ -47,8 +47,8 @@ namespace FinanceCore.Domain.Exceptions
     {
         public decimal Amount { get; }
 
-        public InvalidBudgetAmountException(decimal amount)
-            : base($"Invalid budget amount: {amount}. Amount must be positive.")
+        public InvalidBudgetAmountException(Money amount)
+            : base($"Invalid budget amount: {amount.Amount}{amount.Currency}. Amount must be positive.")
         {
             Amount = amount;
         }

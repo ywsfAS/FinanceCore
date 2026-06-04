@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,12 +20,6 @@ namespace FinanceCore.Application.Features.Accounts.Commands.Create
 
             RuleFor(x => x.Type)
                 .IsInEnum();
-
-            RuleFor(x => x.Currency)
-                .IsInEnum();
-
-            RuleFor(x => x.InitialBalance)
-                .GreaterThanOrEqualTo(0);
         }
     }
 

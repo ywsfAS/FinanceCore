@@ -1,4 +1,5 @@
-﻿using FinanceCore.Application.DTOs.Transaction;
+using FinanceCore.Application.DTOs.Transaction;
+using FinanceCore.Domain.Common;
 using FinanceCore.Domain.Enums;
 using MediatR;
 using System;
@@ -9,5 +10,5 @@ using System.Threading.Tasks;
 
 namespace FinanceCore.Application.Features.Transactions.Commands.Transactions
 {
-    public record TransactionCommand(Guid UserId ,Guid AccountId , Guid CategoryId ,EnTransactionType Type,decimal Amount , string? Description , DateTime TransactionDate) : IRequest<CreateTransactionDto>;
+    public record TransactionCommand(Guid UserId ,Guid AccountId , Guid CategoryId ,EnTransactionType Type,Money Amount , string? Description , DateTime TransactionDate) : IRequest<CreateTransactionDto>;
 }

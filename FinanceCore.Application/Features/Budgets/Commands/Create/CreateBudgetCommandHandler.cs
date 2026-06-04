@@ -1,4 +1,4 @@
-﻿using FinanceCore.Application.Abstractions;
+using FinanceCore.Application.Abstractions;
 using FinanceCore.Application.DTOs;
 using FinanceCore.Domain.Budgets;
 using FinanceCore.Domain.Common;
@@ -30,15 +30,14 @@ namespace FinanceCore.Application.Features.Budgets.Commands.Create
                 command.UserId,
                 command.CategoryId,
                 command.name,
-                command.Currency,
-                new Money(command.Amount),
+                command.Amount,
                 command.Period,
                 command.StartDate
                 );
 
             await _budgetRepository.AddAsync(budget, cancellationToken);
 
-            return new BudgetDto(budget.Id,budget.UserId,budget.Name,budget.CategoryId,budget.Amount,budget.Currency,budget.Period,budget.StartDate,budget.EndDate);
+            return new BudgetDto(budget.Id,budget.UserId,budget.Name,budget.CategoryId,budget.Amount.Amount,budget.Amount.Currency,budget.Period,budget.StartDate,budget.EndDate);
            
         }
     }

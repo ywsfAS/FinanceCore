@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,13 +17,6 @@ namespace FinanceCore.Application.Features.Budgets.Commands.Create
 
             RuleFor(x => x.CategoryId)
                 .NotEmpty();
-
-            RuleFor(x => x.Amount)
-                .GreaterThan(0);
-
-            RuleFor(x => x.Currency)
-                .IsInEnum();
-
             RuleFor(x => x.Period)
                 .IsInEnum();
 

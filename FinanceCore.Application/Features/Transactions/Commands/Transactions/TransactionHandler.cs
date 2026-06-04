@@ -1,5 +1,6 @@
-﻿using FinanceCore.Application.Abstractions;
+using FinanceCore.Application.Abstractions;
 using FinanceCore.Application.DTOs.Transaction;
+using FinanceCore.Domain.Common;
 using FinanceCore.Domain.Enums;
 using FinanceCore.Domain.Exceptions;
 using FinanceCore.Domain.Transactions;
@@ -48,7 +49,7 @@ namespace FinanceCore.Application.Features.Transactions.Commands.Transactions
             var isExceeded = spent > budget.Amount;
             if (isExceeded)
             {
-                throw new BudgetExceededException(budget.Id , category.Name , budget.Amount , spent);
+                throw new BudgetExceededException(budget.Id , category.Name , new Money(budget.Amount,budget.Currency) , spent);
             }
             var transaction = Transaction.Create(command.AccountId, null, command.Amount, command.CategoryId,command.Type, DateTime.UtcNow, command.Description);
             if (command.Type == EnTransactionType.Expense)

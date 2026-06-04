@@ -1,4 +1,5 @@
 using FinanceCore.Application.DTOs;
+using FinanceCore.Domain.Common;
 using FinanceCore.Domain.Enums;
 using MediatR;
 using System;
@@ -13,8 +14,7 @@ namespace FinanceCore.Application.Features.Budgets.Commands.Create
         Guid UserId,
         Guid CategoryId,
         string name ,
-        decimal Amount,
-        EnCurrency Currency,
+        Money Amount,
         EnPeriod Period,
         DateTime StartDate
         ) : IRequest<BudgetDto>;

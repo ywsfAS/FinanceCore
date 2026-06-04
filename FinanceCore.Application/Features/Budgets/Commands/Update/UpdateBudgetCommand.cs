@@ -1,3 +1,4 @@
+using FinanceCore.Domain.Common;
 using FinanceCore.Domain.Enums;
 using MediatR;
 using System;
@@ -12,8 +13,7 @@ namespace FinanceCore.Application.Features.Budgets.Commands.Update
         Guid UserId,
         Guid Id,
         string Name,
-        decimal Amount,
-        EnCurrency Currency,
+        Money Amount,
         EnPeriod Period,
         DateTime StartDate
         ) : IRequest;

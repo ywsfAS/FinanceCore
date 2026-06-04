@@ -1,4 +1,4 @@
-﻿using FinanceCore.Domain.Common;
+using FinanceCore.Domain.Common;
 using FinanceCore.Domain.Enums;
 using System;
 using System.Collections.Generic;
@@ -12,6 +12,5 @@ namespace FinanceCore.Domain.Events.Account
         Guid AccountId,
         string Name,
         EnAccountType Type,
-        EnCurrency Currency,
         Money InitialBalance) : DomainEvent;
 }

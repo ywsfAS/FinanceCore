@@ -1,4 +1,4 @@
-﻿using FinanceCore.Domain.Common;
+using FinanceCore.Domain.Common;
 using FinanceCore.Domain.Enums;
 
 
@@ -49,16 +49,16 @@ namespace FinanceCore.Domain.Exceptions
     // When transaction amount is invalid
     public class InvalidTransactionAmountException : DomainException
     {
-        public decimal Amount { get; }
+        public Money Amount { get; }
 
-        public InvalidTransactionAmountException(decimal amount)
-            : base($"Invalid transaction amount: {amount}. Amount must be positive.")
+        public InvalidTransactionAmountException(Money amount)
+            : base($"Invalid transaction amount: {amount.Amount}{amount.Currency}. Amount must be positive.")
         {
             Amount = amount;
         }
 
-        public InvalidTransactionAmountException(decimal amount, string reason)
-            : base($"Invalid transaction amount: {amount}. {reason}")
+        public InvalidTransactionAmountException(Money amount, string reason)
+            : base($"Invalid transaction amount: {amount.Amount}{amount.Currency}. {reason}")
         {
             Amount = amount;
         }

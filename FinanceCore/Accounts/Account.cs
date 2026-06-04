@@ -1,4 +1,4 @@
-﻿using FinanceCore.Domain.Common;
+using FinanceCore.Domain.Common;
 using FinanceCore.Domain.Enums;
 using FinanceCore.Domain.Events.Account;
 using FinanceCore.Domain.Exceptions;
@@ -11,7 +11,6 @@ namespace FinanceCore.Domain.Accounts
         public Guid UserId { get; private set; }
         public string Name { get; private set; } = string.Empty;
         public EnAccountType Type { get; private set; }
-        public EnCurrency Currency { get; private set; }
         public Money Balance { get; private set; }
         public Money InitialBalance { get; private set; }
         public bool IsActive { get; private set; }
@@ -25,7 +24,6 @@ namespace FinanceCore.Domain.Accounts
             Guid userId,
             string name,
             EnAccountType type,
-            EnCurrency currency,
             Money balance,
             Money initialBalance,
             bool isActive,
@@ -36,7 +34,6 @@ namespace FinanceCore.Domain.Accounts
             UserId = userId;
             Name = name;
             Type = type;
-            Currency = currency;
             Balance = balance;
             InitialBalance = initialBalance;
             IsActive = isActive;
@@ -50,14 +47,13 @@ namespace FinanceCore.Domain.Accounts
             Guid userId,
             string name,
             EnAccountType type,
-            EnCurrency currency,
-            decimal balance,
-            decimal initialBalance,
+            Money balance,
+            Money initialBalance,
             bool isActive,
             DateTime createdAt,
             DateTime? updatedAt = null)
         {
-            return new Account(id, userId, name, type, currency, new Money(balance), new Money(initialBalance), isActive, createdAt, updatedAt);
+            return new Account(id, userId, name, type, balance,initialBalance, isActive, createdAt, updatedAt);
         }
 
         // Create new account
@@ -65,8 +61,7 @@ namespace FinanceCore.Domain.Accounts
             Guid userId,
             string name,
             EnAccountType type,
-            EnCurrency currency,
-            decimal initialBalance = 0)
+            Money initialBalance)
         {
             if (string.IsNullOrWhiteSpace(name))
                 throw new InvalidAccountNameException(name, "Account name cannot be empty");
@@ -80,9 +75,8 @@ namespace FinanceCore.Domain.Accounts
                 UserId = userId,
                 Name = name.Trim(),
                 Type = type,
-                Currency = currency,
-                Balance = new Money(initialBalance),
-                InitialBalance = new Money(initialBalance),
+                Balance = initialBalance,
+                InitialBalance = initialBalance,
                 IsActive = true,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = null
@@ -92,8 +86,7 @@ namespace FinanceCore.Domain.Accounts
                 account.Id,
                 account.Name,
                 account.Type,
-                account.Currency,
-                account.Balance.Amount));
+                account.Balance));
 
             return account;
         }
@@ -104,14 +97,14 @@ namespace FinanceCore.Domain.Accounts
                 throw new InactiveAccountException(Id, Name);
 
             if (amount.Amount <= 0)
-                throw new InvalidTransactionAmountException(amount.Amount);
+                throw new InvalidTransactionAmountException(amount);
 
             var previousBalance = Balance;
 
             if (type == EnTransactionType.Expense)
             {
                 if (!HasSufficientBalance(amount))
-                    throw new InsufficientBalanceException(Id, amount.Amount, Balance.Amount);
+                    throw new InsufficientBalanceException(Id, amount, Balance);
 
                 Balance = Balance.Subtract(amount);
             }
@@ -124,10 +117,10 @@ namespace FinanceCore.Domain.Accounts
 
             AddDomainEvent(new AccountBalanceChangedEvent(
                 Id,
-                previousBalance.Amount,
-                Balance.Amount,
+                previousBalance,
+                Balance,
                 type,
-                amount.Amount));
+                amount));
         }
 
         public void UpdateDetails(string? name = null)
@@ -169,13 +162,13 @@ namespace FinanceCore.Domain.Accounts
                 throw new InactiveAccountException(Id, Name);
 
             if (string.IsNullOrWhiteSpace(reason))
-                throw new InvalidBalanceAdjustmentException(Id, Balance.Amount, newBalance.Amount, "Reason is required");
+                throw new InvalidBalanceAdjustmentException(Id, Balance, newBalance, "Reason is required");
 
             var previousBalance = Balance;
             Balance = newBalance;
             UpdatedAt = DateTime.UtcNow;
 
-            AddDomainEvent(new AccountBalanceAdjustedEvent(Id, previousBalance.Amount, newBalance.Amount, reason));
+            AddDomainEvent(new AccountBalanceAdjustedEvent(Id, previousBalance, newBalance, reason));
         }
 
         public void TransferTo(Account targetAccount, Money amount)
@@ -189,20 +182,16 @@ namespace FinanceCore.Domain.Accounts
             if (Id == targetAccount.Id)
                 throw new SelfTransferException(Id);
 
-            if (Currency != targetAccount.Currency)
-                throw new CurrencyMismatchException(Currency, targetAccount.Currency,
-                    "Currency conversion not supported. Both accounts must use the same currency");
-
             if (amount.Amount <= 0)
-                throw new InvalidTransactionAmountException(amount.Amount);
+                throw new InvalidTransactionAmountException(amount);
 
             if (!HasSufficientBalance(amount))
-                throw new InsufficientBalanceException(Id, amount.Amount, Balance.Amount);
+                throw new InsufficientBalanceException(Id, amount, Balance);
 
             ApplyTransaction(amount, EnTransactionType.Expense);
             targetAccount.ApplyTransaction(amount, EnTransactionType.Income);
 
-            AddDomainEvent(new AccountTransferEvent(Id, targetAccount.Id, amount.Amount));
+            AddDomainEvent(new AccountTransferEvent(Id, targetAccount.Id, amount));
         }
 
         public bool HasSufficientBalance(Money amount) => Balance.Amount >= amount.Amount;
