@@ -11,6 +11,7 @@ using FinanceCore.Application.Features.RecurringTransaction.Commands.Update;
 using FinanceCore.Application.Features.RecurringTransactions.commands.Create;
 using FinanceCore.Application.Features.RecurringTransactions.queries.GetRecurringById;
 using FinanceCore.Application.Features.SavingGoals.Queries.GetSavingGoalById;
+using FinanceCore.Domain.Common;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -43,9 +44,9 @@ namespace FinanceCore.API.Controllers
         public async Task<IActionResult> CreateSavingGoal([FromBody] CreateSavingsGoalRequest request)
         {
             var userId = GetUserId();
-            var command = new CreateSavingsGoalCommand(userId,request.Name,request.TargetAmount,request.TargetDate , request.Description);
-            var saving = await _mediator.Send(command);
-            return CreatedAtAction(nameof(GetRecurringByIdQuery), new { id = saving.Id }, saving);
+            var command = new CreateSavingsGoalCommand(userId,request.Name,new Money(request.TargetAmount , request.Currency),request.TargetDate , request.Description);
+            var saving = await _mediator.Send(command); 
+            return CreatedAtAction(nameof(GetSavingGoalById), new { id = saving.Id }, saving);
         }
 
 
@@ -60,7 +61,7 @@ namespace FinanceCore.API.Controllers
         public async Task<IActionResult> UpdateSavingGoal([FromBody] UpdateSavingsGoalRequest request)
         {
             var userId = GetUserId();
-            var command = new UpdateSavingsGoalCommand(userId, request.Id, request.Name, request.TargetAmount, request.TargetDate, request.Description, request.Status);
+            var command = new UpdateSavingsGoalCommand(userId, request.Id, request.Name, new Money(request.TargetAmount,request.Currency), request.TargetDate, request.Description, request.Status);
             await _mediator.Send(command);
             return NoContent();
         }

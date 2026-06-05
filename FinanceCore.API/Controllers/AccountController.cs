@@ -8,6 +8,7 @@ using FinanceCore.Application.Features.Accounts.Queries.GetAccountById;
 using FinanceCore.Application.Features.Accounts.Queries.GetAccountByName;
 using FinanceCore.Application.Features.Accounts.Queries.GetBalanceById;
 using FinanceCore.Application.Features.Transactions.Queries.GetTansactionsByAccountId;
+using FinanceCore.Domain.Common;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -42,7 +43,7 @@ namespace FinanceCore.API.Controllers
         public async Task<IActionResult> CreateAccount([FromBody] CreateAccountRequest request)
         {
             var userId = GetUserId();
-            var command = new CreateAccountCommand(userId,request.Name,request.Type,request.Currency,request.InitialBalance);
+            var command = new CreateAccountCommand(userId,request.Name,request.Type,new Money(request.InitialBalance,request.Currency));
             var account = await _mediator.Send(command);
             return CreatedAtAction(nameof(GetAccountById), new { id = account.Id }, account);
         }

@@ -1,4 +1,4 @@
-﻿using FinanceCore.Application.Models;
+using FinanceCore.Application.Models;
 using FinanceCore.Domain.Budgets;
 using FinanceCore.Domain.Common;
 using FinanceCore.Domain.Enums;
@@ -14,7 +14,7 @@ namespace FinanceCore.Infrastructure.Mappers
         }
         public static Budget MapToDomain(BudgetModel model)
         {
-            return Budget.Create(model.Id, model.UserId, model.CategoryId, model.Name,(EnCurrency)model.CurrencyId, new Money(model.Amount),model.BudgetPeriodId, model.StartDate, model.EndDate,model.CreatedAt,model.UpdatedAt);
+            return Budget.Create(model.Id, model.UserId, model.CategoryId, model.Name, new Money(model.Amount, (EnCurrency)model.CurrencyId),model.BudgetPeriodId, model.StartDate, model.EndDate,model.CreatedAt,model.UpdatedAt);
 
 
         }

@@ -2,6 +2,7 @@ using FinanceCore.Application.Models;
 using FinanceCore.Domain.RecurringTransaction;
 using FinanceCore.Domain.Enums;
 using System;
+using FinanceCore.Domain.Common;
 
 namespace FinanceCore.Infrastructure.Mappers
 {
@@ -14,7 +15,8 @@ namespace FinanceCore.Infrastructure.Mappers
                 Id = domain.Id,
                 AccountId = domain.accountId,
                 CategoryId = domain.categoryId,
-                Amount = domain.amount,
+                Amount = domain.amount.Amount,
+                Currency = (byte)domain.amount.Currency,
                 Description = domain.description,
                 Type = domain.type,
                 StartDate = domain.startDate,
@@ -31,7 +33,7 @@ namespace FinanceCore.Infrastructure.Mappers
             var recurring = RecurringTransaction.Create(
                 model.AccountId,
                 model.CategoryId,
-                model.Amount,
+                new Money(model.Amount,(EnCurrency)model.Currency),
                 model.Description,
                 model.Type,
                 model.StartDate,

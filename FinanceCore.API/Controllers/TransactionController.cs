@@ -1,4 +1,4 @@
-﻿using FinanceCore.API.Requests.Transaction;
+using FinanceCore.API.Requests.Transaction;
 using FinanceCore.Application.DTOs;
 using FinanceCore.Application.DTOs.Transaction;
 using FinanceCore.Application.Features.Transactions.Commands.Delete;
@@ -8,6 +8,7 @@ using FinanceCore.Application.Features.Transactions.Commands.Update;
 using FinanceCore.Application.Features.Transactions.Queries.GetFiltredTransactions;
 using FinanceCore.Application.Features.Transactions.Queries.GetTransactionById;
 using FinanceCore.Application.Features.Users.Queries.GetUserById;
+using FinanceCore.Domain.Common;
 using FinanceCore.Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -44,7 +45,7 @@ namespace FinanceCore.API.Controllers
         public async Task<IActionResult> CreateTransfer([FromBody] CreateTransferRequest request)
         {
             var UserId = GetUserId();
-            var command = new CreateTransferCommand(UserId,request.AccountId,request.ToAccountId,request.Amount,request.Description,request.notes);
+            var command = new CreateTransferCommand(UserId,request.AccountId,request.ToAccountId, new Money(request.Amount , request.Currency),request.Description,request.notes);
             var response = await _mediator.Send(command);
             return CreatedAtAction(nameof(GetTransactionById), new { id = response.CreditTransactionId }, response);
         }
@@ -55,7 +56,7 @@ namespace FinanceCore.API.Controllers
         public async Task<IActionResult> CreateTransaction([FromBody] CreateTransactionRequest request)
         {
             var UserId = GetUserId();
-            var command = new TransactionCommand(UserId, request.AccountId, request.CategoryId, request.Type, request.Amount, request.Description, request.TransactionDate);
+            var command = new TransactionCommand(UserId, request.AccountId, request.CategoryId, request.Type, new Money(request.Amount, request.Currency), request.Description, request.TransactionDate);
             var response = await _mediator.Send(command);
             return CreatedAtAction(nameof(GetTransactionById), new { id = response.Id }, response);
         }

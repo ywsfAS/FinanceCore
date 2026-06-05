@@ -6,6 +6,7 @@ namespace FinanceCore.API.Requests.Savings
     Guid Id,
     string Name,
     decimal TargetAmount,
+    EnCurrency Currency,
     DateTime? TargetDate = null,
     string? Description = null,
     EnGoalStatus Status = EnGoalStatus.Active

@@ -20,15 +20,15 @@ namespace FinanceCore.Application.Features.Goals.Commands.Delete
             _eventBus = eventBus;
         }
 
-        public async Task Handle(DeleteSavingsGoalCommand command, CancellationToken cancellationToken)
+        public async Task Handle(DeleteSavingsGoalCommand command, CancellationToken token)
         {
-            var goal = await _goalRepository.GetByIdAsync(command.Id);
+            var goal = await _goalRepository.GetByIdAsync(command.Id, token);
             if (goal is null)
                 throw new GoalNotFoundException(command.Id);
 
-            await _goalRepository.DeleteAsync(command.Id);
+            await _goalRepository.DeleteAsync(command.Id,token);
 
-            await DomainEventDispatcher.DispatchAsync(_eventBus, goal, cancellationToken);
+            await DomainEventDispatcher.DispatchAsync(_eventBus, goal, token);
 
         }
     }

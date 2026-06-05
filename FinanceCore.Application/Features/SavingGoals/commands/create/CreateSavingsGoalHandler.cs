@@ -23,20 +23,20 @@ namespace FinanceCore.Application.Features.Goals.Commands.Create
             _eventBus = eventBus;
         }
 
-        public async Task<SavingsGoalDto> Handle(CreateSavingsGoalCommand command, CancellationToken cancellationToken)
+        public async Task<SavingsGoalDto> Handle(CreateSavingsGoalCommand command, CancellationToken token)
         {
             var goal = SavingsGoal.Create(
                 null,
                 command.UserId,
                 command.Name,
-                new Money(command.TargetAmount,command.Currency),
+                command.TargetAmount,
                 command.TargetDate,
                 command.Description
             );
 
-            await _goalRepository.AddAsync(goal);
+            await _goalRepository.AddAsync(goal,token);
 
-            await DomainEventDispatcher.DispatchAsync(_eventBus, goal, cancellationToken);
+            await DomainEventDispatcher.DispatchAsync(_eventBus, goal, token);
 
             return new SavingsGoalDto(
                 goal.Id,

@@ -1,4 +1,5 @@
-﻿using FinanceCore.Domain.Common;
+using FinanceCore.Domain.Common;
+using FinanceCore.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -10,5 +11,6 @@ namespace FinanceCore.Domain.Events.User
     public record UserCreatedEvent(
         Guid UserId,
         string Name,
+        EnCurrency Currency,
         string Email) : DomainEvent;
 }

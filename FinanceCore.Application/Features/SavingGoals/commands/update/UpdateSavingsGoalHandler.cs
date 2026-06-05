@@ -2,6 +2,7 @@ using FinanceCore.Application.Abstractions;
 using FinanceCore.Application.DTOs.Goal;
 using FinanceCore.Application.Events;
 using FinanceCore.Domain.Common;
+using FinanceCore.Domain.Exceptions;
 using FinanceCore.Domain.Goals;
 using MediatR;
 using System;
@@ -21,24 +22,22 @@ namespace FinanceCore.Application.Features.Goals.Commands.Update
             _eventBus = eventBus;
         }
 
-        public async Task<SavingsGoalDto> Handle(UpdateSavingsGoalCommand command, CancellationToken cancellationToken)
+        public async Task<SavingsGoalDto> Handle(UpdateSavingsGoalCommand command, CancellationToken token)
         {
-            var goal = await _goalRepository.GetByIdAsync(command.Id);
+            var goal = await _goalRepository.GetByIdAsync(command.Id,token);
             if (goal == null)
-                throw new InvalidOperationException("Savings goal not found.");
-
+                throw new GoalNotFoundException(command.Id);
             // Update domain entity
             goal.UpdateDetails(
                 command.Name,
-                new Money(command.TargetAmount),
+                command.TargetAmount,
                 command.TargetDate,
-                command.Description,
-                command.Status
+                command.Description
             );
 
-            await _goalRepository.UpdateAsync(goal);
+            await _goalRepository.UpdateAsync(goal,token);
 
-            await DomainEventDispatcher.DispatchAsync(_eventBus, goal, cancellationToken);
+            await DomainEventDispatcher.DispatchAsync(_eventBus, goal, token);
 
             return new SavingsGoalDto(
                 goal.Id,
@@ -47,6 +46,7 @@ namespace FinanceCore.Application.Features.Goals.Commands.Update
                 goal.Description,
                 goal.TargetAmount.Amount,
                 goal.CurrentAmount.Amount,
+                goal.TargetAmount.Currency,
                 goal.TargetDate,
                 goal.Status,
                 goal.CreatedAt,

@@ -10,6 +10,7 @@ namespace FinanceCore.Application.DTOs.RecurringTransaction
         public Guid CategoryId { get; set; }
 
         public decimal Amount { get; set; }
+        public EnCurrency Currency { get; set; }
         public string Description { get; set; } = string.Empty;
 
         public EnTransactionType Type { get; set; }

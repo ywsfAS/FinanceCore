@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,8 +14,6 @@ namespace FinanceCore.Application.Features.Transactions.Commands.Transfer
             RuleFor(x => x.accountId)
             .NotEmpty();
             RuleFor(x => x.ToAccountId).NotEmpty();
-            RuleFor(x => x.amount)
-            .NotEmpty().GreaterThan(0);
   
            }
     }

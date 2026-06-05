@@ -1,4 +1,5 @@
 using FinanceCore.Application.DTOs.RecurringTransaction;
+using FinanceCore.Domain.Common;
 using FinanceCore.Domain.Enums;
 using MediatR;
 using System;
@@ -13,7 +14,7 @@ namespace FinanceCore.Application.Features.RecurringTransactions.commands.Create
         Guid userId,
         Guid accountId,
         Guid categoryId,
-        decimal amount,
+        Money amount,
         EnTransactionType type,
         EnPeriod period,
         int interval,

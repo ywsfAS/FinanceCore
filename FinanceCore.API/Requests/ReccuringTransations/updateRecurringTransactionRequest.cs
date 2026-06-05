@@ -7,6 +7,7 @@ namespace FinanceCore.API.Requests.ReccuringTransations
         Guid AccountId,
         Guid CategoryId,
         decimal Amount,
+        EnCurrency Currency,
         EnTransactionType Type,
         EnPeriod Period,
         int Interval,

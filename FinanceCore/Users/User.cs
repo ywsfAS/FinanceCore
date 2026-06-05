@@ -1,4 +1,4 @@
-﻿using FinanceCore.Domain.Common;
+using FinanceCore.Domain.Common;
 using FinanceCore.Domain.Enums;
 using FinanceCore.Domain.Events.User;
 using FinanceCore.Domain.Exceptions;
@@ -91,6 +91,7 @@ namespace FinanceCore.Domain.Users
             user.AddDomainEvent(new UserCreatedEvent(
                 user.Id,
                 user.Name,
+                user.DefaultCurrency,
                 user.Email.Address));
 
             return user;

@@ -9,6 +9,7 @@ using FinanceCore.Application.Features.RecurringTransaction.Commands.Delete;
 using FinanceCore.Application.Features.RecurringTransaction.Commands.Update;
 using FinanceCore.Application.Features.RecurringTransactions.commands.Create;
 using FinanceCore.Application.Features.RecurringTransactions.queries.GetRecurringById;
+using FinanceCore.Domain.Common;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -41,7 +42,7 @@ namespace FinanceCore.API.Controllers
         public async Task<IActionResult> CreateRecurringTransaction([FromBody] CreateRecurringTransactionRequest request)
         {
             var userId = GetUserId();
-            var command = new CreateRecurringCommand(userId, request.accountId, request.categoryId, request.amount, request.type , request.period , request.interval , request.isActive , request.description , request.startDate , request.endDate );
+            var command = new CreateRecurringCommand(userId, request.accountId, request.categoryId, new Money(request.amount,request.currency), request.type , request.period , request.interval , request.isActive , request.description , request.startDate , request.endDate );
             var reccuring = await _mediator.Send(command);
             return CreatedAtAction(nameof(GetRecurringByIdQuery), new { id = reccuring.id}, reccuring);
         }
@@ -57,7 +58,7 @@ namespace FinanceCore.API.Controllers
         public async Task<IActionResult> UpdateRecurringTransaction([FromBody] UpdateRecurringTransactionRequest request)
         {
             var userId = GetUserId();
-            var command = new UpdateRecurringCommand(userId , request.Id , request.AccountId , request.CategoryId , request.Amount , request.Type , request.Period , request.Interval , request.Description , request.StartDate , request.EndDate , request.IsActive);
+            var command = new UpdateRecurringCommand(userId , request.Id , request.AccountId , request.CategoryId , new Money(request.Amount , request.Currency) , request.Type , request.Period , request.Interval , request.Description , request.StartDate , request.EndDate , request.IsActive);
             await _mediator.Send(command);
             return NoContent();
         }

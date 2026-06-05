@@ -2,6 +2,7 @@ using FinanceCore.Domain.Enums;
 using MediatR;
 using FinanceCore.Application.DTOs.RecurringTransaction;
 using System;
+using FinanceCore.Domain.Common;
 
 namespace FinanceCore.Application.Features.RecurringTransaction.Commands.Update
 {
@@ -10,7 +11,7 @@ namespace FinanceCore.Application.Features.RecurringTransaction.Commands.Update
         Guid Id,
         Guid AccountId,
         Guid CategoryId,
-        decimal Amount,
+        Money Amount,
         EnTransactionType Type,
         EnPeriod Period,
         int Interval,

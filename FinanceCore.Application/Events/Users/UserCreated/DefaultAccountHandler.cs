@@ -1,4 +1,4 @@
-﻿using FinanceCore.Application.Abstractions;
+using FinanceCore.Application.Abstractions;
 using FinanceCore.Application.DTOs;
 using FinanceCore.Application.Features.Accounts.Commands.Create;
 using FinanceCore.Domain.Enums;
@@ -10,6 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using FinanceCore.Domain.Accounts;
+using FinanceCore.Domain.Common;
 namespace FinanceCore.Application.Events.Users.UserCreated
 {
     public class DefaultAccountHandler : INotificationHandler<UserCreatedEvent>
@@ -23,13 +24,11 @@ namespace FinanceCore.Application.Events.Users.UserCreated
         }
         public async Task Handle(UserCreatedEvent notification, CancellationToken cancellationToken)
         {
-            var command = new CreateAccountCommand(notification.UserId,"DefaultAccount", EnAccountType.Cash , EnCurrency.USD);
             var account = Account.Create(
-                command.UserId,
-                command.Name,
-                command.Type,
-                command.Currency,
-                command.InitialBalance);
+                notification.UserId,
+                "Default Account",
+                EnAccountType.Cash,
+                Money.Zero(notification.Currency));
 
             await _accountRepository.AddAsync(account, cancellationToken);
 

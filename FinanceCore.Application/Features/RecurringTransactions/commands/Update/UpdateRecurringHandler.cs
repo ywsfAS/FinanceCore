@@ -56,7 +56,8 @@ namespace FinanceCore.Application.Features.RecurringTransaction.Commands.Update
             {
                 AccountId = recurring.accountId,
                 CategoryId = recurring.categoryId,
-                Amount = recurring.amount,
+                Amount = recurring.amount.Amount,
+                Currency = recurring.amount.Currency,
                 Description = recurring.description,
                 Type = recurring.type,
                 StartDate = recurring.startDate,

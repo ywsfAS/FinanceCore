@@ -1,4 +1,4 @@
-﻿using FinanceCore.Domain.Enums;
+using FinanceCore.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +15,7 @@ namespace FinanceCore.Application.Models
         public EnTransactionType Type { get; set; }
         public Guid? CategoryId { get; set; }
         public decimal Amount { get; set; }
+        public EnCurrency Currency { get; set; }
         public DateTime Date { get; set; }
         public string? Description { get; set; }
         public DateTime CreatedAt { get; set; }

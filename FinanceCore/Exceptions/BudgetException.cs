@@ -45,16 +45,10 @@ namespace FinanceCore.Domain.Exceptions
     // When budget amount is invalid
     public class InvalidBudgetAmountException : DomainException
     {
-        public decimal Amount { get; }
+        public Money Amount { get; }
 
         public InvalidBudgetAmountException(Money amount)
             : base($"Invalid budget amount: {amount.Amount}{amount.Currency}. Amount must be positive.")
-        {
-            Amount = amount;
-        }
-
-        public InvalidBudgetAmountException(decimal amount, string reason)
-            : base($"Invalid budget amount: {amount}. {reason}")
         {
             Amount = amount;
         }
@@ -148,10 +142,10 @@ namespace FinanceCore.Domain.Exceptions
         public Guid BudgetId { get; }
         public string CategoryName { get; }
         public Money BudgetAmount { get; }
-        public Money SpentAmount { get; }
+        public decimal SpentAmount { get; }
 
-        public BudgetExceededException(Guid budgetId, string categoryName, Money budgetAmount, Money spentAmount)
-            : base($"Budget '{categoryName}' exceeded. Budget: {budgetAmount.Amount}, Spent: {spentAmount.Amount}")
+        public BudgetExceededException(Guid budgetId, string categoryName, Money budgetAmount, decimal spentAmount)
+            : base($"Budget '{categoryName}' exceeded. Budget: {budgetAmount.Amount}, Spent: {spentAmount}")
         {
             BudgetId = budgetId;
             CategoryName = categoryName;

@@ -11,7 +11,7 @@ namespace FinanceCore.Domain.RecurringTransaction
         public Guid accountId { get; private set; }
         public Guid categoryId { get; private set; }
 
-        public decimal amount { get; private set; }
+        public Money amount { get; private set; }
         public string description { get; private set; } = string.Empty;
 
         public EnTransactionType type { get; private set; }
@@ -27,7 +27,7 @@ namespace FinanceCore.Domain.RecurringTransaction
         public static RecurringTransaction Create(
             Guid accountId,
             Guid categoryId,
-            decimal amount,
+            Money amount,
             string description,
             EnTransactionType type,
             DateTime startDate,
@@ -39,7 +39,7 @@ namespace FinanceCore.Domain.RecurringTransaction
             if (accountId == Guid.Empty)
                 throw new Exception("accountId is required");
 
-            if (amount <= 0)
+            if (amount.IsLessOrEqual(Money.Zero(amount.Currency)))
                 throw new Exception("amount must be greater than zero");
 
             if (interval <= 0)
@@ -71,7 +71,7 @@ namespace FinanceCore.Domain.RecurringTransaction
         public void UpdateDetails(
             Guid accountId,
             Guid categoryId,
-            decimal amount,
+            Money amount,
             string description,
             EnTransactionType type,
             DateTime startDate,
@@ -106,13 +106,13 @@ namespace FinanceCore.Domain.RecurringTransaction
         public void deactivate()
         {
             _setIsActive(false);
-            AddDomainEvent(new desactivateRecurringTransaction(this.Id));
+            AddDomainEvent(new desactivateRecurringTransaction(Id));
         }
 
         public void markAsExecuted(DateTime executionDate)
         {
             LastExecutedDate = executionDate;
-            AddDomainEvent(new RecurringTransactionExecuted(this.Id, accountId, amount, executionDate));
+            AddDomainEvent(new RecurringTransactionExecuted(Id, accountId, amount, executionDate));
         }
 
         public DateTime GetNextExecutionDate(DateTime currentDate)

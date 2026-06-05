@@ -15,6 +15,7 @@ namespace FinanceCore.Application.Models
         public Guid CategoryId { get; set; }
 
         public decimal Amount { get; set; }
+        public byte Currency { get; set; }
         public string Description { get; set; } = string.Empty;
 
         public EnTransactionType Type { get; set; }

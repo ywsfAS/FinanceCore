@@ -50,8 +50,7 @@ namespace FinanceCore.Domain.Budgets
             Guid userId,
             Guid categoryId,
             string name,
-            EnCurrency currency,
-            decimal amount,
+            Money amount,
             EnPeriod period,
             DateTime startDate,
             DateTime endDate,
@@ -60,7 +59,7 @@ namespace FinanceCore.Domain.Budgets
         {
             return new Budget(
                 budgetId, userId, categoryId, name,
-                new Money(amount,currency), period, startDate, endDate, createdAt, updatedAt);
+                amount, period, startDate, endDate, createdAt, updatedAt);
         }
 
         // Create new budget

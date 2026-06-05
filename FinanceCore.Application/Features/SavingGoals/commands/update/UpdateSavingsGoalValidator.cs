@@ -15,7 +15,6 @@ namespace FinanceCore.Application.Features.SavingGoals.commands.update
             RuleFor(x => x.Name).NotEmpty();
             RuleFor(x => x.Status).IsInEnum();
             RuleFor(x => x.UserId).NotEmpty();
-            RuleFor(x => x.TargetAmount).NotEmpty().GreaterThan(0);
             RuleFor(x => x.TargetDate).GreaterThan(DateTime.UtcNow);
         }
     }
