@@ -1,0 +1,31 @@
+using FinanceCore.Application.Abstractions;
+using FinanceCore.Domain.Exceptions;
+using MediatR;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace FinanceCore.Application.Features.SavingGoals.commands.Cancel
+{
+    public class CancelSavingGoalHandler : IRequestHandler<CancelSavingGoalCommand>
+    {
+
+        private readonly ISavingsGoalRepository _savingGoalsRepository;
+        public CancelSavingGoalHandler(ISavingsGoalRepository savingGoalsRepository)
+        {
+            _savingGoalsRepository = savingGoalsRepository;
+        }
+        public async Task Handle(CancelSavingGoalCommand command, CancellationToken token)
+        {
+            var goal = await _savingGoalsRepository.GetByIdAndUserIdAsync(command.Id ,command.UserId,token);
+            if(goal is null)
+            {
+                throw new GoalNotFoundException(command.Id);
+            }
+            goal.Cancel();
+            await _savingGoalsRepository.UpdateAsync(goal,token);
+        }
+    }
+}

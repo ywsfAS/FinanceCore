@@ -1,0 +1,30 @@
+using FinanceCore.Application.Abstractions;
+using MediatR;
+using FinanceCore.Domain.Exceptions;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace FinanceCore.Application.Features.SavingGoals.commands.Pause
+{
+    public class PauseSavingGoalHandler : IRequestHandler<PauseSavingGoalCommand>
+    {
+        private readonly ISavingsGoalRepository _savingGoalsRepository;
+        public PauseSavingGoalHandler(ISavingsGoalRepository savingGoalsRepository)
+        {
+            _savingGoalsRepository = savingGoalsRepository;
+        }
+        public async Task Handle(PauseSavingGoalCommand command, CancellationToken token)
+        {
+            var goal = await _savingGoalsRepository.GetByIdAndUserIdAsync(command.Id ,command.UserId,token);
+            if(goal is null)
+            {
+                throw new GoalNotFoundException(command.Id);
+            }
+            goal.Pause();
+            await _savingGoalsRepository.UpdateAsync(goal,token);
+        }
+    }
+}

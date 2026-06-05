@@ -1,16 +1,15 @@
-using FinanceCore.API.Requests.ReccuringTransations;
 using FinanceCore.API.Requests.Savings;
 using FinanceCore.Application.DTOs;
 using FinanceCore.Application.DTOs.Goal;
-using FinanceCore.Application.DTOs.RecurringTransaction;
 using FinanceCore.Application.Features.Goals.Commands.Create;
 using FinanceCore.Application.Features.Goals.Commands.Delete;
 using FinanceCore.Application.Features.Goals.Commands.Update;
-using FinanceCore.Application.Features.RecurringTransaction.Commands.Delete;
-using FinanceCore.Application.Features.RecurringTransaction.Commands.Update;
-using FinanceCore.Application.Features.RecurringTransactions.commands.Create;
-using FinanceCore.Application.Features.RecurringTransactions.queries.GetRecurringById;
+using FinanceCore.Application.Features.SavingGoals.commands.Cancel;
+using FinanceCore.Application.Features.SavingGoals.commands.Pause;
+using FinanceCore.Application.Features.SavingGoals.commands.Resume;
 using FinanceCore.Application.Features.SavingGoals.Queries.GetSavingGoalById;
+using FinanceCore.Application.Features.SavingGoals.Queries.GetSavingGoalsByStatus;
+using FinanceCore.Application.Features.SavingGoals.Queries.GetSavingGoalsPerUser;
 using FinanceCore.Domain.Common;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -25,14 +24,17 @@ namespace FinanceCore.API.Controllers
     public class SavingGoalsController : ControllerBase
     {
         private readonly IMediator _mediator;
+
         public SavingGoalsController(IMediator mediator)
         {
             _mediator = mediator;
         }
+
         private Guid GetUserId()
         {
             return Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
         }
+
         /// <summary>
         /// Create a new saving Goal
         /// </summary>
@@ -41,14 +43,15 @@ namespace FinanceCore.API.Controllers
         [ProducesResponseType(typeof(SavingsGoalDto), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> CreateSavingGoal([FromBody] CreateSavingsGoalRequest request)
+        public async Task<IActionResult> CreateSavingGoal([FromBody] CreateSavingsGoalRequest request, CancellationToken cancellationToken)
         {
             var userId = GetUserId();
-            var command = new CreateSavingsGoalCommand(userId,request.Name,new Money(request.TargetAmount , request.Currency),request.TargetDate , request.Description);
-            var saving = await _mediator.Send(command); 
+            var command = new CreateSavingsGoalCommand(userId, request.Name, new Money(request.TargetAmount, request.Currency), request.TargetDate, request.Description);
+
+            var saving = await _mediator.Send(command, cancellationToken);
+
             return CreatedAtAction(nameof(GetSavingGoalById), new { id = saving.Id }, saving);
         }
-
 
         /// <summary>
         /// Update an existing saving Goal
@@ -58,42 +61,140 @@ namespace FinanceCore.API.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> UpdateSavingGoal([FromBody] UpdateSavingsGoalRequest request)
+        public async Task<IActionResult> UpdateSavingGoal([FromBody] UpdateSavingsGoalRequest request, CancellationToken cancellationToken)
         {
             var userId = GetUserId();
-            var command = new UpdateSavingsGoalCommand(userId, request.Id, request.Name, new Money(request.TargetAmount,request.Currency), request.TargetDate, request.Description, request.Status);
-            await _mediator.Send(command);
+            var command = new UpdateSavingsGoalCommand(userId, request.Id, request.Name, new Money(request.TargetAmount, request.Currency), request.TargetDate, request.Description, request.Status);
+
+            await _mediator.Send(command, cancellationToken);
+
             return NoContent();
         }
+
         /// <summary>
         /// Delete a saving Goal
         /// </summary>
-        [HttpDelete("{Id}")]
+        [HttpDelete("{id:guid}")] // Enforces Route Guid constraint
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> DeleteSavingGoal(Guid Id)
+        public async Task<IActionResult> DeleteSavingGoal([FromRoute] Guid id, CancellationToken cancellationToken)
         {
             var userId = GetUserId();
-            var command = new DeleteSavingsGoalCommand(userId, Id);
-            await _mediator.Send(command);
+            var command = new DeleteSavingsGoalCommand(userId, id);
+
+            await _mediator.Send(command, cancellationToken);
+
             return NoContent();
         }
+
         /// <summary>
         /// Get saving Goal
         /// </summary>
-        [HttpGet("{id}")]
+        [HttpGet("{id:guid}")]
         [Produces("application/json")]
-        [ProducesResponseType(typeof(SavingsGoalDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(SavingsGoalDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> GetSavingGoalById(Guid id)
+        public async Task<IActionResult> GetSavingGoalById([FromRoute] Guid id, CancellationToken cancellationToken)
         {
             var userId = GetUserId();
             var query = new GetSavingGoalQuery(userId, id);
-            var saving = await _mediator.Send(query);
+
+            var saving = await _mediator.Send(query, cancellationToken);
+
             return Ok(saving);
+        }
+
+        /// <summary>
+        /// Get All saving Goal using pagination
+        /// </summary>
+        [HttpGet]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(IEnumerable<SavingsGoalDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> GetAllSavingGoal([FromQuery] GetAllSavingGoalsRequest request, CancellationToken cancellationToken)
+        {
+            var userId = GetUserId();
+            var query = new GetSavingsGoalPerUserQuery(userId, request.Page, request.PageSize);
+
+            var saving = await _mediator.Send(query, cancellationToken);
+
+            return Ok(saving);
+        }
+
+        /// <summary>
+        /// Get saving Goals by status
+        /// </summary>
+        [HttpGet("status")]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(IEnumerable<SavingsGoalDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> GetSavingGoalsByStatus([FromQuery] GetSavingGoalsByStatusRequest request, CancellationToken cancellationToken)
+        {
+            var userId = GetUserId();
+            var query = new GetSavingGoalByStatusQuery(userId, request.Status, request.Page, request.PageSize);
+
+            var saving = await _mediator.Send(query, cancellationToken);
+
+            return Ok(saving);
+        }
+
+        /// <summary>
+        /// Pause a saving goal
+        /// </summary>
+        [HttpPost("{id:guid}/pause")]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> PauseSavingGoal([FromRoute] Guid id, CancellationToken cancellationToken)
+        {
+            var userId = GetUserId();
+            var command = new PauseSavingGoalCommand(id, userId);
+
+            await _mediator.Send(command, cancellationToken);
+
+            return Ok(new { Message = "Paused successfully" });
+        }
+
+        /// <summary>
+        /// Resume a saving goal
+        /// </summary>
+        [HttpPost("{id:guid}/resume")]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> ResumeSavingGoal([FromRoute] Guid id, CancellationToken cancellationToken)
+        {
+            var userId = GetUserId();
+            var command = new ResumeSavingGoalCommand(id, userId);
+
+            await _mediator.Send(command, cancellationToken);
+
+            return Ok(new { Message = "Resumed successfully" });
+        }
+
+        /// <summary>
+        /// Cancel a saving goal
+        /// </summary>
+        [HttpPost("{id:guid}/cancel")]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> CancelSavingGoal([FromRoute] Guid id, CancellationToken cancellationToken)
+        {
+            var userId = GetUserId();
+            var command = new CancelSavingGoalCommand(id, userId);
+
+            await _mediator.Send(command, cancellationToken);
+
+            return Ok(new { Message = "Cancelled successfully" });
         }
     }
 }

@@ -8,5 +8,5 @@ using System.Threading.Tasks;
 
 namespace FinanceCore.Application.Features.SavingGoals.Queries.GetSavingGoalsPerUser
 {
-    public sealed record GetSavingsGoalPerUserQuery(Guid userId) : IRequest<IEnumerable<SavingsGoalDto>>;
+    public sealed record GetSavingsGoalPerUserQuery(Guid userId , int Page = 1 , int PageSize = 5) : IRequest<IEnumerable<SavingsGoalDto>>;
 }
