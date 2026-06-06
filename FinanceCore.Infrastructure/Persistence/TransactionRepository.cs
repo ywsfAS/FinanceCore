@@ -7,6 +7,7 @@ using FinanceCore.Domain.Enums;
 using FinanceCore.Domain.Transactions;
 using FinanceCore.Infrastructure.context;
 using FinanceCore.Infrastructure.Mappers;
+using System.Text;
 
 namespace FinanceCore.Infrastructure.Repositories
 {
@@ -18,52 +19,36 @@ namespace FinanceCore.Infrastructure.Repositories
         {
             _connectionFactory = connectionFactory;
         }
+
         private async Task<TransactionModel?> GetModelByIdAndUserIdAsync(Guid userId, Guid id, CancellationToken token = default)
         {
             using var connection = _connectionFactory.GetConnection();
-            var sql = @"SELECT
-                t.Id,
-                t.AccountId,
-                t.ToAccountId,
-                t.CategoryId,
-                t.Amount,
-                t.TransactionTypeId,
-                t.Date,
-                t.CreatedAt,
-                t.UpdatedAt,
-                t.Description
-            FROM Transactions t 
-            INNER JOIN Accounts a 
-            ON a.Id = t.AccountId
-            WHERE t.Id = @Id AND a.UserId = @UserId";
 
-            var parameters = new DynamicParameters();
-            parameters.Add("Id", id);
-            parameters.Add("UserId", userId);
-            var model = await connection.QuerySingleOrDefaultAsync<TransactionModel>(sql, parameters);
-            return model;
+            var sql = @"
+                SELECT t.Id, t.AccountId, t.ToAccountId, t.CategoryId,
+                       t.Amount, t.TransactionTypeId, t.Date, t.CreatedAt, t.UpdatedAt, t.Description
+                FROM Transactions t
+                INNER JOIN Accounts a ON a.Id = t.AccountId
+                WHERE t.Id = @Id AND a.UserId = @UserId";
 
+            var cmd = new CommandDefinition(sql, new { Id = id, UserId = userId }, cancellationToken: token);
+            return await connection.QuerySingleOrDefaultAsync<TransactionModel>(cmd);
         }
+
         public async Task<bool> IsExists(Guid userId, Guid id, CancellationToken token)
         {
             using var connection = _connectionFactory.GetConnection();
-            var sql = @"SELECT 1 FROM transactions WHERE UserId = @Id AND Id = @Id";
-            var parameters = new DynamicParameters();
-            parameters.Add("Id", id);
-            parameters.Add("UserId", userId);
-            var result = await connection.ExecuteScalarAsync<int?>(sql, parameters);
+
+            var sql = "SELECT 1 FROM Transactions WHERE Id = @Id AND UserId = @UserId";
+            var cmd = new CommandDefinition(sql, new { Id = id, UserId = userId }, cancellationToken: token);
+            var result = await connection.ExecuteScalarAsync<int?>(cmd);
             return result.HasValue;
         }
+
         public async Task<Transaction?> GetByIdAsync(Guid id, CancellationToken token = default)
         {
-            var model = await _connectionFactory.ReadSingleAsync<TransactionModel, Guid>(
-                "sp_GetTransactionById",
-                id);
-            if (model == null)
-            {
-                return null;
-            }
-            return TransactionMapper.MapToDomain(model);
+            var model = await _connectionFactory.ReadSingleAsync<TransactionModel, Guid>("sp_GetTransactionById", id);
+            return model is null ? null : TransactionMapper.MapToDomain(model);
         }
 
         public async Task<TransactionDto?> GetDtoByIdAndUserId(Guid userId, Guid id, CancellationToken token = default)
@@ -71,269 +56,212 @@ namespace FinanceCore.Infrastructure.Repositories
             var model = await GetModelByIdAndUserIdAsync(userId, id, token);
             if (model is null) return null;
 
-            return new TransactionDto(
-                model.Id,
-                model.AccountId,
-                model.ToAccountId,
-                model.CategoryId,
-                model.Amount,
-                model.Type,
-                model.CreatedAt,
-                model.Description);
+            return new TransactionDto(model.Id, model.AccountId, model.ToAccountId,
+                model.CategoryId, model.Amount, model.Type, model.CreatedAt, model.Description);
         }
 
         public async Task<Transaction?> GetByIdAndUserId(Guid userId, Guid id, CancellationToken token = default)
         {
             var model = await GetModelByIdAndUserIdAsync(userId, id, token);
-            if (model == null) return null;
-
-            return TransactionMapper.MapToDomain(model);
+            return model is null ? null : TransactionMapper.MapToDomain(model);
         }
 
         public async Task<IEnumerable<Transaction>> GetByAccountIdAsync(Guid accountId, CancellationToken token = default)
         {
             var models = await _connectionFactory.ReadListAsync<TransactionModel>(
-                "sp_GetTransactionsByAccountId",
-                new { AccountId = accountId });
-            return models.Select(model => TransactionMapper.MapToDomain(model));
+                "sp_GetTransactionsByAccountId", new { AccountId = accountId });
+            return models.Select(TransactionMapper.MapToDomain);
         }
 
         public async Task AddAsync(Transaction transaction, CancellationToken token = default)
         {
             var model = TransactionMapper.MapToModel(transaction);
-            await _connectionFactory.ExecuteNonQueryAsync(
-                "sp_CreateTransaction",
-                model
-               );
+            await _connectionFactory.ExecuteNonQueryAsync("sp_CreateTransaction", model);
         }
 
         public async Task<CreateTransferDto> TransferAsync(Transaction transaction, CancellationToken token = default)
         {
             var model = TransactionMapper.MapToModel(transaction);
+            var result = await _connectionFactory.QuerySingleAsync<TransferModel>("sp_Transfer", new
+            {
+                SourceAccountId = model.AccountId,
+                DestinationAccountId = model.ToAccountId,
+                Amount = model.Amount,
+                Description = model.Description
+            });
 
-            // Use QuerySingleAsync to get the SP result
-            var result = await _connectionFactory.QuerySingleAsync<TransferModel>(
-                "sp_Transfer",
-                new
-                {
-                    SourceAccountId = model.AccountId,
-                    DestinationAccountId = model.ToAccountId,
-                    Amount = model.Amount,
-                    Description = model.Description
-                }
-            );
-
-            return new CreateTransferDto(result.CreditTransactionId, result.DebitTransactionId, model.AccountId, model.ToAccountId, model.Amount, result.SourceBalance, result.DestinationBalance, result.TransferDate);
+            return new CreateTransferDto(result.CreditTransactionId, result.DebitTransactionId,
+                model.AccountId, model.ToAccountId, model.Amount,
+                result.SourceBalance, result.DestinationBalance, result.TransferDate);
         }
 
         public async Task<CreateTransactionDto> IncomeAsync(Transaction transaction, CancellationToken token = default)
         {
             var model = TransactionMapper.MapToModel(transaction);
-            var result = await _connectionFactory.QuerySingleAsync<TransactionModel>(
-                "sp_CreateIncome",
-                new
-                {
-                    AccountId = model.AccountId,
-                    CategoryId = model.CategoryId,
-                    Amount = model.Amount,
-                    Description = model?.Description,
-                }
-            );
-            return new CreateTransactionDto(result.Id, model.AccountId, result.CategoryId, result.Amount, model.Type, model.Date, result.Description);
+            var result = await _connectionFactory.QuerySingleAsync<TransactionModel>("sp_CreateIncome", new
+            {
+                AccountId = model.AccountId,
+                CategoryId = model.CategoryId,
+                Amount = model.Amount,
+                Description = model.Description
+            });
+            return new CreateTransactionDto(result.Id, model.AccountId, result.CategoryId,
+                result.Amount, model.Type, model.Date, result.Description);
         }
 
         public async Task<CreateTransactionDto> ExpenseAsync(Transaction transaction, CancellationToken token = default)
         {
             var model = TransactionMapper.MapToModel(transaction);
-            var result = await _connectionFactory.QuerySingleAsync<TransactionModel>(
-                "sp_CreateExpense",
-                new
-                {
-                    AccountId = model.AccountId,
-                    CategoryId = model.CategoryId,
-                    Amount = model.Amount,
-                    Description = model?.Description,
-                }
-            );
-            return new CreateTransactionDto(result.Id, model.AccountId, result.CategoryId, result.Amount, model.Type, model.Date, result.Description);
+            var result = await _connectionFactory.QuerySingleAsync<TransactionModel>("sp_CreateExpense", new
+            {
+                AccountId = model.AccountId,
+                CategoryId = model.CategoryId,
+                Amount = model.Amount,
+                Description = model.Description
+            });
+            return new CreateTransactionDto(result.Id, model.AccountId, result.CategoryId,
+                result.Amount, model.Type, model.Date, result.Description);
         }
 
         public async Task UpdateAsync(Transaction transaction, CancellationToken token = default)
         {
             var model = TransactionMapper.MapToModel(transaction);
-            await _connectionFactory.ExecuteNonQueryAsync(
-                "sp_UpdateTransaction",
-                model
-               );
+            await _connectionFactory.ExecuteNonQueryAsync("sp_UpdateTransaction", model);
         }
 
         public async Task DeleteAsync(Guid id, CancellationToken token = default)
         {
-            await _connectionFactory.ExecuteNonQueryAsync(
-                "sp_DeleteTransaction",
-                new { id });
+            await _connectionFactory.ExecuteNonQueryAsync("sp_DeleteTransaction", new { id });
         }
         public async Task<decimal> GetTotalSpentAsync(Guid categoryId, DateTime start, DateTime end, byte type = 2)
         {
-            // Fetch all filtered transactions (paginated internally)
             var transactions = await FetchAllTransactionsAsync(categoryId, start, end, type);
-
-            // Sum amounts
             return transactions.Sum(t => t.Amount);
         }
-        public async Task<ReportModel?> GetMonthlySummary(Guid AccountId, DateTime Start , DateTime End)
+
+        public async Task<ReportModel?> GetMonthlySummary(Guid accountId, DateTime start, DateTime end)
         {
             using var connection = _connectionFactory.GetConnection();
+
             var sql = @"
                 SELECT
-                    SUM(CASE WHEN TransactionType = 'Income' THEN Amount ELSE 0 END) AS TotalIncome,
-                    SUM(CASE WHEN TransactionType = 'Expense' THEN Amount ELSE 0 END) AS TotalExpenses,
+                    SUM(CASE WHEN TransactionTypeId = 1 THEN Amount ELSE 0 END) AS TotalIncome,
+                    SUM(CASE WHEN TransactionTypeId = 2 THEN Amount ELSE 0 END) AS TotalExpenses
                 FROM Transactions
                 WHERE AccountId = @AccountId
-                AND TransactionDate >= @StartDate
-                AND TransactionDate < @EndDate;";
-             return await connection.QueryFirstOrDefaultAsync<ReportModel>(sql, 
-                new { AccountId = AccountId , StartDate = Start , EndDate = End  });
+                  AND Date >= @Start
+                  AND Date < @End";
 
-
+            var cmd = new CommandDefinition(sql, new { AccountId = accountId, Start = start, End = end });
+            return await connection.QueryFirstOrDefaultAsync<ReportModel>(cmd);
         }
+
         public async Task<IEnumerable<TransactionDto>?> GetFiltredTransactionsAsync(
-            Guid? categoryId,
-            DateTime? start,
-            DateTime? end,
-            byte? type,
-            int page,
-            int pageSize)
+            Guid? categoryId, DateTime? start, DateTime? end, byte? type, int page, int pageSize)
         {
-            return await FetchTransactionsPageAsync(null,categoryId, start, end, type, page, pageSize);
+            return await FetchTransactionsPageAsync(null, categoryId, start, end, type, page, pageSize);
         }
-        public async Task<IEnumerable<TransactionDto>?> FetchTransactionsByIdPageAsync(Guid AccountId,int Page , int PageSize)
+
+        public async Task<IEnumerable<TransactionDto>?> FetchTransactionsByIdPageAsync(Guid accountId, int page, int pageSize)
         {
-            return await FetchTransactionsPageAsync(AccountId, null, null, null, null, Page, PageSize);
-        } 
-        private async Task<IEnumerable<TransactionDto>?> FetchTransactionsPageAsync(Guid? AccountId ,Guid? CategoryId , DateTime? Start , DateTime? End ,byte? Type , int Page , int PageSize)
+            return await FetchTransactionsPageAsync(accountId, null, null, null, null, page, pageSize);
+        }
+
+        private async Task<IEnumerable<TransactionDto>> FetchTransactionsPageAsync(
+            Guid? accountId, Guid? categoryId, DateTime? start, DateTime? end, byte? type, int page, int pageSize)
         {
             using var connection = _connectionFactory.GetConnection();
-            var sql = @"SELECT * FROM Transactions WHERE 1 = 1";
 
-            var parameters = new DynamicParameters();
-            if (AccountId.HasValue)
+            var sql = new StringBuilder(@"
+                SELECT Id, AccountId, ToAccountId, CategoryId, Amount,
+                       TransactionTypeId, Date, Description, CreatedAt, UpdatedAt
+                FROM Transactions
+                WHERE 1 = 1");
+
+            if (accountId.HasValue) sql.Append(" AND AccountId    = @AccountId");
+            if (categoryId.HasValue) sql.Append(" AND CategoryId   = @CategoryId");
+            if (start.HasValue) sql.Append(" AND CreatedAt    >= @Start");
+            if (end.HasValue) sql.Append(" AND CreatedAt    <= @End");
+            if (type.HasValue) sql.Append(" AND TransactionTypeId = @Type");
+
+            sql.Append(" ORDER BY CreatedAt OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY");
+
+            var cmd = new CommandDefinition(sql.ToString(), new
             {
-                sql += " AND AccountId = @AccountId";
-                parameters.Add("AccountId", AccountId);
-            }
+                AccountId = accountId,
+                CategoryId = categoryId,
+                Start = start,
+                End = end,
+                Type = type,
+                Offset = (page - 1) * pageSize,
+                PageSize = pageSize
+            });
 
-            if (CategoryId.HasValue)
-            {
-                sql += " AND CategoryId = @CategoryId";
-                parameters.Add("CategoryId", CategoryId);
-            }
-            if (Start.HasValue) {
-                sql += " AND CreatedAt >= @Start";
-                parameters.Add("Start", Start);
-
-
-            }
-            if (End.HasValue) {
-                sql += " AND CreatedAt <= @End";
-                parameters.Add("End", End);
-            
-            }
-            if (Type.HasValue)
-            {
-                sql += " AND TransactionTypeId = @Type";
-                parameters.Add("Type", Type);
-            }
-
-            // Order By CreatedAt
-            sql += " ORDER BY CreatedAt";
-            sql += " OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY";
-
-
-            parameters.Add("Offset", (Page - 1) * PageSize);
-            parameters.Add("PageSize", PageSize);
-
-            var model = await connection.QueryAsync<TransactionModel>(sql, parameters);
-            return model.Select(model => new TransactionDto(model.Id, model.AccountId, model.ToAccountId, model.CategoryId, model.Amount, model.Type, model.CreatedAt, model.Description));
+            var models = await connection.QueryAsync<TransactionModel>(cmd);
+            return models.Select(m => new TransactionDto(
+                m.Id, m.AccountId, m.ToAccountId, m.CategoryId,
+                m.Amount, m.Type, m.CreatedAt, m.Description));
         }
+
         private async Task<IEnumerable<TransactionDto>> FetchAllTransactionsAsync(
-            Guid? categoryId = null,
-            DateTime? start = null,
-            DateTime? end = null,
-            byte? type = null)
+            Guid? categoryId = null, DateTime? start = null, DateTime? end = null, byte? type = null)
         {
-            var allTransactions = new List<TransactionDto>();
+            var all = new List<TransactionDto>();
             int page = 1;
-            const int pageSize = 100; // fetch in batches to avoid loading everything at once
+            const int pageSize = 100;
 
             while (true)
             {
-                var pageTransactions = (await FetchTransactionsPageAsync(null,categoryId, start, end, type, page, pageSize)).ToList();
-                if (!pageTransactions.Any())
-                    break;
-
-                allTransactions.AddRange(pageTransactions);
+                var batch = (await FetchTransactionsPageAsync(null, categoryId, start, end, type, page, pageSize)).ToList();
+                if (!batch.Any()) break;
+                all.AddRange(batch);
                 page++;
             }
 
-            return allTransactions;
+            return all;
         }
+
         public async Task<IEnumerable<SpendingByCategoryDto>> GetSpendingByCategory(
             Guid userId, Guid? accountId, DateTime start, DateTime end)
         {
             using var connection = _connectionFactory.GetConnection();
-            var sql = @"
-            SELECT c.Name AS Category, SUM(t.Amount) AS Amount
-            FROM Transactions t
-            INNER JOIN Categories c ON c.Id = t.CategoryId
-            INNER JOIN Accounts a ON a.Id = t.AccountId
-                 WHERE t.TransactionTypeId = 2
-                 AND a.UserId = @UserId
-                 AND (@AccountId IS NULL OR t.AccountId = @AccountId)
-                 AND t.CreatedAt >= @StartDate
-                 AND t.CreatedAt < @EndDate
-             GROUP BY c.Name
-             ORDER BY Amount DESC";
 
-            return await connection.QueryAsync<SpendingByCategoryDto>(sql, new
-            {
-                UserId = userId,
-                AccountId = accountId,
-                StartDate = start,
-                EndDate = end
-            });
+            var sql = @"
+                SELECT c.Name AS Category, SUM(t.Amount) AS Amount
+                FROM Transactions t
+                INNER JOIN Categories c ON c.Id = t.CategoryId
+                INNER JOIN Accounts   a ON a.Id = t.AccountId
+                WHERE t.TransactionTypeId = 2
+                  AND a.UserId = @UserId
+                  AND (@AccountId IS NULL OR t.AccountId = @AccountId)
+                  AND t.CreatedAt >= @Start
+                  AND t.CreatedAt <  @End
+                GROUP BY c.Name
+                ORDER BY Amount DESC";
+
+            var cmd = new CommandDefinition(sql, new { UserId = userId, AccountId = accountId, Start = start, End = end });
+            return await connection.QueryAsync<SpendingByCategoryDto>(cmd);
         }
+
         public async Task<List<SpendingByCategoryDto>> GetSpendingByCategoryForUser(
             Guid userId, DateTime start, DateTime end)
         {
-            var sql = @"
-            SELECT 
-            c.Name AS CategoryName,
-            SUM(t.Amount) AS Amount
-            FROM Transactions t
-            INNER JOIN Accounts a ON t.AccountId = a.Id
-            INNER JOIN Categories c ON t.CategoryId = c.Id
-            WHERE 
-            a.UserId = @UserId
-            AND t.Date >= @Start
-            AND t.Date < @End
-            AND t.Type = @ExpenseType
-        GROUP BY c.Name
-        ORDER BY Amount DESC;
-            ";
-
             using var connection = _connectionFactory.GetConnection();
 
-            var result = await connection.QueryAsync<SpendingByCategoryDto>(
-                sql,
-                new
-                {
-                    UserId = userId,
-                    Start = start,
-                    End = end,
-                    ExpenseType = EnTransactionType.Expense
-                });
+            var sql = @"
+                SELECT c.Name AS CategoryName, SUM(t.Amount) AS Amount
+                FROM Transactions t
+                INNER JOIN Accounts   a ON t.AccountId  = a.Id
+                INNER JOIN Categories c ON t.CategoryId = c.Id
+                WHERE a.UserId = @UserId
+                  AND t.Date >= @Start
+                  AND t.Date <  @End
+                  AND t.TransactionTypeId = @ExpenseType
+                GROUP BY c.Name
+                ORDER BY Amount DESC";
 
+            var cmd = new CommandDefinition(sql, new { UserId = userId, Start = start, End = end, ExpenseType = (byte)EnTransactionType.Expense });
+            var result = await connection.QueryAsync<SpendingByCategoryDto>(cmd);
             return result.ToList();
         }
     }

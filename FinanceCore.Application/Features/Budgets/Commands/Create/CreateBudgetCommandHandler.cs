@@ -25,7 +25,10 @@ namespace FinanceCore.Application.Features.Budgets.Commands.Create
 
             if (category is null)
                 throw new CategoryNotFoundException(command.CategoryId);
+            if (category.Type != Domain.Enums.CategoryType.Expense)
+                throw new InvalidCategoryTypeException(category.Type); 
 
+          
             var budget = Budget.Create(
                 command.UserId,
                 command.CategoryId,

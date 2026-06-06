@@ -39,7 +39,8 @@ namespace FinanceCore.Application.Features.Transactions.Commands.Transactions
                 throw new CategoryNotFoundException(command.CategoryId);
             }
             // Get Budget
-            var budget = await _budgetRepository.GetByCategoryIdAsync(command.UserId,command.CategoryId,command.TransactionDate , command.TransactionDate);
+            var budget = await _budgetRepository.GetByCategoryIdAsync(command.UserId,command.CategoryId,command.TransactionDate , command.TransactionDate,token);
+
             var spent = await _transactionRepository.GetTotalSpentAsync(
                 budget.CategoryId,
                 budget.StartDate,

@@ -178,6 +178,7 @@ namespace FinanceCore.Domain.Budgets
         {
             return period switch
             {
+                EnPeriod.Daily => startDate.AddDays(1).AddSeconds(-1),
                 EnPeriod.Weekly => startDate.AddDays(7).AddSeconds(-1),
                 EnPeriod.Monthly => startDate.AddMonths(1).AddSeconds(-1),
                 EnPeriod.Quarterly => startDate.AddMonths(3).AddSeconds(-1),

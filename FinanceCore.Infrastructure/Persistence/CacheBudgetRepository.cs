@@ -1,4 +1,4 @@
-﻿using FinanceCore.Application.Abstractions;
+using FinanceCore.Application.Abstractions;
 using FinanceCore.Application.DTOs;
 using FinanceCore.Domain.Budgets;
 using FinanceCore.Infrastructure.Repositories;
@@ -33,13 +33,13 @@ namespace FinanceCore.Infrastructure.Persistence
 
 
         }
-        public Task<BudgetDto?> GetByCategoryIdAsync(Guid userId, Guid categoryId, DateTime start, DateTime end)
+        public Task<BudgetDto?> GetByCategoryIdAsync(Guid userId, Guid categoryId, DateTime start, DateTime end, CancellationToken token)
         {
             string key = $"Budget_Category_{userId}_{categoryId}_{start:yyyyMMdd}_{end:yyyyMMdd}";
             return _memoryCache.GetOrCreateAsync(key, async entry =>
             {
                 entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
-                return await _budgetRepository.GetByCategoryIdAsync(userId,categoryId,start,end);
+                return await _budgetRepository.GetByCategoryIdAsync(userId,categoryId,start,end,token);
             });
 
 
