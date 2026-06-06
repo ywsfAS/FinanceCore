@@ -1,4 +1,4 @@
-﻿using FinanceCore.Application.Abstractions;
+using FinanceCore.Application.Abstractions;
 using FinanceCore.Domain.Users;
 using FinanceCore.Domain.Exceptions;
 using MediatR;
@@ -35,7 +35,9 @@ namespace FinanceCore.Application.Features.Auth.Commands.Register
             var user = User.Create(
                 command.Name,
                 new Email(command.Email),
-                HashedPassword);
+                HashedPassword,
+                command.currency                
+                );
             
             await _userRepository.AddAsync(user, cancellationToken);
             await DomainEventDispatcher.DispatchAsync(_eventBus,user,cancellationToken);

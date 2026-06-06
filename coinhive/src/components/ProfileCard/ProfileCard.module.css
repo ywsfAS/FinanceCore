@@ -102,3 +102,13 @@
 .navItem:hover {
     background-color: #cbcbcb80;
 }
+.editIcon {
+    border-radius: 50%;
+    background-color: #efefef;
+    padding: 6px;
+    width: 30px;
+    height: 30px;
+    margin-bottom: 13px;
+    cursor : pointer;
+}
+

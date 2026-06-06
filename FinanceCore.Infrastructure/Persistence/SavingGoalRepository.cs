@@ -145,7 +145,7 @@ namespace FinanceCore.Infrastructure.Persistence
             Description = @Description,
             TargetAmount = @TargetAmount,
             CurrentAmount = @CurrentAmount,
-            CurrencyId = @CurrencyId
+            CurrencyId = @CurrencyId,
             TargetDate = @TargetDate,
             StatusId = @StatusId,
             UpdatedAt = @UpdatedAt,

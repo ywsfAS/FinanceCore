@@ -1,22 +1,45 @@
-import React, { ChangeEvent } from "react";
+import React from "react";
 import styles from  "./Input.module.css";
+import { CircleX } from 'lucide-react';
+import {useState} from 'react';
+interface InputProps extends React.InputHTMLAttributes<HTMLInputElement>  {
+    variant?: 'primary' | 'secondary';
+    error?: string;
+    label?: string;
+    borderStyle?: 'dashed' | 'solid';
+    inputSize?: 'sm' | 'md' | 'lg';
+    InfoMessage?: string;
 
-interface InputProps {
-    type: string;
-    placeholder?: string;
-    value: string;
-    onChange: (e: ChangeEvent<HTMLInputElement>) => void;
-    className?: string;
 }
+export default function Input({variant = 'primary',inputSize='md',InfoMessage,borderStyle = 'solid',id,className,error,label,type,...props}: InputProps) {
+    const [infoSection, setInfoSection] = useState(false);
 
-export default function Input({ type, placeholder = "", value, onChange, className = "" }: InputProps) {
+    const isFile = type === 'file';
+    const inputStyle = `
+    ${styles.customInput}
+    ${variant ? styles[variant] : ""}
+    ${error ? styles.error : ""}
+    ${borderStyle ? styles[borderStyle] : ""}
+    ${inputSize ? styles[inputSize] : ""}
+    ${className}
+    ${isFile ? styles['hidden'] : ""}
+    `;
+    const errorMessageStyle = `
+        ${styles.errorMessage}`;
+
+    const labelStyle = `${styles.label} ${isFile ? styles.uploadBox : ""}`;
+
     return (
-        <input
+        <div className={styles.inputWrapper}>
+            {label && <label htmlFor={id} className={labelStyle}>{label}</label> }
+            <input
+            id={id}
+            className={inputStyle}
             type={type}
-            placeholder={placeholder}
-            value={value}
-            onChange={onChange}
-            className={`${styles.customInput} ${className}`}
-        />
+            {...props}
+            />
+            {error && <div className={errorMessageStyle}>{error}<CircleX onClick={() => { setInfoSection((prev) => !prev) }} size={15} /></div>}
+            {infoSection && <div className={styles.infoSection}>{InfoMessage}</div>}
+        </div>
     );
 }

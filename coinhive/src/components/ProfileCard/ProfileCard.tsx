@@ -1,29 +1,23 @@
 import styles from './ProfileCard.module.css';
 import Image from "../../assets/pfp.jpeg";
 import { PanelsTopLeft, BadgeDollarSign, Wallet, ClipboardMinus, Bitcoin } from "lucide-react";
-import {useState} from 'react';
+import { useState } from 'react';
+import { UserRoundPen } from "lucide-react";
 
 const NAV_ITEMS = [{ name: 'Overview', icon: <PanelsTopLeft size={20} /> }, { name: 'Transactions', icon: <BadgeDollarSign  size={20}/> },
     { name: 'Investments', icon: < Bitcoin size={20}/> }, { name: 'Budgets', icon: <Wallet size={20}/> }, { name: 'Reports', icon: <ClipboardMinus size={20}/> }];
-type profileProps = {
-    profileData : profileData | null,
-}
-interface profileData {
-    firstName: string,
-    lastName: string,
-    role: string,
-    srcUrl?: string,
-    bio : string
-}
-const defaultProfile : profileData = {
+const defaultProfile = {
     firstName: 'Jordan',
     lastName: 'Mitchell',
     role: 'Software Engineer',
+    photo: "photo",
+    currency: "USD",
     bio: 'Financial analyst &amp; personal finance enthusiast. Tracking goals since 2021. Building toward early financial independence.',
 
 }
-export default function ProfileCard({ profileData }: profileProps) {
+export default function ProfileCard({ profileData , PopUpHandler }) {
     const data = profileData ?? defaultProfile;
+    console.log("profile", data);
     const name = data.firstName + ' ' + data.lastName;
     const [active, setActive] = useState(0);
     return (
@@ -42,7 +36,7 @@ export default function ProfileCard({ profileData }: profileProps) {
             <p className={styles.bio}>
                 {data.bio} Software developer focused on building scalable and maintainable applications with modern technologies.
             </p>
-
+            <UserRoundPen size={20} className={styles.editIcon} onClick={PopUpHandler} />
             <div className={styles.divider} />
 
             <div className={styles.statsBox}>

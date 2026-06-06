@@ -3,6 +3,7 @@ export interface Profile{
     firstName: string,
     lastName: string,
     bio: string,
-    avatarUrl: string,
+    role? : string,
+    photo : File | string,
     currency: string
 }

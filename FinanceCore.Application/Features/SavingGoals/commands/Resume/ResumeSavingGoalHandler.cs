@@ -19,7 +19,7 @@ namespace FinanceCore.Application.Features.SavingGoals.commands.Resume
         }
         public async Task Handle(ResumeSavingGoalCommand command, CancellationToken token)
         {
-            var goal = await _savingGoalsRepository.GetByIdAndUserIdAsync(command.Id, command.UserId, token);
+            var goal = await _savingGoalsRepository.GetByIdAndUserIdAsync(command.UserId, command.Id, token);
             if (goal is null)
             {
                 throw new GoalNotFoundException(command.Id);
