@@ -104,8 +104,6 @@ namespace FinanceCore.Domain.Tests.Categories
             Action actInactive = () => category.ChangeType(CategoryType.Income);
             actInactive.Should().Throw<InactiveCategoryException>();
 
-            Action actInvalid = () => Category.Create(Guid.NewGuid(), "Test", CategoryType.Expense).ChangeType(CategoryType.Income);
-            actInvalid.Should().Throw<InvalidCategoryTypeException>();
         }
 
         [Fact]

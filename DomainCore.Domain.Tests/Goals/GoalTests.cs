@@ -5,6 +5,7 @@ using FinanceCore.Domain.Common;
 using FinanceCore.Domain.Events.Goal;
 using Xunit;
 using FluentAssertions;
+using FinanceCore.Domain.Exceptions;
 
 namespace FinanceCore.Domain.Tests.Goals
 {
@@ -15,13 +16,13 @@ namespace FinanceCore.Domain.Tests.Goals
         {
             // Arrange
             var userId = Guid.NewGuid();
-            var targetAmount = new Money(1000);
+            var targetAmount = new Money(1000, EnCurrency.USD);
             var name = "Vacation Fund";
             var description = "Trip to Japan";
             var targetDate = DateTime.UtcNow.AddMonths(6);
 
             // Act
-            var goal = SavingsGoal.Create(userId, name, targetAmount, targetDate, description);
+            var goal = SavingsGoal.Create(null,userId, name, targetAmount, targetDate, description);
 
             // Assert
             goal.UserId.Should().Be(userId);
@@ -38,24 +39,24 @@ namespace FinanceCore.Domain.Tests.Goals
         public void CreateGoal_WithInvalidInputs_ShouldThrow()
         {
             var userId = Guid.NewGuid();
-            var amount = new Money(100);
+            var amount = new Money(100, EnCurrency.USD);
 
-            Action actEmptyUser = () => SavingsGoal.Create(Guid.Empty, "Test", amount);
-            actEmptyUser.Should().Throw<ArgumentException>();
+            Action actEmptyUser = () => SavingsGoal.Create(null,Guid.Empty, "Test", amount);
+            actEmptyUser.Should().Throw<UserIdNotProvidedException>();
 
-            Action actEmptyName = () => SavingsGoal.Create(userId, "", amount);
-            actEmptyName.Should().Throw<ArgumentException>();
+            Action actEmptyName = () => SavingsGoal.Create(null,userId, "", amount);
+            actEmptyName.Should().Throw<InvalidGoalName>();
 
-            Action actNegativeAmount = () => SavingsGoal.Create(userId, "Test", new Money(-10));
-            actNegativeAmount.Should().Throw<ArgumentException>();
+            Action actNegativeAmount = () => SavingsGoal.Create(null,userId, "Test", new Money(-10,EnCurrency.USD));
+            actNegativeAmount.Should().Throw<MoneyIsNegativeException>();
         }
 
         [Fact]
         public void AddContribution_ShouldIncreaseCurrentAmount()
         {
-            var goal = SavingsGoal.Create(Guid.NewGuid(), "Goal", new Money(1000));
+            var goal = SavingsGoal.Create(null, Guid.NewGuid(), "Goal", new Money(1000,EnCurrency.USD));
 
-            goal.AddContribution(new Money(200));
+            goal.AddContribution(new Money(200, EnCurrency.USD));
 
             goal.CurrentAmount.Amount.Should().Be(200);
             goal.GetPercentageComplete().Should().Be(20);
@@ -65,9 +66,9 @@ namespace FinanceCore.Domain.Tests.Goals
         [Fact]
         public void AddContribution_WhenExceedingTarget_ShouldCompleteGoal()
         {
-            var goal = SavingsGoal.Create(Guid.NewGuid(), "Goal", new Money(500));
+            var goal = SavingsGoal.Create(null, Guid.NewGuid(), "Goal", new Money(500,EnCurrency.USD));
 
-            goal.AddContribution(new Money(500));
+            goal.AddContribution(new Money(500, EnCurrency.USD));
 
             goal.Status.Should().Be(EnGoalStatus.Completed);
             goal.CurrentAmount.Amount.Should().Be(500);
@@ -77,28 +78,28 @@ namespace FinanceCore.Domain.Tests.Goals
         [Fact]
         public void AddContribution_ToInactiveOrCompletedGoal_ShouldThrow()
         {
-            var goal = SavingsGoal.Create(Guid.NewGuid(), "Goal", new Money(500));
-            goal.AddContribution(new Money(500)); // completes goal
+            var goal = SavingsGoal.Create(null, Guid.NewGuid(), "Goal", new Money(500,EnCurrency.USD));
+            goal.AddContribution(new Money(500, EnCurrency.USD)); // completes goal
 
-            Action act = () => goal.AddContribution(new Money(100));
+            Action act = () => goal.AddContribution(new Money(100, EnCurrency.USD));
             act.Should().Throw<InvalidOperationException>();
         }
 
         [Fact]
         public void AddContribution_WithNonPositiveAmount_ShouldThrow()
         {
-            var goal = SavingsGoal.Create(Guid.NewGuid(), "Goal", new Money(500));
-            Action act = () => goal.AddContribution(new Money(0));
-            act.Should().Throw<ArgumentException>();
+            var goal = SavingsGoal.Create(null, Guid.NewGuid(), "Goal", new Money(500,EnCurrency.USD));
+            Action act = () => goal.AddContribution(new Money(0, EnCurrency.USD));
+            act.Should().Throw<InvalidContributionAmountException>();
         }
 
         [Fact]
         public void WithdrawContribution_ShouldReduceCurrentAmount()
         {
-            var goal = SavingsGoal.Create(Guid.NewGuid(), "Goal", new Money(1000));
-            goal.AddContribution(new Money(300));
+            var goal = SavingsGoal.Create(null, Guid.NewGuid(), "Goal", new Money(1000,EnCurrency.USD));
+            goal.AddContribution(new Money(300, EnCurrency.USD));
 
-            goal.WithdrawContribution(new Money(100));
+            goal.WithdrawContribution(new Money(100, EnCurrency.USD));
 
             goal.CurrentAmount.Amount.Should().Be(200);
             goal.UpdatedAt.Should().NotBeNull();
@@ -107,28 +108,28 @@ namespace FinanceCore.Domain.Tests.Goals
         [Fact]
         public void WithdrawContribution_OverCurrentAmount_ShouldThrow()
         {
-            var goal = SavingsGoal.Create(Guid.NewGuid(), "Goal", new Money(1000));
-            goal.AddContribution(new Money(200));
+            var goal = SavingsGoal.Create(null, Guid.NewGuid(), "Goal", new Money(1000,EnCurrency.USD));
+            goal.AddContribution(new Money(200, EnCurrency.USD));
 
-            Action act = () => goal.WithdrawContribution(new Money(300));
-            act.Should().Throw<InvalidOperationException>();
+            Action act = () => goal.WithdrawContribution(new Money(300, EnCurrency.USD));
+            act.Should().Throw<InsufficientGoalFundsException>();
         }
 
         [Fact]
         public void WithdrawContribution_FromCompletedGoal_ShouldThrow()
         {
-            var goal = SavingsGoal.Create(Guid.NewGuid(), "Goal", new Money(500));
-            goal.AddContribution(new Money(500));
+            var goal = SavingsGoal.Create(null, Guid.NewGuid(), "Goal", new Money(500,EnCurrency.USD));
+            goal.AddContribution(new Money(500, EnCurrency.USD));
 
-            Action act = () => goal.WithdrawContribution(new Money(100));
-            act.Should().Throw<InvalidOperationException>();
+            Action act = () => goal.WithdrawContribution(new Money(100, EnCurrency.USD));
+            act.Should().Throw<CannotWithdrawFromCompletedGoalException>();
         }
 
         [Fact]
         public void GetRemainingAmount_ShouldReturnCorrectValue()
         {
-            var goal = SavingsGoal.Create(Guid.NewGuid(), "Goal", new Money(1000));
-            goal.AddContribution(new Money(300));
+            var goal = SavingsGoal.Create(null, Guid.NewGuid(), "Goal", new Money(1000,EnCurrency.USD));
+            goal.AddContribution(new Money(300, EnCurrency.USD));
 
             var remaining = goal.GetRemainingAmount();
             remaining.Amount.Should().Be(700);
@@ -137,8 +138,8 @@ namespace FinanceCore.Domain.Tests.Goals
         [Fact]
         public void GetPercentageComplete_ShouldReturnCorrectValue()
         {
-            var goal = SavingsGoal.Create(Guid.NewGuid(), "Goal", new Money(1000));
-            goal.AddContribution(new Money(250));
+            var goal = SavingsGoal.Create(null, Guid.NewGuid(), "Goal", new Money(1000,EnCurrency.USD));
+            goal.AddContribution(new Money(250, EnCurrency.USD));
 
             goal.GetPercentageComplete().Should().Be(25);
         }

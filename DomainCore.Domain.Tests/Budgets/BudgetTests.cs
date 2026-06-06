@@ -18,19 +18,18 @@ namespace FinanceCore.Domain.Tests.Budgets
             var categoryId = Guid.NewGuid();
             var name = "Monthly Groceries";
             var currency = EnCurrency.USD;
-            decimal amount = 500m;
+            Money amount = new Money(500m,currency);
             var period = EnPeriod.Monthly;
             var startDate = DateTime.UtcNow;
 
             // Act
-            var budget = Budget.Create(userId, categoryId, name, currency, amount, period, startDate);
+            var budget = Budget.Create(userId, categoryId, name,amount, period, startDate);
 
             // Assert
             budget.UserId.Should().Be(userId);
             budget.CategoryId.Should().Be(categoryId);
             budget.Name.Should().Be(name);
-            budget.Currency.Should().Be(currency);
-            budget.Amount.Amount.Should().Be(amount);
+            budget.Amount.Should().Be(amount);
             budget.Period.Should().Be(period);
             budget.StartDate.Should().Be(startDate);
             budget.EndDate.Should().BeCloseTo(startDate.AddMonths(1).AddSeconds(-1), TimeSpan.FromSeconds(1));
@@ -45,9 +44,9 @@ namespace FinanceCore.Domain.Tests.Budgets
             var categoryId = Guid.NewGuid();
 
             // Act
-            Action actEmpty = () => Budget.Create(userId, categoryId, "", EnCurrency.USD, 100, EnPeriod.Monthly, DateTime.UtcNow);
-            Action actShort = () => Budget.Create(userId, categoryId, "A", EnCurrency.USD, 100, EnPeriod.Monthly, DateTime.UtcNow);
-            Action actLong = () => Budget.Create(userId, categoryId, new string('x', 101), EnCurrency.USD, 100, EnPeriod.Monthly, DateTime.UtcNow);
+            Action actEmpty = () => Budget.Create(userId, categoryId, "", new Money(100, EnCurrency.USD), EnPeriod.Monthly, DateTime.UtcNow);
+            Action actShort = () => Budget.Create(userId, categoryId, "A", new Money(100, EnCurrency.USD), EnPeriod.Monthly, DateTime.UtcNow);
+            Action actLong = () => Budget.Create(userId, categoryId, new string('x', 101), new Money(100, EnCurrency.USD), EnPeriod.Monthly, DateTime.UtcNow);
 
             // Assert
             actEmpty.Should().Throw<InvalidBudgetNameException>();
@@ -63,20 +62,20 @@ namespace FinanceCore.Domain.Tests.Budgets
             var categoryId = Guid.NewGuid();
 
             // Act
-            Action actZero = () => Budget.Create(userId, categoryId, "Food", EnCurrency.USD, 0, EnPeriod.Monthly, DateTime.UtcNow);
-            Action actNegative = () => Budget.Create(userId, categoryId, "Food", EnCurrency.USD, -10, EnPeriod.Monthly, DateTime.UtcNow);
+            Action actZero = () => Budget.Create(userId, categoryId, "Food", new Money(0, EnCurrency.USD), EnPeriod.Monthly, DateTime.UtcNow);
+            Action actNegative = () => Budget.Create(userId, categoryId, "Food", new Money(-10, EnCurrency.USD), EnPeriod.Monthly, DateTime.UtcNow);
 
             // Assert
             actZero.Should().Throw<InvalidBudgetAmountException>();
-            actNegative.Should().Throw<InvalidBudgetAmountException>();
+            actNegative.Should().Throw<MoneyIsNegativeException>();
         }
 
         [Fact]
         public void UpdateAmount_ShouldChangeAmountAndAddDomainEvent()
         {
             // Arrange
-            var budget = Budget.Create(Guid.NewGuid(), Guid.NewGuid(), "Budget", EnCurrency.USD, 100, EnPeriod.Monthly, DateTime.UtcNow);
-            var newAmount = new Money(200);
+            var budget = Budget.Create(Guid.NewGuid(), Guid.NewGuid(), "Budget", new Money(100, EnCurrency.USD), EnPeriod.Monthly, DateTime.UtcNow);
+            var newAmount = new Money(200, EnCurrency.USD);
 
             // Act
             budget.UpdateAmount(newAmount);
@@ -90,10 +89,10 @@ namespace FinanceCore.Domain.Tests.Budgets
         public void UpdateAmount_WithInvalidAmount_ShouldThrow()
         {
             // Arrange
-            var budget = Budget.Create(Guid.NewGuid(), Guid.NewGuid(), "Budget", EnCurrency.USD, 100, EnPeriod.Monthly, DateTime.UtcNow);
+            var budget = Budget.Create(Guid.NewGuid(), Guid.NewGuid(), "Budget", new Money(100, EnCurrency.USD), EnPeriod.Monthly, DateTime.UtcNow);
 
             // Act
-            Action act = () => budget.UpdateAmount(new Money(0));
+            Action act = () => budget.UpdateAmount(new Money(0, EnCurrency.USD));
 
             // Assert
             act.Should().Throw<InvalidBudgetAmountException>();
@@ -103,7 +102,7 @@ namespace FinanceCore.Domain.Tests.Budgets
         public void UpdateName_ShouldChangeName()
         {
             // Arrange
-            var budget = Budget.Create(Guid.NewGuid(), Guid.NewGuid(), "Budget", EnCurrency.USD, 100, EnPeriod.Monthly, DateTime.UtcNow);
+            var budget = Budget.Create(Guid.NewGuid(), Guid.NewGuid(), "Budget", new Money(100, EnCurrency.USD), EnPeriod.Monthly, DateTime.UtcNow);
 
             // Act
             budget.UpdateName("New Budget");
@@ -117,7 +116,7 @@ namespace FinanceCore.Domain.Tests.Budgets
         public void UpdateName_WithInvalidName_ShouldThrow()
         {
             // Arrange
-            var budget = Budget.Create(Guid.NewGuid(), Guid.NewGuid(), "Budget", EnCurrency.USD, 100, EnPeriod.Monthly, DateTime.UtcNow);
+            var budget = Budget.Create(Guid.NewGuid(), Guid.NewGuid(), "Budget", new Money(100, EnCurrency.USD), EnPeriod.Monthly, DateTime.UtcNow);
 
             // Act
             Action actEmpty = () => budget.UpdateName("");
@@ -134,7 +133,7 @@ namespace FinanceCore.Domain.Tests.Budgets
         public void ExtendPeriod_ShouldUpdatePeriodAndEndDate()
         {
             // Arrange
-            var budget = Budget.Create(Guid.NewGuid(), Guid.NewGuid(), "Budget", EnCurrency.USD, 100, EnPeriod.Monthly, DateTime.UtcNow);
+            var budget = Budget.Create(Guid.NewGuid(), Guid.NewGuid(), "Budget", new Money(100, EnCurrency.USD), EnPeriod.Monthly, DateTime.UtcNow);
             var oldEndDate = budget.EndDate;
 
             // Act
@@ -142,7 +141,7 @@ namespace FinanceCore.Domain.Tests.Budgets
 
             // Assert
             budget.Period.Should().Be(EnPeriod.Quarterly);
-            budget.EndDate.Should().BeCloseTo(Budget.Create(Guid.NewGuid(), Guid.NewGuid(), "Temp", EnCurrency.USD, 100, EnPeriod.Quarterly, DateTime.UtcNow).EndDate, TimeSpan.FromSeconds(1));
+            budget.EndDate.Should().BeCloseTo(Budget.Create(Guid.NewGuid(), Guid.NewGuid(), "Temp", new Money(100, EnCurrency.USD), EnPeriod.Quarterly, DateTime.UtcNow).EndDate, TimeSpan.FromSeconds(1));
             budget.UpdatedAt.Should().NotBeNull();
         }
 
@@ -150,7 +149,7 @@ namespace FinanceCore.Domain.Tests.Budgets
         public void IsPeriodExpired_ShouldReturnCorrectly()
         {
             // Arrange
-            var budget = Budget.Create(Guid.NewGuid(), Guid.NewGuid(), "Budget", EnCurrency.USD, 100, EnPeriod.Monthly, DateTime.UtcNow.AddMonths(-2));
+            var budget = Budget.Create(Guid.NewGuid(), Guid.NewGuid(), "Budget", new Money(100, EnCurrency.USD), EnPeriod.Monthly, DateTime.UtcNow.AddMonths(-2));
 
             // Act & Assert
             budget.IsPeriodExpired().Should().BeTrue();
@@ -160,7 +159,7 @@ namespace FinanceCore.Domain.Tests.Budgets
         public void GetDaysRemaining_ShouldReturnZeroIfExpired()
         {
             // Arrange
-            var budget = Budget.Create(Guid.NewGuid(), Guid.NewGuid(), "Budget", EnCurrency.USD, 100, EnPeriod.Monthly, DateTime.UtcNow.AddMonths(-2));
+            var budget = Budget.Create(Guid.NewGuid(), Guid.NewGuid(), "Budget", new Money(100, EnCurrency.USD), EnPeriod.Monthly, DateTime.UtcNow.AddMonths(-2));
 
             // Act
             var daysRemaining = budget.GetDaysRemaining();

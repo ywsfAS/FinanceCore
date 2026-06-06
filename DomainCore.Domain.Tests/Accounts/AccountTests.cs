@@ -18,18 +18,17 @@ namespace FinanceCore.Domain.Tests.Accounts
             var name = "Savings Account";
             var type = EnAccountType.Savings;
             var currency = EnCurrency.USD;
-            decimal initialBalance = 100m;
+            Money initialBalance = new Money(100m,currency);
 
             // Act
-            var account = Account.Create(userId, name, type, currency, initialBalance);
+            var account = Account.Create(userId, name, type,initialBalance);
 
             // Assert
             account.UserId.Should().Be(userId);
             account.Name.Should().Be(name);
             account.Type.Should().Be(type);
-            account.Currency.Should().Be(currency);
-            account.Balance.Amount.Should().Be(initialBalance);
-            account.InitialBalance.Amount.Should().Be(initialBalance);
+            account.Balance.Should().Be(initialBalance);
+            account.InitialBalance.Should().Be(initialBalance);
             account.IsActive.Should().BeTrue();
             account.UpdatedAt.Should().BeNull();
         }
@@ -41,19 +40,19 @@ namespace FinanceCore.Domain.Tests.Accounts
             var userId = Guid.NewGuid();
 
             // Act
-            Action act = () => Account.Create(userId, "", EnAccountType.Checking, EnCurrency.USD);
+            Action act = () => Account.Create(userId, "", EnAccountType.Checking , Money.Zero(EnCurrency.USD));
 
             // Assert
             act.Should().Throw<InvalidAccountNameException>()
-                .WithMessage("Account name cannot be empty");
+                .WithMessage("Invalid account name '*': Account name cannot be empty");
         }
 
         [Fact]
         public void ApplyTransaction_Expense_ShouldReduceBalance()
         {
             // Arrange
-            var account = Account.Create(Guid.NewGuid(), "My Account", EnAccountType.Checking, EnCurrency.USD, 200m);
-            var expense = new Money(50m);
+            var account = Account.Create(Guid.NewGuid(), "My Account", EnAccountType.Checking,new Money(200m,EnCurrency.USD));
+            var expense = new Money(50m,EnCurrency.USD);
 
             // Act
             account.ApplyTransaction(expense, EnTransactionType.Expense);
@@ -67,8 +66,8 @@ namespace FinanceCore.Domain.Tests.Accounts
         public void ApplyTransaction_Expense_WhenInsufficientBalance_ShouldThrow()
         {
             // Arrange
-            var account = Account.Create(Guid.NewGuid(), "My Account", EnAccountType.Checking, EnCurrency.USD, 30m);
-            var expense = new Money(50m);
+            var account = Account.Create(Guid.NewGuid(), "My Account", EnAccountType.Checking,new Money(10m,EnCurrency.USD));
+            var expense = new Money(50m,EnCurrency.USD);
 
             // Act
             Action act = () => account.ApplyTransaction(expense, EnTransactionType.Expense);
@@ -81,9 +80,9 @@ namespace FinanceCore.Domain.Tests.Accounts
         public void TransferTo_ShouldMoveFundsBetweenAccounts()
         {
             // Arrange
-            var source = Account.Create(Guid.NewGuid(), "Source", EnAccountType.Checking, EnCurrency.USD, 500m);
-            var target = Account.Create(Guid.NewGuid(), "Target", EnAccountType.Savings, EnCurrency.USD, 100m);
-            var amount = new Money(200m);
+            var source = Account.Create(Guid.NewGuid(), "Source", EnAccountType.Checking,new Money(500m,EnCurrency.USD));
+            var target = Account.Create(Guid.NewGuid(), "Target", EnAccountType.Savings, new Money(100m, EnCurrency.USD));
+            var amount = new Money(200m, EnCurrency.USD);
 
             // Act
             source.TransferTo(target, amount);
@@ -97,8 +96,8 @@ namespace FinanceCore.Domain.Tests.Accounts
         public void TransferTo_SameAccount_ShouldThrow()
         {
             // Arrange
-            var account = Account.Create(Guid.NewGuid(), "Account", EnAccountType.Checking, EnCurrency.USD, 100m);
-            var amount = new Money(50m);
+            var account = Account.Create(Guid.NewGuid(), "Account", EnAccountType.Checking, new Money(100m, EnCurrency.USD));
+            var amount = new Money(50m, EnCurrency.USD);
 
             // Act
             Action act = () => account.TransferTo(account, amount);
@@ -111,9 +110,9 @@ namespace FinanceCore.Domain.Tests.Accounts
         public void Deactivate_ThenApplyTransaction_ShouldThrow()
         {
             // Arrange
-            var account = Account.Create(Guid.NewGuid(), "Account", EnAccountType.Checking, EnCurrency.USD, 100m);
+            var account = Account.Create(Guid.NewGuid(), "Account", EnAccountType.Checking, new Money(100m, EnCurrency.USD));
             account.Deactivate();
-            var money = new Money(10m);
+            var money = new Money(10m, EnCurrency.USD);
 
             // Act
             Action act = () => account.ApplyTransaction(money, EnTransactionType.Expense);
