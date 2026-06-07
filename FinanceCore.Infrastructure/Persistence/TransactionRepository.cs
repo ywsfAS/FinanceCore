@@ -145,15 +145,30 @@ namespace FinanceCore.Infrastructure.Repositories
 
             var sql = @"
                 SELECT
-                    SUM(CASE WHEN TransactionTypeId = 1 THEN Amount ELSE 0 END) AS TotalIncome,
-                    SUM(CASE WHEN TransactionTypeId = 2 THEN Amount ELSE 0 END) AS TotalExpenses
+                    COALESCE(SUM(CASE WHEN TransactionTypeId = 0 THEN Amount ELSE 0 END),0) AS TotalIncome,
+                    COALESCE(SUM(CASE WHEN TransactionTypeId = 1 THEN Amount ELSE 0 END),0) AS TotalExpense
                 FROM Transactions
                 WHERE AccountId = @AccountId
-                  AND Date >= @Start
-                  AND Date < @End";
+                  AND CreatedAt >= @Start
+                  AND CreatedAt < @End";
 
             var cmd = new CommandDefinition(sql, new { AccountId = accountId, Start = start, End = end });
             return await connection.QueryFirstOrDefaultAsync<ReportModel>(cmd);
+        }
+       public async Task<ReportModel?> GetSummaryByUser(Guid userId,CancellationToken token)
+        {
+            using var connection = _connectionFactory.GetConnection();
+            const string sql = @"
+                SELECT 
+                    COALESCE(SUM(CASE WHEN TransactionTypeId = 0 THEN Amount ELSE 0 END),0) AS TotalIncome,
+                    COALESCE(SUM(CASE WHEN TransactionTypeId = 1 THEN Amount ELSE 0 END),0) AS TotalExpense
+                FROM Transactions t
+                INNER JOIN Accounts a ON
+                    t.AccountId = a.Id
+                WHERE a.UserId = @UserId 
+            ";
+            var command = new CommandDefinition(sql, new { UserId = userId} , cancellationToken : token);
+            return await connection.QueryFirstOrDefaultAsync<ReportModel>(command);
         }
 
         public async Task<IEnumerable<TransactionDto>?> GetFiltredTransactionsAsync(
@@ -231,7 +246,7 @@ namespace FinanceCore.Infrastructure.Repositories
                 FROM Transactions t
                 INNER JOIN Categories c ON c.Id = t.CategoryId
                 INNER JOIN Accounts   a ON a.Id = t.AccountId
-                WHERE t.TransactionTypeId = 2
+                WHERE t.TransactionTypeId = 1
                   AND a.UserId = @UserId
                   AND (@AccountId IS NULL OR t.AccountId = @AccountId)
                   AND t.CreatedAt >= @Start
@@ -240,29 +255,30 @@ namespace FinanceCore.Infrastructure.Repositories
                 ORDER BY Amount DESC";
 
             var cmd = new CommandDefinition(sql, new { UserId = userId, AccountId = accountId, Start = start, End = end });
-            return await connection.QueryAsync<SpendingByCategoryDto>(cmd);
+            var models = await connection.QueryAsync<SpendingByCategoryModel>(cmd);
+            return models.Select(model => new SpendingByCategoryDto(model.Category, model.Amount));
         }
 
-        public async Task<List<SpendingByCategoryDto>> GetSpendingByCategoryForUser(
+        public async Task<IEnumerable<SpendingByCategoryDto>> GetSpendingByCategoryForUser(
             Guid userId, DateTime start, DateTime end)
         {
             using var connection = _connectionFactory.GetConnection();
 
             var sql = @"
-                SELECT c.Name AS CategoryName, SUM(t.Amount) AS Amount
+                SELECT c.Name AS Category, SUM(t.Amount) AS Amount
                 FROM Transactions t
                 INNER JOIN Accounts   a ON t.AccountId  = a.Id
                 INNER JOIN Categories c ON t.CategoryId = c.Id
                 WHERE a.UserId = @UserId
-                  AND t.Date >= @Start
-                  AND t.Date <  @End
+                  AND t.CreatedAt >= @Start
+                  AND t.CreatedAt <  @End
                   AND t.TransactionTypeId = @ExpenseType
                 GROUP BY c.Name
                 ORDER BY Amount DESC";
 
             var cmd = new CommandDefinition(sql, new { UserId = userId, Start = start, End = end, ExpenseType = (byte)EnTransactionType.Expense });
-            var result = await connection.QueryAsync<SpendingByCategoryDto>(cmd);
-            return result.ToList();
+            var models = await connection.QueryAsync<SpendingByCategoryModel>(cmd);
+            return models.Select(model => new SpendingByCategoryDto(model.Category, model.Amount));
         }
     }
 }

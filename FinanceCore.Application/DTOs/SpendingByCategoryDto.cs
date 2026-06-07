@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,5 +6,5 @@ using System.Threading.Tasks;
 
 namespace FinanceCore.Application.DTOs
 {
-    public record SpendingByCategoryDto(string Category , decimal SpentAmount);
+    public record SpendingByCategoryDto(string Category , decimal Amount);
 }

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace FinanceCore.Application.Features.Report.GetSpendingByCategoryPerUser
 {
-    public class GetSpendingByCategoryPerUserHandler : IRequestHandler<GetSpendingByCategoryPerUserQuery,List<SpendingByCategoryDto>>
+    public class GetSpendingByCategoryPerUserHandler : IRequestHandler<GetSpendingByCategoryPerUserQuery,IEnumerable<SpendingByCategoryDto>>
     {
         private readonly ITransactionRepository _transactionRepository;
 
@@ -18,7 +18,7 @@ namespace FinanceCore.Application.Features.Report.GetSpendingByCategoryPerUser
             _transactionRepository = transactionRepository;
         }
 
-        public async Task<List<SpendingByCategoryDto>> Handle(GetSpendingByCategoryPerUserQuery query , CancellationToken token)
+        public async Task<IEnumerable<SpendingByCategoryDto>> Handle(GetSpendingByCategoryPerUserQuery query , CancellationToken token)
         {
             DateTime start = new DateTime(query.year, query.month, 1);
             DateTime end = start.AddMonths(1);

@@ -29,7 +29,8 @@ namespace FinanceCore.Application.Abstractions
         Task<IEnumerable<SpendingByCategoryDto>> GetSpendingByCategory(
             Guid userId, Guid? accountId, DateTime start, DateTime end);
         Task<bool> IsExists(Guid userId, Guid id, CancellationToken token = default);
-        Task<List<SpendingByCategoryDto>> GetSpendingByCategoryForUser(Guid userId , DateTime start , DateTime end);
+        Task<IEnumerable<SpendingByCategoryDto>> GetSpendingByCategoryForUser(Guid userId , DateTime start , DateTime end);
+        Task<ReportModel?> GetSummaryByUser(Guid userId,CancellationToken token);
 
     }
 }

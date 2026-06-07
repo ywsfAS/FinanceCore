@@ -120,6 +120,16 @@ namespace FinanceCore.Infrastructure.Persistence
                 return _transactionRepository.GetMonthlySummary(sccountId, start, end);
             });
         }
+
+        public Task<ReportModel?> GetSummaryByUser(Guid userId,CancellationToken token)
+        {
+             var key = $"Summary_{userId}";
+            return _memoryCache.GetOrCreateAsync(key, entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
+                return _transactionRepository.GetSummaryByUser(userId, token);
+            });
+        }
         public Task<IEnumerable<TransactionDto>?> FetchTransactionsByIdPageAsync(Guid accountId, int page, int pageSize)
         {
             var key = $"TransactionsByPage_{accountId}_{page}_{pageSize}";
@@ -139,7 +149,7 @@ namespace FinanceCore.Infrastructure.Persistence
                 return _transactionRepository.GetSpendingByCategory(userId, accountId, start, end);
             });
         }
-        public Task<List<SpendingByCategoryDto>> GetSpendingByCategoryForUser(Guid userId , DateTime start , DateTime end)
+        public Task<IEnumerable<SpendingByCategoryDto>> GetSpendingByCategoryForUser(Guid userId , DateTime start , DateTime end)
         {
             var key = $"SpendingByCategoryForUser_{userId}_{start}_{end}";
             return _memoryCache.GetOrCreateAsync(key, entry =>

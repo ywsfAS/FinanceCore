@@ -1,7 +1,7 @@
 using FinanceCore.Application.DTOs;
 using FinanceCore.Application.Features.Report.GetMonthlySummary;
 using FinanceCore.Application.Features.Report.GetMonthlySummaryPerAccount;
-using FinanceCore.Application.Features.Report.GetMonthlySummaryPerUser;
+using FinanceCore.Application.Features.Report.GetSummaryPerUser;
 using FinanceCore.Application.Features.Report.GetNetWorth;
 using FinanceCore.Application.Features.Report.GetSpendingByCategory;
 using FinanceCore.Application.Features.Report.GetSpendingByCategoryPerUser;
@@ -27,9 +27,9 @@ namespace FinanceCore.API.Controllers
             return Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
         }
 
-        [HttpGet("monthly-summary")]
+        [HttpGet("monthly/account")]
         [Produces("application/json")]
-        [ProducesResponseType(typeof(MonthlySummaryDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(MonthlyAccountSummaryDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> GetMonthlySummary(Guid id, int year, int month)
@@ -40,20 +40,20 @@ namespace FinanceCore.API.Controllers
             return Ok(response);
 
         }
-        [HttpGet("monthly-summary-per-user")]
+        [HttpGet("summary/user")]
         [Produces("application/json")]
-        [ProducesResponseType(typeof(IEnumerable<MonthlySummaryDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(IEnumerable<MonthlyAccountSummaryDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> GetMonthlySummaryPerUser(int year, int month)
+        public async Task<IActionResult> GetMonthlySummaryPerUser()
         {
             var UserId = GetUserId();
-            var query = new GetMonthlySummaryQueryUser(UserId,year, month);
+            var query = new GetSummaryPerUserQuery(UserId);
             var response = await _mediator.Send(query);
             return Ok(response);
 
         }
-        [HttpGet("spending-category-per-user")]
+        [HttpGet("spending/by-category/user")]
         [Produces("application/json")]
         [ProducesResponseType(typeof(IEnumerable<SpendingByCategoryDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
@@ -67,7 +67,7 @@ namespace FinanceCore.API.Controllers
 
         }
 
-        [HttpGet("spending-by-category")]
+        [HttpGet("spending/by-category/account")]
         [Produces("application/json")]
         [ProducesResponseType(typeof(IEnumerable<SpendingByCategoryDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]

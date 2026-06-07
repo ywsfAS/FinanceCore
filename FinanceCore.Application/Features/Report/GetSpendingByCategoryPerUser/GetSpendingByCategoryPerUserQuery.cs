@@ -8,5 +8,5 @@ using System.Threading.Tasks;
 
 namespace FinanceCore.Application.Features.Report.GetSpendingByCategoryPerUser
 {
-    public sealed record GetSpendingByCategoryPerUserQuery(Guid userId,int year , int month) : IRequest<List<SpendingByCategoryDto>>;
+    public sealed record GetSpendingByCategoryPerUserQuery(Guid userId,int year , int month) : IRequest<IEnumerable<SpendingByCategoryDto>>;
 }

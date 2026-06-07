@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace FinanceCore.Application.Models
 {
-    public class ReportModel
+    public class SpendingByCategoryModel
     {
-        public decimal TotalExpense { get; set; }
-        public decimal TotalIncome { get; set; }
+        public string Category { get; set; }
+        public decimal Amount { get; set; }
+
     }
 }

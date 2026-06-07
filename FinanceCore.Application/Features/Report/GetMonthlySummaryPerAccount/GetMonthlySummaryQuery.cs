@@ -1,4 +1,4 @@
-﻿using FinanceCore.Application.DTOs;
+using FinanceCore.Application.DTOs;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace FinanceCore.Application.Features.Report.GetMonthlySummary
 {
-    public record GetMonthlySummaryQuery(Guid UserId ,Guid Id, int year , int month) : IRequest<MonthlySummaryDto?>;
+    public record GetMonthlySummaryQuery(Guid UserId ,Guid Id, int year , int month) : IRequest<MonthlyAccountSummaryDto?>;
     
    
 }

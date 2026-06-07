@@ -1,4 +1,4 @@
-﻿using FinanceCore.Application.Abstractions;
+using FinanceCore.Application.Abstractions;
 using FinanceCore.Application.DTOs;
 using MediatR;
 using System;
@@ -26,7 +26,6 @@ namespace FinanceCore.Application.Features.Report.GetSpendingByCategory
             GetSpendingByCategoryQuery query,
             CancellationToken token)
         {
-            // 1️⃣ Validate account ownership (optional if accountId provided)
             if (query.AccountId.HasValue)
             {
                 var account = await _accountRepository
