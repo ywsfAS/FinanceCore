@@ -1,3 +1,4 @@
+import { useUserSummary } from '../../hooks/Reports/useUserSummary';
 import styles from './ProfileStats.module.css';
 
 interface StatItem {
@@ -8,16 +9,20 @@ interface StatItem {
     direction: 'up' | 'dn';
     variant: 'income' | 'expense' | 'net';
 }
-type StatGridProps = {
-    stats?: StatItem[]
-}
-const STATS: StatItem[] = [
-    { icon: '↑', label: 'Monthly Income', value: '$8,450', change: '↑ 12.4% vs last month', direction: 'up', variant: 'income' },
-    { icon: '↓', label: 'Total Expenses', value: '$3,720', change: '↑ 4.1% vs last month', direction: 'dn', variant: 'expense' },
-    { icon: '≈', label: 'Net Balance', value: '$4,730', change: '↑ 18.9% vs last month', direction: 'up', variant: 'net' },
-];
+export default function StatsGrid() {
+    const { isLoading, data, error, isError } = useUserSummary();
+    if (isLoading) return <div>loading...</div>;
+    if (isError) return <div>{error.message}</div>;
+    if (!data) return null;
+    const { totalExpense, totalIncome } = data;
+    const netWorth = totalIncome - totalExpense;
 
-export default function StatsGrid({stats = STATS} : StatGridProps) {
+    const stats: StatItem[] = [
+        { icon: '↑', label: 'Monthly Income', value: totalIncome, change: '↑ 12.4% vs last month', direction: 'up', variant: 'income' },
+        { icon: '↓', label: 'Total Expenses', value: totalExpense, change: '↑ 4.1% vs last month', direction: 'dn', variant: 'expense' },
+        { icon: '≈', label: 'Net Balance', value: netWorth, change: '↑ 18.9% vs last month', direction: 'up', variant: 'net' },
+    ];
+
     return (
         <div className={styles.grid}>
             {stats.map((s) => (

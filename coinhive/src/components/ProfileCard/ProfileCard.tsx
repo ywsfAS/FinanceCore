@@ -34,7 +34,7 @@ export default function ProfileCard({ profileData , PopUpHandler }) {
             <h2 className={styles.name}>{name}</h2>
             <p className={styles.role}>{defaultProfile.role}</p>
             <p className={styles.bio}>
-                {data.bio} Software developer focused on building scalable and maintainable applications with modern technologies.
+                {data.bio}
             </p>
             <UserRoundPen size={20} className={styles.editIcon} onClick={PopUpHandler} />
             <div className={styles.divider} />

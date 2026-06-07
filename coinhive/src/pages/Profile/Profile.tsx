@@ -13,10 +13,10 @@ export default function ProfilePage() {
 
     const { profile, updateProfile } = useProfile();
     const [active, setActive] = useState(false);
-    console.log(profile);
     const PopUpHandler = () => {
         setActive((prev) => !prev);
     }
+
     return (
         <div className={styles.layout}>
             <ProfileCard profileData={profile} PopUpHandler={PopUpHandler} />

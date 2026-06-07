@@ -42,7 +42,6 @@ const ProfileEditPopUp = ({ EditProfileHandler , PopUpHandler }: ProfileEditPopU
         const newErrors: Record<string, string> = {};
         if (!formData.name.trim()) newErrors.name = "Name is required";
         if (!formData.bio.trim()) newErrors.bio = "Bio is required";
-        if (!formData.photo) newErrors.photo = "Photo is required";
 
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;

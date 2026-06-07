@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 export const useProfile = () => {
     const { user: { token } } = useAuth();
     const [loading, setLoading] = useState(true);
-    const [updating, setUpdating] = useState(false); // 2. Track saving/updating state
+    const [updating, setUpdating] = useState(false); 
     const [profile, setProfile] = useState<Profile | null>(null);
 
     useEffect(() => {

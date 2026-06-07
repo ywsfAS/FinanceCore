@@ -2,25 +2,16 @@ import { useEffect, useRef } from 'react';
 import {
     Chart,
     BarController, BarElement,
-    DoughnutController, ArcElement,
     CategoryScale, LinearScale,
     Tooltip, Legend,
 } from 'chart.js';
 import styles from './ChartsSection.module.css';
 
 Chart.register(
-    BarController, BarElement,
-    DoughnutController, ArcElement,
+    BarController, BarElement, 
     CategoryScale, LinearScale,
     Tooltip, Legend,
 );
-
-const PIE_LEGEND = [
-    { color: 'var(--chart-purple)', label: 'Housing 38%' },
-    { color: 'var(--chart-blue)', label: 'Food 22%' },
-    { color: 'var(--chart-green)', label: 'Transport 15%' },
-    { color: 'var(--chart-orange)', label: 'Subs 12%' },
-];
 
 const BAR_LEGEND = [
     { color: 'var(--chart-purple)', label: 'Income' },
@@ -28,6 +19,9 @@ const BAR_LEGEND = [
 ];
 
 export default function ChartsSection() {
+
+
+
     const barRef = useRef<HTMLCanvasElement>(null);
     const barChart = useRef<Chart | null>(null);
 
