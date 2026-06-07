@@ -19,6 +19,9 @@ export interface MonthlyUserSummaryParams {
     year: number,
     month : number,
 }
+export interface MonthlyUserTrendParams {
+    month : number,
+}
 
 export const ReportService = {
     getUserSummary: () => {
@@ -38,6 +41,9 @@ export const ReportService = {
     },
     getUserMonthlySummary: ({ year, month }: MonthlyUserSummaryParams) => {
         return apiClient(`/reports/monthly/user?year=${year}&month=${month}`);
+    },
+    getUserMonthlyTrend: ({ month }: MonthlyUserTrendParams) => {
+        return apiClient(`/reports/monthly/trend?month=${month}`);
     }
 
 }

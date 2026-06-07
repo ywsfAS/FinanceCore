@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { useUserMonthlyTrend } from '../../hooks/Reports/useUserMonthlyTrend';
 import {
     Chart,
     BarController, BarElement,
@@ -6,6 +7,7 @@ import {
     Tooltip, Legend,
 } from 'chart.js';
 import styles from './ChartsSection.module.css';
+import type { MonthlyUserTrendParams } from '../../services/reportService';
 
 Chart.register(
     BarController, BarElement, 
@@ -20,7 +22,10 @@ const BAR_LEGEND = [
 
 export default function ChartsSection() {
 
-
+    const param: MonthlyUserTrendParams = {
+        month : 4
+    }; 
+     const { data, isLoading, isError, error } = useUserMonthlyTrend(param);
 
     const barRef = useRef<HTMLCanvasElement>(null);
     const barChart = useRef<Chart | null>(null);
@@ -33,11 +38,11 @@ export default function ChartsSection() {
         barChart.current = new Chart(barRef.current, {
             type: 'bar',
             data: {
-                labels: ['Jan', 'Feb', 'Mar', 'Apr'],
+                labels: data.map(x => x.month),
                 datasets: [
                     {
                         label: 'Income',
-                        data: [7400, 7900, 7600, 8450],
+                        data: data.map(x => x.totalExpense),
                         backgroundColor: 'rgba(109,40,217,0.7)',
                         borderRadius: 3,
                         borderSkipped: false,
@@ -45,7 +50,7 @@ export default function ChartsSection() {
                     },
                     {
                         label: 'Expenses',
-                        data: [3600, 4100, 3500, 3720],
+                        data: data.map(x => x.totalIncome),
                         backgroundColor: 'rgba(248,113,113,0.6)',
                         borderRadius: 3,
                         borderSkipped: false,
@@ -84,6 +89,13 @@ export default function ChartsSection() {
             barChart.current?.destroy();
         };
     }, []);
+
+    if (isLoading) return <div>loading...</div>;
+    if (isError) return <div>{error.message}</div>;
+
+    if (!data) return <div>No data provided</div>;
+    console.log("chart", data);
+
 
     return (
         <div className={styles.section}>

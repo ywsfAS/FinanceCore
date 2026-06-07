@@ -1,21 +1,17 @@
 import { useQuery } from "@tanstack/react-query";
-import {
+import  {
     ReportService,
-    MonthlyUserTrendParams
+    type MonthlyUserTrendParams
 } from "../../services/reportService";
 
-export function useUserMonthlySummary({
-    userId,
-    year,
-    month,
+export function useUserMonthlyTrend({
+    month = 4,
 }: MonthlyUserTrendParams) {
     return useQuery({
-        queryKey: ["user-summary",userId, year, month],
+        queryKey: ["user-trend", month],
 
         queryFn: () =>
-            ReportService.getUserMonthlySummary({
-                userId,
-                year,
+            ReportService.getUserMonthlyTrend({
                 month,
             }),
 

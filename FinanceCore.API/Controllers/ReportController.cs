@@ -1,10 +1,12 @@
 using FinanceCore.Application.DTOs;
 using FinanceCore.Application.Features.Report.GetMonthlySummary;
 using FinanceCore.Application.Features.Report.GetMonthlySummaryPerAccount;
-using FinanceCore.Application.Features.Report.GetSummaryPerUser;
+using FinanceCore.Application.Features.Report.GetMonthlySummaryPerUser;
+using FinanceCore.Application.Features.Report.GetMonthlyTrend;
 using FinanceCore.Application.Features.Report.GetNetWorth;
 using FinanceCore.Application.Features.Report.GetSpendingByCategory;
 using FinanceCore.Application.Features.Report.GetSpendingByCategoryPerUser;
+using FinanceCore.Application.Features.Report.GetSummaryPerUser;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -42,10 +44,10 @@ namespace FinanceCore.API.Controllers
         }
         [HttpGet("summary/user")]
         [Produces("application/json")]
-        [ProducesResponseType(typeof(IEnumerable<MonthlyAccountSummaryDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(MonthlyAccountSummaryDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> GetMonthlySummaryPerUser()
+        public async Task<IActionResult> GetSummaryPerUser()
         {
             var UserId = GetUserId();
             var query = new GetSummaryPerUserQuery(UserId);
@@ -53,6 +55,37 @@ namespace FinanceCore.API.Controllers
             return Ok(response);
 
         }
+
+        [HttpGet("monthly/user")]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(MonthlySummaryPerUserDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> GetMonthlySummaryPerUser(int year , int month)
+        {
+            var UserId = GetUserId();
+            var query = new GetMonthlySummaryPerUserQuery(UserId, year, month);
+            var response = await _mediator.Send(query);
+            return Ok(response);
+
+        }
+
+
+        [HttpGet("monthly/trend")]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(IEnumerable<MonthlyTrendDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> GetTrend([FromQuery]int month)
+        {
+            var UserId = GetUserId();
+            var query = new MonthlyTrendQuery(UserId,month);
+            var response = await _mediator.Send(query);
+            return Ok(response);
+
+        }
+
+
         [HttpGet("spending/by-category/user")]
         [Produces("application/json")]
         [ProducesResponseType(typeof(IEnumerable<SpendingByCategoryDto>), StatusCodes.Status200OK)]

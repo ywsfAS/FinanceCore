@@ -280,5 +280,66 @@ namespace FinanceCore.Infrastructure.Repositories
             var models = await connection.QueryAsync<SpendingByCategoryModel>(cmd);
             return models.Select(model => new SpendingByCategoryDto(model.Category, model.Amount));
         }
+        public async Task<ReportModel?> GetMonthlySumaryByUser(Guid userId, DateTime start, DateTime end, CancellationToken token)
+        {
+
+            using var connection = _connectionFactory.GetConnection();
+            const string sql = @"
+                SELECT 
+                    COALESCE(SUM(CASE WHEN TransactionTypeId = 0 THEN Amount ELSE 0 END),0) AS TotalIncome,
+                    COALESCE(SUM(CASE WHEN TransactionTypeId = 1 THEN Amount ELSE 0 END),0) AS TotalExpense
+                FROM Transactions t
+                INNER JOIN Accounts a ON
+                    t.AccountId = a.Id
+                WHERE a.UserId = @UserId AND t.CreatedAt >= @Start AND t.CreatedAt < @End 
+            ";
+            var command = new CommandDefinition(sql, new { UserId = userId,Start = start , End = end} , cancellationToken : token);
+            return await connection.QueryFirstOrDefaultAsync<ReportModel>(command);
+
+        }
+        public async Task<IEnumerable<MonthlyTrendDto>> GetMonthlyTrend(Guid UserId, int months)
+        {
+            using var connection = _connectionFactory.GetConnection();
+
+            const string sql = @"
+            WITH Months AS (
+            SELECT 
+                DATEFROMPARTS(
+                    YEAR(DATEADD(MONTH, -v.number, GETDATE())),
+                    MONTH(DATEADD(MONTH, -v.number, GETDATE())),
+                    1
+            ) AS MonthDate
+            FROM master.dbo.spt_values v
+            WHERE v.type = 'P'
+            AND v.number < @Months
+            ),
+            TransactionsGrouped AS (
+            SELECT
+                DATEFROMPARTS(YEAR(t.CreatedAt), MONTH(t.CreatedAt), 1) AS MonthDate,
+                SUM(CASE WHEN t.TransactionTypeId = 1 THEN t.Amount ELSE 0 END) AS TotalIncome,
+                SUM(CASE WHEN t.TransactionTypeId = 2 THEN t.Amount ELSE 0 END) AS TotalExpense
+
+            FROM Transactions t
+            INNER JOIN Accounts a ON t.AccountId = a.Id
+            WHERE a.UserId = @UserId
+            AND t.CreatedAt >= DATEADD(MONTH, -@Months, GETDATE())
+            GROUP BY YEAR(t.CreatedAt), MONTH(t.CreatedAt))
+            SELECT 
+                FORMAT(m.MonthDate, 'MMM') AS Month,
+                ISNULL(t.TotalIncome, 0) AS TotalIncome,
+                ISNULL(t.TotalExpense, 0) AS TotalExpense
+            FROM Months m
+            LEFT JOIN TransactionsGrouped t
+            ON m.MonthDate = t.MonthDate
+            ORDER BY m.MonthDate;
+
+            ";
+
+            return await connection.QueryAsync<MonthlyTrendDto>(
+                sql,
+                new { UserId = UserId, Months = months }
+            );
+        }
+
     }
 }

@@ -111,6 +111,16 @@ namespace FinanceCore.Infrastructure.Persistence
                 return _transactionRepository.GetDtoByIdAndUserId(userId, id, token);
             });
         }
+        public Task<IEnumerable<MonthlyTrendDto>> GetMonthlyTrend(Guid UserId, int months)
+        {
+            var key = $"MonthlyTrend_{UserId}_last_{months}";
+            return _memoryCache.GetOrCreateAsync(key, entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
+                return _transactionRepository.GetMonthlyTrend(UserId,months);
+            });
+
+        }
         public Task<ReportModel?> GetMonthlySummary(Guid sccountId, DateTime start, DateTime end)
         {
              var key = $"MonthlySummary_{sccountId}_{start}_{end}";
@@ -121,6 +131,15 @@ namespace FinanceCore.Infrastructure.Persistence
             });
         }
 
+        public Task<ReportModel?> GetMonthlySumaryByUser(Guid userId, DateTime start, DateTime end,CancellationToken token)
+        {
+             var key = $"MonthlySummaryByUser_{userId}_{start}_{end}";
+            return _memoryCache.GetOrCreateAsync(key, entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
+                return _transactionRepository.GetMonthlySumaryByUser(userId, start, end,token);
+            });
+        }
         public Task<ReportModel?> GetSummaryByUser(Guid userId,CancellationToken token)
         {
              var key = $"Summary_{userId}";

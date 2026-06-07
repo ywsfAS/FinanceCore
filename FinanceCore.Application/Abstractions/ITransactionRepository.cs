@@ -31,6 +31,9 @@ namespace FinanceCore.Application.Abstractions
         Task<bool> IsExists(Guid userId, Guid id, CancellationToken token = default);
         Task<IEnumerable<SpendingByCategoryDto>> GetSpendingByCategoryForUser(Guid userId , DateTime start , DateTime end);
         Task<ReportModel?> GetSummaryByUser(Guid userId,CancellationToken token);
+        Task<ReportModel?> GetMonthlySumaryByUser(Guid userId, DateTime start, DateTime end, CancellationToken token);
+
+        Task<IEnumerable<MonthlyTrendDto>> GetMonthlyTrend(Guid accountId, int months);
 
     }
 }
