@@ -40,17 +40,25 @@ export const savingGoalService = {
 
     },
     RemoveGoal: ({ id }: RemoveGoalParams) => {
-        return apiClient(`/savings/${id}`);
+        return apiClient(`/savings/${id}`, {
+            method : 'DELETE'
+        });
     },
     PauseGoal: ({id} : PauseGoalParams) => {
-        return apiClient(`/savings/${id}/pause`);
+        return apiClient(`/savings/${id}/pause`, {
+            method : 'POST'
+        });
     },
     ResumeGoal: ({id} : ResumeGoalParams) => {
-        return apiClient(`/savings/${id}/resume`);
+        return apiClient(`/savings/${id}/resume`, {
+            method : 'POST'
+        });
     },
 
     CancelGoal: ({id} : CancelGoalParams) => {
-        return apiClient(`/savings/${id}/cancel`);
+        return apiClient(`/savings/${id}/cancel`, {
+            method : 'POST'
+        });
     },
 
 
