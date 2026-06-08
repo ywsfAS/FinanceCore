@@ -45,7 +45,7 @@ namespace FinanceCore.API.Controllers
         public async Task<IActionResult> CreateTransfer([FromBody] CreateTransferRequest request)
         {
             var UserId = GetUserId();
-            var command = new CreateTransferCommand(UserId,request.AccountId,request.ToAccountId, new Money(request.Amount , request.Currency),request.Description,request.notes);
+            var command = new CreateTransferCommand(UserId,request.AccountId,request.ToAccountId, request.Amount , request.Description,request.notes);
             var response = await _mediator.Send(command);
             return CreatedAtAction(nameof(GetTransactionById), new { id = response.CreditTransactionId }, response);
         }
@@ -56,7 +56,7 @@ namespace FinanceCore.API.Controllers
         public async Task<IActionResult> CreateTransaction([FromBody] CreateTransactionRequest request)
         {
             var UserId = GetUserId();
-            var command = new TransactionCommand(UserId, request.AccountId, request.CategoryId, request.Type, new Money(request.Amount, request.Currency), request.Description, request.TransactionDate);
+            var command = new TransactionCommand(UserId, request.AccountId, request.CategoryId, request.Type,request.Amount, request.Description, request.TransactionDate);
             var response = await _mediator.Send(command);
             return CreatedAtAction(nameof(GetTransactionById), new { id = response.Id }, response);
         }

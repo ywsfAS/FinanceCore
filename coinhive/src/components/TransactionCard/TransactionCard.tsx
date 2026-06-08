@@ -1,46 +1,49 @@
 import styles from './TransactionCard.module.css';
-import {CircleArrowRight} from 'lucide-react';
-interface Transaction {
-    id: number;
-    name: string;
-    date: string;
-    amount: string;
-    positive: boolean;
-    category: string;
-    bgVar: string;
-    sign: string;
-}
-type TransactionCardProps = {
-    transactions? : Transaction[]
-}
-const TRANSACTIONS: Transaction[] = [
-    { id: 1, name: 'Salary Deposit', date: 'Apr 1, 2026 · Direct deposit', amount: '$8,450', positive: true, category: 'Income', bgVar: 'var(--bg-tx-income)', sign: '+' },
-    { id: 2, name: 'Rent Payment', date: 'Apr 2, 2026 · Bank transfer', amount: '$1,400', positive: false, category: 'Housing', bgVar: 'var(--bg-tx-expense)', sign: '−' },
-    { id: 3, name: 'Grocery Store', date: 'Apr 4, 2026 · Card purchase', amount: '$187', positive: false, category: 'Food', bgVar: 'var(--bg-tx-expense)', sign: '−' },
-    { id: 4, name: 'Freelance Invoice', date: 'Apr 8, 2026 · Wire transfer', amount: '$650', positive: true, category: 'Income', bgVar: 'var(--bg-tx-income)', sign: '+' },
-    { id: 5, name: 'Netflix / Spotify', date: 'Apr 10, 2026 · Subscription', amount: '$28', positive: false, category: 'Subs', bgVar: 'var(--bg-tx-expense)', sign: '−' },
-];
+import { CircleArrowRight, BanknoteArrowDown } from 'lucide-react';
+import { useFiltredTransactions } from '../../hooks/Transactions/useFiltredTransactions';
 
-export default function TransactionCard({transactions = TRANSACTIONS} : TransactionCardProps ) {
+export default function TransactionCard() {
+    const { data, isLoading, isError, error } = useFiltredTransactions({});
+
+    if (isLoading) return <div>Loading...</div>;
+    if (isError) return <div>{error.message}</div>;
+    if (!data || data.length === 0) return <div>No transactions</div>;
+
+    const transactionsUI = data.map(tx => ({
+        id: tx.id,
+        name: tx.description ?? tx.categoryName ?? 'Transaction',
+        date: new Date(tx.date).toLocaleDateString(),
+        amount: tx.amount.toFixed(2),
+        currency : tx.currency ?? 'not provided',
+        category: tx.categoryName ?? 'transfer',
+        positive: tx.type === 1,
+        sign: tx.type === 1 ? '+' : '−',
+        bgVar: tx.type === 1 ? '#dcfce7' : '#fee2e2'
+    }));
+    console.log(data);
     return (
         <div className={styles.card}>
             <div className={styles.header}>
                 <span className={styles.title}>Recent Transactions</span>
-                <span className={styles.viewAll}><CircleArrowRight size={20} /></span>
+                <span className={styles.viewAll}>
+                    <CircleArrowRight size={20} />
+                </span>
             </div>
 
-            {transactions.map((tx) => (
+            {transactionsUI.map((tx) => (
                 <div key={tx.id} className={styles.item}>
                     <div className={styles.ico} style={{ background: tx.bgVar }}>
-                        {tx.sign}
+                        <BanknoteArrowDown />
                     </div>
+
                     <div className={styles.meta}>
                         <div className={styles.name}>{tx.name}</div>
                         <div className={styles.date}>{tx.date}</div>
                     </div>
+
                     <div className={styles.right}>
                         <div className={`${styles.amount} ${tx.positive ? styles.pos : styles.neg}`}>
-                            {tx.positive ? '+' : '−'}{tx.amount}
+                            {tx.sign}{tx.amount}<span className={styles.currency}>{tx.currency}</span>
                         </div>
                         <div className={styles.cat}>{tx.category}</div>
                     </div>

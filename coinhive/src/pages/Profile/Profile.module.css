@@ -1,4 +1,5 @@
 .layout {
+    --currency-size : 11px;
     display: grid;
     grid-template-columns: 300px 1fr;
     gap: 12px;
@@ -19,4 +20,7 @@
     display: flex;
     flex-direction: column;
     min-width: 0;
+}
+.currency{
+    font-size : var(--currency-size);
 }

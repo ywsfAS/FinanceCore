@@ -1,10 +1,11 @@
-﻿using FinanceCore.Application.Abstractions;
+using FinanceCore.Application.Abstractions;
 using FinanceCore.Application.Features.Categories.Commands.Create;
 using FinanceCore.Application.DTOs;
 using FinanceCore.Domain.Transactions;
 using MediatR;
 using FinanceCore.Application.DTOs.Transaction;
 using FinanceCore.Domain.Enums;
+using FinanceCore.Domain.Common;
 
 namespace FinanceCore.Application.Features.Transactions.Commands.Transfer
 {
@@ -20,11 +21,12 @@ namespace FinanceCore.Application.Features.Transactions.Commands.Transfer
 
         public async Task<CreateTransferDto?> Handle(CreateTransferCommand command, CancellationToken cancellationToken)
         {
-            var account = _accountRepository.GetByIdAndUserIdAsync(command.UserId, command.accountId, cancellationToken);
+            var account = await _accountRepository.GetByIdAndUserIdAsync(command.UserId, command.accountId, cancellationToken);
             if (account == null) { 
                 return null;
             }
-            var transaction = Transaction.Create(command.accountId,command.ToAccountId,command.amount,null,EnTransactionType.Transfer,DateTime.UtcNow,command.description);
+            var money = new Money(command.amount,account.Balance.Currency);
+            var transaction = Transaction.Create(command.accountId,command.ToAccountId,money,null,EnTransactionType.Transfer,DateTime.UtcNow,command.description);
             // Create Transaction
             var result = await _transactionRepository.TransferAsync(transaction, cancellationToken);
 

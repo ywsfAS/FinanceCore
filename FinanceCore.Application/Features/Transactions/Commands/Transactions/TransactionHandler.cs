@@ -28,8 +28,8 @@ namespace FinanceCore.Application.Features.Transactions.Commands.Transactions
 
         public async Task<CreateTransactionDto> Handle(TransactionCommand command , CancellationToken token)
         {
-            var account = await _accountRepository.IsExists(command.UserId,command.AccountId, token);
-            if (!account)
+            var account = await _accountRepository.GetByIdAndUserIdAsync(command.UserId,command.AccountId, token);
+            if (account is null)
             {
                 throw new AccountNotFoundException(command.AccountId);
             }
@@ -52,7 +52,8 @@ namespace FinanceCore.Application.Features.Transactions.Commands.Transactions
             {
                 throw new BudgetExceededException(budget.Id , category.Name , new Money(budget.Amount,budget.Currency) , spent);
             }
-            var transaction = Transaction.Create(command.AccountId, null, command.Amount, command.CategoryId,command.Type, DateTime.UtcNow, command.Description);
+            var money = new Money(command.Amount, account.Balance.Currency);
+            var transaction = Transaction.Create(command.AccountId, null, money, command.CategoryId,command.Type, DateTime.UtcNow, command.Description);
             if (command.Type == EnTransactionType.Expense)
             {
                 return await _transactionRepository.ExpenseAsync(transaction, token);

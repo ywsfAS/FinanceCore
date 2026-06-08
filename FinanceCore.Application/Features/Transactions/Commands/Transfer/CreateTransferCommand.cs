@@ -11,5 +11,5 @@ using System.Threading.Tasks;
 
 namespace FinanceCore.Application.Features.Transactions.Commands.Transfer
 {
-    public record CreateTransferCommand(Guid UserId , Guid accountId ,Guid ToAccountId, Money amount , string? description = null , string? notes = null) : IRequest<CreateTransferDto>;
+    public record CreateTransferCommand(Guid UserId , Guid accountId ,Guid ToAccountId, decimal amount , string? description = null , string? notes = null) : IRequest<CreateTransferDto>;
 }

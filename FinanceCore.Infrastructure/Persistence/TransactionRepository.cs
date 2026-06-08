@@ -51,15 +51,41 @@ namespace FinanceCore.Infrastructure.Repositories
             return model is null ? null : TransactionMapper.MapToDomain(model);
         }
 
-        public async Task<TransactionDto?> GetDtoByIdAndUserId(Guid userId, Guid id, CancellationToken token = default)
+        public async Task<TransactionDto?> GetDtoByIdAndUserId(Guid userId,Guid id,CancellationToken token = default)
         {
-            var model = await GetModelByIdAndUserIdAsync(userId, id, token);
-            if (model is null) return null;
+            using var connection = _connectionFactory.GetConnection();
 
-            return new TransactionDto(model.Id, model.AccountId, model.ToAccountId,
-                model.CategoryId, model.Amount, model.Type, model.CreatedAt, model.Description);
+            const string sql = @"
+            SELECT
+            t.Id,
+            a.Name  AS AccountName,
+            ta.Name AS ToAccountName,
+            c.Name  AS CategoryName,
+            t.Amount,
+            a.CurrencyId AS Currency,
+            t.TransactionTypeId AS Type,
+            t.CreatedAt AS Date,
+            t.Description
+            FROM Transactions t
+            INNER JOIN Accounts a
+                ON t.AccountId = a.Id
+            LEFT JOIN Accounts ta
+                ON t.ToAccountId = ta.Id
+            LEFT JOIN Categories c
+                ON t.CategoryId = c.Id
+            WHERE t.Id = @Id
+                AND a.UserId = @UserId";
+
+            return await connection.QueryFirstOrDefaultAsync<TransactionDto>(
+                new CommandDefinition(
+                    sql,
+                    new
+                    {
+                        Id = id,
+                        UserId = userId
+                    },
+                    cancellationToken: token));
         }
-
         public async Task<Transaction?> GetByIdAndUserId(Guid userId, Guid id, CancellationToken token = default)
         {
             var model = await GetModelByIdAndUserIdAsync(userId, id, token);
@@ -188,18 +214,30 @@ namespace FinanceCore.Infrastructure.Repositories
             using var connection = _connectionFactory.GetConnection();
 
             var sql = new StringBuilder(@"
-                SELECT Id, AccountId, ToAccountId, CategoryId, Amount,
-                       TransactionTypeId, Date, Description, CreatedAt, UpdatedAt
-                FROM Transactions
-                WHERE 1 = 1");
-
-            if (accountId.HasValue) sql.Append(" AND AccountId    = @AccountId");
-            if (categoryId.HasValue) sql.Append(" AND CategoryId   = @CategoryId");
-            if (start.HasValue) sql.Append(" AND CreatedAt    >= @Start");
-            if (end.HasValue) sql.Append(" AND CreatedAt    <= @End");
-            if (type.HasValue) sql.Append(" AND TransactionTypeId = @Type");
-
-            sql.Append(" ORDER BY CreatedAt OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY");
+            SELECT
+            t.Id,
+            a.Name  AS AccountName,
+            ta.Name AS ToAccountName,
+            c.Name  AS CategoryName,
+            t.Amount,
+            a.CurrencyId AS Currency,
+            t.TransactionTypeId AS Type,
+            t.CreatedAt AS Date,
+            t.Description 
+            FROM Transactions t
+            INNER JOIN Accounts a
+                ON t.AccountId = a.Id
+            LEFT JOIN Accounts ta
+                ON t.ToAccountId = ta.Id
+            LEFT JOIN Categories c
+                ON t.CategoryId = c.Id
+            WHERE 1 = 1");
+            if (accountId.HasValue) sql.Append(" AND t.AccountId    = @AccountId");
+            if (categoryId.HasValue) sql.Append(" AND t.CategoryId   = @CategoryId");
+            if (start.HasValue) sql.Append(" AND t.CreatedAt    >= @Start");
+            if (end.HasValue) sql.Append(" AND t.CreatedAt    <= @End");
+            if (type.HasValue) sql.Append(" AND t.TransactionTypeId = @Type"); 
+            sql.Append(" ORDER BY t.CreatedAt OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY");
 
             var cmd = new CommandDefinition(sql.ToString(), new
             {
@@ -212,10 +250,7 @@ namespace FinanceCore.Infrastructure.Repositories
                 PageSize = pageSize
             });
 
-            var models = await connection.QueryAsync<TransactionModel>(cmd);
-            return models.Select(m => new TransactionDto(
-                m.Id, m.AccountId, m.ToAccountId, m.CategoryId,
-                m.Amount, m.Type, m.CreatedAt, m.Description));
+            return await connection.QueryAsync<TransactionDto>(cmd);
         }
 
         private async Task<IEnumerable<TransactionDto>> FetchAllTransactionsAsync(
