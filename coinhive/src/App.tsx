@@ -12,6 +12,7 @@ import LoginPage from './pages/Login/LoginPage';
 import ProtectedRoute from './routes/ProtectedRoute';
 import ForgotPasswordPage from "./pages/ForgotPasswordPage/ForgotpasswordpagE";
 import ResetPasswordPage from "./pages/ResetPasswordPage/Resetpasswordpage";
+import TransactionsPage from "./pages/Transactions/transactionsPage";
 
 function App() {
     const { user, loginWithToken} = useAuth();
@@ -30,7 +31,9 @@ function App() {
                 <Route path="/login" element={<LoginPage />} />
                 <Route path="/forget-password" element={<ForgotPasswordPage/> } />
                 <Route path="/reset-password" element={<ResetPasswordPage/> } />
-                <Route path="/profile" element={<ProfilePage/> }/>
+                <Route path="/profile" element={<ProfilePage />} />
+                <Route path="/transactions" element={<TransactionsPage />} />
+
 
             </Routes>
             <Footer/>
