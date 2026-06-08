@@ -1,5 +1,5 @@
 import styles from './TransactionCard.module.css';
-import { CircleArrowRight, BanknoteArrowDown } from 'lucide-react';
+import { CircleArrowRight, BanknoteArrowDown, BanknoteArrowUp } from 'lucide-react';
 import { useFiltredTransactions } from '../../hooks/Transactions/useFiltredTransactions';
 
 export default function TransactionCard() {
@@ -20,20 +20,21 @@ export default function TransactionCard() {
         sign: tx.type === 1 ? '+' : '−',
         bgVar: tx.type === 1 ? '#dcfce7' : '#fee2e2'
     }));
-    console.log(data);
+    const transactionIcon = (isIncome : boolean) => {
+        if (isIncome) return <BanknoteArrowUp />;
+        return <BanknoteArrowDown />;
+    }
     return (
         <div className={styles.card}>
             <div className={styles.header}>
                 <span className={styles.title}>Recent Transactions</span>
-                <span className={styles.viewAll}>
-                    <CircleArrowRight size={20} />
-                </span>
+                <CircleArrowRight className={ styles.viewAll} size={20} />
             </div>
 
             {transactionsUI.map((tx) => (
                 <div key={tx.id} className={styles.item}>
                     <div className={styles.ico} style={{ background: tx.bgVar }}>
-                        <BanknoteArrowDown />
+                        {transactionIcon(tx.positive)}
                     </div>
 
                     <div className={styles.meta}>
