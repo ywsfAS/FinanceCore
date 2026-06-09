@@ -1,28 +1,103 @@
-
-
 .overlay {
     position: fixed;
     inset: 0;
-    background-color: #0000002e;
-}
-.popUp {
-    --title-size: 20px;
-    --title-color: #0f172a;
-    position: fixed;
-    width: 500px;
-    background-color: white;
-    border-radius: 10px;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%,-50%);
-    padding: 36px 32px;
-}
-.title {
-    font-size: var(--title-size);
-    font-weight: 600;
-    color: var(--title-color);
-    text-align: center;
-    margin: 0 0 18px;
-    letter-spacing: -0.01em;
+    background: rgba(15, 23, 42, 0.45);
+    backdrop-filter: blur(4px);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
 }
 
+.popUp {
+    width: 100%;
+    max-width: 500px;
+    background: white;
+    border-radius: 18px;
+    padding: 32px;
+    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 10px 10px -5px rgb(0 0 0 / 0.04);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+}
+
+.title {
+    margin: 0 0 12px;
+    text-align: center;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #0f172a;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.field label {
+   font-size: 0.9rem;
+   font-weight: 500;
+   color: #475569;
+}
+
+.popUp select,
+.popUp input {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #dbe2ea;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    outline: none;
+    transition: all 0.2s ease;
+    background: white;
+}
+
+.popUp select:focus,
+.popUp input:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 4px rgb(59 130 246 / 0.15);
+ }
+
+.error {
+    color: #dc2626;
+    font-size: 0.8rem;
+    margin-top: -2px;
+}
+
+.actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 8px;
+}
+
+.cancelBtn {
+    flex: 1;
+    padding: 12px;
+    border: 1px solid #dbe2ea;
+    border-radius: 10px;
+    background: white;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.submitBtn {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 10px;
+    background: #2563eb;
+    color: white;
+    cursor: pointer;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+.submitBtn:hover {
+    background: #1d4ed8;
+}
+
+.submitBtn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}

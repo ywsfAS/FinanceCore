@@ -30,6 +30,9 @@ const TransactionsPage = () => {
     }; 
     // pop up state
     const [open, setOpen] = useState<boolean>(false);
+    const handleClose = () => {
+        setOpen((prev) => !prev);
+    }
     const [filters, setFilters] = useState<Transactionfilters>(initialFiltersState);
     const handleFromDateChange = (date : Date | null) => {
         setFilters((prev) => ({ ...prev, fromDate: date }))
@@ -112,7 +115,7 @@ const TransactionsPage = () => {
                 <button onClick={handleNextPage} className={styles.btn}>{`next page ${page + 1}`}</button>
                 <button onClick={handlePrevPage} className={styles.btn}>{`previous page ${page - 1}`}</button>
             </div>
-            {  open && <TransactionCreatePopUp />}
+            {open && <TransactionCreatePopUp handleClose={handleClose} />}
 
 
 

@@ -3,7 +3,7 @@ import {
     userService,
 } from "../../services/userService";
 
-export function useUserCategoriesOptions() {
+export function useUserAccountsOptions() {
     return useQuery({
         queryKey: ["user-accounts-options"],
 

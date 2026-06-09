@@ -7,13 +7,19 @@ export interface FiltredTransactionsParams {
     Page?: number;
     PageSize?: number;
 }
+export enum TransactionType {
+    Income = "Income",
+    Expense = "Expense"
+
+}
+
 export interface CreateTransactionParams {
     accountId: string;
     categoryId: string;
-    type: string;
+    type: TransactionType;
     amount: number;
     description: string;
-    transactionDate: Date;
+    transactionDate : string;
 }
 export interface EditTransactionBodyParams {
     accountId: string;
