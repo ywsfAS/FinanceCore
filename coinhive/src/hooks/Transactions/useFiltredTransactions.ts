@@ -13,5 +13,6 @@ export function useFiltredTransactions({
         queryFn: () =>
             transactionService.getFiltredTransactions({ CategoryId, Start, End, Page, PageSize, Type }),
         staleTime: 1000 * 60 * 5,
+        placeholderData : (prev) => prev
     });
 }

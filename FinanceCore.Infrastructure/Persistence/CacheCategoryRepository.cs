@@ -1,4 +1,4 @@
-﻿using FinanceCore.Application.Abstractions;
+using FinanceCore.Application.Abstractions;
 using FinanceCore.Application.DTOs;
 using FinanceCore.Domain.Categories;
 using FinanceCore.Infrastructure.Repositories;
@@ -96,6 +96,18 @@ namespace FinanceCore.Infrastructure.Persistence
                 entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
                 return _categoryRepository.IsExists(userId, id, token);
             });
+        }
+
+        public Task<IEnumerable<CategoryOptionDto>?> GetCategoriesByUserOptionsAsync(Guid userId , CancellationToken token)
+        {
+            var key = $"Category_{userId}_options";
+
+            return _memoryCache.GetOrCreateAsync(key, entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
+                return _categoryRepository.GetCategoriesByUserOptionsAsync(userId,token);
+            });
+            
         }
 
     }

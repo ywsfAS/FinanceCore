@@ -6,6 +6,7 @@ using FinanceCore.Application.Features.Accounts.Queries.GetAccountsByUserId;
 using FinanceCore.Application.Features.Budgets.Queries.GetBudgetById;
 using FinanceCore.Application.Features.Budgets.Queries.GetBudgetsByUserId;
 using FinanceCore.Application.Features.Categories.Queries.GetCategoriesByUserId;
+using FinanceCore.Application.Features.Categories.Queries.GetCategoriesByUserOptions;
 using FinanceCore.Application.Features.SavingGoals.Queries.GetSavingGoalsPerUser;
 using FinanceCore.Application.Features.Users.Command.Delete;
 using FinanceCore.Application.Features.Users.Command.Update;
@@ -166,6 +167,21 @@ namespace FinanceCore.API.Controllers
         }
 
 
+        /// <summary>
+        /// Get all categories name for a user
+        /// </summary>
+        [HttpGet("categories/options")]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(IEnumerable<CategoryOptionDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> GetCategoriesByUserIdNames()
+        {
+            var userId = GetUserId();
+            var query = new GetCategoriesByUserOptionsQuery(userId);
+            var categories = await _mediator.Send(query);
+            return Ok(categories);
+        }
 
 
 

@@ -1,4 +1,4 @@
-﻿using FinanceCore.Application.DTOs;
+using FinanceCore.Application.DTOs;
 using FinanceCore.Domain.Categories;
 using System;
 using System.Collections.Generic;
@@ -20,5 +20,6 @@ namespace FinanceCore.Application.Abstractions
         Task<IEnumerable<CategoryDto>?> GetCategoriesByUserIdAsync(Guid? userId, int page, int pageSize , CancellationToken token);
         Task<IEnumerable<CategoryDto>?> GetFiltredCategoriesAsync(Guid? userId, string? name, byte? type, DateTime? createdAt, int page, int pageSize);
         Task<bool> IsExists(Guid userId, Guid id, CancellationToken token = default);
+        Task<IEnumerable<CategoryOptionDto>?> GetCategoriesByUserOptionsAsync(Guid userId , CancellationToken token);
     }
 }

@@ -1,4 +1,4 @@
-﻿using Dapper;
+using Dapper;
 using FinanceCore.Application.Abstractions;
 using FinanceCore.Application.DTOs;
 using FinanceCore.Application.Models.FinanceCore.Infrastructure.Models;
@@ -200,6 +200,15 @@ namespace FinanceCore.Infrastructure.Repositories
 
             var model = await connection.QueryAsync<CategoryModel>(sql, parameters);
             return model.Select(model => new CategoryDto(model.Id,model.UserId, model.Name,(CategoryType)model.CategoryTypeId,model.Description));
+        }
+
+        public async Task<IEnumerable<CategoryOptionDto>?> GetCategoriesByUserOptionsAsync(Guid userId , CancellationToken token)
+        {
+            using var connection = _connectionFactory.GetConnection();
+            const string sql = @" SELECT Id , Name FROM Categories WHERE UserId = @Id";
+            var command = new CommandDefinition(sql, new { Id = userId }, cancellationToken: token);
+            return await connection.QueryAsync<CategoryOptionDto>(command);
+
         }
     }
 }

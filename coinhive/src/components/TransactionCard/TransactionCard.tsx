@@ -1,10 +1,10 @@
 import styles from './TransactionCard.module.css';
 import { CircleArrowRight, BanknoteArrowDown, BanknoteArrowUp } from 'lucide-react';
 import { useFiltredTransactions } from '../../hooks/Transactions/useFiltredTransactions';
+import type { FiltredTransactionsParams } from '../../services/transactionService';
 
-export default function TransactionCard() {
-    const { data, isLoading, isError, error } = useFiltredTransactions({});
-
+export default function TransactionCard(filters: FiltredTransactionsParams) {
+    const { data, isLoading, isError, error } = useFiltredTransactions(filters);
     if (isLoading) return <div>Loading...</div>;
     if (isError) return <div>{error.message}</div>;
     if (!data || data.length === 0) return <div>No transactions</div>;

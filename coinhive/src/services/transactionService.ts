@@ -1,8 +1,8 @@
 import { apiClient } from '../lib/apiClient';
 export interface FiltredTransactionsParams {
     CategoryId?: string;
-    Start?: Date;
-    End?: Date;
+    Start?: Date | null;
+    End?: Date | null;
     Type?: number;
     Page?: number;
     PageSize?: number;
@@ -13,9 +13,11 @@ export const transactionService = {
         if (CategoryId) params.append('CategoryId', CategoryId);
         if (Start) params.append('Start', Start.toISOString());
         if (End) params.append('End', End.toISOString());
-        if(Type != undefined) params.append('Type',Type.toString())
+        if (Type) params.append('Type', Type.toString())
+        if (Page) params.append('Page', Page.toString());
+        if (PageSize) params.append('PageSize', PageSize.toString());
 
-        return apiClient(`/transactions?CategoryId=${params.toString()}`);
+        return apiClient(`/transactions?${params.toString()}`);
     }
 
 
