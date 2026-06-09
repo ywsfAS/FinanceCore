@@ -214,7 +214,13 @@ namespace FinanceCore.Infrastructure.Repositories
                 (EnCurrency)model.CurrencyId,
                 model.CreatedAt);
         }
-
+        public async Task<IEnumerable<AccountOptionsDto>?> GetByUserAccountsOptionsAsync(Guid id, CancellationToken token)
+        {
+            using var connection = _connectionFactory.GetConnection();
+            const string sql = @"SELECT Id , Name FROM Accounts WHERE UserId = @Id";
+            var command = new CommandDefinition(sql, new { Id = id }, cancellationToken: token);
+            return await connection.QueryAsync<AccountOptionsDto>(command);
+        }
         private async Task<AccountModel?> GetModelByIdAndUserIdAsync(Guid userId, Guid id, CancellationToken token = default)
         {
             const string sql = @"

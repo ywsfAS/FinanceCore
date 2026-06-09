@@ -12,6 +12,7 @@ namespace FinanceCore.Application.Abstractions
     {
         Task<Account?> GetByIdAsync(Guid id , CancellationToken token = default);
         Task<IEnumerable<Account>?> GetByUserIdAsync(Guid id, CancellationToken token = default);
+        Task<IEnumerable<AccountOptionsDto>?> GetByUserAccountsOptionsAsync(Guid id, CancellationToken token);
         Task<IEnumerable<AccountDto>?> GetDtoByUserIdAsync(Guid id, CancellationToken token = default);
         Task<AccountDto?> GetDtoByIdAndUserIdAsync(Guid userId , Guid id, CancellationToken token = default);
         Task<Account?> GetByIdAndUserIdAsync(Guid userId, Guid id, CancellationToken token = default);

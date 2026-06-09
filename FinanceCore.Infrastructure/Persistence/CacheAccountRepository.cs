@@ -26,6 +26,18 @@ namespace FinanceCore.Infrastructure.Persistence
                 return _accountRepository.GetByIdAsync(id, token);
             });
         }
+
+        public Task<IEnumerable<AccountOptionsDto>?> GetByUserAccountsOptionsAsync(Guid id, CancellationToken token)
+        {
+            string key = $"Account_options_{id}";
+
+            return _memoryCache.GetOrCreateAsync(key, entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5);
+                return _accountRepository.GetByUserAccountsOptionsAsync(id,token);
+            });
+
+        }
         public Task<IEnumerable<AccountDto>?> GetDtoByNameAsync(Guid id , string name , CancellationToken token)
         {
             string key = $"Account_{id}_{name}";

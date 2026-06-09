@@ -18,21 +18,21 @@ export interface RemoveAccountParams {
 
 
 export const accountService = {
-    CreateAccount = (account : CreateAccountParams) => {
+    CreateAccount : (account : CreateAccountParams) => {
         return apiClient(`/accounts`, {
             method: 'POST',
             body : JSON.stringify(account),
 
         });
     },
-    GetAccountById = ({id } : GetAccountByIdParams) => {
+    GetAccountById : ({id } : GetAccountByIdParams) => {
         return apiClient(`/accounts/${id}`);
     },
-    GetAccountByName = ({ name }: GetAccountByNameParams) => {
+    GetAccountByName : ({ name }: GetAccountByNameParams) => {
         return apiClient(`/accounts/${name}`);
     },
-    RemoveAccount = ({ id } : RemoveAccountParams) => {
-        return apiClient(`/accounts/${name}`, {
+    RemoveAccount : ({ id } : RemoveAccountParams) => {
+        return apiClient(`/accounts/${id}`, {
             method: 'DELETE'
         });
     }

@@ -6,6 +6,7 @@ import { Calendar } from 'lucide-react';
 import { format} from "date-fns";
 import TransactionCard  from "../../components/TransactionCard/TransactionCard";
 import { useUserCategoriesOptions } from '../../hooks/User/useUserCategoriesOptions';
+import TransactionCreatePopUp  from "../../components/TransactionCreatePopUp/TransactionCreatePopUp";
 
 export interface Transactionfilters {
     fromDate: Date | null | undefined;
@@ -27,6 +28,8 @@ const TransactionsPage = () => {
         toDate: null,
         category: ""
     }; 
+    // pop up state
+    const [open, setOpen] = useState<boolean>(false);
     const [filters, setFilters] = useState<Transactionfilters>(initialFiltersState);
     const handleFromDateChange = (date : Date | null) => {
         setFilters((prev) => ({ ...prev, fromDate: date }))
@@ -63,7 +66,8 @@ const TransactionsPage = () => {
    
     // get selected category id
     const cat = data.find(cat => cat.name.toLowerCase() === filters.category);
-    const id = cat?.id
+    const id = cat?.id;
+
   
     return (
         <div className={styles.wrapper}>
@@ -72,7 +76,7 @@ const TransactionsPage = () => {
                     <h1 className={styles.title}>Transactions</h1>
                     <p>Track and manage all your financial activity</p>
                 </div>
-                <button className={styles.btn}>+ new transaction</button>
+                <button className={styles.btn} onClick={() => setOpen((prev) => !prev)}>+ new transaction</button>
             </div>
             <div className={styles.filterSection}>
                 <div className={styles.left}>
@@ -108,6 +112,7 @@ const TransactionsPage = () => {
                 <button onClick={handleNextPage} className={styles.btn}>{`next page ${page + 1}`}</button>
                 <button onClick={handlePrevPage} className={styles.btn}>{`previous page ${page - 1}`}</button>
             </div>
+            {  open && <TransactionCreatePopUp />}
 
 
 
