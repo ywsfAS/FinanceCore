@@ -1,0 +1,52 @@
+.card {
+    background: white;
+    border-radius: 14px;
+    padding: 18px;
+    box-shadow: 0 5px 9px rgba(0,0,0,.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.left {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+    .left h3 {
+        margin: 0;
+    }
+
+.income {
+    color: #16a34a;
+    font-weight: 600;
+}
+
+.expense {
+    color: #dc2626;
+    font-weight: 600;
+}
+
+.actions {
+    display: flex;
+    gap: 10px;
+}
+
+.editBtn {
+    padding: .65rem 1rem;
+    border: none;
+    border-radius: 8px;
+    background: #2563eb;
+    color: white;
+    cursor: pointer;
+}
+
+.deleteBtn {
+    padding: .65rem 1rem;
+    border: none;
+    border-radius: 8px;
+    background: #dc2626;
+    color: white;
+    cursor: pointer;
+}

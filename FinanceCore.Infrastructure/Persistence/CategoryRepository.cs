@@ -185,8 +185,8 @@ namespace FinanceCore.Infrastructure.Repositories
             }
             if (!string.IsNullOrEmpty(Name))
             {
-                sql += " AND Name = @Name";
-                parameters.Add("Name", Name);
+                sql += " AND Name LIKE @Name";
+                parameters.Add("Name", $"%{Name}%");
 
             }
 
