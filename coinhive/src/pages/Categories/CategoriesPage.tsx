@@ -5,8 +5,9 @@ import styles from './CategoriesPage.module.css';
 
 import CategoryCard from '../../components/CategoryCard/CategoryCard';
 import CategoryCreatePopup from '../../components/CategoryCreatePopup/CategoryCreatePopup';
-import type {CategoriesWithFiltersParams} from '../../services/categoriesService';
-import {useGetCategoriesWithFilters} from "../../hooks/Categories/useGetCategoriesWithFilter";
+import type {CategoriesWithFiltersParams , RemoveCategoryParams} from '../../services/categoriesService';
+import { useGetCategoriesWithFilters } from "../../hooks/Categories/useGetCategoriesWithFilter";
+import { useRemoveCategory } from "../../hooks/Categories/useRemoveCategory";
 const initialCategoryFilter: CategoriesWithFiltersParams = {
     name: "",
     type: "",
@@ -22,6 +23,17 @@ const staticCategories = [
 const CategoriesPage = () => {
     const [open, setOpen] = useState(false);
     const [filters, setFilters] = useState<CategoriesWithFiltersParams>(initialCategoryFilter);
+    const RemoveCategoryMutation = useRemoveCategory();
+    const handleRemoveCategory = async (id: string) => {
+        const categoryId: RemoveCategoryParams = { id };
+        try {
+            await RemoveCategoryMutation.mutateAsync(categoryId);
+            console.log("category deleted successfully");
+        } catch (err) {
+            console.error(err.message);
+        }
+    }
+
     const handleClose = () => {
         setOpen((prev) => !prev);
     }
@@ -31,6 +43,7 @@ const CategoriesPage = () => {
     const ChangeTypeHandler = (type: string) => {
         setFilters((prev) => ({ ...prev, type }));
     }
+    
     const { data, isLoading, error, isError } = useGetCategoriesWithFilters(filters);
     if (isLoading) return <div>loading...</div>
     if (isError) return <div>{error.message}</div>
@@ -92,7 +105,7 @@ const CategoriesPage = () => {
             </div>
 
             <div className={styles.categoriesContainer}>
-                {categories.map((cat) => <CategoryCard name={cat.name} type={cat.type} id={cat.id} key={cat.id} />)}
+                {categories.map((cat) => <CategoryCard name={cat.name} type={cat.type} id={cat.id} key={cat.id} onDelete={handleRemoveCategory} />)}
             </div>
 
             {open && (

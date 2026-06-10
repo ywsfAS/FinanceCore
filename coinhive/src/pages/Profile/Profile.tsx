@@ -4,18 +4,46 @@ import ProfileStats from "../../components/ProfileStats/ProfileStats";
 import InsightsRow from "../../components/InsightRow/InsightRow";
 import TransactionCard from "../../components/TransactionCard/TransactionCard";
 import ChartsSection from "../../components/ChartsSection/ChartsSection";
-import { useProfile } from "../../hooks/Profile/Profile";
+import { useProfile } from "../../hooks/Profile/useProfile";
+import { useUpdateProfile } from "../../hooks/Profile/useUpdateProfile";
+import { useUploadProfileImage} from "../../hooks/Profile/useUploadProfileImage"
 import OverviewHeader from "../../components/OverviewHeader/OverviewHeader";
 import ProfileEditPopUp from "../../components/ProfileEditPopUp/ProfilePopUp";
 import { useState } from 'react';
+import type { UpdateProfileParams, UploadProfileImageParams } from "../../services/profileService";
 
 export default function ProfilePage() {
 
-    const { profile, updateProfile } = useProfile();
+    const { data, isLoading, isError, error } = useProfile();
+    const updateProfileMutation = useUpdateProfile();
+    const uploadProfileImageMutation = useUploadProfileImage();
     const [active, setActive] = useState(false);
     const PopUpHandler = () => {
         setActive((prev) => !prev);
     }
+    const updateProfile = async (profile : UpdateProfileParams ) => {
+        try {
+            await updateProfileMutation.mutateAsync(profile);
+            console.log("profile updated successfully");
+        } catch (err) {
+            console.error(err);
+        }
+
+    }
+    const updateProfileImage = async (profile: UploadProfileImageParams) => {
+
+        try {
+            await uploadProfileImageMutation.mutateAsync(profile);
+            console.log("profile image updated successfully");
+        } catch (err) {
+            console.error(err);
+        }
+    }
+    if (isLoading) return <div>Loading...</div>;
+    if (isError) return <div>{error.message}</div>;
+
+    const profile = data;
+
 
     return (
         <div className={styles.layout}>
@@ -26,7 +54,7 @@ export default function ProfilePage() {
                 <ChartsSection />
                 <InsightsRow />
                 <TransactionCard />
-                {active && <ProfileEditPopUp EditProfileHandler={updateProfile} PopUpHandler={PopUpHandler} />}
+                {active && <ProfileEditPopUp EditProfileImageHandler={updateProfileImage} EditProfileHandler={updateProfile} PopUpHandler={PopUpHandler} />}
             </main>
         </div>
     );

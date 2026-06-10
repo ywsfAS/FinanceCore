@@ -17,6 +17,9 @@ export interface UpdateCategoryParams {
     name: string;
     description: string;
 }
+export interface RemoveCategoryParams {
+    id: string;
+}
 export const categoriesService = {
     getCategoriesWithFilter: ({ name, type, page, pageSize }: CategoriesWithFiltersParams) => {
         const params = new URLSearchParams();
@@ -37,6 +40,11 @@ export const categoriesService = {
             method: 'PUT',
             body: JSON.stringify(body)
         });  
+    },
+    RemoveCategory: ({id}: RemoveCategoryParams ) => {
+        return apiClient(`/categories/${id}`, {
+            method : 'DELETE'
+        })
     }
 
 }

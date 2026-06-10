@@ -1,118 +1,209 @@
 import Input from "../Input/Input";
-import styles from "./ProfilePopUp.module.css";
 import Button from "../Button/Button";
-import { useState } from 'react';
-import type { Profile } from "../../entities/profile"; 
+import styles from "./ProfilePopUp.module.css";
 
-interface Form {
-    name: string;
-    bio: string;
-    photo: File | null;
-}
-const initialForm: Form = {
-    name: "",
-    bio: "",
-    photo: null
-};
+import { useForm } from "react-hook-form";
+
+import type {
+    UpdateProfileParams,
+    UploadProfileImageParams
+} from "../../services/profileService";
 
 interface ProfileEditPopUpProps {
-    EditProfileHandler: (updatedData: Profile) => Promise<{ success: boolean; error?: any }>;
+    EditProfileHandler: (
+        profile: UpdateProfileParams
+    ) => Promise<void>;
+
+    EditProfileImageHandler: (
+        image: UploadProfileImageParams
+    ) => Promise<void>;
+
     PopUpHandler: () => void;
 }
 
-const ProfileEditPopUp = ({ EditProfileHandler , PopUpHandler }: ProfileEditPopUpProps) => {
-    const [formData, setFormData] = useState<Form>(initialForm);
-    const [errors, setErrors] = useState<Record<string, string>>({});
-    const [isSaving, setIsSaving] = useState(false);
+interface ProfileForm {
+    name: string;
+    bio: string;
+    photo: FileList | null;
+}
 
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setFormData((prev) => ({ ...prev, [name]: value }));
-        if (errors[name]) setErrors((prev) => ({ ...prev, [name]: "" }));
-    };
-
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files && e.target.files[0]) {
-            setFormData((prev) => ({ ...prev, photo: e.target.files![0] }));
-            if (errors.photo) setErrors((prev) => ({ ...prev, photo: "" }));
+const ProfileEditPopUp = ({
+    EditProfileHandler,
+    EditProfileImageHandler,
+    PopUpHandler
+}: ProfileEditPopUpProps) => {
+    const {
+        register,
+        handleSubmit,
+        reset,
+        watch,
+        formState: {
+            errors,
+            isSubmitting
         }
-    };
+    } = useForm<ProfileForm>({
+        defaultValues: {
+            name: "",
+            bio: ""
+        }
+    });
 
-    const validateForm = (): boolean => {
-        const newErrors: Record<string, string> = {};
-        if (!formData.name.trim()) newErrors.name = "Name is required";
-        if (!formData.bio.trim()) newErrors.bio = "Bio is required";
+    const selectedPhoto = watch("photo");
 
-        setErrors(newErrors);
-        return Object.keys(newErrors).length === 0;
-    };
+    const onSubmit = async (
+        data: ProfileForm
+    ) => {
+        const nameParts = data.name
+            .trim()
+            .split(" ");
 
-    const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault(); 
+        const firstName =
+            nameParts[0] ?? "";
 
-        if (!validateForm()) return;
+        const lastName =
+            nameParts.slice(1).join(" ");
 
-        setIsSaving(true);
-        try {
-            const nameParts = formData.name.trim().split(" ");
-            const firstName = nameParts[0] || "";
-            const lastName = nameParts.slice(1).join(" ") || "";
+        const profilePayload: UpdateProfileParams = {
+            firstName,
+            lastName,
+            bio: data.bio
+        };
 
-            const updatedProfilePayload: Profile = {
-                firstName,
-                lastName,
-                bio: formData.bio,
-                photo: formData.photo 
+        await EditProfileHandler(
+            profilePayload
+        );
+
+        if (
+            data.photo &&
+            data.photo.length > 0
+        ) {
+            const imagePayload: UploadProfileImageParams =
+            {
+                photo: data.photo[0]
             };
 
-            const result = await EditProfileHandler(updatedProfilePayload);
-
-            if (result.success) {
-                console.log("Profile successfully updated!");
-            } else {
-                console.log("Server error encountered while saving profile.");
-            }
-        } catch (err) {
-            console.error("Submission crash:", err);
-        } finally {
-            setIsSaving(false);
+            await EditProfileImageHandler(
+                imagePayload
+            );
         }
-        PopUpHandler();
-    };
 
-    const handleReset = () => {
-        setFormData(initialForm);
-        setErrors({});
+        PopUpHandler();
     };
 
     return (
         <div className={styles.overlay}>
-            <form onSubmit={handleSubmit} className={styles.popUp}>
+            <form
+                onSubmit={handleSubmit(
+                    onSubmit
+                )}
+                className={styles.popUp}
+            >
                 <button
-                    className={styles.closeButton}
-                    onClick={PopUpHandler}
+                    type="button"
+                    className={
+                        styles.closeButton
+                    }
+                    onClick={
+                        PopUpHandler
+                    }
                     aria-label="Close popup"
                 >
                     ×
                 </button>
-                <h1 className={styles.title}>Edit Your Profile</h1>
+
+                <h1 className={styles.title}>
+                    Edit Your Profile
+                </h1>
 
                 <div className={styles.name}>
-                    <Input value={formData.name} name="name" error={errors.name} onChange={handleChange} type="text" borderStyle="dashed" label="Name" placeholder="Enter your new name" />
-                </div>
-                <div className={styles.bio}>
-                    <Input value={formData.bio} name="bio" error={errors.bio} onChange={handleChange} type="text" label="Bio" borderStyle='dashed' placeholder="Enter your new bio" />
-                </div>
-                <div className={styles.file}>
-                    <Input error={errors.photo} onChange={handleFileChange} type="file" label={formData.photo ? `Selected: ${formData.photo.name}` : "Upload Photo"} id="photo" borderStyle='dashed' accept="image/*" />
+                    <Input
+                        {...register(
+                            "name",
+                            {
+                                required:
+                                    "Name is required"
+                            }
+                        )}
+                        error={
+                            errors.name
+                                ?.message
+                        }
+                        type="text"
+                        borderStyle="dashed"
+                        label="Name"
+                        placeholder="Enter your new name"
+                    />
                 </div>
 
-                <div className={styles.actions}>
-                    <Button type="button" variant='purple' onClick={handleReset} disabled={isSaving}>
+                <div className={styles.bio}>
+                    <Input
+                        {...register(
+                            "bio",
+                            {
+                                required:
+                                    "Bio is required"
+                            }
+                        )}
+                        error={
+                            errors.bio
+                                ?.message
+                        }
+                        type="text"
+                        borderStyle="dashed"
+                        label="Bio"
+                        placeholder="Enter your new bio"
+                    />
+                </div>
+
+                <div className={styles.file}>
+                    <Input
+                        type="file"
+                        accept="image/*"
+                        borderStyle="dashed"
+                        label={
+                            selectedPhoto?.[0]
+                                ?.name
+                                ? `Selected: ${selectedPhoto[0].name}`
+                                : "Upload Photo"
+                        }
+                        error={
+                            errors.photo
+                                ?.message
+                        }
+                        {...register(
+                            "photo"
+                        )}
+                    />
+                </div>
+
+                <div
+                    className={
+                        styles.actions
+                    }
+                >
+                    <Button
+                        type="button"
+                        variant="purple"
+                        onClick={() =>
+                            reset()
+                        }
+                        disabled={
+                            isSubmitting
+                        }
+                    >
                         Reset
                     </Button>
-                    <Button type="submit" variant='purple' disabled={isSaving}>
-                        {isSaving ? "Saving..." : "Save"}
+
+                    <Button
+                        type="submit"
+                        variant="purple"
+                        disabled={
+                            isSubmitting
+                        }
+                    >
+                        {isSubmitting
+                            ? "Saving..."
+                            : "Save"}
                     </Button>
                 </div>
             </form>
