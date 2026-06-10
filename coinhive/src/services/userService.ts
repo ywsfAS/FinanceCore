@@ -8,7 +8,10 @@ export const userService = {
     },
     getUserAccountsOptions: () => {
         return apiClient(`/users/accounts/options`);
-    }
+    },
+    getUserAccounts: () => {
+        return apiClient(`/users/accounts`);
+    },
 
 
 

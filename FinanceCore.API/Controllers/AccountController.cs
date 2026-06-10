@@ -6,6 +6,7 @@ using FinanceCore.Application.Features.Accounts.Commands.Delete;
 using FinanceCore.Application.Features.Accounts.Commands.Update;
 using FinanceCore.Application.Features.Accounts.Queries.GetAccountById;
 using FinanceCore.Application.Features.Accounts.Queries.GetAccountByName;
+using FinanceCore.Application.Features.Accounts.Queries.GetAccountFiltered;
 using FinanceCore.Application.Features.Accounts.Queries.GetBalanceById;
 using FinanceCore.Application.Features.Transactions.Queries.GetTansactionsByAccountId;
 using FinanceCore.Domain.Common;
@@ -46,6 +47,22 @@ namespace FinanceCore.API.Controllers
             var command = new CreateAccountCommand(userId,request.Name,request.Type,new Money(request.InitialBalance,request.Currency));
             var account = await _mediator.Send(command);
             return CreatedAtAction(nameof(GetAccountById), new { id = account.Id }, account);
+        }
+
+        /// <summary>
+        /// get user accounts info filtered
+        /// </summary>
+        [HttpGet]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(IEnumerable<AccountInfoDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> GetAccounts([FromQuery] AccountFilteredRequest request)
+        {
+            var userId = GetUserId();
+            var command = new GetAccountFilteredQuery(userId,request.name,request.type,request.currency); 
+            var accounts = await _mediator.Send(command);
+            return Ok(accounts);
         }
 
         /// <summary>

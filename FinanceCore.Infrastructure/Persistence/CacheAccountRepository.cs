@@ -1,6 +1,7 @@
 using FinanceCore.Application.Abstractions;
 using FinanceCore.Application.DTOs;
 using FinanceCore.Domain.Accounts;
+using FinanceCore.Domain.Enums;
 using FinanceCore.Infrastructure.Repositories;
 using Microsoft.Extensions.Caching.Memory;
 
@@ -37,6 +38,17 @@ namespace FinanceCore.Infrastructure.Persistence
                 return _accountRepository.GetByUserAccountsOptionsAsync(id,token);
             });
 
+        }
+
+        public  Task<IEnumerable<AccountInfoDto>?> GetAccountInfosAsync(Guid userId , EnAccountType? type , EnCurrency? currency , string? name , CancellationToken token)
+        {
+            string key = $"Account_infos_{userId}_{type}_{currency}_{name}";
+
+            return _memoryCache.GetOrCreateAsync(key, entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5);
+                return _accountRepository.GetAccountInfosAsync(userId,type,currency,name,token);
+            });
         }
         public Task<IEnumerable<AccountDto>?> GetDtoByNameAsync(Guid id , string name , CancellationToken token)
         {

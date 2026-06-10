@@ -8,6 +8,7 @@ using FinanceCore.Infrastructure.context;
 using FinanceCore.Infrastructure.Mappers;
 using Microsoft.AspNetCore.Routing;
 using System.Data;
+using System.Text;
 namespace FinanceCore.Infrastructure.Repositories
 {
     public class AccountRepository : IAccountRepository
@@ -243,6 +244,29 @@ namespace FinanceCore.Infrastructure.Repositories
                 new CommandDefinition(sql, new { Id = id, UserId = userId }, cancellationToken: token, commandType: CommandType.Text));
 
             return model;
+        }
+        public async Task<IEnumerable<AccountInfoDto>?> GetAccountInfosAsync(Guid userId , EnAccountType? type , EnCurrency? currency , string? name , CancellationToken token)
+        {
+            using var connection = _connectionFactory.GetConnection();
+            var sql = new StringBuilder(@"
+                SELECT Id AS id,
+                       Name AS name,
+                       AccountTypeId AS type,
+                       Balance AS balance,
+                       CurrencyId AS currency
+                FROM Accounts
+                WHERE UserId = @Id
+            ");
+            if (name is not null) sql.Append(" AND Name LIKE @name");
+            if (type.HasValue) sql.Append(" AND AccountTypeId = @type");
+            if (currency.HasValue) sql.Append(" AND CurrencyId = @currency");
+
+            var command = new CommandDefinition(sql.ToString(), new {Id = userId, name = $"%{name}%", type = type, currency = currency });
+
+
+            return await connection.QueryAsync<AccountInfoDto>(command);
+
+
         }
     }
 }

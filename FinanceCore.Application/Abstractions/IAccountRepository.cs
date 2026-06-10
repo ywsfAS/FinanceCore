@@ -1,5 +1,6 @@
 using FinanceCore.Application.DTOs;
 using FinanceCore.Domain.Accounts;
+using FinanceCore.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,5 +24,7 @@ namespace FinanceCore.Application.Abstractions
         Task<decimal> GetTotalBalanceByAccountIdAsync(Guid userId,Guid AccountId,CancellationToken token = default);
         Task<bool> IsExists(Guid userId,Guid id,CancellationToken token = default);
         Task<IEnumerable<AccountDto>?> GetDtoByNameAsync(Guid id , string name , CancellationToken token);
+        Task<IEnumerable<AccountInfoDto>?> GetAccountInfosAsync(Guid userId , EnAccountType? type , EnCurrency? currency , string? name , CancellationToken token);
+        
     }
 }
