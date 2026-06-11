@@ -7,6 +7,7 @@ using FinanceCore.Application.Features.Budgets.Commands.Delete;
 using FinanceCore.Application.Features.Budgets.Commands.Update;
 using FinanceCore.Application.Features.Budgets.Queries.GetBudgetById;
 using FinanceCore.Application.Features.Budgets.Queries.GetBudgetProgress;
+using FinanceCore.Application.Features.Budgets.Queries.GetBudgetsFiltered;
 using FinanceCore.Domain.Common;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -31,6 +32,23 @@ namespace FinanceCore.API.Controllers
             return Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
         }
 
+
+        /// <summary>
+        /// get budgets with filters
+        /// </summary>
+        [HttpGet]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(IEnumerable<BudgetInfoDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> GetBudgets([FromQuery] GetBudgetsFilteredRequest request)
+        {
+            var UserId = GetUserId();
+            var command = new GetBudgetsFilteredQuery(UserId, request.Name, request.CategoryId, request.Period, request.Page, request.PageSize);
+            var budgets = await _mediator.Send(command);
+            return Ok(budgets);
+                
+        }
         /// <summary>
         /// Create a new budget
         /// </summary>

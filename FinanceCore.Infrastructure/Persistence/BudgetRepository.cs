@@ -6,6 +6,7 @@ using FinanceCore.Domain.Budgets;
 using FinanceCore.Domain.Enums;
 using FinanceCore.Infrastructure.Mappers;
 using FinanceCore.Infrastructure.context;
+using System.Text;
 
 namespace FinanceCore.Infrastructure.Repositories
 {
@@ -176,6 +177,65 @@ namespace FinanceCore.Infrastructure.Repositories
             await connection.ExecuteAsync(cmd);
         }
 
+        public async Task<IEnumerable<BudgetInfoDto>?> GetBudgetsFilteredAsync(
+            Guid userId,
+            string? name,
+            Guid? categoryId,
+            EnPeriod? period,
+            int page = 1,
+            int pageSize = 10,
+            CancellationToken token = default)
+        {
+            using var connection = _connectionFactory.GetConnection();
+
+            var sql = new StringBuilder(@"
+            SELECT 
+            b.Id,
+            b.Name,
+            b.Amount,
+            b.CurrencyId AS CurrencyId,
+            b.BudgetPeriodId AS Period,
+            b.StartDate,
+            b.EndDate,
+            c.Name AS CategoryName
+            FROM Budgets b
+            INNER JOIN Categories c ON c.Id = b.CategoryId
+            WHERE b.UserId = @UserId
+            ");
+
+            if (!string.IsNullOrWhiteSpace(name))
+                sql.Append(" AND b.Name LIKE @Name");
+
+            if (categoryId.HasValue)
+                sql.Append(" AND b.CategoryId = @CategoryId");
+
+            if (period.HasValue)
+                sql.Append(" AND b.BudgetPeriodId = @Period");
+
+            sql.Append(@"
+            ORDER BY b.Id
+            OFFSET @Offset ROWS
+            FETCH NEXT @PageSize ROWS ONLY;
+            ");
+
+            var parameters = new
+            {
+                UserId = userId,
+                Name = name != null ? $"%{name}%" : null,
+                CategoryId = categoryId,
+                Period = period,
+                Offset = (page - 1) * pageSize,
+                PageSize = pageSize
+            };
+
+            var command = new CommandDefinition(
+                sql.ToString(),
+                parameters,
+                cancellationToken: token
+            );
+
+            return await connection.QueryAsync<BudgetInfoDto>(command);
+        }
         // Get by Id + UserId
         public async Task<Budget?> GetByIdAndUserIdAsync(Guid userId, Guid id, CancellationToken token)
         {

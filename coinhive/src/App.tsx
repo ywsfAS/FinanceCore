@@ -15,6 +15,7 @@ import ResetPasswordPage from "./pages/ResetPasswordPage/Resetpasswordpage";
 import TransactionsPage from "./pages/Transactions/transactionsPage";
 import AccountsPage from "./pages/Accounts/AccountsPage";
 import CategoriesPage from "./pages/Categories/CategoriesPage";
+import BudgetsPage from "./pages/Budgets/BudgetsPage"
 
 function App() {
     const { user, loginWithToken} = useAuth();
@@ -37,6 +38,7 @@ function App() {
                 <Route path="/transactions" element={<TransactionsPage />} />
                 <Route path="/accounts" element={<AccountsPage />} />
                 <Route path="/categories" element={<CategoriesPage/> } />
+                <Route path="/budgets" element={<BudgetsPage/>}/>
 
             </Routes>
             <Footer/>

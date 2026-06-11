@@ -1,6 +1,7 @@
 using FinanceCore.Application.Abstractions;
 using FinanceCore.Application.DTOs;
 using FinanceCore.Domain.Budgets;
+using FinanceCore.Domain.Enums;
 using FinanceCore.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Caching.Memory;
@@ -53,6 +54,38 @@ namespace FinanceCore.Infrastructure.Persistence
                 return _budgetRepository.GetByUserIdAsync(userId, cancellationToken);
             });
 
+        }
+        public async Task<IEnumerable<BudgetInfoDto>?> GetBudgetsFilteredAsync(
+            Guid userId,
+            string? name,
+            Guid? categoryId,
+            EnPeriod? period,
+            int page = 1,
+            int pageSize = 10,
+            CancellationToken token = default)
+        {
+            string key = $"budgets:filtered:{userId}:{name}:{categoryId}:{period}:{page}:{pageSize}";
+
+            if (_memoryCache.TryGetValue(key, out IEnumerable<BudgetInfoDto>? cached))
+                return cached;
+
+            var result = await _budgetRepository.GetBudgetsFilteredAsync(
+                userId,
+                name,
+                categoryId,
+                period,
+                page,
+                pageSize,
+                token
+            );
+
+            _memoryCache.Set(
+                key,
+                result,
+                TimeSpan.FromMinutes(10)
+            );
+
+            return result;
         }
         public Task<IEnumerable<BudgetDto>?> GetDtoByUserIdAsync(Guid userId, CancellationToken cancellationToken = default)
         {

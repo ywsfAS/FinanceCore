@@ -1,5 +1,6 @@
 using FinanceCore.Application.DTOs;
 using FinanceCore.Domain.Budgets;
+using FinanceCore.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -20,5 +21,6 @@ namespace FinanceCore.Application.Abstractions
         Task UpdateAsync(Budget budget, CancellationToken cancellationToken = default);
         Task DeleteAsync(Guid id, CancellationToken cancellationToken = default);
         Task<bool> IsExists(Guid userId, Guid id, CancellationToken token = default);
+        Task<IEnumerable<BudgetInfoDto>?> GetBudgetsFilteredAsync(Guid userId , string? name , Guid? categoryId , EnPeriod? period , int page  , int pageSize, CancellationToken token);
     }
 }

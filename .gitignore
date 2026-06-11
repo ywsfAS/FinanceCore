@@ -17,3 +17,4 @@ wwwroot/
 # Others
 *.log
 /FinanceCore.API/appsettings.json
+/FinanceCore.API/appsettings.Development.json
