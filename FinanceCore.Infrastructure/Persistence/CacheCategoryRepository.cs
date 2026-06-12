@@ -1,6 +1,7 @@
 using FinanceCore.Application.Abstractions;
 using FinanceCore.Application.DTOs;
 using FinanceCore.Domain.Categories;
+using FinanceCore.Domain.Enums;
 using FinanceCore.Infrastructure.Repositories;
 using Microsoft.Extensions.Caching.Memory;
 using System;
@@ -21,24 +22,6 @@ namespace FinanceCore.Infrastructure.Persistence
             _memoryCache = memoryCache;
         }
 
-        public Task<Category?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
-        {
-            var key = $"Category_{id}";
-            return _memoryCache.GetOrCreateAsync(key, async entry =>
-            {
-                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
-                return await _categoryRepository.GetByIdAsync(id, cancellationToken);
-            });
-        }
-        public Task<IEnumerable<Category>> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken = default)
-        {
-            var key = $"Categories_User_{userId}";
-            return _memoryCache.GetOrCreateAsync(key, entry =>
-            {
-                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
-                return _categoryRepository.GetByUserIdAsync(userId, cancellationToken);
-            });
-        }
         public Task AddAsync(Category category, CancellationToken cancellationToken = default)
         {
             return _categoryRepository.AddAsync(category, cancellationToken);
@@ -52,13 +35,13 @@ namespace FinanceCore.Infrastructure.Persistence
             return _categoryRepository.DeleteAsync(id, cancellationToken);
         }
 
-        public Task<CategoryDto?> GetDtoCategoryByIdAndUserIdAsync(Guid userId, Guid id)
+        public Task<CategoryDto?> GetDtoCategoryByIdAndUserIdAsync(Guid userId, Guid id , CancellationToken token)
         {
             var key = $"CategoryDto_{userId}_{id}";
             return _memoryCache.GetOrCreateAsync(key, entry =>
             {
                 entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
-                return _categoryRepository.GetDtoCategoryByIdAndUserIdAsync(userId, id);
+                return _categoryRepository.GetDtoCategoryByIdAndUserIdAsync(userId, id,token);
             });
         }
         public Task<Category?> GetCategoryByIdAndUserIdAsync(Guid userId, Guid id, CancellationToken token)
@@ -70,42 +53,33 @@ namespace FinanceCore.Infrastructure.Persistence
                 return _categoryRepository.GetCategoryByIdAndUserIdAsync(userId, id, token);
             });
         }
-        public Task<IEnumerable<CategoryDto>?> GetCategoriesByUserIdAsync(Guid? userId, int page, int pageSize, CancellationToken token)
-        {
-            var key = $"CategoriesDto_User_{userId}_Page_{page}_Size_{pageSize}";
-            return _memoryCache.GetOrCreateAsync(key, entry =>
-            {
-                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
-                return _categoryRepository.GetCategoriesByUserIdAsync(userId, page, pageSize, token);
-            });
-        }
-        public Task<IEnumerable<CategoryDto>?> GetFiltredCategoriesAsync(Guid? userId, string? name, byte? type, DateTime? createdAt, int page, int pageSize)
+        public Task<IEnumerable<CategoryDto>> GetFiltredCategoriesAsync(Guid userId, string? name, CategoryType? type, DateTime? createdAt, int page, int pageSize , CancellationToken token)
         {
             var key = $"CategoriesDto_Filtered_{userId}_{name}_{type}_{createdAt}_Page_{page}_Size_{pageSize}";
             return _memoryCache.GetOrCreateAsync(key, entry =>
             {
                 entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
-                return _categoryRepository.GetFiltredCategoriesAsync(userId, name, type, createdAt, page, pageSize);
+                return _categoryRepository.GetFiltredCategoriesAsync(userId, name, type, createdAt, page, pageSize,token);
             });
         }
-        public Task<bool> IsExists(Guid userId, Guid id, CancellationToken token = default)
+        public Task<bool> IsExistsAsync(Guid userId, Guid id, CancellationToken token = default)
         {
             var key = $"CategoryExists_{userId}_{id}";
             return _memoryCache.GetOrCreateAsync(key, entry =>
             {
                 entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
-                return _categoryRepository.IsExists(userId, id, token);
+                return _categoryRepository.IsExistsAsync(userId, id, token);
             });
         }
 
-        public Task<IEnumerable<CategoryOptionDto>?> GetCategoriesByUserOptionsAsync(Guid userId , CancellationToken token)
+        public Task<IEnumerable<CategoryOptionDto>> GetCategoriesByUserOptionsAsync(Guid userId,int page , int pageSize , CancellationToken token)
         {
             var key = $"Category_{userId}_options";
 
             return _memoryCache.GetOrCreateAsync(key, entry =>
             {
                 entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
-                return _categoryRepository.GetCategoriesByUserOptionsAsync(userId,token);
+                return _categoryRepository.GetCategoriesByUserOptionsAsync(userId,page,pageSize,token);
             });
             
         }

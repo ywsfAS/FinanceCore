@@ -1,15 +1,12 @@
 using FinanceCore.API.Requests.Category;
 using FinanceCore.Application.DTOs;
-using FinanceCore.Application.DTOs.Auth;
 using FinanceCore.Application.Features.Categories.Commands.Create;
 using FinanceCore.Application.Features.Categories.Commands.Delete;
 using FinanceCore.Application.Features.Categories.Commands.Update;
-using FinanceCore.Application.Features.Categories.Queries;
 using FinanceCore.Application.Features.Categories.Queries.GetCategoriesByUserOptions;
 using FinanceCore.Application.Features.Categories.Queries.GetCategoryById;
 using FinanceCore.Application.Features.Categories.Queries.GetFiltredCategories;
 using FinanceCore.Domain.Enums;
-using FinanceCore.Domain.Users;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -55,10 +52,10 @@ namespace FinanceCore.API.Controllers
         /// </summary>
         [HttpGet("{id}")]
         [Produces("application/json")]
-        [ProducesResponseType(typeof(CategoryDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(CategoryDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> GetCategoryById(Guid id)
+        public async Task<IActionResult> GetCategoryById([FromRoute] Guid id)
         {
             var UserId = GetUserId();
             var query = new GetCategoryByIdQuery(UserId, id);
@@ -74,7 +71,7 @@ namespace FinanceCore.API.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> UpdateCategory(Guid id, UpdateCategoryRequest request)
+        public async Task<IActionResult> UpdateCategory([FromRoute]Guid id, [FromBody] UpdateCategoryRequest request)
         {
             var UserId = GetUserId();
             var command = new UpdateCategoryCommand(UserId, id, request.Name, request.Descritption);
@@ -90,7 +87,7 @@ namespace FinanceCore.API.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> DeleteCategory(Guid id)
+        public async Task<IActionResult> DeleteCategory([FromRoute]Guid id)
         {
             var UserId = GetUserId();
             var command = new DeleteCategoryCommand(UserId, id);
@@ -121,10 +118,10 @@ namespace FinanceCore.API.Controllers
         [ProducesResponseType(typeof(IEnumerable<CategoryOptionDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> GetCategoriesByUserIdNames()
+        public async Task<IActionResult> GetCategoriesByUserIdNames([FromRoute] int page = 1 , [FromRoute] int pageSize = 10)
         {
             var userId = GetUserId();
-            var query = new GetCategoriesByUserOptionsQuery(userId);
+            var query = new GetCategoriesByUserOptionsQuery(userId,page,pageSize);
             var categories = await _mediator.Send(query);
             return Ok(categories);
         }

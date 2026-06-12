@@ -11,7 +11,6 @@ namespace FinanceCore.Application.Abstractions
     public interface IProfileRepository
     {
         Task<bool> ExistsAsync(Guid id);
-        Task<IEnumerable<ProfileModel>> GetAllAsync();
         Task DeleteAsync(Guid id);
         Task UpdateAsync(Profile profile , CancellationToken token);
         Task<bool> ExistsByUserIdAsync(Guid userId);

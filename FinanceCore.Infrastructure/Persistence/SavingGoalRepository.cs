@@ -7,6 +7,7 @@ using FinanceCore.Domain.Goals;
 using FinanceCore.Infrastructure.context;
 using FinanceCore.Infrastructure.Mappers;
 using System.Data;
+using System.Text;
 
 namespace FinanceCore.Infrastructure.Persistence
 {
@@ -19,7 +20,7 @@ namespace FinanceCore.Infrastructure.Persistence
             _connectionFactory = connectionFactory;
         }
 
-        public async Task<SavingsGoal?> GetByIdAsync(Guid id, CancellationToken token)
+        public async Task<SavingsGoal?> GetGoalByIdAsync(Guid id, CancellationToken token)
         {
             using var connection = _connectionFactory.GetConnection();
 
@@ -45,57 +46,29 @@ namespace FinanceCore.Infrastructure.Persistence
 
             return model == null ? null : SavingsGoalMapper.MapToDomain(model);
         }
-        public async Task<IEnumerable<SavingsGoal>> GetByUserIdAsync(Guid userId, int page, int pageSize, CancellationToken token)
+        public async Task<IEnumerable<SavingsGoalDto>> GetSavingGoalsFilteredAsync(Guid userId,string? name , EnCurrency? currency , EnGoalStatus? status, int page, int pageSize, CancellationToken token)
         {
             using var connection = _connectionFactory.GetConnection();
 
             int skip = (page - 1) * pageSize;
 
-            const string sql = @"SELECT * FROM SavingsGoals 
-                        WHERE UserId = @UserId
-                        ORDER BY Id 
-                        OFFSET @Skip ROWS 
-                        FETCH NEXT @PageSize ROWS ONLY;";
+            var sql = new StringBuilder(@"SELECT * FROM SavingsGoals WHERE UserId = @UserId");
+            if (name is not null) sql.Append(" AND Name LIKE @Name");
+            if (currency.HasValue) sql.Append(" AND CurrencyId = @Currency");
+            if (status.HasValue) sql.Append(" AND StatusId = @Status");
+            sql.Append(" OFFSET @Skip ROWS FETCH NEXT @PageSize ROWS ONLY;");
 
             var command = new CommandDefinition(
-                sql,
-                new { UserId = userId, Skip = skip, PageSize = pageSize },
+                sql.ToString(),
+                new { UserId = userId, Skip = skip, PageSize = pageSize , Name = $"%{name}%" , Currency = currency , Status = status },
                 cancellationToken: token
             );
 
             var models = await connection.QueryAsync<SavingsGoalModel>(command);
 
-            return models.Select(SavingsGoalMapper.MapToDomain);
+            return models.Select((m) => new SavingsGoalDto(m.Id,m.UserId,m.Name,m.Description,m.TargetAmount,m.CurrentAmount,(EnCurrency)m.CurrencyId,m.TargetDate,(EnGoalStatus)m.StatusId,m.CompletedAt));
         }
 
-
-        private async Task<IEnumerable<SavingsGoalModel>?> GetModelsByUserIdAndStatusAsync(Guid userId,EnGoalStatus status,int page,int pageSize , CancellationToken token)
-        {
-            using var connection = _connectionFactory.GetConnection();
-
-            int skip = (page - 1) * pageSize;
-            const string sql = @"SELECT * FROM SavingsGoals 
-                        WHERE UserId = @UserId
-                        AND StatusId = @StatusId
-                        ORDER BY Id 
-                        OFFSET @Skip ROWS 
-                        FETCH NEXT @PageSize ROWS ONLY;";
-
-            var command = new CommandDefinition(
-                sql,
-                new { UserId = userId, Skip = skip, PageSize = pageSize , StatusId = (byte)status},
-                cancellationToken: token
-            );
-
-            var models = await connection.QueryAsync<SavingsGoalModel>(command);
-
-            return models;
-        }
-        public async Task<IEnumerable<SavingsGoalDto>?> GetDtosByUserIdAndStatusAsync(Guid userId , EnGoalStatus status , int page , int pageSize , CancellationToken token)
-        {
-            var models = await GetModelsByUserIdAndStatusAsync(userId, status, page, pageSize, token);
-            return models.Select(model => new SavingsGoalDto(model.Id,model.UserId,model.Name,model.Description,model.TargetAmount,model.CurrentAmount,(EnCurrency)model.CurrencyId,model.TargetDate,(EnGoalStatus)model.StatusId,model.CreatedAt,model.UpdatedAt,model.CompletedAt));
-        }
         public async Task AddAsync(SavingsGoal goal , CancellationToken token)
         {
             using var connection = _connectionFactory.GetConnection();
@@ -166,7 +139,7 @@ namespace FinanceCore.Infrastructure.Persistence
             await connection.ExecuteAsync(sql, new { Id = id });
         }
 
-        public async Task<bool> ExistsAsync(Guid id, CancellationToken token)
+        public async Task<bool> IsExistsAsync(Guid id, CancellationToken token)
         {
             using var connection = _connectionFactory.GetConnection();
 

@@ -1,4 +1,4 @@
-﻿using FinanceCore.Application.Abstractions;
+using FinanceCore.Application.Abstractions;
 using MediatR;
 using FinanceCore.Domain.Exceptions;
 
@@ -15,7 +15,7 @@ namespace FinanceCore.Application.Features.Categories.Commands.Delete
 
         public async Task Handle(DeleteCategoryCommand command, CancellationToken cancellationToken)
         {
-            var result = await _categoryRepository.IsExists(command.UserId,command.Id);
+            var result = await _categoryRepository.IsExistsAsync(command.UserId,command.Id);
 
             if (!result)
                 throw new CategoryNotFoundException(command.Id);

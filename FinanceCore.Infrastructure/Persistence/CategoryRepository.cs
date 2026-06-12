@@ -7,6 +7,7 @@ using FinanceCore.Domain.Enums;
 using FinanceCore.Domain.Users;
 using FinanceCore.Infrastructure.context;
 using FinanceCore.Infrastructure.Mappers;
+using Microsoft.EntityFrameworkCore.ValueGeneration.Internal;
 using System.Data;
 
 namespace FinanceCore.Infrastructure.Repositories
@@ -20,18 +21,7 @@ namespace FinanceCore.Infrastructure.Repositories
             _connectionFactory = connectionFactory;
         }
 
-        public async Task<Category?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
-        {
-            var model =  await _connectionFactory.ReadSingleAsync<CategoryModel, Guid>(
-                "sp_GetCategoryById",
-                id);
-            if (model == null)
-            {
-                return null;
-            }
-            return CategoryMapper.MapToDomain(model);
-        }
-        public async Task<bool> IsExists(Guid userId, Guid id, CancellationToken token)
+        public async Task<bool> IsExistsAsync(Guid userId, Guid id, CancellationToken token = default)
         {
             using var connection = _connectionFactory.GetConnection();
             var sql = @"SELECT 1 FROM Categories WHERE UserId = @UserId AND Id = @Id";
@@ -41,14 +31,6 @@ namespace FinanceCore.Infrastructure.Repositories
             var result = await connection.ExecuteScalarAsync<int?>(sql, parameters);
             return result.HasValue;
         }
-        public async Task<IEnumerable<Category>> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken = default)
-        {
-            var models =  await _connectionFactory.ReadListAsync<CategoryModel>(
-                "sp_GetCategoriesByUserId",
-                new { UserId = userId });
-            return models.Select(model => CategoryMapper.MapToDomain(model));
-        }
-
         public async Task AddAsync(Category category, CancellationToken cancellationToken = default)
         {
             const string sql = @"
@@ -122,14 +104,9 @@ namespace FinanceCore.Infrastructure.Repositories
                 new { id });
         }
 
-        public async Task<IEnumerable<CategoryDto>?> GetFiltredCategoriesAsync(Guid? UserId, string? Name , byte? Type ,DateTime? CreatedAt,int Page, int PageSize)
+        public async Task<IEnumerable<CategoryDto>> GetFiltredCategoriesAsync(Guid UserId, string? Name , CategoryType? Type ,DateTime? CreatedAt,int Page, int PageSize,CancellationToken token = default)
         {
-            return await FetchCategoriessPageAsync(UserId, Name, Type, CreatedAt, Page, PageSize);
-
-        }
-        public async Task<IEnumerable<CategoryDto>?> GetCategoriesByUserIdAsync(Guid? UserId,int Page, int PageSize,CancellationToken token)
-        {
-            return await FetchCategoriessPageAsync(UserId,null,null,null, Page, PageSize);
+            return await FetchCategoriesPageAsync(UserId, Name, Type, CreatedAt, Page, PageSize);
 
         }
         private async Task<CategoryModel?> GetModelCategoryByIdAndUserIdAsync(Guid userId , Guid id)
@@ -146,47 +123,43 @@ namespace FinanceCore.Infrastructure.Repositories
             return model;
 
         }
-        public async Task<CategoryDto?> GetDtoCategoryByIdAndUserIdAsync(Guid userId , Guid id)
+        public async Task<CategoryDto?> GetDtoCategoryByIdAndUserIdAsync(Guid userId , Guid id , CancellationToken token = default)
         {
             var model = await  GetModelCategoryByIdAndUserIdAsync(userId,id);
             if(model is null) { return null; }
             return new CategoryDto(model.Id,model.UserId, model.Name,(CategoryType)model.CategoryTypeId,model.Description);
         }
 
-        public async Task<Category?> GetCategoryByIdAndUserIdAsync(Guid userId, Guid id,CancellationToken token)
+        public async Task<Category?> GetCategoryByIdAndUserIdAsync(Guid userId, Guid id,CancellationToken token = default)
         {
             var model = await GetModelCategoryByIdAndUserIdAsync(userId, id);
             if (model is null) { return null; }
             return CategoryMapper.MapToDomain(model); 
         }
 
-        private async Task<IEnumerable<CategoryDto>?> FetchCategoriessPageAsync(Guid? UserId, string? Name , byte? Type ,DateTime? CreatedAt,int Page, int PageSize)
+        private async Task<IEnumerable<CategoryDto>> FetchCategoriesPageAsync(Guid userId, string? name ,CategoryType? type ,DateTime? createdAt,int page, int pageSize)
         {
             using var connection = _connectionFactory.GetConnection();
-            var sql = @"SELECT * FROM Categories WHERE 1 = 1";
+            var sql = @"SELECT * FROM Categories WHERE UserId = @UserId";
 
             var parameters = new DynamicParameters();
-            if (UserId.HasValue)
-            {
-                sql += " AND UserId = @UserId";
-                parameters.Add("UserId", UserId);
-            }
-            if (CreatedAt.HasValue)
+            parameters.Add("UserId", userId);
+            if (createdAt.HasValue)
             {
                 sql += " AND CreatedAt >= @Start AND CreatedAt <= @End ";
-                parameters.Add("Start", CreatedAt);
-                parameters.Add("End", CreatedAt.Value.Date.AddDays(1));
+                parameters.Add("Start", createdAt);
+                parameters.Add("End", createdAt.Value.Date.AddDays(1));
 
             }
-            if (Type.HasValue)
+            if (type.HasValue)
             {
                 sql += " AND CategoryTypeId = @Type";
-                parameters.Add("Type", Type);
+                parameters.Add("Type", type);
             }
-            if (!string.IsNullOrEmpty(Name))
+            if (!string.IsNullOrEmpty(name))
             {
                 sql += " AND Name LIKE @Name";
-                parameters.Add("Name", $"%{Name}%");
+                parameters.Add("Name", $"%{name}%");
 
             }
 
@@ -195,18 +168,19 @@ namespace FinanceCore.Infrastructure.Repositories
             sql += " OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY";
 
 
-            parameters.Add("Offset", (Page - 1) * PageSize);
-            parameters.Add("PageSize", PageSize);
+            parameters.Add("Offset", (page - 1) * pageSize);
+            parameters.Add("PageSize", pageSize);
+
 
             var model = await connection.QueryAsync<CategoryModel>(sql, parameters);
             return model.Select(model => new CategoryDto(model.Id,model.UserId, model.Name,(CategoryType)model.CategoryTypeId,model.Description));
         }
 
-        public async Task<IEnumerable<CategoryOptionDto>?> GetCategoriesByUserOptionsAsync(Guid userId , CancellationToken token)
+        public async Task<IEnumerable<CategoryOptionDto>?> GetCategoriesByUserOptionsAsync(Guid userId , int page , int pageSize , CancellationToken token = default)
         {
             using var connection = _connectionFactory.GetConnection();
-            const string sql = @" SELECT Id , Name FROM Categories WHERE UserId = @Id";
-            var command = new CommandDefinition(sql, new { Id = userId }, cancellationToken: token);
+            const string sql = @" SELECT Id , Name FROM Categories WHERE UserId = @Id OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY";
+            var command = new CommandDefinition(sql, new { Id = userId, Offset = (page - 1) * pageSize , PageSize = pageSize }, cancellationToken: token);
             return await connection.QueryAsync<CategoryOptionDto>(command);
 
         }

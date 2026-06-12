@@ -24,7 +24,7 @@ namespace FinanceCore.Application.Features.Goals.Commands.Update
 
         public async Task<SavingsGoalDto> Handle(UpdateSavingsGoalCommand command, CancellationToken token)
         {
-            var goal = await _goalRepository.GetByIdAsync(command.Id,token);
+            var goal = await _goalRepository.GetGoalByIdAsync(command.Id,token);
             if (goal == null)
                 throw new GoalNotFoundException(command.Id);
             // Update domain entity
@@ -49,8 +49,6 @@ namespace FinanceCore.Application.Features.Goals.Commands.Update
                 goal.TargetAmount.Currency,
                 goal.TargetDate,
                 goal.Status,
-                goal.CreatedAt,
-                goal.UpdatedAt,
                 goal.CompletedAt
             );
         }

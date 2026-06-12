@@ -21,7 +21,7 @@ namespace FinanceCore.Application.Features.Budgets.Commands.Create
 
         public async Task<BudgetDto> Handle(CreateBudgetCommand command, CancellationToken cancellationToken)
         {
-            var category = await _categoryRepository.GetByIdAsync(command.CategoryId, cancellationToken);
+            var category = await _categoryRepository.GetCategoryByIdAndUserIdAsync(command.UserId,command.CategoryId, cancellationToken);
 
             if (category is null)
                 throw new CategoryNotFoundException(command.CategoryId);

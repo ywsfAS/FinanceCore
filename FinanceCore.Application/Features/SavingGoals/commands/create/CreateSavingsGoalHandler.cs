@@ -48,8 +48,6 @@ namespace FinanceCore.Application.Features.Goals.Commands.Create
                 goal.TargetAmount.Currency,
                 goal.TargetDate,
                 goal.Status,
-                goal.CreatedAt,
-                goal.UpdatedAt,
                 goal.CompletedAt
             );
         }

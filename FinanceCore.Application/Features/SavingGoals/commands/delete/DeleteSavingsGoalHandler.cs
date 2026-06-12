@@ -22,7 +22,7 @@ namespace FinanceCore.Application.Features.Goals.Commands.Delete
 
         public async Task Handle(DeleteSavingsGoalCommand command, CancellationToken token)
         {
-            var goal = await _goalRepository.GetByIdAsync(command.Id, token);
+            var goal = await _goalRepository.GetGoalByIdAsync(command.Id, token);
             if (goal is null)
                 throw new GoalNotFoundException(command.Id);
 

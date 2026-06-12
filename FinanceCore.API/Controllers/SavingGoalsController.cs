@@ -8,8 +8,6 @@ using FinanceCore.Application.Features.SavingGoals.commands.Cancel;
 using FinanceCore.Application.Features.SavingGoals.commands.Pause;
 using FinanceCore.Application.Features.SavingGoals.commands.Resume;
 using FinanceCore.Application.Features.SavingGoals.Queries.GetSavingGoalById;
-using FinanceCore.Application.Features.SavingGoals.Queries.GetSavingGoalsByStatus;
-using FinanceCore.Application.Features.SavingGoals.Queries.GetSavingGoalsPerUser;
 using FinanceCore.Domain.Common;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -108,35 +106,17 @@ namespace FinanceCore.API.Controllers
         }
 
         /// <summary>
-        /// Get All saving Goal using pagination
+        /// Get saving Goals using pagination and filters
         /// </summary>
         [HttpGet]
         [Produces("application/json")]
         [ProducesResponseType(typeof(IEnumerable<SavingsGoalDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> GetAllSavingGoal([FromQuery] GetAllSavingGoalsRequest request, CancellationToken cancellationToken)
+        public async Task<IActionResult> GetSavingGoals([FromQuery] GetSavingGoalsFilteredRequest request, CancellationToken cancellationToken)
         {
             var userId = GetUserId();
-            var query = new GetSavingsGoalPerUserQuery(userId, request.Page, request.PageSize);
-
-            var saving = await _mediator.Send(query, cancellationToken);
-
-            return Ok(saving);
-        }
-
-        /// <summary>
-        /// Get saving Goals by status
-        /// </summary>
-        [HttpGet("status")]
-        [Produces("application/json")]
-        [ProducesResponseType(typeof(IEnumerable<SavingsGoalDto>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> GetSavingGoalsByStatus([FromQuery] GetSavingGoalsByStatusRequest request, CancellationToken cancellationToken)
-        {
-            var userId = GetUserId();
-            var query = new GetSavingGoalByStatusQuery(userId, request.Status, request.Page, request.PageSize);
+            var query = new GetSavingGoalsFilteredRequest(userId,request.Name,request.Currency,request.Status ,request.Page, request.PageSize);
 
             var saving = await _mediator.Send(query, cancellationToken);
 

@@ -23,7 +23,7 @@ namespace FinanceCore.Application.Events.SavingGoals.GoalPaused
         }
         public async Task Handle(GoalPausedEvent notification, CancellationToken cancellationToken)
         {
-            var goal = await _savingGoalRepository.GetByIdAsync(notification.GoalId, cancellationToken);
+            var goal = await _savingGoalRepository.GetGoalByIdAsync(notification.GoalId, cancellationToken);
             if (goal is null)
                 throw new GoalNotFoundException(notification.GoalId);
 

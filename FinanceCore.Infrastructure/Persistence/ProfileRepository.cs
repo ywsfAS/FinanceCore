@@ -49,13 +49,6 @@ namespace FinanceCore.Infrastructure.Persistence
             var result = await connection.ExecuteScalarAsync<int>(sql,parameters);
             return result > 0;
         }
-        public async Task<IEnumerable<ProfileModel>> GetAllAsync()
-        {
-            using var connection = _connectionFactory?.GetConnection();
-            var sql = "SELECT * FROM Profiles";
-            var result = await connection.QueryAsync<ProfileModel>(sql);
-            return result;
-        }
         public async Task DeleteAsync(Guid id)
         {
             using var connection = _connectionFactory?.GetConnection();

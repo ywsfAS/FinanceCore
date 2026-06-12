@@ -1,9 +1,5 @@
 using FinanceCore.API.Requests.User;
 using FinanceCore.Application.DTOs;
-using FinanceCore.Application.DTOs.Goal;
-using FinanceCore.Application.Features.Accounts.Queries.GetAccountByUserOptions;
-using FinanceCore.Application.Features.Categories.Queries.GetCategoriesByUserOptions;
-using FinanceCore.Application.Features.SavingGoals.Queries.GetSavingGoalsPerUser;
 using FinanceCore.Application.Features.Users.Command.Delete;
 using FinanceCore.Application.Features.Users.Command.Update;
 using FinanceCore.Application.Features.Users.Queries.GetUserById;

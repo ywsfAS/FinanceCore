@@ -10,7 +10,7 @@ namespace FinanceCore.Application.Features.Categories.Queries.GetCategoriesByUse
     public class GetCategoriesByUserOptionsValidator : AbstractValidator<GetCategoriesByUserOptionsQuery>
     {
         public GetCategoriesByUserOptionsValidator() {
-            RuleFor(x => x.userId).NotEmpty();
+            RuleFor(x => x.UserId).NotEmpty();
         }
     }
 }

@@ -13,8 +13,6 @@ namespace FinanceCore.Application.DTOs.Goal
         EnCurrency Currency,
         DateTime? TargetDate,
         EnGoalStatus Status,
-        DateTime CreatedAt,
-        DateTime? UpdatedAt,
         DateTime? CompletedAt
     );
 }
