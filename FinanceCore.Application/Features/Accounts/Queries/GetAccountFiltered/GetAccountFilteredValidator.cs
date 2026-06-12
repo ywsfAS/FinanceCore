@@ -10,9 +10,9 @@ namespace FinanceCore.Application.Features.Accounts.Queries.GetAccountFiltered
     public class GetAccountFilteredValidator : AbstractValidator<GetAccountFilteredQuery>
     {
         public GetAccountFilteredValidator() { 
-           RuleFor(x => x.userId).NotEmpty();
-           RuleFor(x => x.type).IsInEnum();
-           RuleFor(x => x.currency).IsInEnum();
+           RuleFor(x => x.UserId).NotEmpty();
+           RuleFor(x => x.Type).IsInEnum();
+           RuleFor(x => x.Currency).IsInEnum();
 
             
         }

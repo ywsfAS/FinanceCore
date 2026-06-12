@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace FinanceCore.Application.Features.Accounts.Queries.GetAccountByUserOptions
 {
-   public class GetAccountByUserOptionsValidator : AbstractValidator<GetAccountByUserOptionsQuery>
+   public class GetAccountsOptionsValidator : AbstractValidator<GetAccountsOptionsQuery>
    {
-        public GetAccountByUserOptionsValidator() {
+        public GetAccountsOptionsValidator() {
             RuleFor(x => x.userId).NotEmpty();
         }
    }

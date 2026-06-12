@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,12 +12,13 @@ namespace FinanceCore.Application.Features.Accounts.Commands.Update
     {
         public UpdateAccountCommandValidator()
         {
-            RuleFor(x => x.Id)
+            RuleFor(x => x.AccountId)
                 .NotEmpty();
 
             RuleFor(x => x.Name)
                 .NotEmpty()
                 .MaximumLength(100);
+            RuleFor(x => x.AccountType).IsInEnum();
         }
     }
 }

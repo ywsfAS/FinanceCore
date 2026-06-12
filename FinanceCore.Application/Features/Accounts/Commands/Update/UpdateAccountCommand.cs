@@ -1,4 +1,5 @@
-﻿using MediatR;
+using FinanceCore.Domain.Enums;
+using MediatR;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,8 +9,10 @@ using System.Threading.Tasks;
 namespace FinanceCore.Application.Features.Accounts.Commands.Update
 {
     public record UpdateAccountCommand(
-        Guid Id,
-        Guid accountId,
-        string Name) : IRequest;
+        Guid UserId,
+        Guid AccountId,
+        string Name,
+        EnAccountType AccountType
+        ) : IRequest;
 
 }

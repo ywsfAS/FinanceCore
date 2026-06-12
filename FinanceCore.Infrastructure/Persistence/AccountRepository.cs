@@ -8,6 +8,7 @@ using FinanceCore.Infrastructure.context;
 using FinanceCore.Infrastructure.Mappers;
 using Microsoft.AspNetCore.Routing;
 using System.Data;
+using System.Linq;
 using System.Text;
 namespace FinanceCore.Infrastructure.Repositories
 {
@@ -19,7 +20,7 @@ namespace FinanceCore.Infrastructure.Repositories
         {
             _connectionFactory = connectionFactory;
         }
-        public async Task<bool> IsExists(Guid userId,Guid id,CancellationToken token)
+        public async Task<bool> IsExistsAsync(Guid userId,Guid id,CancellationToken token)
         {
             using var connection = _connectionFactory.GetConnection();
             var sql = @"SELECT 1 FROM Accounts WHERE UserId = @UserId AND Id = @Id";
@@ -29,57 +30,6 @@ namespace FinanceCore.Infrastructure.Repositories
             var result = await connection.ExecuteScalarAsync<int?>(sql, parameters);
             return result.HasValue;
         }
-        public async Task<Account?> GetByIdAsync(Guid id, CancellationToken token = default)
-        {
-            var model = await _connectionFactory.ReadSingleAsync<AccountModel, Guid>(
-                "sp_GetAccountById",
-                id);
-
-            if (model is null)
-                return null ;
-
-            return AccountMapper.MapToDomain(model);
-        }
-        private async Task<IEnumerable<AccountModel>?> GetModelByUserIdAsync(Guid id, CancellationToken token = default)
-        {
-            var models = await _connectionFactory.ReadListAsync<AccountModel>(
-            "sp_GetAccountsByUserId",
-            new { UserId = id });
-            return models;
-
-        }
-        private async Task<IEnumerable<AccountModel>?> GetModelByUserIdAndNameAsync(Guid id,string name, CancellationToken token = default)
-        {
-            using var connection = _connectionFactory.GetConnection();
-
-            const string sql = @"SELECT * FROM Accounts WHERE  UserId = @Id AND Name = @Name";
-            var command = new CommandDefinition(sql, new { Id = id, Name = name }, cancellationToken: token, commandType: CommandType.Text);
-            var models = await connection.QueryAsync<AccountModel>(command);
-            return models;
-
-        }
-       public async Task<IEnumerable<AccountDto>?> GetDtoByNameAsync(Guid id , string name , CancellationToken token) {
-            var accountModels = await GetModelByUserIdAndNameAsync(id,name,token);
-            if (accountModels is null) return null;
-            var accountDtos = accountModels.Select(model => new AccountDto(model.Id, model.UserId, model.Name, (EnAccountType)model.AccountTypeId, model.Balance, (EnCurrency)model.CurrencyId, model.CreatedAt));
-            return accountDtos;
-        }
-
-        public async Task<IEnumerable<Account>?> GetByUserIdAsync(Guid userId, CancellationToken token = default)
-        {
-            var models = await GetModelByUserIdAsync(userId, token);
-            if (models is null)
-                    return null;
-            return models.Select(model => AccountMapper.MapToDomain(model));
-        }
-        public async Task<IEnumerable<AccountDto>?> GetDtoByUserIdAsync(Guid userId, CancellationToken token = default)
-        {
-            var models = await GetModelByUserIdAsync(userId, token);
-            if (models is null)
-                return null;
-            return models.Select(model => new AccountDto(model.Id,model.UserId,model.Name,(EnAccountType)model.AccountTypeId,model.Balance,(EnCurrency)model.CurrencyId,model.CreatedAt));
-        }
-
         public async Task AddAsync(Account account, CancellationToken token = default)
         {
             const string sql = @"
@@ -125,34 +75,6 @@ namespace FinanceCore.Infrastructure.Repositories
             if (affectedRows == 0)
                 throw new InvalidOperationException("Failed to insert account into the database.");
         }
-        public async Task<decimal> GetTotalBalanceByAccountIdAsync(Guid userId, Guid AccountId, CancellationToken token = default)
-        {
-            using var connection = _connectionFactory.GetConnection();
-            var sql = @"
-            SELECT ISNULL(SUM(Balance), 0) 
-            FROM Accounts
-            WHERE UserId = @UserId AND Id = @Id";
-
-            var total = await connection.ExecuteScalarAsync<decimal>(sql, new {UserId = userId,Id = AccountId});
-
-            return total;
-        }
-        public async Task<decimal> GetTotalBalanceAsync(Guid userId, CancellationToken token)
-        {
-            using var connection = _connectionFactory.GetConnection();
-            var sql = @"
-            SELECT ISNULL(SUM(Balance), 0) 
-            FROM Accounts
-            WHERE UserId = @UserId";
-
-            var total = await connection.ExecuteScalarAsync<decimal>(
-                sql,
-                new { UserId = userId }
-            );
-
-            return total;
-        }
-
         public async Task UpdateAsync(Account account, CancellationToken token = default)
         {
             const string sql = @"
@@ -215,11 +137,11 @@ namespace FinanceCore.Infrastructure.Repositories
                 (EnCurrency)model.CurrencyId,
                 model.CreatedAt);
         }
-        public async Task<IEnumerable<AccountOptionsDto>?> GetByUserAccountsOptionsAsync(Guid id, CancellationToken token)
+        public async Task<IEnumerable<AccountOptionsDto>> GetByUserAccountsOptionsAsync(Guid id,int page , int pageSize, CancellationToken token)
         {
             using var connection = _connectionFactory.GetConnection();
-            const string sql = @"SELECT Id , Name FROM Accounts WHERE UserId = @Id";
-            var command = new CommandDefinition(sql, new { Id = id }, cancellationToken: token);
+            const string sql = @"SELECT Id , Name FROM Accounts WHERE UserId = @Id ORDER BY t.CreatedAt OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY";
+            var command = new CommandDefinition(sql, new { Id = id , Offset = (page - 1) * pageSize , PageSize = pageSize }, cancellationToken: token);
             return await connection.QueryAsync<AccountOptionsDto>(command);
         }
         private async Task<AccountModel?> GetModelByIdAndUserIdAsync(Guid userId, Guid id, CancellationToken token = default)
@@ -245,23 +167,25 @@ namespace FinanceCore.Infrastructure.Repositories
 
             return model;
         }
-        public async Task<IEnumerable<AccountInfoDto>?> GetAccountInfosAsync(Guid userId , EnAccountType? type , EnCurrency? currency , string? name , CancellationToken token)
+        public async Task<IEnumerable<AccountInfoDto>> GetAccountsAsync(Guid userId , EnAccountType? type , EnCurrency? currency , string? name ,int page , int pageSize , CancellationToken token)
         {
             using var connection = _connectionFactory.GetConnection();
             var sql = new StringBuilder(@"
-                SELECT Id AS id,
-                       Name AS name,
-                       AccountTypeId AS type,
-                       Balance AS balance,
-                       CurrencyId AS currency
+                SELECT Id ,
+                       Name ,
+                       AccountTypeId AS Type,
+                       Balance,
+                       CurrencyId AS Currency
                 FROM Accounts
                 WHERE UserId = @Id
             ");
-            if (name is not null) sql.Append(" AND Name LIKE @name");
-            if (type.HasValue) sql.Append(" AND AccountTypeId = @type");
-            if (currency.HasValue) sql.Append(" AND CurrencyId = @currency");
+            if (name is not null) sql.Append(" AND Name LIKE @Name");
+            if (type.HasValue) sql.Append(" AND AccountTypeId = @Type");
+            if (currency.HasValue) sql.Append(" AND CurrencyId = @Currency");
 
-            var command = new CommandDefinition(sql.ToString(), new {Id = userId, name = $"%{name}%", type = type, currency = currency });
+            sql.Append(" ORDER BY t.CreatedAt OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY");
+
+            var command = new CommandDefinition(sql.ToString(), new {Id = userId, Name = $"%{name}%", Type = type, Currency = currency ,Offset = pageSize * (page - 1) , PageSize = pageSize });
 
 
             return await connection.QueryAsync<AccountInfoDto>(command);

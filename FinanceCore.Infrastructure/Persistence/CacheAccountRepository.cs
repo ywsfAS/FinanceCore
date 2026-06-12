@@ -17,69 +17,29 @@ namespace FinanceCore.Infrastructure.Persistence
             _accountRepository = accountRepository;
             _memoryCache = memoryCache;
         }
-        public Task<Account?> GetByIdAsync(Guid id, CancellationToken token = default)
-        {
-            string key = $"Account_{id}";
-
-            return _memoryCache.GetOrCreateAsync(key, entry =>
-            {
-                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5);
-                return _accountRepository.GetByIdAsync(id, token);
-            });
-        }
-
-        public Task<IEnumerable<AccountOptionsDto>?> GetByUserAccountsOptionsAsync(Guid id, CancellationToken token)
+        public Task<IEnumerable<AccountOptionsDto>> GetByUserAccountsOptionsAsync(Guid id,int page ,int pageSize , CancellationToken token)
         {
             string key = $"Account_options_{id}";
 
             return _memoryCache.GetOrCreateAsync(key, entry =>
             {
                 entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5);
-                return _accountRepository.GetByUserAccountsOptionsAsync(id,token);
+                return _accountRepository.GetByUserAccountsOptionsAsync(id,page,pageSize,token);
             });
 
         }
 
-        public  Task<IEnumerable<AccountInfoDto>?> GetAccountInfosAsync(Guid userId , EnAccountType? type , EnCurrency? currency , string? name , CancellationToken token)
+        public  Task<IEnumerable<AccountInfoDto>> GetAccountsAsync(Guid userId , EnAccountType? type , EnCurrency? currency , string? name ,int page, int pageSize, CancellationToken token = default)
         {
             string key = $"Account_infos_{userId}_{type}_{currency}_{name}";
 
             return _memoryCache.GetOrCreateAsync(key, entry =>
             {
                 entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5);
-                return _accountRepository.GetAccountInfosAsync(userId,type,currency,name,token);
+                return _accountRepository.GetAccountsAsync(userId,type,currency,name,page,pageSize,token);
             });
         }
-        public Task<IEnumerable<AccountDto>?> GetDtoByNameAsync(Guid id , string name , CancellationToken token)
-        {
-            string key = $"Account_{id}_{name}";
-            return _memoryCache.GetOrCreateAsync(key, entry =>
-            {
-                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5);
-                return _accountRepository.GetDtoByNameAsync(id, name, token);
-            });
-        }
-        public  Task<IEnumerable<Account>?> GetByUserIdAsync(Guid id, CancellationToken token = default)
-        {
-            string key = $"Accounts_User_{id}";
-            return _memoryCache.GetOrCreateAsync(key, entry =>
-            {
-                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5);
-                return _accountRepository.GetByUserIdAsync(id, token);
-            });
-         }
-            
-        public  Task<IEnumerable<AccountDto>?> GetDtoByUserIdAsync(Guid id, CancellationToken token = default)
-        {
-            string key = $"AccountDtos_User_{id}";
-            return _memoryCache.GetOrCreateAsync(key, entry =>
-            {
-                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5);
-                return _accountRepository.GetDtoByUserIdAsync(id, token);
-            });
-            
-
-        }
+  
         public  Task<AccountDto?> GetDtoByIdAndUserIdAsync(Guid userId, Guid id, CancellationToken token = default)
         {
             string key = $"AccountDto_User_{userId}_Account_{id}";
@@ -116,33 +76,13 @@ namespace FinanceCore.Infrastructure.Persistence
         {
             return _accountRepository.DeleteAsync(accountId,token);
         }
-        public Task<decimal> GetTotalBalanceAsync(Guid userId, CancellationToken token = default)
-        {
-            string key = $"TotalBalance_User_{userId}";
-            return _memoryCache.GetOrCreateAsync(key, entry =>
-            {
-                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5);
-                return _accountRepository.GetTotalBalanceAsync(userId, token);
-            });
-
-        }
-        public Task<decimal> GetTotalBalanceByAccountIdAsync(Guid userId,Guid AccountId, CancellationToken token = default)
-        {
-            string key = $"TotalBalance_User_{userId}_Account{AccountId}";
-            return _memoryCache.GetOrCreateAsync(key, entry =>
-            {
-                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5);
-                return _accountRepository.GetTotalBalanceByAccountIdAsync(userId,AccountId, token);
-            });
-
-        }
-        public Task<bool> IsExists(Guid userId, Guid id, CancellationToken token = default)
+        public Task<bool> IsExistsAsync(Guid userId, Guid id, CancellationToken token = default)
         {
             string key = $"AccountExists_User_{userId}_Account_{id}";
             return _memoryCache.GetOrCreateAsync(key, entry =>
             {
                 entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5);
-                return _accountRepository.IsExists(userId, id, token);
+                return _accountRepository.IsExistsAsync(userId, id, token);
             });
            
         }

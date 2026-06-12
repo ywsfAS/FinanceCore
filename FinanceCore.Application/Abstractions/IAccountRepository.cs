@@ -11,20 +11,14 @@ namespace FinanceCore.Application.Abstractions
 {
     public interface IAccountRepository
     {
-        Task<Account?> GetByIdAsync(Guid id , CancellationToken token = default);
-        Task<IEnumerable<Account>?> GetByUserIdAsync(Guid id, CancellationToken token = default);
-        Task<IEnumerable<AccountOptionsDto>?> GetByUserAccountsOptionsAsync(Guid id, CancellationToken token);
-        Task<IEnumerable<AccountDto>?> GetDtoByUserIdAsync(Guid id, CancellationToken token = default);
+        Task<IEnumerable<AccountOptionsDto>> GetByUserAccountsOptionsAsync(Guid id,int page , int pageSize, CancellationToken token = default);
         Task<AccountDto?> GetDtoByIdAndUserIdAsync(Guid userId , Guid id, CancellationToken token = default);
         Task<Account?> GetByIdAndUserIdAsync(Guid userId, Guid id, CancellationToken token = default);
         Task AddAsync(Account account, CancellationToken token = default);
         Task UpdateAsync(Account account, CancellationToken token = default);
         Task DeleteAsync(Guid accountId, CancellationToken token = default);
-        Task<decimal> GetTotalBalanceAsync(Guid userId,CancellationToken token = default);
-        Task<decimal> GetTotalBalanceByAccountIdAsync(Guid userId,Guid AccountId,CancellationToken token = default);
-        Task<bool> IsExists(Guid userId,Guid id,CancellationToken token = default);
-        Task<IEnumerable<AccountDto>?> GetDtoByNameAsync(Guid id , string name , CancellationToken token);
-        Task<IEnumerable<AccountInfoDto>?> GetAccountInfosAsync(Guid userId , EnAccountType? type , EnCurrency? currency , string? name , CancellationToken token);
+        Task<bool> IsExistsAsync(Guid userId,Guid id,CancellationToken token = default);
+        Task<IEnumerable<AccountInfoDto>> GetAccountsAsync(Guid userId , EnAccountType? type , EnCurrency? currency , string? name,int page = 1 , int pageSize = 10 , CancellationToken token = default);
         
     }
 }

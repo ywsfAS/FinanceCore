@@ -7,5 +7,5 @@ using System.Threading.Tasks;
 
 namespace FinanceCore.Application.DTOs
 {
-    public record AccountInfoDto(Guid id , string name , EnAccountType type , decimal balance , EnCurrency currency);
+    public record AccountInfoDto(Guid Id , string Name , EnAccountType Type , decimal Balance , EnCurrency Currency);
 }

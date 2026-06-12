@@ -3,7 +3,6 @@ using FinanceCore.Application.Features.Report.GetMonthlySummary;
 using FinanceCore.Application.Features.Report.GetMonthlySummaryPerAccount;
 using FinanceCore.Application.Features.Report.GetMonthlySummaryPerUser;
 using FinanceCore.Application.Features.Report.GetMonthlyTrend;
-using FinanceCore.Application.Features.Report.GetNetWorth;
 using FinanceCore.Application.Features.Report.GetSpendingByCategory;
 using FinanceCore.Application.Features.Report.GetSpendingByCategoryPerUser;
 using FinanceCore.Application.Features.Report.GetSummaryPerUser;
@@ -111,19 +110,6 @@ namespace FinanceCore.API.Controllers
             var query = new GetSpendingByCategoryQuery(UserId, AccountId, year, month);
             var response = await _mediator.Send(query);
             return Ok(response);
-        }
-        [HttpGet("net-worth")]
-        [Produces("application/json")]
-        [ProducesResponseType(typeof(NetWorthDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> GetNetWorth()
-        {
-            var UserId = GetUserId();
-            var query = new GetNetWorthQuery(UserId);
-            var response = await _mediator.Send(query);
-            return Ok(response);
-
         }
 
     }

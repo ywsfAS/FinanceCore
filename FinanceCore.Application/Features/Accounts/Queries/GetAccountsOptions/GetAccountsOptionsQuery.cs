@@ -8,5 +8,5 @@ using System.Threading.Tasks;
 
 namespace FinanceCore.Application.Features.Accounts.Queries.GetAccountByUserOptions
 {
-    public record GetAccountByUserOptionsQuery(Guid userId) : IRequest<IEnumerable<AccountOptionsDto>?>;
+    public record GetAccountsOptionsQuery(Guid userId , int page = 1 , int pageSize = 10) : IRequest<IEnumerable<AccountOptionsDto>>;
 }

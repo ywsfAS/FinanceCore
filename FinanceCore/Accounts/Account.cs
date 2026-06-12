@@ -42,7 +42,7 @@ namespace FinanceCore.Domain.Accounts
         }
 
         // Reconstitute from persistence
-        public static Account Create(
+        public static Account Load(
             Guid id,
             Guid userId,
             string name,
@@ -63,12 +63,8 @@ namespace FinanceCore.Domain.Accounts
             EnAccountType type,
             Money initialBalance)
         {
-            if (string.IsNullOrWhiteSpace(name))
-                throw new InvalidAccountNameException(name, "Account name cannot be empty");
-
-            if (name.Length > 100)
-                throw new InvalidAccountNameException(name, "Account name cannot exceed 100 characters");
-
+            // validation
+            ValidateAccountName(name);
             var account = new Account
             {
                 Id = Guid.NewGuid(),
@@ -90,7 +86,27 @@ namespace FinanceCore.Domain.Accounts
 
             return account;
         }
+        private static void ValidateAccountName(string name)
+        {
+            if (string.IsNullOrWhiteSpace(name))
+                throw new InvalidAccountNameException(name, "Account name cannot be empty");
 
+            if (name.Length > 100)
+                throw new InvalidAccountNameException(name, "Account name cannot exceed 100 characters");
+
+
+        }
+        private static readonly Dictionary<EnAccountType, EnAccountType[]> AllowedAccountTypeTransitions = new()
+        {
+            [EnAccountType.Credit] = [EnAccountType.Cash, EnAccountType.Savings,EnAccountType.Other],
+            [EnAccountType.Savings] = [EnAccountType.Checking, EnAccountType.Other],
+            [EnAccountType.Cash] = [EnAccountType.Checking, EnAccountType.Other],
+            [EnAccountType.Investment] = [EnAccountType.Other],
+            [EnAccountType.Credit] = [],   // no transitions allowed
+            [EnAccountType.Loan] = [],   // no transitions allowed
+            [EnAccountType.Other] = [EnAccountType.Checking, EnAccountType.Savings, EnAccountType.Cash]
+        };
+        
         public void ApplyTransaction(Money amount, EnTransactionType type)
         {
             if (!IsActive)
@@ -122,20 +138,23 @@ namespace FinanceCore.Domain.Accounts
                 type,
                 amount));
         }
-
-        public void UpdateDetails(string? name = null)
+        private void ValidateAccountTypeTransition(EnAccountType newType)
         {
-            if (name != null)
+            if(Type != newType)
             {
-                if (string.IsNullOrWhiteSpace(name))
-                    throw new InvalidAccountNameException(name, "Account name cannot be empty");
-
-                if (name.Length > 100)
-                    throw new InvalidAccountNameException(name, "Account name cannot exceed 100 characters");
-
-                Name = name.Trim();
+                if (!AllowedAccountTypeTransitions[Type].Contains(newType))
+                {
+                    throw new InvalidAccountTypeTransitionException(Id, newType);
+                }
             }
+        }
 
+        public void UpdateDetails(string name , EnAccountType type)
+        {
+            ValidateAccountName(name);
+            ValidateAccountTypeTransition(type);
+            Name = name.Trim();
+            Type = type;
             UpdatedAt = DateTime.UtcNow;
             AddDomainEvent(new AccountUpdatedEvent(Id, Name));
         }

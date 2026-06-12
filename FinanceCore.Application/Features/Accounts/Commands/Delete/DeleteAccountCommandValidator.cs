@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,6 +13,7 @@ namespace FinanceCore.Application.Features.Accounts.Commands.Delete
         {
             RuleFor(x => x.Id)
                 .NotEmpty();
+            RuleFor(x => x.UserId).NotEmpty();
         }
     }
 

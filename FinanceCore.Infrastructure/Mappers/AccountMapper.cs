@@ -15,7 +15,7 @@ namespace FinanceCore.Infrastructure.Mappers
         }
         public static Account MapToDomain(AccountModel model)
         {
-            return Account.Create(model.Id, model.UserId, model.Name, (EnAccountType)model.AccountTypeId,new Money(model.Balance,(EnCurrency)model.CurrencyId), new Money(model.InitialBalance,(EnCurrency)model.CurrencyId), model.IsActive, model.CreatedAt, model.UpdatedAt);
+            return Account.Load(model.Id, model.UserId, model.Name, (EnAccountType)model.AccountTypeId,new Money(model.Balance,(EnCurrency)model.CurrencyId), new Money(model.InitialBalance,(EnCurrency)model.CurrencyId), model.IsActive, model.CreatedAt, model.UpdatedAt);
         }
     }
 }

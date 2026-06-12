@@ -1,4 +1,4 @@
-﻿using FinanceCore.Application.Abstractions;
+using FinanceCore.Application.Abstractions;
 using FinanceCore.Domain.Exceptions;
 using MediatR;
 using System;
@@ -20,9 +20,9 @@ namespace FinanceCore.Application.Features.Accounts.Commands.Delete
 
         public async Task Handle(DeleteAccountCommand command, CancellationToken cancellationToken)
         {
-            var Isaccount = await _accountRepository.IsExists(command.UserId,command.Id,cancellationToken);
+            var isAccountExist = await _accountRepository.IsExistsAsync(command.UserId,command.Id,cancellationToken);
 
-            if (!Isaccount)
+            if (!isAccountExist)
                 throw new AccountNotFoundException(command.Id);
 
             await _accountRepository.DeleteAsync(command.Id, cancellationToken);

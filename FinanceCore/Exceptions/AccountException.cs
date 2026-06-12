@@ -1,4 +1,4 @@
-﻿using FinanceCore.Domain.Common;
+using FinanceCore.Domain.Common;
 using FinanceCore.Domain.Enums;
 using System;
 using System.Collections.Generic;
@@ -160,6 +160,20 @@ namespace FinanceCore.Domain.Exceptions
         {
             AccountId = accountId;
             Dependencies = dependencies;
+        }
+    }
+
+    // When account cannot transition its type 
+    public class InvalidAccountTypeTransitionException : DomainException
+    {
+        public Guid AccountId{ get; }
+        public EnAccountType NewType { get; }
+
+        public InvalidAccountTypeTransitionException(Guid accountId, EnAccountType type)
+            : base($"Cannot do type transition to {type} account {accountId} ")
+        {
+            AccountId = accountId;
+            NewType = type;
         }
     }
 }

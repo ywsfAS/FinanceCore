@@ -1,4 +1,4 @@
-﻿using FinanceCore.Application.Abstractions;
+using FinanceCore.Application.Abstractions;
 using FinanceCore.Application.Features.Accounts.Commands.Delete;
 using FinanceCore.Domain.Exceptions;
 using Moq;
@@ -25,7 +25,7 @@ namespace FinanceCore.Application.Tests.Accounts
             // Arrange
            var userId = Guid.NewGuid();
             var accountId = Guid.NewGuid();
-                _accountRepository.Setup(repo => repo.IsExists(userId, accountId, It.IsAny<CancellationToken>()))
+                _accountRepository.Setup(repo => repo.IsExistsAsync(userId, accountId, It.IsAny<CancellationToken>()))
                     .ReturnsAsync(true) ;
             var command = new DeleteAccountCommand(userId,accountId);
             // Act
@@ -42,7 +42,7 @@ namespace FinanceCore.Application.Tests.Accounts
             var accountId = Guid.NewGuid();
 
             _accountRepository
-                .Setup(repo => repo.IsExists(It.IsAny<Guid>(),It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
+                .Setup(repo => repo.IsExistsAsync(It.IsAny<Guid>(),It.IsAny<Guid>(), It.IsAny<CancellationToken>()))
                 .ReturnsAsync(false);
 
             var command = new DeleteAccountCommand(userId, accountId);

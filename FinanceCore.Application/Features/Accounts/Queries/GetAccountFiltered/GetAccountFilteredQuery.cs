@@ -9,5 +9,5 @@ using System.Threading.Tasks;
 
 namespace FinanceCore.Application.Features.Accounts.Queries.GetAccountFiltered
 {
-    public record  GetAccountFilteredQuery(Guid userId , string? name , EnAccountType? type , EnCurrency? currency) : IRequest<IEnumerable<AccountInfoDto>?>;
+    public record  GetAccountFilteredQuery(Guid UserId , string? Name , EnAccountType? Type , EnCurrency? Currency , int Page , int PageSize) : IRequest<IEnumerable<AccountInfoDto>>;
 }

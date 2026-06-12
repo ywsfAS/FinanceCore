@@ -1,5 +1,7 @@
-﻿namespace FinanceCore.API.Requests.Account
+using FinanceCore.Domain.Enums;
+
+namespace FinanceCore.API.Requests.Account
 {
 
-    public record UpdateAccountRequest(Guid accountId , string name);
+    public record UpdateAccountRequest(string Name,EnAccountType Type);
 }

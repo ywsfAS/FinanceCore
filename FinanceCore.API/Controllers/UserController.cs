@@ -1,10 +1,7 @@
 using FinanceCore.API.Requests.User;
 using FinanceCore.Application.DTOs;
 using FinanceCore.Application.DTOs.Goal;
-using FinanceCore.Application.Features.Accounts.Queries.GetAccountById;
 using FinanceCore.Application.Features.Accounts.Queries.GetAccountByUserOptions;
-using FinanceCore.Application.Features.Accounts.Queries.GetAccountsByUserId;
-using FinanceCore.Application.Features.Budgets.Queries.GetBudgetById;
 using FinanceCore.Application.Features.Budgets.Queries.GetBudgetsByUserId;
 using FinanceCore.Application.Features.Categories.Queries.GetCategoriesByUserId;
 using FinanceCore.Application.Features.Categories.Queries.GetCategoriesByUserOptions;
@@ -134,21 +131,6 @@ namespace FinanceCore.API.Controllers
             return Ok(categories);
         }
 
-        /// <summary>
-        /// Get all accounts for a user
-        /// </summary>
-        [HttpGet("accounts")]
-        [Produces("application/json")]
-        [ProducesResponseType(typeof(IEnumerable<AccountDto>), StatusCodes.Status201Created)]
-        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> GetAccountsByUserId()
-        {
-            var UserId = GetUserId();
-            var query = new GetAccountsByUserIdQuery(UserId);
-            var accounts = await _mediator.Send(query);
-            return Ok(accounts);
-        }
 
 
         /// <summary>
@@ -183,22 +165,6 @@ namespace FinanceCore.API.Controllers
             var categories = await _mediator.Send(query);
             return Ok(categories);
         }
-        /// <summary>
-        /// Get all accounts name for a user
-        /// </summary>
-        [HttpGet("accounts/options")]
-        [Produces("application/json")]
-        [ProducesResponseType(typeof(IEnumerable<AccountOptionsDto>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> GetAccountsByUserIdNames()
-        {
-            var userId = GetUserId();
-            var query = new GetAccountByUserOptionsQuery(userId); 
-            var accounts = await _mediator.Send(query);
-            return Ok(accounts);
-        }
-
 
     }
 }
