@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static FinanceCore.Domain.Exceptions.ResetPasswordException;
 
-namespace FinanceCore.Application.Features.PasswordReset
+namespace FinanceCore.Application.Features.Auth.Commands.ResetPassword
 {
     public class ResetPasswordCommandHandler
     : IRequestHandler<ResetPasswordCommand>

@@ -1,5 +1,6 @@
-﻿using FinanceCore.Application.Abstractions;
+using FinanceCore.Application.Abstractions;
 using FinanceCore.Application.DTOs.Auth;
+using FinanceCore.Domain.Common;
 using FinanceCore.Domain.Exceptions;
 using MediatR;
 
@@ -19,7 +20,8 @@ namespace FinanceCore.Application.Features.Auth.Commands.Login
         }
         public async Task<LoginDto> Handle(LoginUserCommand command , CancellationToken token = default)
         {
-            var user = await _userRepository.GetByEmailAsync(command.Email);
+            var email = new Email(command.Email);
+            var user = await _userRepository.GetByEmailAsync(email);
             if (user == null) {
                 throw new InvalidCredentialsException();  
             }

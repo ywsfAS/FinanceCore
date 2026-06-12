@@ -14,7 +14,7 @@ namespace FinanceCore.Infrastructure.Mappers
         }
         public static Budget MapToDomain(BudgetModel model)
         {
-            return Budget.Create(model.Id, model.UserId, model.CategoryId, model.Name, new Money(model.Amount, (EnCurrency)model.CurrencyId),model.BudgetPeriodId, model.StartDate, model.EndDate,model.CreatedAt,model.UpdatedAt);
+            return Budget.Load(model.Id, model.UserId, model.CategoryId, model.Name, new Money(model.Amount, (EnCurrency)model.CurrencyId),model.BudgetPeriodId, model.StartDate, model.EndDate,model.CreatedAt,model.UpdatedAt);
 
 
         }

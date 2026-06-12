@@ -25,7 +25,8 @@ namespace FinanceCore.Application.Features.Auth.Commands.Register
 
         public async Task<RegisterDto> Handle(RegisterUserCommand command, CancellationToken cancellationToken)
         {
-            var existingUser = await _userRepository.GetByEmailAsync(command.Email, cancellationToken);
+            var email = new Email(command.Email);
+            var existingUser = await _userRepository.GetByEmailAsync(email, cancellationToken);
 
             if (existingUser is not null)
                 throw new DuplicateEmailException(command.Email);
@@ -35,8 +36,7 @@ namespace FinanceCore.Application.Features.Auth.Commands.Register
             var user = User.Create(
                 command.Name,
                 new Email(command.Email),
-                HashedPassword,
-                command.currency                
+                HashedPassword
                 );
             
             await _userRepository.AddAsync(user, cancellationToken);

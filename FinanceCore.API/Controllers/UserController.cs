@@ -2,8 +2,6 @@ using FinanceCore.API.Requests.User;
 using FinanceCore.Application.DTOs;
 using FinanceCore.Application.DTOs.Goal;
 using FinanceCore.Application.Features.Accounts.Queries.GetAccountByUserOptions;
-using FinanceCore.Application.Features.Budgets.Queries.GetBudgetsByUserId;
-using FinanceCore.Application.Features.Categories.Queries.GetCategoriesByUserId;
 using FinanceCore.Application.Features.Categories.Queries.GetCategoriesByUserOptions;
 using FinanceCore.Application.Features.SavingGoals.Queries.GetSavingGoalsPerUser;
 using FinanceCore.Application.Features.Users.Command.Delete;
@@ -45,12 +43,12 @@ namespace FinanceCore.API.Controllers
         /// <returns>Returns the user details including name, email, and preferences</returns>
         /// <response code="200">User found and returned successfully</response>
         /// <response code="404">User not found</response>
-        [HttpGet]
+        [HttpGet("me")]
         [Produces("application/json")]
         [ProducesResponseType(typeof(UserDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ValidationErrorDto),StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> GetUserById()
+        public async Task<IActionResult> GetCurrentUser()
         {
             var UserId = GetUserId();
             var query = new GetUserByIdQuery(UserId);
@@ -67,7 +65,7 @@ namespace FinanceCore.API.Controllers
         /// <response code="204">User updated successfully</response>
         /// <response code="400">Invalid input or ID mismatch</response>
         /// <response code="404">User not found</response>
-        [HttpPut]
+        [HttpPut("me")]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -76,7 +74,7 @@ namespace FinanceCore.API.Controllers
         public async Task<IActionResult> UpdateUser([FromBody] UpdateUserRequest request)
         {
             var UserId = GetUserId();
-            var command = new UpdateUserCommand(UserId,request.Name,request.DefaultCurrency,request.TimeZone);
+            var command = new UpdateUserCommand(UserId,request.Name,request.TimeZone);
             await _mediator.Send(command);
             return NoContent();
         }
@@ -100,71 +98,12 @@ namespace FinanceCore.API.Controllers
             await _mediator.Send(command);
             return NoContent();
         }
-        /// <summary>
-        /// Get all budgets for a user
-        /// </summary>
-        [HttpGet("budgets")]
-        [Produces("application/json")]
-        [ProducesResponseType(typeof(IEnumerable<BudgetDto>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> GetBudgetsByUserId()
-        {
-            var UserId = GetUserId();
-            var query = new GetBudgetsByUserIdQuery(UserId);
-            var budgets = await _mediator.Send(query);
-            return Ok(budgets);
-        }
-        /// <summary>
-        /// Get all categories for a user
-        /// </summary>
-        [HttpGet("categories")]
-        [Produces("application/json")]
-        [ProducesResponseType(typeof(IEnumerable<CategoryDto>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> GetCategoriesByUserId(int Page = 1 , int PageSize = 10 )
-        {
-            var UserId = GetUserId();
-            var query = new GetCategoriesByUserIdQuery(UserId,Page ,PageSize);
-            var categories = await _mediator.Send(query);
-            return Ok(categories);
-        }
 
 
 
-        /// <summary>
-        /// Get all goals for a user
-        /// </summary>
-        [HttpGet("goals")]
-        [Produces("application/json")]
-        [ProducesResponseType(typeof(IEnumerable<SavingsGoalDto>), StatusCodes.Status201Created)]
-        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> GetGoalsByUserId()
-        {
-            var UserId = GetUserId();
-            var query = new GetSavingsGoalPerUserQuery(UserId);
-            var goals = await _mediator.Send(query);
-            return Ok(goals);
-        }
 
 
-        /// <summary>
-        /// Get all categories name for a user
-        /// </summary>
-        [HttpGet("categories/options")]
-        [Produces("application/json")]
-        [ProducesResponseType(typeof(IEnumerable<CategoryOptionDto>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> GetCategoriesByUserIdNames()
-        {
-            var userId = GetUserId();
-            var query = new GetCategoriesByUserOptionsQuery(userId);
-            var categories = await _mediator.Send(query);
-            return Ok(categories);
-        }
+
 
     }
 }

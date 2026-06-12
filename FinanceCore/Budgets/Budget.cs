@@ -45,7 +45,7 @@ namespace FinanceCore.Domain.Budgets
         }
 
         // Reconstitute from persistence
-        public static Budget Create(
+        public static Budget Load(
             Guid budgetId,
             Guid userId,
             Guid categoryId,

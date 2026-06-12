@@ -1,4 +1,4 @@
-﻿using FinanceCore.Application.Abstractions;
+using FinanceCore.Application.Abstractions;
 using FinanceCore.Application.DTOs;
 using MediatR;
 using FinanceCore.Domain.Exceptions;
@@ -25,8 +25,7 @@ namespace FinanceCore.Application.Features.Users.Queries.GetUserById
                 user.Id,
                 user.Name,
                 user.Email.Address,
-                user.DefaultCurrency,
-                user.TimeZone);
+                 user.TimeZone);
         }
     }
 }

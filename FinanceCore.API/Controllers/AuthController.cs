@@ -1,8 +1,9 @@
 using FinanceCore.Application.DTOs;
 using FinanceCore.Application.DTOs.Auth;
+using FinanceCore.Application.Features.Auth.Commands.ForgotPassword;
 using FinanceCore.Application.Features.Auth.Commands.Login;
 using FinanceCore.Application.Features.Auth.Commands.Register;
-using FinanceCore.Application.Features.PasswordReset;
+using FinanceCore.Application.Features.Auth.Commands.ResetPassword;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

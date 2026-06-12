@@ -1,4 +1,4 @@
-﻿using FluentValidation;
+using FluentValidation;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,9 +17,6 @@ namespace FinanceCore.Application.Features.Users.Command.Update
             RuleFor(x => x.Name)
                 .NotEmpty()
                 .MaximumLength(100);
-
-            RuleFor(x => x.DefaultCurrency)
-                .IsInEnum();
         }
     }
 }

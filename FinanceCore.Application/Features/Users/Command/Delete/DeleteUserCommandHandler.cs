@@ -1,4 +1,4 @@
-﻿using FinanceCore.Application.Abstractions;
+using FinanceCore.Application.Abstractions;
 using MediatR;
 using FinanceCore.Domain.Exceptions;
 namespace FinanceCore.Application.Features.Users.Command.Delete
@@ -14,7 +14,7 @@ namespace FinanceCore.Application.Features.Users.Command.Delete
 
         public async Task Handle(DeleteUserCommand command, CancellationToken cancellationToken)
         {
-            var user = await _userRepository.IsExists(command.Id, cancellationToken);
+            var user = await _userRepository.IsExistsAsync(command.Id, cancellationToken);
 
             if (!user)
                 throw new UserNotFoundException(command.Id);

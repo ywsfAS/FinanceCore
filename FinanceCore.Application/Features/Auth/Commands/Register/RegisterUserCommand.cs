@@ -9,6 +9,6 @@ using FinanceCore.Domain.Enums;
 using MediatR;
 namespace FinanceCore.Application.Features.Auth.Commands.Register
 {
-    public record RegisterUserCommand(string Name,string Email ,string Password,EnCurrency currency)
+    public record RegisterUserCommand(string Name,string Email ,string Password)
     : IRequest<RegisterDto>;
 }

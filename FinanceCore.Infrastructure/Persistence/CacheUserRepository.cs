@@ -1,4 +1,5 @@
-﻿using FinanceCore.Application.Abstractions;
+using FinanceCore.Application.Abstractions;
+using FinanceCore.Domain.Common;
 using FinanceCore.Infrastructure.Repositories;
 using Microsoft.Extensions.Caching.Memory;
 using System;
@@ -27,7 +28,7 @@ namespace FinanceCore.Infrastructure.Persistence
                 return _userRepository.GetByIdAsync(id, token);
             });
         }
-        public Task<Domain.Users.User?> GetByEmailAsync(string email, CancellationToken token = default)
+        public Task<Domain.Users.User?> GetByEmailAsync(Email email, CancellationToken token = default)
         {
             var key = $"User_Email_{email}";
             return _memoryCache.GetOrCreateAsync(key, entry =>
@@ -48,13 +49,13 @@ namespace FinanceCore.Infrastructure.Persistence
         {
            return _userRepository.DeleteAsync(id, token);
         }
-        public Task<bool> IsExists(Guid userId, CancellationToken token = default)
+        public Task<bool> IsExistsAsync(Guid userId, CancellationToken token = default)
         {
             var key = $"UserExists_{userId}";
             return _memoryCache.GetOrCreateAsync(key, entry =>
             {
                 entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
-                return _userRepository.IsExists(userId, token);
+                return _userRepository.IsExistsAsync(userId, token);
             });
         }
     }

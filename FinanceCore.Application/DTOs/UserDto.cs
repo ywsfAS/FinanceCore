@@ -1,4 +1,4 @@
-﻿using FinanceCore.Domain.Enums;
+using FinanceCore.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -11,7 +11,6 @@ namespace FinanceCore.Application.DTOs
         Guid Id,
         string Name,
         string Email,
-        EnCurrency DefaultCurrency,
         string? TimeZone);
 
 }

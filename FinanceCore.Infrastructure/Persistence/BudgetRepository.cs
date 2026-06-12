@@ -193,7 +193,7 @@ namespace FinanceCore.Infrastructure.Repositories
             b.Id,
             b.Name,
             b.Amount,
-            b.CurrencyId AS CurrencyId,
+            b.CurrencyId AS Currency,
             b.BudgetPeriodId AS Period,
             b.StartDate,
             b.EndDate,

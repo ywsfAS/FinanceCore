@@ -70,10 +70,10 @@ namespace FinanceCore.API.Controllers
         /// </summary>
         [HttpGet("{id}")]
         [Produces("application/json")]
-        [ProducesResponseType(typeof(BudgetDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(BudgetDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> GetBudgetById(Guid id)
+        public async Task<IActionResult> GetBudgetById([FromRoute]Guid id)
         {
             var UserId = GetUserId();
             var query = new GetBudgetByIdQuery(UserId ,id);
@@ -128,5 +128,6 @@ namespace FinanceCore.API.Controllers
             await _mediator.Send(command);
             return NoContent();
         }
+
     }
 }

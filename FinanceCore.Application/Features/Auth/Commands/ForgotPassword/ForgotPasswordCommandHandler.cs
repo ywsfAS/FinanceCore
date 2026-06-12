@@ -6,8 +6,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FinanceCore.Domain.Common;
 
-namespace FinanceCore.Application.Features.PasswordReset
+namespace FinanceCore.Application.Features.Auth.Commands.ForgotPassword
 {
     public class ForgotPasswordCommandHandler
     : IRequestHandler<ForgotPasswordCommand>
@@ -28,7 +29,8 @@ namespace FinanceCore.Application.Features.PasswordReset
 
         public async Task Handle(ForgotPasswordCommand request,CancellationToken cancellationToken)
         {
-            var user = await _userRepository.GetByEmailAsync(request.Email.Address,cancellationToken);
+            var email = new Email(request.Email);
+            var user = await _userRepository.GetByEmailAsync(email,cancellationToken);
             if(user is not null)
             {
                 var token = Guid.NewGuid().ToString("N");
@@ -36,7 +38,7 @@ namespace FinanceCore.Application.Features.PasswordReset
                 var resetToken = new PasswordResetToken(user.Id,token,expiredAt);
                 await _tokenRepository.AddAsync(resetToken,cancellationToken);
                 var resetLink = $"http://localhost:5173/reset-password?token={token}";
-                await _emailService.SendEmailAsync(request.Email, "Reset your password",resetLink);
+                await _emailService.SendEmailAsync(email, "Reset your password",resetLink);
             }
             return;
         }

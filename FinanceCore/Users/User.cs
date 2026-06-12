@@ -10,7 +10,6 @@ namespace FinanceCore.Domain.Users
         public string Name { get; private set; } = string.Empty;
         public Email Email { get; private set; } = null!;
         public string? PasswordHash { get; private set; }
-        public EnCurrency DefaultCurrency { get; private set; }
         public string? TimeZone { get; private set; }
         public DateTime CreatedAt { get; private set; }
         public DateTime? UpdatedAt { get; private set; }
@@ -22,7 +21,6 @@ namespace FinanceCore.Domain.Users
             string name,
             Email email,
             string passwordHash,
-            EnCurrency defaultCurrency,
             string? timeZone,
             DateTime createdAt,
             DateTime? updatedAt = null)
@@ -31,7 +29,6 @@ namespace FinanceCore.Domain.Users
             Name = name;
             Email = email;
             PasswordHash = passwordHash;
-            DefaultCurrency = defaultCurrency;
             TimeZone = timeZone;
             CreatedAt = createdAt;
             UpdatedAt = updatedAt;
@@ -43,12 +40,11 @@ namespace FinanceCore.Domain.Users
             string name,
             Email email,
             string passwordHash,
-            EnCurrency defaultCurrency,
             string? timeZone,
             DateTime createdAt,
             DateTime? updatedAt = null)
         {
-            return new User(id, name, email, passwordHash, defaultCurrency, timeZone, createdAt, updatedAt);
+            return new User(id, name, email, passwordHash, timeZone, createdAt, updatedAt);
         }
 
         // Create new user
@@ -56,7 +52,6 @@ namespace FinanceCore.Domain.Users
             string name,
             Email email,
             string passwordHash,
-            EnCurrency defaultCurrency = EnCurrency.USD,
             string? timeZone = null)
         {
             if (string.IsNullOrWhiteSpace(name))
@@ -83,7 +78,6 @@ namespace FinanceCore.Domain.Users
                 Name = name.Trim(),
                 Email = email,
                 PasswordHash = passwordHash,
-                DefaultCurrency = defaultCurrency,
                 TimeZone = timeZone,
                 CreatedAt = DateTime.UtcNow
             };
@@ -91,7 +85,6 @@ namespace FinanceCore.Domain.Users
             user.AddDomainEvent(new UserCreatedEvent(
                 user.Id,
                 user.Name,
-                user.DefaultCurrency,
                 user.Email.Address));
 
             return user;
@@ -161,17 +154,6 @@ namespace FinanceCore.Domain.Users
             AddDomainEvent(new UserPasswordChangedEvent(Id));
         }
 
-        public void ChangeDefaultCurrency(EnCurrency newCurrency)
-        {
-            if (newCurrency == DefaultCurrency)
-                throw new CurrencyUnchangedException(newCurrency);
-
-            var oldCurrency = DefaultCurrency;
-            DefaultCurrency = newCurrency;
-            UpdatedAt = DateTime.UtcNow;
-
-            AddDomainEvent(new UserDefaultCurrencyChangedEvent(Id, oldCurrency, newCurrency));
-        }
 
         private static bool IsValidTimeZone(string timeZone)
         {

@@ -6,9 +6,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FinanceCore.Application.Features.PasswordReset
+namespace FinanceCore.Application.Features.Auth.Commands.ForgotPassword
 {
-    public sealed record ForgotPasswordCommand(Email Email) : IRequest;
+    public sealed record ForgotPasswordCommand(string Email) : IRequest;
     
     
 }

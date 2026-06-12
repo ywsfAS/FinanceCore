@@ -13,8 +13,8 @@ namespace FinanceCore.Application.DTOs
         Guid Id,
         string Name,
         decimal Amount,
-        byte CurrencyId,
-        byte Period,
+        EnCurrency Currency,
+        EnPeriod Period,
         DateTime StartDate,
         DateTime EndDate,
         string CategoryName

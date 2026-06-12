@@ -28,7 +28,7 @@ namespace FinanceCore.Application.Events.Users.UserCreated
                 notification.UserId,
                 "Default Account",
                 EnAccountType.Cash,
-                Money.Zero(notification.Currency));
+                Money.Zero(EnCurrency.USD));
 
             await _accountRepository.AddAsync(account, cancellationToken);
 
