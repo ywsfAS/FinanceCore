@@ -1,9 +1,11 @@
 using FinanceCore.API;
 using FinanceCore.Application;
 using FinanceCore.Infrastructure;
+using FinanceCore.Infrastructure.Services;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;

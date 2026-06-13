@@ -22,21 +22,11 @@ namespace FinanceCore.Infrastructure
             this IServiceCollection services,
             IConfiguration config)
         {
-            services.AddQuartz(options =>
-            {
-                var jobKey = new JobKey("RecurringTransactionJob");
-                var triggerKey = new TriggerKey("RecurringTranactionTrigger");
-                options.AddJob<RecurringTransactionJob>(opts => opts.WithIdentity(jobKey));
-
-                options.AddTrigger(options =>
-                {
-                    options
-                    .ForJob(jobKey)
-                    .WithIdentity(triggerKey)
-                    .StartNow()
-                    .WithSimpleSchedule(x => x.WithIntervalInHours(2).RepeatForever());
-                });
-                });
+            services.Configure<ExchangeRateApiSettings>(
+            config.GetSection("ExchangeRateApi"));
+            // Recurring Transactions Job Config + Sync Exchange Rates Job Config 
+            services.AddJobWithTrigger<RecurringTransactionJob>("RecurringTransactionJob", "RecurringTranactionTrigger", 2);
+            services.AddJobWithTrigger<ExchangeRateSyncJob>("ExchangeRateJob", "ExchangeRateTrigger", 6);
             services.AddQuartzHostedService(config => config.WaitForJobsToComplete = true);
 
             var connectionString =
@@ -71,6 +61,9 @@ namespace FinanceCore.Infrastructure
             services.AddScoped<IContactMessageRepository, ContactMessageRepository>();
 
             services.AddScoped<IPasswordHasher, PasswordHasher>();
+            services.AddScoped<ICurrencyConverter, CurrencyConverter>();
+            services.AddScoped<IExchangeRateRepository, ExchangeRateRepository>();
+            services.AddHttpClient<IExchangeRateApiService, ExchangeRateApiService>();
             services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
 
             services.Configure<JwtSettings>(
