@@ -52,8 +52,8 @@ namespace FinanceCore.Infrastructure.Repositories
         {
             using var connection = _connectionFactory.GetConnection();
             const string sql = @"
-                INSERT INTO Users (Id, Email, PasswordHash, FirstName, LastName,CreatedAt ,UpdatedAt , TimeZone)
-                VALUES (@Id, @Email, @PasswordHash, @FirstName, @LastName,@CreatedAt,@UpdatedAt,@TimeZone)";
+                INSERT INTO Users (Id, Email, PasswordHash, Name,CreatedAt ,UpdatedAt , TimeZone)
+                VALUES (@Id, @Email, @PasswordHash, @Name,@CreatedAt,@UpdatedAt,@TimeZone)";
 
             var model = UserMapper.MapToModel(user);
 

@@ -8,6 +8,7 @@ using FinanceCore.Application.Features.SavingGoals.commands.Cancel;
 using FinanceCore.Application.Features.SavingGoals.commands.Pause;
 using FinanceCore.Application.Features.SavingGoals.commands.Resume;
 using FinanceCore.Application.Features.SavingGoals.Queries.GetSavingGoalById;
+using FinanceCore.Application.Features.SavingGoals.Queries.GetSavingGoalsFiltered;
 using FinanceCore.Domain.Common;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -116,7 +117,7 @@ namespace FinanceCore.API.Controllers
         public async Task<IActionResult> GetSavingGoals([FromQuery] GetSavingGoalsFilteredRequest request, CancellationToken cancellationToken)
         {
             var userId = GetUserId();
-            var query = new GetSavingGoalsFilteredRequest(userId,request.Name,request.Currency,request.Status ,request.Page, request.PageSize);
+            var query = new GetSavingsGoalFilteredQuery(userId,request.Name,request.Currency,request.Status ,request.Page, request.PageSize);
 
             var saving = await _mediator.Send(query, cancellationToken);
 

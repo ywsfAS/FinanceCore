@@ -123,6 +123,25 @@ namespace FinanceCore.Domain.Transactions
 
             return transaction;
         }
+        public static Transaction CreateTransfer(
+        Guid fromAccountId,
+        Guid toAccountId,
+        Money money,
+        DateTime date,
+        string? description)
+        {
+            return new Transaction
+            {
+                Id = Guid.NewGuid(),
+                AccountId = fromAccountId,
+                ToAccountId = toAccountId,
+                Amount = money,
+                Type = EnTransactionType.Transfer,
+                Date = date,
+                Description = description,
+                CategoryId = null
+            };
+        }
 
         public void Update(
             Money? amount = null,

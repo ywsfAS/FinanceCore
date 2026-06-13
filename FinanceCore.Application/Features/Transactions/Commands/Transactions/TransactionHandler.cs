@@ -11,7 +11,7 @@ using System.Collections.Generic;
 
 namespace FinanceCore.Application.Features.Transactions.Commands.Transactions
 {
-    public class TransactionHandler : IRequestHandler<TransactionCommand , CreateTransactionDto>
+    public class TransactionHandler : IRequestHandler<TransactionCommand , TransactionDto>
     {
         private readonly ITransactionRepository _transactionRepository;
         private readonly IAccountRepository _accountRepository;
@@ -26,27 +26,53 @@ namespace FinanceCore.Application.Features.Transactions.Commands.Transactions
         }
 
 
-        public async Task<CreateTransactionDto> Handle(TransactionCommand command , CancellationToken token)
+        public async Task<TransactionDto> Handle(TransactionCommand command , CancellationToken token)
         {
-            var account = await _accountRepository.GetByIdAndUserIdAsync(command.UserId,command.AccountId, token);
-            if (account is null)
-            {
-                throw new AccountNotFoundException(command.AccountId);
-            }
-            var category = await _categoryRepositroy.GetCategoryByIdAndUserIdAsync(command.UserId,command.CategoryId, token);
-            if (category is null)
-            {
-                throw new CategoryNotFoundException(command.CategoryId);
-            }
-            var money = new Money(command.Amount, account.Balance.Currency);
-            var transaction = Transaction.Create(command.AccountId, null, money, command.CategoryId,command.Type, DateTime.UtcNow, command.Description);
-            if (command.Type == EnTransactionType.Expense)
-            {
-                return await _transactionRepository.ExpenseTransactionAsync(transaction, token);
+            var account = await _accountRepository.GetDtoByIdAndUserIdAsync(command.UserId, command.AccountId, token);
 
-            }
-            return await _transactionRepository.IncomeTransactionAsync(transaction, token);
+            if (account is null) throw new AccountNotFoundException(command.AccountId);
 
+            if (command.Type == EnTransactionType.Transfer)
+            {
+                if (command.ToAccountId is null) throw new AccountNotFoundException(command.ToAccountId.Value);
+
+                var toAccount = await _accountRepository
+                    .GetDtoByIdAndUserIdAsync(command.UserId, command.ToAccountId.Value, token);
+
+                if (toAccount is null) throw new AccountNotFoundException(command.ToAccountId.Value);
+
+                var transfer = Transaction.CreateTransfer(
+                    fromAccountId: command.AccountId,
+                    toAccountId: command.ToAccountId.Value,
+                    money: new Money(command.Amount, account.Currency),
+                    date: DateTime.UtcNow,
+                    description: command.Description
+                );
+
+                return await _transactionRepository.TransferAsync(transfer, token);
+            }
+
+            if (command.CategoryId is null) throw new InvalidTransactionCategoryException();
+
+            var category = await _categoryRepositroy.GetCategoryByIdAndUserIdAsync(command.UserId, command.CategoryId.Value, token);
+
+            if (category is null) throw new CategoryNotFoundException(command.CategoryId.Value);
+
+            var money = new Money(command.Amount, account.Currency);
+
+            var transaction = Transaction.Create(
+                accountId: command.AccountId,
+                toAccountId: null,
+                amount: money,
+                categoryId: command.CategoryId,
+                type: command.Type,
+                date: DateTime.UtcNow,
+                description: command.Description
+            );
+
+            return command.Type == EnTransactionType.Expense
+                ? await _transactionRepository.ExpenseTransactionAsync(transaction, token)
+                : await _transactionRepository.IncomeTransactionAsync(transaction, token);
 
         }
     }

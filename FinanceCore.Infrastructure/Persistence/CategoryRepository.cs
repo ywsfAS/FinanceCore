@@ -179,7 +179,7 @@ namespace FinanceCore.Infrastructure.Repositories
         public async Task<IEnumerable<CategoryOptionDto>?> GetCategoriesByUserOptionsAsync(Guid userId , int page , int pageSize , CancellationToken token = default)
         {
             using var connection = _connectionFactory.GetConnection();
-            const string sql = @" SELECT Id , Name FROM Categories WHERE UserId = @Id OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY";
+            const string sql = @" SELECT Id , Name FROM Categories WHERE UserId = @Id ORDER BY Id OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY";
             var command = new CommandDefinition(sql, new { Id = userId, Offset = (page - 1) * pageSize , PageSize = pageSize }, cancellationToken: token);
             return await connection.QueryAsync<CategoryOptionDto>(command);
 

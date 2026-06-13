@@ -24,14 +24,17 @@ namespace FinanceCore.Infrastructure.Services
 
         public async Task<decimal> GetRateAsync(EnCurrency from, EnCurrency to, CancellationToken token)
         {
-            var url = $"{_settings.BaseUrl}/convert?{from}&to={to}";
+            var url = $"{_settings.BaseUrl}/latest?from={from}&to={to}";
 
             var response = await _httpClient.GetFromJsonAsync<ExchangeRateResponseDto>(url, token);
 
-            if (response == null || response.Result == 0)
+            if (response == null)
                 throw new Exception("Failed to get exchange rate");
 
-            return response.Result;
+            if (!response.Rates.TryGetValue(to.ToString(), out var rate))
+                throw new Exception($"Rate for {to} not found");
+
+            return rate;
         }
     }
 }

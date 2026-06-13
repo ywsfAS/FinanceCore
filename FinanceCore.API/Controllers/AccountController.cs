@@ -70,6 +70,7 @@ namespace FinanceCore.API.Controllers
         [HttpGet("{id}")]
         [Produces("application/json")]
         [ProducesResponseType(typeof(AccountDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> GetAccountById([FromRoute]Guid id)
@@ -77,6 +78,7 @@ namespace FinanceCore.API.Controllers
             var userId = GetUserId();
             var query = new GetAccountByIdQuery(userId,id); // Should return only Accounts of UserId
             var account = await _mediator.Send(query);
+            if (account is null) return NotFound(new { Message = $"Account '{id}' was not found" });
             return Ok(account);
         }
         /// <summary>

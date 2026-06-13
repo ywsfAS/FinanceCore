@@ -94,7 +94,7 @@ namespace FinanceCore.Infrastructure.Repositories
                 ON t.CategoryId = c.Id
             WHERE t.Id = @Id
                 AND a.UserId = @UserId";
-
+            
             return await connection.QueryFirstOrDefaultAsync<TransactionDto>(
                 new CommandDefinition(
                     sql,
@@ -111,48 +111,49 @@ namespace FinanceCore.Infrastructure.Repositories
             return model is null ? null : TransactionMapper.MapToDomain(model);
         }
 
-        public async Task<CreateTransferDto> TransferAsync(Transaction transaction, CancellationToken token = default)
+        public async Task<TransactionDto> TransferAsync(
+            Transaction transaction,
+            CancellationToken token = default)
         {
             var model = TransactionMapper.MapToModel(transaction);
-            var result = await _connectionFactory.QuerySingleAsync<TransferModel>("sp_Transfer", new
-            {
-                SourceAccountId = model.AccountId,
-                DestinationAccountId = model.ToAccountId,
-                Amount = model.Amount,
-                Description = model.Description
-            });
 
-            return new CreateTransferDto(result.CreditTransactionId, result.DebitTransactionId,
-                model.AccountId, model.ToAccountId, model.Amount,
-                result.SourceBalance, result.DestinationBalance, result.TransferDate);
+            return await _connectionFactory.QuerySingleAsync<TransactionDto>(
+                "sp_Transfer",
+                new
+                {
+                    SourceAccountId = model.AccountId,
+                    DestinationAccountId = model.ToAccountId,
+                    Amount = model.Amount,
+                    Description = model.Description,
+                    TransactionDate = model.Date
+                });
         }
 
-        public async Task<CreateTransactionDto> IncomeTransactionAsync(Transaction transaction, CancellationToken token = default)
+        public async Task<TransactionDto> IncomeTransactionAsync(Transaction transaction, CancellationToken token = default)
         {
             var model = TransactionMapper.MapToModel(transaction);
-            var result = await _connectionFactory.QuerySingleAsync<TransactionModel>("sp_CreateIncome", new
+             return await _connectionFactory.QuerySingleAsync<TransactionDto>("sp_CreateIncome", new
             {
                 AccountId = model.AccountId,
                 CategoryId = model.CategoryId,
                 Amount = model.Amount,
-                Description = model.Description
+                Description = model.Description,
+                TransactionDate = model.Date,
             });
-            return new CreateTransactionDto(result.Id, model.AccountId, result.CategoryId,
-                result.Amount, model.Type, model.Date, result.Description);
+
         }
 
-        public async Task<CreateTransactionDto> ExpenseTransactionAsync(Transaction transaction, CancellationToken token = default)
+        public async Task<TransactionDto> ExpenseTransactionAsync(Transaction transaction, CancellationToken token = default)
         {
             var model = TransactionMapper.MapToModel(transaction);
-            var result = await _connectionFactory.QuerySingleAsync<TransactionModel>("sp_CreateExpense", new
+            return await _connectionFactory.QuerySingleAsync<TransactionDto>("sp_CreateExpense", new
             {
                 AccountId = model.AccountId,
                 CategoryId = model.CategoryId,
                 Amount = model.Amount,
-                Description = model.Description
+                Description = model.Description,
+                TransactionDate = model.Date
             });
-            return new CreateTransactionDto(result.Id, model.AccountId, result.CategoryId,
-                result.Amount, model.Type, model.Date, result.Description);
         }
 
         public async Task UpdateAsync(Transaction transaction, CancellationToken token = default)

@@ -140,7 +140,7 @@ namespace FinanceCore.Infrastructure.Repositories
         public async Task<IEnumerable<AccountOptionsDto>> GetByUserAccountsOptionsAsync(Guid id,int page , int pageSize, CancellationToken token)
         {
             using var connection = _connectionFactory.GetConnection();
-            const string sql = @"SELECT Id , Name FROM Accounts WHERE UserId = @Id ORDER BY t.CreatedAt OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY";
+            const string sql = @"SELECT Id , Name FROM Accounts WHERE UserId = @Id ORDER BY CreatedAt OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY";
             var command = new CommandDefinition(sql, new { Id = id , Offset = (page - 1) * pageSize , PageSize = pageSize }, cancellationToken: token);
             return await connection.QueryAsync<AccountOptionsDto>(command);
         }
@@ -183,7 +183,7 @@ namespace FinanceCore.Infrastructure.Repositories
             if (type.HasValue) sql.Append(" AND AccountTypeId = @Type");
             if (currency.HasValue) sql.Append(" AND CurrencyId = @Currency");
 
-            sql.Append(" ORDER BY t.CreatedAt OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY");
+            sql.Append(" ORDER BY CreatedAt OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY");
 
             var command = new CommandDefinition(sql.ToString(), new {Id = userId, Name = $"%{name}%", Type = type, Currency = currency ,Offset = pageSize * (page - 1) , PageSize = pageSize });
 

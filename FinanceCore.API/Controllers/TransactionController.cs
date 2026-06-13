@@ -3,7 +3,6 @@ using FinanceCore.Application.DTOs;
 using FinanceCore.Application.DTOs.Transaction;
 using FinanceCore.Application.Features.Transactions.Commands.Delete;
 using FinanceCore.Application.Features.Transactions.Commands.Transactions;
-using FinanceCore.Application.Features.Transactions.Commands.Transfer;
 using FinanceCore.Application.Features.Transactions.Queries.GetFiltredTransactions;
 using FinanceCore.Application.Features.Transactions.Queries.GetTransactionById;
 using FinanceCore.Application.Features.Users.Queries.GetUserById;
@@ -36,26 +35,14 @@ namespace FinanceCore.API.Controllers
         /// <summary>
         /// Create a new transaction
         /// </summary>
-        [HttpPost("transfer")]
-        [Produces("application/json")]
-        [ProducesResponseType(typeof(CreateTransferDto),StatusCodes.Status201Created)]
-        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> CreateTransfer([FromBody] CreateTransferRequest request)
-        {
-            var UserId = GetUserId();
-            var command = new CreateTransferCommand(UserId,request.AccountId,request.ToAccountId, request.Amount , request.Description,request.notes);
-            var response = await _mediator.Send(command);
-            return CreatedAtAction(nameof(GetTransactionById), new { id = response.CreditTransactionId }, response);
-        }
         [HttpPost]
         [Produces("application/json")]
-        [ProducesResponseType(typeof(Application.DTOs.Transaction.CreateTransactionDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(TransactionDto), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> CreateTransaction([FromBody] CreateTransactionRequest request)
         {
             var UserId = GetUserId();
-            var command = new TransactionCommand(UserId, request.AccountId, request.CategoryId, request.Type,request.Amount, request.Description, request.TransactionDate);
+            var command = new TransactionCommand(UserId, request.AccountId,request.ToAccountId, request.CategoryId, request.Type,request.Amount, request.Description, request.TransactionDate);
             var response = await _mediator.Send(command);
             return CreatedAtAction(nameof(GetTransactionById), new { id = response.Id }, response);
         }
