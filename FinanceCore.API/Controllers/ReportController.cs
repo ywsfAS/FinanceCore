@@ -1,11 +1,7 @@
 using FinanceCore.Application.DTOs;
 using FinanceCore.Application.Features.Report.GetMonthlySummary;
-using FinanceCore.Application.Features.Report.GetMonthlySummaryPerAccount;
-using FinanceCore.Application.Features.Report.GetMonthlySummaryPerUser;
 using FinanceCore.Application.Features.Report.GetMonthlyTrend;
 using FinanceCore.Application.Features.Report.GetSpendingByCategory;
-using FinanceCore.Application.Features.Report.GetSpendingByCategoryPerUser;
-using FinanceCore.Application.Features.Report.GetSummaryPerUser;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -28,42 +24,15 @@ namespace FinanceCore.API.Controllers
             return Guid.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
         }
 
-        [HttpGet("monthly/account")]
+        [HttpGet("monthly/accounts")]
         [Produces("application/json")]
-        [ProducesResponseType(typeof(MonthlyAccountSummaryDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(MonthlySummaryDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> GetMonthlySummary(Guid id, int year, int month)
+        public async Task<IActionResult> GetMonthlySummary(Guid id, int year, int month,int page , int pageSize)
         {
             var UserId = GetUserId();
-            var query = new GetMonthlySummaryQuery(UserId, id, year, month);
-            var response = await _mediator.Send(query);
-            return Ok(response);
-
-        }
-        [HttpGet("summary/user")]
-        [Produces("application/json")]
-        [ProducesResponseType(typeof(MonthlyAccountSummaryDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> GetSummaryPerUser()
-        {
-            var UserId = GetUserId();
-            var query = new GetSummaryPerUserQuery(UserId);
-            var response = await _mediator.Send(query);
-            return Ok(response);
-
-        }
-
-        [HttpGet("monthly/user")]
-        [Produces("application/json")]
-        [ProducesResponseType(typeof(MonthlySummaryPerUserDto), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> GetMonthlySummaryPerUser(int year , int month)
-        {
-            var UserId = GetUserId();
-            var query = new GetMonthlySummaryPerUserQuery(UserId, year, month);
+            var query = new GetAccountsMonthlySummaryQuery(UserId, id, year, month,page,pageSize);
             var response = await _mediator.Send(query);
             return Ok(response);
 
@@ -75,42 +44,17 @@ namespace FinanceCore.API.Controllers
         [ProducesResponseType(typeof(IEnumerable<MonthlyTrendDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> GetTrend([FromQuery]int month)
+        public async Task<IActionResult> GetTrend([FromQuery]int lastNMonth)
         {
             var UserId = GetUserId();
-            var query = new MonthlyTrendQuery(UserId,month);
+            var query = new MonthlyTrendQuery(UserId,lastNMonth);
             var response = await _mediator.Send(query);
             return Ok(response);
 
         }
 
 
-        [HttpGet("spending/by-category/user")]
-        [Produces("application/json")]
-        [ProducesResponseType(typeof(IEnumerable<SpendingByCategoryDto>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> GetSpendingCategoryPerUser(int year, int month)
-        {
-            var UserId = GetUserId();
-            var query = new GetSpendingByCategoryPerUserQuery(UserId,year, month);
-            var response = await _mediator.Send(query);
-            return Ok(response);
 
-        }
-
-        [HttpGet("spending/by-category/account")]
-        [Produces("application/json")]
-        [ProducesResponseType(typeof(IEnumerable<SpendingByCategoryDto>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> GetSpendingByCategory(Guid? AccountId, int year, int month)
-        {
-            var UserId = GetUserId();
-            var query = new GetSpendingByCategoryQuery(UserId, AccountId, year, month);
-            var response = await _mediator.Send(query);
-            return Ok(response);
-        }
 
     }
 }

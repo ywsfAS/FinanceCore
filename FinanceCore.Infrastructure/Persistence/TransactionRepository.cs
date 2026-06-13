@@ -7,6 +7,8 @@ using FinanceCore.Domain.Enums;
 using FinanceCore.Domain.Transactions;
 using FinanceCore.Infrastructure.context;
 using FinanceCore.Infrastructure.Mappers;
+using Microsoft.Extensions.Primitives;
+using Microsoft.IdentityModel.Protocols;
 using System.Text;
 
 namespace FinanceCore.Infrastructure.Repositories
@@ -35,7 +37,7 @@ namespace FinanceCore.Infrastructure.Repositories
             return await connection.QuerySingleOrDefaultAsync<TransactionModel>(cmd);
         }
 
-        public async Task<bool> IsExists(Guid userId, Guid id, CancellationToken token)
+        public async Task<bool> IsExistsAsync(Guid userId, Guid id, CancellationToken token)
         {
             using var connection = _connectionFactory.GetConnection();
 
@@ -45,10 +47,26 @@ namespace FinanceCore.Infrastructure.Repositories
             return result.HasValue;
         }
 
-        public async Task<Transaction?> GetByIdAsync(Guid id, CancellationToken token = default)
+        public async Task<TransactionModel?> GetModelByIdAsync(Guid id, CancellationToken token = default)
         {
-            var model = await _connectionFactory.ReadSingleAsync<TransactionModel, Guid>("sp_GetTransactionById", id);
-            return model is null ? null : TransactionMapper.MapToDomain(model);
+            using var connection = _connectionFactory.GetConnection();
+
+            var sql = @"
+                SELECT t.Id, t.AccountId, t.ToAccountId, t.CategoryId,
+                       t.Amount, t.TransactionTypeId, t.Date, t.CreatedAt, t.UpdatedAt, t.Description
+                FROM Transactions t
+                INNER JOIN Accounts a ON a.Id = t.AccountId
+                WHERE t.Id = @Id AND a.UserId = @UserId";
+            var cmd = new CommandDefinition(sql, new { Id = id}, cancellationToken: token);
+            return await connection.QueryFirstOrDefaultAsync<TransactionModel>(cmd);
+
+
+        }
+        public async Task<Transaction?> GetByIdAsync(Guid id , CancellationToken token)
+        {
+            var model = await GetModelByIdAsync(id,token);
+            if (model == null) return null;
+            return TransactionMapper.MapToDomain(model);
         }
 
         public async Task<TransactionDto?> GetDtoByIdAndUserId(Guid userId,Guid id,CancellationToken token = default)
@@ -58,6 +76,7 @@ namespace FinanceCore.Infrastructure.Repositories
             const string sql = @"
             SELECT
             t.Id,
+            t.CurrencyId AS Currency
             a.Name  AS AccountName,
             ta.Name AS ToAccountName,
             c.Name  AS CategoryName,
@@ -92,19 +111,6 @@ namespace FinanceCore.Infrastructure.Repositories
             return model is null ? null : TransactionMapper.MapToDomain(model);
         }
 
-        public async Task<IEnumerable<Transaction>> GetByAccountIdAsync(Guid accountId, CancellationToken token = default)
-        {
-            var models = await _connectionFactory.ReadListAsync<TransactionModel>(
-                "sp_GetTransactionsByAccountId", new { AccountId = accountId });
-            return models.Select(TransactionMapper.MapToDomain);
-        }
-
-        public async Task AddAsync(Transaction transaction, CancellationToken token = default)
-        {
-            var model = TransactionMapper.MapToModel(transaction);
-            await _connectionFactory.ExecuteNonQueryAsync("sp_CreateTransaction", model);
-        }
-
         public async Task<CreateTransferDto> TransferAsync(Transaction transaction, CancellationToken token = default)
         {
             var model = TransactionMapper.MapToModel(transaction);
@@ -121,7 +127,7 @@ namespace FinanceCore.Infrastructure.Repositories
                 result.SourceBalance, result.DestinationBalance, result.TransferDate);
         }
 
-        public async Task<CreateTransactionDto> IncomeAsync(Transaction transaction, CancellationToken token = default)
+        public async Task<CreateTransactionDto> IncomeTransactionAsync(Transaction transaction, CancellationToken token = default)
         {
             var model = TransactionMapper.MapToModel(transaction);
             var result = await _connectionFactory.QuerySingleAsync<TransactionModel>("sp_CreateIncome", new
@@ -135,7 +141,7 @@ namespace FinanceCore.Infrastructure.Repositories
                 result.Amount, model.Type, model.Date, result.Description);
         }
 
-        public async Task<CreateTransactionDto> ExpenseAsync(Transaction transaction, CancellationToken token = default)
+        public async Task<CreateTransactionDto> ExpenseTransactionAsync(Transaction transaction, CancellationToken token = default)
         {
             var model = TransactionMapper.MapToModel(transaction);
             var result = await _connectionFactory.QuerySingleAsync<TransactionModel>("sp_CreateExpense", new
@@ -151,65 +157,92 @@ namespace FinanceCore.Infrastructure.Repositories
 
         public async Task UpdateAsync(Transaction transaction, CancellationToken token = default)
         {
-            var model = TransactionMapper.MapToModel(transaction);
-            await _connectionFactory.ExecuteNonQueryAsync("sp_UpdateTransaction", model);
+            using var connection = _connectionFactory.GetConnection();
+            const string sql = @"";
+            var command = new CommandDefinition(sql,cancellationToken : token);
+            await connection.ExecuteAsync(command);
         }
 
         public async Task DeleteAsync(Guid id, CancellationToken token = default)
         {
-            await _connectionFactory.ExecuteNonQueryAsync("sp_DeleteTransaction", new { id });
+            using var connection = _connectionFactory.GetConnection();
+            const string sql = @"DELETE FROM Transactions WHERE Id = @Id";
+            var command = new CommandDefinition(sql, new {Id = id} , cancellationToken : token); 
+            await connection.ExecuteAsync(command);
         }
-        public async Task<decimal> GetTotalSpentAsync(Guid categoryId, DateTime start, DateTime end, byte type = 2)
-        {
-            var transactions = await FetchAllTransactionsAsync(categoryId, start, end, type);
-            return transactions.Sum(t => t.Amount);
-        }
-
-        public async Task<ReportModel?> GetMonthlySummary(Guid accountId, DateTime start, DateTime end)
+        //passed
+        public async Task<IEnumerable<MonthlySummaryDto>> GetMonthlySummaryAsync(
+            Guid userId,
+            Guid? accountId,
+            DateTime start,
+            DateTime end,
+            int page,
+            int pageSize,
+            CancellationToken token)
         {
             using var connection = _connectionFactory.GetConnection();
 
-            var sql = @"
-                SELECT
-                    COALESCE(SUM(CASE WHEN TransactionTypeId = 0 THEN Amount ELSE 0 END),0) AS TotalIncome,
-                    COALESCE(SUM(CASE WHEN TransactionTypeId = 1 THEN Amount ELSE 0 END),0) AS TotalExpense
-                FROM Transactions
-                WHERE AccountId = @AccountId
-                  AND CreatedAt >= @Start
-                  AND CreatedAt < @End";
+            var sql = new StringBuilder(@"
+            SELECT
+            t.AccountId,
+            COALESCE(
+                SUM(CASE WHEN t.TransactionTypeId = 0
+                         THEN t.Amount ELSE 0 END),0
+            ) AS TotalIncome,
 
-            var cmd = new CommandDefinition(sql, new { AccountId = accountId, Start = start, End = end });
-            return await connection.QueryFirstOrDefaultAsync<ReportModel>(cmd);
-        }
-       public async Task<ReportModel?> GetSummaryByUser(Guid userId,CancellationToken token)
-        {
-            using var connection = _connectionFactory.GetConnection();
-            const string sql = @"
-                SELECT 
-                    COALESCE(SUM(CASE WHEN TransactionTypeId = 0 THEN Amount ELSE 0 END),0) AS TotalIncome,
-                    COALESCE(SUM(CASE WHEN TransactionTypeId = 1 THEN Amount ELSE 0 END),0) AS TotalExpense
-                FROM Transactions t
-                INNER JOIN Accounts a ON
-                    t.AccountId = a.Id
-                WHERE a.UserId = @UserId 
-            ";
-            var command = new CommandDefinition(sql, new { UserId = userId} , cancellationToken : token);
-            return await connection.QueryFirstOrDefaultAsync<ReportModel>(command);
-        }
+            COALESCE(
+                SUM(CASE WHEN t.TransactionTypeId = 1
+                         THEN t.Amount ELSE 0 END),0
+            ) AS TotalExpense,
 
-        public async Task<IEnumerable<TransactionDto>?> GetFiltredTransactionsAsync(
-            Guid? categoryId, DateTime? start, DateTime? end, byte? type, int page, int pageSize)
-        {
-            return await FetchTransactionsPageAsync(null, categoryId, start, end, type, page, pageSize);
-        }
+            COALESCE(
+                SUM(CASE WHEN t.TransactionTypeId = 0
+                         THEN t.Amount ELSE 0 END),0
+            )
+            -
+            COALESCE(
+                SUM(CASE WHEN t.TransactionTypeId = 1
+                         THEN t.Amount ELSE 0 END),0
+            ) AS NetSavings
 
-        public async Task<IEnumerable<TransactionDto>?> FetchTransactionsByIdPageAsync(Guid accountId, int page, int pageSize)
-        {
-            return await FetchTransactionsPageAsync(accountId, null, null, null, null, page, pageSize);
-        }
+            FROM Transactions t
 
-        private async Task<IEnumerable<TransactionDto>> FetchTransactionsPageAsync(
-            Guid? accountId, Guid? categoryId, DateTime? start, DateTime? end, byte? type, int page, int pageSize)
+            INNER JOIN Accounts a
+                ON a.Id = t.AccountId
+
+            WHERE a.UserId = @UserId
+                AND t.Date >= @Start
+                AND t.Date < @End
+            ");
+
+            if (accountId.HasValue)
+                sql.Append(" AND t.AccountId = @AccountId ");
+
+            sql.Append(@"
+            GROUP BY t.AccountId
+            ORDER BY t.AccountId
+            OFFSET @Offset ROWS
+            FETCH NEXT @PageSize ROWS ONLY
+            ");
+
+            var cmd = new CommandDefinition(
+                sql.ToString(),
+                new
+                {
+                    UserId = userId,
+                    AccountId = accountId,
+                    Start = start,
+                    End = end,
+                    Offset = (page - 1) * pageSize,
+                    PageSize = pageSize
+                },
+                cancellationToken: token);
+
+            return await connection.QueryAsync<MonthlySummaryDto>(cmd);
+        }
+        // passed
+        public async Task<IEnumerable<TransactionDto>> GetFilteredTransactionsAsync(
+            Guid userId,Guid? accountId,Guid? toAccountId, Guid? categoryId, DateTime? start, DateTime? end, EnTransactionType? type, int page, int pageSize , CancellationToken token)
         {
             using var connection = _connectionFactory.GetConnection();
 
@@ -220,7 +253,7 @@ namespace FinanceCore.Infrastructure.Repositories
             ta.Name AS ToAccountName,
             c.Name  AS CategoryName,
             t.Amount,
-            a.CurrencyId AS Currency,
+            t.CurrencyId AS Currency,
             t.TransactionTypeId AS Type,
             t.CreatedAt AS Date,
             t.Description 
@@ -231,16 +264,19 @@ namespace FinanceCore.Infrastructure.Repositories
                 ON t.ToAccountId = ta.Id
             LEFT JOIN Categories c
                 ON t.CategoryId = c.Id
-            WHERE 1 = 1");
+            WHERE a.UserId = @UserId");
             if (accountId.HasValue) sql.Append(" AND t.AccountId    = @AccountId");
+            if (toAccountId.HasValue) sql.Append(" AND t.ToAccountId = @ToAccountId");
             if (categoryId.HasValue) sql.Append(" AND t.CategoryId   = @CategoryId");
-            if (start.HasValue) sql.Append(" AND t.CreatedAt    >= @Start");
-            if (end.HasValue) sql.Append(" AND t.CreatedAt    <= @End");
+            if (start.HasValue) sql.Append(" AND t.Date    >= @Start");
+            if (end.HasValue) sql.Append(" AND t.Date    <= @End");
             if (type.HasValue) sql.Append(" AND t.TransactionTypeId = @Type"); 
             sql.Append(" ORDER BY t.CreatedAt OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY");
 
             var cmd = new CommandDefinition(sql.ToString(), new
             {
+                UserId = userId,
+                ToAccountId = toAccountId,
                 AccountId = accountId,
                 CategoryId = categoryId,
                 Start = start,
@@ -252,27 +288,9 @@ namespace FinanceCore.Infrastructure.Repositories
 
             return await connection.QueryAsync<TransactionDto>(cmd);
         }
-
-        private async Task<IEnumerable<TransactionDto>> FetchAllTransactionsAsync(
-            Guid? categoryId = null, DateTime? start = null, DateTime? end = null, byte? type = null)
-        {
-            var all = new List<TransactionDto>();
-            int page = 1;
-            const int pageSize = 100;
-
-            while (true)
-            {
-                var batch = (await FetchTransactionsPageAsync(null, categoryId, start, end, type, page, pageSize)).ToList();
-                if (!batch.Any()) break;
-                all.AddRange(batch);
-                page++;
-            }
-
-            return all;
-        }
-
-        public async Task<IEnumerable<SpendingByCategoryDto>> GetSpendingByCategory(
-            Guid userId, Guid? accountId, DateTime start, DateTime end)
+        // passed
+        public async Task<IEnumerable<SpendingByCategoryDto>> GetSpendingByCategoryAsync(
+            Guid userId, Guid? accountId, DateTime start, DateTime end,int page , int pageSize ,CancellationToken token)
         {
             using var connection = _connectionFactory.GetConnection();
 
@@ -287,52 +305,46 @@ namespace FinanceCore.Infrastructure.Repositories
                   AND t.CreatedAt >= @Start
                   AND t.CreatedAt <  @End
                 GROUP BY c.Name
-                ORDER BY Amount DESC";
+                ORDER BY Amount DESC 
+                OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY
+                ";
 
-            var cmd = new CommandDefinition(sql, new { UserId = userId, AccountId = accountId, Start = start, End = end });
-            var models = await connection.QueryAsync<SpendingByCategoryModel>(cmd);
-            return models.Select(model => new SpendingByCategoryDto(model.Category, model.Amount));
+            var cmd = new CommandDefinition(sql, new { UserId = userId, AccountId = accountId, Start = start, End = end , Offset = (page - 1) * pageSize , pageSize = pageSize },cancellationToken : token);
+            return await connection.QueryAsync<SpendingByCategoryDto>(cmd);
         }
-
-        public async Task<IEnumerable<SpendingByCategoryDto>> GetSpendingByCategoryForUser(
-            Guid userId, DateTime start, DateTime end)
+        public async Task<decimal> GetTotalSpendingByCategoryAsync(
+        Guid userId,
+        Guid categoryId,
+        DateTime start,
+        DateTime end,
+        CancellationToken token)
         {
             using var connection = _connectionFactory.GetConnection();
 
             var sql = @"
-                SELECT c.Name AS Category, SUM(t.Amount) AS Amount
-                FROM Transactions t
-                INNER JOIN Accounts   a ON t.AccountId  = a.Id
-                INNER JOIN Categories c ON t.CategoryId = c.Id
-                WHERE a.UserId = @UserId
-                  AND t.CreatedAt >= @Start
-                  AND t.CreatedAt <  @End
-                  AND t.TransactionTypeId = @ExpenseType
-                GROUP BY c.Name
-                ORDER BY Amount DESC";
+        SELECT COALESCE(SUM(t.Amount), 0)
+        FROM Transactions t
+        INNER JOIN Accounts a ON a.Id = t.AccountId
+        WHERE a.UserId = @UserId
+          AND t.CategoryId = @CategoryId
+          AND t.TransactionTypeId = 1
+          AND t.Date >= @Start
+          AND t.Date <= @End;
+    ";
 
-            var cmd = new CommandDefinition(sql, new { UserId = userId, Start = start, End = end, ExpenseType = (byte)EnTransactionType.Expense });
-            var models = await connection.QueryAsync<SpendingByCategoryModel>(cmd);
-            return models.Select(model => new SpendingByCategoryDto(model.Category, model.Amount));
+            var cmd = new CommandDefinition(sql, new
+            {
+                UserId = userId,
+                CategoryId = categoryId,
+                Start = start,
+                End = end
+            }, cancellationToken: token);
+
+            return await connection.QueryFirstOrDefaultAsync<decimal>(cmd);
         }
-        public async Task<ReportModel?> GetMonthlySumaryByUser(Guid userId, DateTime start, DateTime end, CancellationToken token)
-        {
 
-            using var connection = _connectionFactory.GetConnection();
-            const string sql = @"
-                SELECT 
-                    COALESCE(SUM(CASE WHEN TransactionTypeId = 0 THEN Amount ELSE 0 END),0) AS TotalIncome,
-                    COALESCE(SUM(CASE WHEN TransactionTypeId = 1 THEN Amount ELSE 0 END),0) AS TotalExpense
-                FROM Transactions t
-                INNER JOIN Accounts a ON
-                    t.AccountId = a.Id
-                WHERE a.UserId = @UserId AND t.CreatedAt >= @Start AND t.CreatedAt < @End 
-            ";
-            var command = new CommandDefinition(sql, new { UserId = userId,Start = start , End = end} , cancellationToken : token);
-            return await connection.QueryFirstOrDefaultAsync<ReportModel>(command);
-
-        }
-        public async Task<IEnumerable<MonthlyTrendDto>> GetMonthlyTrend(Guid UserId, int months)
+        // passed
+        public async Task<IEnumerable<MonthlyTrendDto>> GetMonthlyTrend(Guid userId, int lastNMonth ,CancellationToken token)
         {
             using var connection = _connectionFactory.GetConnection();
 
@@ -372,7 +384,8 @@ namespace FinanceCore.Infrastructure.Repositories
 
             return await connection.QueryAsync<MonthlyTrendDto>(
                 sql,
-                new { UserId = UserId, Months = months }
+                new { UserId = userId, Months = lastNMonth } 
+              
             );
         }
 

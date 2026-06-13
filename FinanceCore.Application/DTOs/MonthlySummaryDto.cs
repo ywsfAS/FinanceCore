@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace FinanceCore.Application.DTOs
 {
-    public record MonthlyAccountSummaryDto(Guid  AccountId , int year , int month , decimal totalIncome , decimal totalExpenses , decimal netSavings);
+    public record MonthlySummaryDto(Guid AccountId , decimal TotalIncome , decimal TotalExpenses , decimal NetSavings);
     
     
 }

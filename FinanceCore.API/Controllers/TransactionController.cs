@@ -4,7 +4,6 @@ using FinanceCore.Application.DTOs.Transaction;
 using FinanceCore.Application.Features.Transactions.Commands.Delete;
 using FinanceCore.Application.Features.Transactions.Commands.Transactions;
 using FinanceCore.Application.Features.Transactions.Commands.Transfer;
-using FinanceCore.Application.Features.Transactions.Commands.Update;
 using FinanceCore.Application.Features.Transactions.Queries.GetFiltredTransactions;
 using FinanceCore.Application.Features.Transactions.Queries.GetTransactionById;
 using FinanceCore.Application.Features.Users.Queries.GetUserById;
@@ -86,28 +85,12 @@ namespace FinanceCore.API.Controllers
         [ProducesResponseType(typeof(IEnumerable<TransactionDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status404NotFound)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> GetTransactionsByFilters(Guid? CategoryId , DateTime? Start , DateTime? End , EnTransactionType? Type , int Page = 1 ,int PageSize = 10 )
+        public async Task<IActionResult> GetTransactionsByFilters(Guid? accountId , Guid ? toAccountId, Guid? CategoryId , DateTime? Start , DateTime? End , EnTransactionType? Type , int Page = 1 ,int PageSize = 10 )
         {
-            var UserId = GetUserId();
-            var query = new GetFiltredTransactionsQuery(CategoryId, Start, End, Type, Page, PageSize);
+            var userId = GetUserId();
+            var query = new GetFiltredTransactionsQuery(userId,accountId,toAccountId,CategoryId, Start, End, Type, Page, PageSize);
             var transactions = await _mediator.Send(query);
             return Ok(transactions);
-        }
-
-        /// <summary>
-        /// Update an existing transaction
-        /// </summary>
-        [HttpPut("{id}")]
-        [Produces("application/json")]
-        [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> UpdateTransaction(Guid id, [FromBody] CreateTransactionRequest request)
-        {
-            var UserId = GetUserId();
-            var command = new UpdateTransactionCommand(UserId,id,request.CategoryId,request.Amount,request.TransactionDate,request.Description);
-            await _mediator.Send(command);
-            return NoContent();
         }
 
         /// <summary>

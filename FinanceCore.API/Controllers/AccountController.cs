@@ -7,7 +7,7 @@ using FinanceCore.Application.Features.Accounts.Commands.Update;
 using FinanceCore.Application.Features.Accounts.Queries.GetAccountById;
 using FinanceCore.Application.Features.Accounts.Queries.GetAccountByUserOptions;
 using FinanceCore.Application.Features.Accounts.Queries.GetAccountFiltered;
-using FinanceCore.Application.Features.Transactions.Queries.GetTansactionsByAccountId;
+using FinanceCore.Application.Features.Report.GetSpendingByCategory;
 using FinanceCore.Domain.Common;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -111,21 +111,6 @@ namespace FinanceCore.API.Controllers
             return NoContent();
         }
         /// <summary>
-        /// Get all transactions for an account
-        /// </summary>
-        [HttpGet("{accountId}/transactions")]
-        [Produces("application/json")]
-        [ProducesResponseType(typeof(IEnumerable<TransactionDto>), StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status404NotFound)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> GetTransactionsByAccountId([FromRoute]Guid accountId, [FromQuery] int page , [FromQuery] int pageSize)
-        {
-            var UserId = GetUserId();
-            var query = new GetTransactionsByAccountIdQuery(UserId,accountId,page,pageSize); // should return account  under the userId 
-            var transactions = await _mediator.Send(query);
-            return Ok(transactions);
-        }
-        /// <summary>
         /// Get accounts options format
         /// </summary>
         [HttpGet("options")]
@@ -139,6 +124,19 @@ namespace FinanceCore.API.Controllers
             var query = new GetAccountsOptionsQuery(userId); 
             var accounts = await _mediator.Send(query);
             return Ok(accounts);
+        }
+
+        [HttpGet("{accountId}/spending-by-category")]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(IEnumerable<SpendingByCategoryDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> GetSpendingByCategory([FromRoute]Guid accountId, [FromQuery] int year,[FromQuery] int month, [FromQuery] int page = 1 , [FromQuery] int pageSize = 10)
+        {
+            var UserId = GetUserId();
+            var query = new GetSpendingByCategoryQuery(UserId, accountId, year, month,page,pageSize);
+            var response = await _mediator.Send(query);
+            return Ok(response);
         }
 
 

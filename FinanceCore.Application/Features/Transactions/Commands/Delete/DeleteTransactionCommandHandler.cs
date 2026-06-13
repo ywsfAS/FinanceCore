@@ -1,4 +1,4 @@
-﻿using FinanceCore.Domain.Exceptions;
+using FinanceCore.Domain.Exceptions;
 using FinanceCore.Application.Abstractions;
 using MediatR;
 namespace FinanceCore.Application.Features.Transactions.Commands.Delete
@@ -15,7 +15,7 @@ namespace FinanceCore.Application.Features.Transactions.Commands.Delete
 
         public async Task Handle(DeleteTransactionCommand command, CancellationToken cancellationToken)
         {
-            var result = await _transactionRepository.IsExists(command.UserId,command.Id, cancellationToken);
+            var result = await _transactionRepository.IsExistsAsync(command.UserId,command.Id, cancellationToken);
 
             if (!result)
                 throw new TransactionNotFoundException(command.Id);

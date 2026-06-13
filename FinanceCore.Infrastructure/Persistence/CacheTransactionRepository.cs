@@ -2,6 +2,7 @@ using FinanceCore.Application.Abstractions;
 using FinanceCore.Application.DTOs;
 using FinanceCore.Application.DTOs.Transaction;
 using FinanceCore.Application.Models;
+using FinanceCore.Domain.Enums;
 using FinanceCore.Domain.Transactions;
 using FinanceCore.Infrastructure.Repositories;
 using Microsoft.Extensions.Caching.Memory;
@@ -26,15 +27,6 @@ namespace FinanceCore.Infrastructure.Persistence
             });
 
         }
-        public Task<IEnumerable<Transaction>> GetByAccountIdAsync(Guid id, CancellationToken token = default)
-        {
-            var key = $"Transactions_Account_{id}";
-            return _memoryCache.GetOrCreateAsync(key, entry =>
-            {
-                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
-                return _transactionRepository.GetByAccountIdAsync(id, token);
-            });
-        }
         public Task<CreateTransferDto> TransferAsync(Transaction transaction, CancellationToken token = default)
         {
             var key = $"Transfer_{transaction.Id}";
@@ -44,46 +36,43 @@ namespace FinanceCore.Infrastructure.Persistence
                 return _transactionRepository.TransferAsync(transaction, token);
             });
         }
-        public Task<CreateTransactionDto> IncomeAsync(Transaction transaction, CancellationToken token)
+        public Task<CreateTransactionDto> IncomeTransactionAsync(Transaction transaction, CancellationToken token)
         {
             var key = $"Income_{transaction.Id}";
             return _memoryCache.GetOrCreateAsync(key, entry =>
             {
                 entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
-                return _transactionRepository.IncomeAsync(transaction, token);
+                return _transactionRepository.IncomeTransactionAsync(transaction, token);
             });
         }
-        public Task<CreateTransactionDto> ExpenseAsync(Transaction transaction, CancellationToken token)
+        public Task<CreateTransactionDto> ExpenseTransactionAsync(Transaction transaction, CancellationToken token)
         {
             var key = $"Expense_{transaction.Id}";
             return _memoryCache.GetOrCreateAsync(key, entry =>
             {
                 entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
-                return _transactionRepository.ExpenseAsync(transaction, token);
+                return _transactionRepository.ExpenseTransactionAsync(transaction, token);
             });
         }
-        public Task<IEnumerable<TransactionDto>?> GetFiltredTransactionsAsync(Guid? categoryId, DateTime? start, DateTime? end, byte? type, int page, int pageSize)
+        public  Task<decimal> GetTotalSpendingByCategoryAsync(Guid userId,Guid categoryId,DateTime start,DateTime end,CancellationToken token)
+        {
+
+            var key = $"TotalSpendingByCategory_{userId}_{categoryId}_{start}_{end}";
+            return _memoryCache.GetOrCreateAsync(key, entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
+                return _transactionRepository.GetTotalSpendingByCategoryAsync(userId, categoryId, start, end, token);
+            });
+
+        }
+        public Task<IEnumerable<TransactionDto>?> GetFilteredTransactionsAsync(Guid userId ,Guid? accountId,Guid? toAccountId , Guid? categoryId, DateTime? start, DateTime? end, EnTransactionType? type, int page, int pageSize,CancellationToken token = default)
         {
             var key = $"FiltredTransactions_{categoryId}_{start}_{end}_{type}_{page}_{pageSize}";
             return _memoryCache.GetOrCreateAsync(key, entry =>
             {
                 entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
-                return _transactionRepository.GetFiltredTransactionsAsync(categoryId, start, end, type, page, pageSize);
+                return _transactionRepository.GetFilteredTransactionsAsync(userId,accountId,toAccountId,categoryId, start, end, type, page, pageSize,token);
             });
-        }
-        public Task<decimal> GetTotalSpentAsync(Guid categoryId, DateTime start, DateTime end, byte Type)
-        {
-            var key = $"TotalSpent_{categoryId}_{start}_{end}_{Type}";
-            return _memoryCache.GetOrCreateAsync(key, entry =>
-            {
-                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
-                return _transactionRepository.GetTotalSpentAsync(categoryId, start, end, Type);
-            });
-        }
-
-        public Task AddAsync(Transaction transaction, CancellationToken token = default)
-        {
-            return _transactionRepository.AddAsync(transaction, token);
         }
         public Task UpdateAsync(Transaction transaction, CancellationToken token = default)
         {
@@ -111,79 +100,43 @@ namespace FinanceCore.Infrastructure.Persistence
                 return _transactionRepository.GetDtoByIdAndUserId(userId, id, token);
             });
         }
-        public Task<IEnumerable<MonthlyTrendDto>> GetMonthlyTrend(Guid UserId, int months)
+        public Task<IEnumerable<MonthlyTrendDto>> GetMonthlyTrend(Guid UserId, int lastNMonth , CancellationToken token)
         {
-            var key = $"MonthlyTrend_{UserId}_last_{months}";
+            var key = $"MonthlyTrend_{UserId}_last_{lastNMonth}";
             return _memoryCache.GetOrCreateAsync(key, entry =>
             {
                 entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
-                return _transactionRepository.GetMonthlyTrend(UserId,months);
+                return _transactionRepository.GetMonthlyTrend(UserId,lastNMonth,token);
             });
 
         }
-        public Task<ReportModel?> GetMonthlySummary(Guid sccountId, DateTime start, DateTime end)
+        public Task<IEnumerable<MonthlySummaryDto>> GetMonthlySummaryAsync(Guid userId,Guid? accountId, DateTime start, DateTime end, int page , int pageSize , CancellationToken token = default)
         {
-             var key = $"MonthlySummary_{sccountId}_{start}_{end}";
+             var key = $"MonthlySummary_{userId}_{accountId}_{start}_{end}_{page}_{pageSize}";
             return _memoryCache.GetOrCreateAsync(key, entry =>
             {
                 entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
-                return _transactionRepository.GetMonthlySummary(sccountId, start, end);
+                return _transactionRepository.GetMonthlySummaryAsync(userId,accountId, start, end,page,pageSize,token);
             });
         }
 
-        public Task<ReportModel?> GetMonthlySumaryByUser(Guid userId, DateTime start, DateTime end,CancellationToken token)
+        public Task<IEnumerable<SpendingByCategoryDto>> GetSpendingByCategoryAsync(
+            Guid userId, Guid? accountId, DateTime start, DateTime end ,int page , int pageSize,CancellationToken token = default)
         {
-             var key = $"MonthlySummaryByUser_{userId}_{start}_{end}";
+            var key = $"SpendingByCategory_{userId}_{accountId}_{start}_{end}_{page}_{pageSize}";
             return _memoryCache.GetOrCreateAsync(key, entry =>
             {
                 entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
-                return _transactionRepository.GetMonthlySumaryByUser(userId, start, end,token);
+                return _transactionRepository.GetSpendingByCategoryAsync(userId, accountId, start, end,page,pageSize,token);
             });
         }
-        public Task<ReportModel?> GetSummaryByUser(Guid userId,CancellationToken token)
-        {
-             var key = $"Summary_{userId}";
-            return _memoryCache.GetOrCreateAsync(key, entry =>
-            {
-                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
-                return _transactionRepository.GetSummaryByUser(userId, token);
-            });
-        }
-        public Task<IEnumerable<TransactionDto>?> FetchTransactionsByIdPageAsync(Guid accountId, int page, int pageSize)
-        {
-            var key = $"TransactionsByPage_{accountId}_{page}_{pageSize}";
-            return _memoryCache.GetOrCreateAsync(key, entry =>
-            {
-                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
-                return _transactionRepository.FetchTransactionsByIdPageAsync(accountId, page, pageSize);
-            });
-        }
-        public Task<IEnumerable<SpendingByCategoryDto>> GetSpendingByCategory(
-            Guid userId, Guid? accountId, DateTime start, DateTime end)
-        {
-            var key = $"SpendingByCategory_{userId}_{accountId}_{start}_{end}";
-            return _memoryCache.GetOrCreateAsync(key, entry =>
-            {
-                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
-                return _transactionRepository.GetSpendingByCategory(userId, accountId, start, end);
-            });
-        }
-        public Task<IEnumerable<SpendingByCategoryDto>> GetSpendingByCategoryForUser(Guid userId , DateTime start , DateTime end)
-        {
-            var key = $"SpendingByCategoryForUser_{userId}_{start}_{end}";
-            return _memoryCache.GetOrCreateAsync(key, entry =>
-            {
-                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(20);
-                return _transactionRepository.GetSpendingByCategoryForUser(userId, start, end);
-            });
-        }
-        public Task<bool> IsExists(Guid userId, Guid id, CancellationToken token = default)
+        public Task<bool> IsExistsAsync(Guid userId, Guid id, CancellationToken token = default)
         {
             var key = $"TransactionExists_{userId}_{id}";
             return _memoryCache.GetOrCreateAsync(key, entry =>
             {
                 entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
-                return _transactionRepository.IsExists(userId, id, token);
+                return _transactionRepository.IsExistsAsync(userId, id, token);
             });
         }
     }

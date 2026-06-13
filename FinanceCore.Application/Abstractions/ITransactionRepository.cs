@@ -1,39 +1,31 @@
 using FinanceCore.Application.DTOs;
 using FinanceCore.Application.DTOs.Transaction;
-using FinanceCore.Application.Models;
+using FinanceCore.Domain.Enums;
 using FinanceCore.Domain.Transactions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace FinanceCore.Application.Abstractions
 {
     public interface ITransactionRepository
     {
         Task<Transaction?> GetByIdAsync(Guid id, CancellationToken token = default);
-        Task<IEnumerable<Transaction>> GetByAccountIdAsync(Guid id, CancellationToken token = default);
         Task<CreateTransferDto> TransferAsync(Transaction transaction, CancellationToken token = default);
-        Task<CreateTransactionDto> IncomeAsync(Transaction transaction, CancellationToken token);
-        Task<CreateTransactionDto> ExpenseAsync(Transaction transaction, CancellationToken token);
-        Task<IEnumerable<TransactionDto>?> GetFiltredTransactionsAsync(Guid? categoryId, DateTime? start, DateTime? end, byte? type, int page, int pageSize);
-        Task<decimal> GetTotalSpentAsync(Guid categoryId, DateTime start, DateTime end, byte Type);
-        Task AddAsync(Transaction transaction, CancellationToken token = default);
+        Task<CreateTransactionDto> IncomeTransactionAsync(Transaction transaction, CancellationToken token);
+        Task<CreateTransactionDto> ExpenseTransactionAsync(Transaction transaction, CancellationToken token);
+        Task<IEnumerable<TransactionDto>> GetFilteredTransactionsAsync(Guid userId , Guid? accountId,Guid? toAccountId,Guid? categoryId, DateTime? start, DateTime? end, EnTransactionType? type, int page, int pageSize,CancellationToken token);
         Task UpdateAsync(Transaction transaction, CancellationToken token = default);
         Task DeleteAsync(Guid id, CancellationToken token = default);
+        // Get a single transaction read/write
         Task<Transaction?> GetByIdAndUserId(Guid userId , Guid id , CancellationToken token = default);
         Task<TransactionDto?> GetDtoByIdAndUserId(Guid userId , Guid id , CancellationToken token = default);
-        Task<ReportModel?> GetMonthlySummary(Guid sccountId, DateTime start, DateTime end);
-        Task<IEnumerable<TransactionDto>?> FetchTransactionsByIdPageAsync(Guid accountId, int page, int pageSize);
-        Task<IEnumerable<SpendingByCategoryDto>> GetSpendingByCategory(
-            Guid userId, Guid? accountId, DateTime start, DateTime end);
-        Task<bool> IsExists(Guid userId, Guid id, CancellationToken token = default);
-        Task<IEnumerable<SpendingByCategoryDto>> GetSpendingByCategoryForUser(Guid userId , DateTime start , DateTime end);
-        Task<ReportModel?> GetSummaryByUser(Guid userId,CancellationToken token);
-        Task<ReportModel?> GetMonthlySumaryByUser(Guid userId, DateTime start, DateTime end, CancellationToken token);
+        // reports
+        Task<IEnumerable<MonthlySummaryDto>> GetMonthlySummaryAsync(Guid userId , Guid? accountId, DateTime start, DateTime end, int page , int pageSize , CancellationToken token);
+        Task<IEnumerable<SpendingByCategoryDto>> GetSpendingByCategoryAsync(
+            Guid userId, Guid? accountId, DateTime start, DateTime end , int page , int pageSize , CancellationToken token = default);
+        Task<bool> IsExistsAsync(Guid userId, Guid id, CancellationToken token = default);
 
-        Task<IEnumerable<MonthlyTrendDto>> GetMonthlyTrend(Guid accountId, int months);
+        Task<IEnumerable<MonthlyTrendDto>> GetMonthlyTrend(Guid accountId, int lastNMonth, CancellationToken token = default);
+        Task<decimal> GetTotalSpendingByCategoryAsync(Guid userId, Guid categoryId, DateTime start, DateTime end, CancellationToken token);
 
     }
 }

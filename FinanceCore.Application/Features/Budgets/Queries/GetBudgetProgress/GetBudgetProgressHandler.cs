@@ -28,11 +28,12 @@ namespace FinanceCore.Application.Features.Budgets.Queries.GetBudgetProgress
             if (budget == null) { 
                 throw new BudgetNotFoundException(query.Id);
             }
-            var spent = await _transactionRepository.GetTotalSpentAsync(
+            var spent = await _transactionRepository.GetTotalSpendingByCategoryAsync(
+                budget.UserId,
                 budget.CategoryId,
                 budget.StartDate,
                 budget.EndDate,
-                (byte)EnTransactionType.Expense
+                token
             );
             var remaining = budget.Amount.Amount - spent;
             var percentageUsed = (spent / budget.Amount.Amount) * 100;

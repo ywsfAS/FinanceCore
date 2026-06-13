@@ -38,28 +38,14 @@ namespace FinanceCore.Application.Features.Transactions.Commands.Transactions
             {
                 throw new CategoryNotFoundException(command.CategoryId);
             }
-            // Get Budget
-            var budget = await _budgetRepository.GetByCategoryIdAsync(command.UserId,command.CategoryId,command.TransactionDate , command.TransactionDate,token);
-
-            var spent = await _transactionRepository.GetTotalSpentAsync(
-                budget.CategoryId,
-                budget.StartDate,
-                budget.EndDate,
-                (byte)EnTransactionType.Expense
-            );
-            var isExceeded = spent > budget.Amount;
-            if (isExceeded)
-            {
-                throw new BudgetExceededException(budget.Id , category.Name , new Money(budget.Amount,budget.Currency) , spent);
-            }
             var money = new Money(command.Amount, account.Balance.Currency);
             var transaction = Transaction.Create(command.AccountId, null, money, command.CategoryId,command.Type, DateTime.UtcNow, command.Description);
             if (command.Type == EnTransactionType.Expense)
             {
-                return await _transactionRepository.ExpenseAsync(transaction, token);
+                return await _transactionRepository.ExpenseTransactionAsync(transaction, token);
 
             }
-            return await _transactionRepository.IncomeAsync(transaction, token);
+            return await _transactionRepository.IncomeTransactionAsync(transaction, token);
 
 
         }

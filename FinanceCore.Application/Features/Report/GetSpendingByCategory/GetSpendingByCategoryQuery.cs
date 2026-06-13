@@ -1,4 +1,4 @@
-﻿using FinanceCore.Application.DTOs;
+using FinanceCore.Application.DTOs;
 using MediatR;
 using System;
 using System.Collections.Generic;
@@ -8,5 +8,5 @@ using System.Threading.Tasks;
 
 namespace FinanceCore.Application.Features.Report.GetSpendingByCategory
 {
-    public record GetSpendingByCategoryQuery(Guid UserId , Guid? AccountId , int year , int month ) : IRequest<IEnumerable<SpendingByCategoryDto>>;
+    public record GetSpendingByCategoryQuery(Guid UserId , Guid? AccountId , int Year , int Month , int Page , int PageSize ) : IRequest<IEnumerable<SpendingByCategoryDto>>;
 }

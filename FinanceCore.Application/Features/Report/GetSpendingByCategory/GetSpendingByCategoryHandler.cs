@@ -1,24 +1,16 @@
 using FinanceCore.Application.Abstractions;
 using FinanceCore.Application.DTOs;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace FinanceCore.Application.Features.Report.GetSpendingByCategory
 {
     public class GetSpendingByCategoryHandler
         : IRequestHandler<GetSpendingByCategoryQuery, IEnumerable<SpendingByCategoryDto>?>
     {
-        private readonly IAccountRepository _accountRepository;
         private readonly ITransactionRepository _transactionRepository;
 
-        public GetSpendingByCategoryHandler(
-            IAccountRepository accountRepository,
-            ITransactionRepository transactionRepository)
+        public GetSpendingByCategoryHandler(ITransactionRepository transactionRepository)
         {
-            _accountRepository = accountRepository;
             _transactionRepository = transactionRepository;
         }
 
@@ -26,23 +18,19 @@ namespace FinanceCore.Application.Features.Report.GetSpendingByCategory
             GetSpendingByCategoryQuery query,
             CancellationToken token)
         {
-            if (query.AccountId.HasValue)
-            {
-                var account = await _accountRepository
-                    .GetDtoByIdAndUserIdAsync(query.UserId, query.AccountId.Value);
-
-                if (account == null)
-                    return null;             }
-            var startDate = new DateTime(query.year, query.month, 1);
-            var endDate = startDate.AddMonths(1); // entire month
+            var startDate = new DateTime(query.Year, query.Month, 1);
+            var endDate = startDate.AddMonths(1); 
             var result = await _transactionRepository
-                .GetSpendingByCategory(
+                .GetSpendingByCategoryAsync(
                     query.UserId,
                     query.AccountId,
                     startDate,
-                    endDate);
+                    endDate,
+                    query.Page,
+                    query.PageSize
+                    );
 
-            return result ?? new List<SpendingByCategoryDto>();
+            return result;
         }
     }
 }
