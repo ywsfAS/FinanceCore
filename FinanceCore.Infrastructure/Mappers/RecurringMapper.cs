@@ -13,17 +13,16 @@ namespace FinanceCore.Infrastructure.Mappers
             return new RecurringTransactionModel
             {
                 Id = domain.Id,
-                AccountId = domain.accountId,
-                CategoryId = domain.categoryId,
-                Amount = domain.amount.Amount,
-                Currency = (byte)domain.amount.Currency,
-                Description = domain.description,
-                Type = domain.type,
-                StartDate = domain.startDate,
-                EndDate = domain.endDate,
-                Period = domain.period,
-                Interval = domain.interval,
-                IsActive = domain.isActive,
+                AccountId = domain.AccountId,
+                CategoryId = domain.CategoryId,
+                Amount = domain.Amount.Amount,
+                Currency = domain.Amount.Currency,
+                Description = domain.Description,
+                Type = domain.Type,
+                StartDate = domain.StartDate,
+                EndDate = domain.EndDate,
+                Period = domain.Period,
+                IsActive = domain.IsActive,
                 LastExecutedDate = domain.LastExecutedDate
             };
         }
@@ -38,16 +37,8 @@ namespace FinanceCore.Infrastructure.Mappers
                 model.Type,
                 model.StartDate,
                 model.Period,
-                model.Interval,
                 model.EndDate
             );
-
-            if (!model.IsActive)
-                recurring.deactivate();
-
-            if (model.LastExecutedDate.HasValue)
-                recurring.markAsExecuted(model.LastExecutedDate.Value);
-
             return recurring;
         }
     }

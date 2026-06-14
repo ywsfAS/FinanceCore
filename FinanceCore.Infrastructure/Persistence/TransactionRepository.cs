@@ -129,7 +129,7 @@ namespace FinanceCore.Infrastructure.Repositories
                 });
         }
 
-        public async Task<TransactionDto> IncomeTransactionAsync(Transaction transaction, CancellationToken token = default)
+        public async Task<TransactionDto> IncomeTransactionAsync(Transaction transaction, CancellationToken? token = default)
         {
             var model = TransactionMapper.MapToModel(transaction);
              return await _connectionFactory.QuerySingleAsync<TransactionDto>("sp_CreateIncome", new
@@ -143,7 +143,7 @@ namespace FinanceCore.Infrastructure.Repositories
 
         }
 
-        public async Task<TransactionDto> ExpenseTransactionAsync(Transaction transaction, CancellationToken token = default)
+        public async Task<TransactionDto> ExpenseTransactionAsync(Transaction transaction, CancellationToken? token = default)
         {
             var model = TransactionMapper.MapToModel(transaction);
             return await _connectionFactory.QuerySingleAsync<TransactionDto>("sp_CreateExpense", new
@@ -186,41 +186,48 @@ namespace FinanceCore.Infrastructure.Repositories
             var sql = new StringBuilder(@"
             SELECT
             t.AccountId,
-            COALESCE(
-                SUM(CASE WHEN t.TransactionTypeId = 0
-                         THEN t.Amount ELSE 0 END),0
-            ) AS TotalIncome,
 
-            COALESCE(
-                SUM(CASE WHEN t.TransactionTypeId = 1
-                         THEN t.Amount ELSE 0 END),0
-            ) AS TotalExpense,
+            COALESCE(SUM(CASE WHEN t.TransactionTypeId = 0
+                THEN t.Amount * er.Rate ELSE 0 END), 0) AS TotalIncome,
 
-            COALESCE(
-                SUM(CASE WHEN t.TransactionTypeId = 0
-                         THEN t.Amount ELSE 0 END),0
-            )
+            COALESCE(SUM(CASE WHEN t.TransactionTypeId = 1
+                THEN t.Amount * er.Rate ELSE 0 END), 0) AS TotalExpense,
+
+            (
+            COALESCE(SUM(CASE WHEN t.TransactionTypeId = 0
+                THEN t.Amount * er.Rate ELSE 0 END), 0)
             -
-            COALESCE(
-                SUM(CASE WHEN t.TransactionTypeId = 1
-                         THEN t.Amount ELSE 0 END),0
-            ) AS NetSavings
+            COALESCE(SUM(CASE WHEN t.TransactionTypeId = 1
+                THEN t.Amount * er.Rate ELSE 0 END), 0)
+            ) AS NetSavings,
+
+            p.Currency AS Currency
 
             FROM Transactions t
 
-            INNER JOIN Accounts a
-                ON a.Id = t.AccountId
-
-            WHERE a.UserId = @UserId
+            INNER JOIN Accounts a 
+                ON a.Id = t.AccountId  
                 AND t.Date >= @Start
                 AND t.Date < @End
+
+            INNER JOIN Profiles p
+                ON p.UserId = @UserId
+
+            INNER JOIN ExchangeRates er
+                ON er.SourceCurrencyId = a.CurrencyId
+                AND er.TargetCurrencyId = p.Currency
+
+            WHERE a.UserId = @UserId
             ");
 
             if (accountId.HasValue)
                 sql.Append(" AND t.AccountId = @AccountId ");
 
             sql.Append(@"
-            GROUP BY t.AccountId
+            GROUP BY
+                t.AccountId,
+                p.Currency
+
             ORDER BY t.AccountId
             OFFSET @Offset ROWS
             FETCH NEXT @PageSize ROWS ONLY
@@ -364,18 +371,26 @@ namespace FinanceCore.Infrastructure.Repositories
             TransactionsGrouped AS (
             SELECT
                 DATEFROMPARTS(YEAR(t.CreatedAt), MONTH(t.CreatedAt), 1) AS MonthDate,
-                SUM(CASE WHEN t.TransactionTypeId = 1 THEN t.Amount ELSE 0 END) AS TotalIncome,
-                SUM(CASE WHEN t.TransactionTypeId = 2 THEN t.Amount ELSE 0 END) AS TotalExpense
-
+                SUM(CASE WHEN t.TransactionTypeId = 0 THEN t.Amount * er.Rate ELSE 0 END) AS TotalIncome,
+                SUM(CASE WHEN t.TransactionTypeId = 1 THEN t.Amount * er.Rate ELSE 0 END) AS TotalExpense,
+                (SUM(CASE WHEN t.TransactionTypeId = 0 THEN t.Amount * er.Rate ELSE 0 END)
+                -
+                SUM(CASE WHEN t.TransactionTypeId = 1 THEN t.Amount * er.Rate ELSE 0 END)) AS NetSavings
+                
             FROM Transactions t
             INNER JOIN Accounts a ON t.AccountId = a.Id
+            INNER JOIN Profiles p ON a.UserId = p.UserId
+            INNER JOIN ExchangeRates er ON er.SourceCurrencyId = a.CurrencyId AND er.TargetCurrencyId = p.Currency
             WHERE a.UserId = @UserId
+             
             AND t.CreatedAt >= DATEADD(MONTH, -@Months, GETDATE())
             GROUP BY YEAR(t.CreatedAt), MONTH(t.CreatedAt))
             SELECT 
                 FORMAT(m.MonthDate, 'MMM') AS Month,
                 ISNULL(t.TotalIncome, 0) AS TotalIncome,
-                ISNULL(t.TotalExpense, 0) AS TotalExpense
+                ISNULL(t.TotalExpense, 0) AS TotalExpense,
+                ISNULL(t.NetSavings,0) AS NetSavings,
+                (SELECT TOP 1 Currency FROM Profiles WHERE UserId = @UserId) AS Currency
             FROM Months m
             LEFT JOIN TransactionsGrouped t
             ON m.MonthDate = t.MonthDate

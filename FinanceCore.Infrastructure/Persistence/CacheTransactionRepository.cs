@@ -36,7 +36,7 @@ namespace FinanceCore.Infrastructure.Persistence
                 return _transactionRepository.TransferAsync(transaction, token);
             });
         }
-        public Task<TransactionDto> IncomeTransactionAsync(Transaction transaction, CancellationToken token)
+        public Task<TransactionDto> IncomeTransactionAsync(Transaction transaction, CancellationToken? token)
         {
             var key = $"Income_{transaction.Id}";
             return _memoryCache.GetOrCreateAsync(key, entry =>
@@ -45,7 +45,7 @@ namespace FinanceCore.Infrastructure.Persistence
                 return _transactionRepository.IncomeTransactionAsync(transaction, token);
             });
         }
-        public Task<TransactionDto> ExpenseTransactionAsync(Transaction transaction, CancellationToken token)
+        public Task<TransactionDto> ExpenseTransactionAsync(Transaction transaction, CancellationToken? token)
         {
             var key = $"Expense_{transaction.Id}";
             return _memoryCache.GetOrCreateAsync(key, entry =>

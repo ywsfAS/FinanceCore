@@ -3,9 +3,9 @@ using System;
 
 namespace FinanceCore.Application.DTOs.RecurringTransaction
 {
-    public class CreateRecurringTransactionDto
+    public class RecurringTransactionDto
     {
-        public Guid id { get; set; }
+        public Guid Id { get; set; }
         public Guid AccountId { get; set; }
         public Guid CategoryId { get; set; }
 
@@ -19,6 +19,5 @@ namespace FinanceCore.Application.DTOs.RecurringTransaction
         public DateTime? EndDate { get; set; }
 
         public EnPeriod Period { get; set; }
-        public int Interval { get; set; }
     }
 }

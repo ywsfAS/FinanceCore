@@ -8,20 +8,15 @@ namespace FinanceCore.Domain.RecurringTransaction
 {
     public class RecurringTransaction : AggregateRoot
     {
-        public Guid accountId { get; private set; }
-        public Guid categoryId { get; private set; }
-
-        public Money amount { get; private set; }
-        public string description { get; private set; } = string.Empty;
-
-        public EnTransactionType type { get; private set; }
-
-        public DateTime startDate { get; private set; }
-        public DateTime? endDate { get; private set; }
-
-        public EnPeriod period { get; private set; }
-        public int interval { get; private set; }
-        public bool isActive { get; private set; }
+        public Guid AccountId { get; private set; }
+        public Guid CategoryId { get; private set; }
+        public Money Amount { get; private set; }
+        public string Description { get; private set; } = string.Empty;
+        public EnTransactionType Type { get; private set; }
+        public DateTime StartDate { get; private set; }
+        public DateTime? EndDate { get; private set; }
+        public EnPeriod Period { get; private set; }
+        public bool IsActive { get; private set; }
         public DateTime? LastExecutedDate { get; private set; }
 
         public static RecurringTransaction Create(
@@ -32,42 +27,36 @@ namespace FinanceCore.Domain.RecurringTransaction
             EnTransactionType type,
             DateTime startDate,
             EnPeriod period,
-            int interval,
-            DateTime? endDate = null
-        )
+            DateTime? endDate = null)
         {
             if (accountId == Guid.Empty)
-                throw new Exception("accountId is required");
+                throw new ArgumentException("accountId is required");
 
             if (amount.IsLessOrEqual(Money.Zero(amount.Currency)))
-                throw new Exception("amount must be greater than zero");
-
-            if (interval <= 0)
-                throw new Exception("interval must be greater than zero");
+                throw new ArgumentException("amount must be greater than zero");
 
             if (endDate.HasValue && endDate.Value < startDate)
-                throw new Exception("endDate cannot be before startDate");
+                throw new ArgumentException("endDate cannot be before startDate");
 
             var recurring = new RecurringTransaction
             {
                 Id = Guid.NewGuid(),
-                accountId = accountId,
-                categoryId = categoryId,
-                amount = amount,
-                description = description ?? string.Empty,
-                type = type,
-                startDate = startDate,
-                endDate = endDate,
-                period = period,
-                interval = interval,
-                isActive = true,
+                AccountId = accountId,
+                CategoryId = categoryId,
+                Amount = amount,
+                Description = description ?? string.Empty,
+                Type = type,
+                StartDate = startDate,
+                EndDate = endDate,
+                Period = period,
+                IsActive = true,
                 LastExecutedDate = null
             };
 
-            recurring.AddDomainEvent(new recurringTransactionCreated(recurring.Id, recurring.accountId, recurring.amount));
-
+            recurring.AddDomainEvent(new recurringTransactionCreatedEvent(recurring.Id, recurring.AccountId, recurring.Amount));
             return recurring;
         }
+
         public void UpdateDetails(
             Guid accountId,
             Guid categoryId,
@@ -76,133 +65,81 @@ namespace FinanceCore.Domain.RecurringTransaction
             EnTransactionType type,
             DateTime startDate,
             EnPeriod period,
-            int interval,
             DateTime? endDate)
         {
-            this.accountId = accountId;
-            this.categoryId = categoryId;
-            this.amount = amount;
-            this.description = description;
-            this.type = type;
-            this.startDate = startDate;
-            this.period = period;
-            this.interval = interval;
-            this.endDate = endDate;
+            AccountId = accountId;
+            CategoryId = categoryId;
+            Amount = amount;
+            Description = description;
+            Type = type;
+            StartDate = startDate;
+            Period = period;
+            EndDate = endDate;
 
-            // trigger domain event
-            AddDomainEvent(new RecurringTransactionUpdatedEvent(this.Id));
+            AddDomainEvent(new RecurringTransactionUpdatedEvent(Id));
         }
-        private void _setIsActive(bool isActive)
+
+        public void Activate()
         {
-            this.isActive = isActive;
+            IsActive = true;
+            AddDomainEvent(new activateRecurringTransactionEvent(Id));
         }
 
-        public void activate()
+        public void Deactivate()
         {
-            _setIsActive(true);
-            AddDomainEvent(new activateRecurringTransaction(this.Id));
+            IsActive = false;
+            AddDomainEvent(new desactivateRecurringTransactionEvent(Id));
         }
 
-        public void deactivate()
-        {
-            _setIsActive(false);
-            AddDomainEvent(new desactivateRecurringTransaction(Id));
-        }
-
-        public void markAsExecuted(DateTime executionDate)
+        public void MarkAsExecuted(DateTime executionDate)
         {
             LastExecutedDate = executionDate;
-            AddDomainEvent(new RecurringTransactionExecuted(Id, accountId, amount, executionDate));
+            AddDomainEvent(new RecurringTransactionExecutedEvent(Id, AccountId, Amount, executionDate));
         }
 
         public DateTime GetNextExecutionDate(DateTime currentDate)
         {
-            int k = CalculateCyclePassedFrom(currentDate);
+            int k = CalculateCyclePassed(currentDate);
             if (k < 0) k = 0;
             return CalculateExpectedDate(k + 1);
         }
 
-        public bool HasEnded(DateTime currentDate)
-        {
-            return endDate.HasValue && currentDate > endDate.Value;
-        }
-
-        private DateTime CalculateExpectedDate(int cycleNumber)
-        {
-            switch (period)
-            {
-                case EnPeriod.Daily:
-                    return startDate.AddDays(cycleNumber * interval);
-
-                case EnPeriod.Weekly:
-                    return startDate.AddDays(cycleNumber * 7 * interval);
-
-                case EnPeriod.Monthly:
-                    return startDate.AddMonths(cycleNumber * interval);
-
-                default:
-                    throw new Exception("invalide period of recurring transaction");
-            }
-        }
-
-        private int CalculateCyclePassedFrom(DateTime current)
-        {
-            switch (period)
-            {
-                case EnPeriod.Daily:
-                    {
-                        int days = (current.Date - startDate.Date).Days;
-                        return days / interval;
-                    }
-
-                case EnPeriod.Weekly:
-                    {
-                        int days = (current.Date - startDate.Date).Days;
-                        int weeks = days / 7;
-                        return weeks / interval;
-                    }
-
-                case EnPeriod.Monthly:
-                    {
-                        int months = (current.Year - startDate.Year) * 12 + (current.Month - startDate.Month);
-                        return months / interval;
-                    }
-
-                default:
-                    throw new Exception("invalide period of recurring transaction");
-            }
-        }
+        public bool HasEnded(DateTime currentDate) =>
+            EndDate.HasValue && currentDate > EndDate.Value;
 
         public bool CanExecute(DateTime currentDate)
         {
-            if (!isActive)
-                return false;
+            if (!IsActive) return false;
+            if (currentDate < StartDate) return false;
+            if (EndDate.HasValue && currentDate > EndDate.Value) return false;
 
-            if (currentDate < startDate)
-                return false;
-
-            if (endDate.HasValue && currentDate > endDate.Value)
-                return false;
-
-            int k = CalculateCyclePassedFrom(currentDate);
-
-            if (k < 0)
-                return false;
+            int k = CalculateCyclePassed(currentDate);
+            if (k < 0) return false;
 
             DateTime expectedDate = CalculateExpectedDate(k);
-
             DateTime lastExecuted = LastExecutedDate ?? DateTime.MinValue;
 
-            if (expectedDate <= lastExecuted)
-                return false;
-
-            if (expectedDate > currentDate)
-                return false;
-
-            if (endDate.HasValue && expectedDate > endDate.Value)
-                return false;
+            if (expectedDate <= lastExecuted) return false;
+            if (expectedDate > currentDate) return false;
+            if (EndDate.HasValue && expectedDate > EndDate.Value) return false;
 
             return true;
         }
+
+        private DateTime CalculateExpectedDate(int cycleNumber) => Period switch
+        {
+            EnPeriod.Daily => StartDate.AddDays(cycleNumber),
+            EnPeriod.Weekly => StartDate.AddDays(cycleNumber * 7),
+            EnPeriod.Monthly => StartDate.AddMonths(cycleNumber),
+            _ => throw new ArgumentException("Invalid period")
+        };
+
+        private int CalculateCyclePassed(DateTime current) => Period switch
+        {
+            EnPeriod.Daily => (current.Date - StartDate.Date).Days,
+            EnPeriod.Weekly => (current.Date - StartDate.Date).Days / 7,
+            EnPeriod.Monthly => (current.Year - StartDate.Year) * 12 + (current.Month - StartDate.Month),
+            _ => throw new ArgumentException("Invalid period")
+        };
     }
 }

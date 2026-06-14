@@ -5,6 +5,10 @@ using FinanceCore.Domain.RecurringTransaction;
 using FinanceCore.Infrastructure.Mappers;
 using FinanceCore.Infrastructure.context;
 using System.Data;
+using FinanceCore.Application.DTOs.RecurringTransaction;
+using FinanceCore.Domain.Enums;
+using System.Text;
+using System.Collections;
 
 namespace FinanceCore.Infrastructure.Persistence
 {
@@ -17,12 +21,34 @@ namespace FinanceCore.Infrastructure.Persistence
             _connectionFactory = connectionFactory;
         }
 
-        public async Task<RecurringTransaction?> GetByIdAsync(Guid id)
+        public async Task<RecurringTransaction?> GetByIdAsync(Guid userId,Guid id)
         {
             using var connection = _connectionFactory.GetConnection();
-            var sql = "SELECT * FROM RecurringTransactions WHERE Id = @Id";
-            var model = await connection.QuerySingleOrDefaultAsync<RecurringTransactionModel>(sql, new { Id = id });
+            var sql = "SELECT rt.Id , rt.AccountId , rt.CategoryId , rt.Amount , a.CurrencyId AS Currency , rt.Description , rt.Type , rt.StartDate , rt.EndDate , rt.Period , rt.IsActive , rt.LastExecutedDate   FROM RecurringTransactions rt INNER JOIN Accounts a ON rt.AccountId = a.Id WHERE rt.Id = @Id AND a.UserId = @UserId ";
+            var model = await connection.QuerySingleOrDefaultAsync<RecurringTransactionModel>(sql, new { Id = id , UserId = userId });
             return model == null ? null : RecurringTransactionMapper.MapToDomain(model);
+        }
+        public async Task<IEnumerable<RecurringTransactionDto>> GetRecurringTransactionsAsync(Guid userId , Guid? accountId , Guid? categoryId , bool? isActive , EnPeriod? period , DateTime? start , DateTime? end ,int page, int pageSize, CancellationToken token)
+        {
+            using var connection = _connectionFactory.GetConnection();
+            var sql = new StringBuilder(@"SELECT rt.Id , rt.AccountId , rt.CategoryId , rt.Amount , a.CurrencyId AS Currency , rt.Description , rt.Type , rt.StartDate , rt.EndDate , rt.Period , rt.IsActive , rt.LastExecutedDate   FROM RecurringTransactions rt INNER JOIN Accounts a ON rt.AccountId = a.Id WHERE a.UserId = @UserId");
+            if (accountId.HasValue) sql.Append(" AND rt.AccountId = @AccountId");
+            if (categoryId.HasValue) sql.Append(" AND rt.CategoryId =  @CategoryId");
+            if (isActive.HasValue) sql.Append(" AND rt.IsActive = @IsActive");
+            if(period.HasValue) sql.Append(" AND rt.Period = @Period");
+            if (start.HasValue) sql.Append(" AND rt.StartDate <= @Start");
+            if (end.HasValue) sql.Append(" AND rt.EndDate > @End");
+            sql.Append(" ORDER BY Id DESC OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY");
+            var command = new CommandDefinition(sql.ToString(), new { UserId = userId, AccountId = accountId, CategoryId = categoryId, IsActive = isActive, Period = period, Start = start, End = end, Offset = (page - 1) * pageSize, PageSize = pageSize }, cancellationToken: token);
+            return await connection.QueryAsync<RecurringTransactionDto>(command);
+
+        }
+
+        public async Task<RecurringTransactionDto?> GetDtoByIdAsync(Guid userId , Guid id)
+        {
+            using var connection = _connectionFactory.GetConnection();
+            var sql = "SELECT rt.Id , rt.AccountId , rt.CategoryId , rt.Amount , a.CurrencyId AS Currency , rt.Description , rt.Type , rt.StartDate , rt.EndDate , rt.Period  FROM RecurringTransactions rt INNER JOIN Accounts a ON rt.AccountId = a.Id WHERE rt.Id = @Id AND a.UserId = @UserId ";
+            return await connection.QuerySingleOrDefaultAsync<RecurringTransactionDto>(sql, new { Id = id  , UserId = userId });
         }
 
         public async Task AddAsync(RecurringTransaction recurringTransaction)
@@ -39,7 +65,6 @@ namespace FinanceCore.Infrastructure.Persistence
             StartDate,
             EndDate,
             Period,
-            Interval,
             IsActive,
             LastExecutedDate
             )
@@ -53,7 +78,6 @@ namespace FinanceCore.Infrastructure.Persistence
             @StartDate,
             @EndDate,
             @Period,
-            @Interval,
             @IsActive,
             @LastExecutedDate
             );";
@@ -76,7 +100,6 @@ namespace FinanceCore.Infrastructure.Persistence
             StartDate = @StartDate,
             EndDate = @EndDate,
             Period = @Period,
-            Interval = @Interval,
             IsActive = @IsActive,
             LastExecutedDate = @LastExecutedDate
             WHERE Id = @Id;";
@@ -91,35 +114,12 @@ namespace FinanceCore.Infrastructure.Persistence
             const string sql = "DELETE FROM RecurringTransactions WHERE Id = @Id";
             await connection.ExecuteAsync(sql, new { Id = id });
         }
-
         public async Task<IEnumerable<RecurringTransaction>> GetActiveAsync()
         {
             using var connection = _connectionFactory.GetConnection();
-            const string sql = "SELECT * FROM RecurringTransactions WHERE IsActive = 1";
+            var sql = "SELECT rt.Id , rt.AccountId , rt.CategoryId , rt.Amount , a.CurrencyId AS Currency , rt.Description ,rt.Type, rt.StartDate , rt.EndDate , rt.Period , rt.IsActive , rt.LastExecutedDate   FROM RecurringTransactions rt INNER JOIN Accounts a ON rt.AccountId = a.Id WHERE rt.IsActive = 1 ";
             var models = await connection.QueryAsync<RecurringTransactionModel>(sql);
             return models.Select(RecurringTransactionMapper.MapToDomain);
-        }
-
-        public async Task<IEnumerable<RecurringTransaction>> GetByAccountAsync(Guid accountId)
-        {
-            using var connection = _connectionFactory.GetConnection();
-            const string sql = "SELECT * FROM RecurringTransactions WHERE AccountId = @AccountId";
-            var models = await connection.QueryAsync<RecurringTransactionModel>(sql, new { AccountId = accountId });
-            return models.Select(RecurringTransactionMapper.MapToDomain);
-        }
-
-        public async Task<IEnumerable<RecurringTransaction>> GetByCategoryAsync(Guid categoryId)
-        {
-            using var connection = _connectionFactory.GetConnection();
-            const string sql = "SELECT * FROM RecurringTransactions WHERE CategoryId = @CategoryId";
-            var models = await connection.QueryAsync<RecurringTransactionModel>(sql, new { CategoryId = categoryId });
-            return models.Select(RecurringTransactionMapper.MapToDomain);
-        }
-
-        public async Task<IEnumerable<RecurringTransaction>> GetDueTransactionsAsync(DateTime currentDate)
-        {
-            var active = await GetActiveAsync();
-            return active.Where(r => r.CanExecute(currentDate));
         }
     }
 }

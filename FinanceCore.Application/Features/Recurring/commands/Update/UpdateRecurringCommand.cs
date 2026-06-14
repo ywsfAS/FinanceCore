@@ -4,20 +4,18 @@ using FinanceCore.Application.DTOs.RecurringTransaction;
 using System;
 using FinanceCore.Domain.Common;
 
-namespace FinanceCore.Application.Features.RecurringTransaction.Commands.Update
+namespace FinanceCore.Application.Features.Recurring.Commands.Update
 {
     public record UpdateRecurringCommand(
-        Guid userId,
         Guid Id,
+        Guid UserId,
         Guid AccountId,
         Guid CategoryId,
-        Money Amount,
-        EnTransactionType Type,
+        decimal Amount,
         EnPeriod Period,
-        int Interval,
         string? Description,
         DateTime StartDate,
         DateTime? EndDate,
         bool IsActive
-    ) : IRequest<CreateRecurringTransactionDto>;
+    ) : IRequest<RecurringTransactionDto>;
 }

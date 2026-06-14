@@ -3,7 +3,7 @@ using FinanceCore.Application.Events;
 using FinanceCore.Domain.RecurringTransaction;
 using MediatR;
 
-namespace FinanceCore.Application.Features.RecurringTransaction.Commands.Delete
+namespace FinanceCore.Application.Features.Recurring.Commands.Delete
 {
     public class DeleteRecurringHandler : IRequestHandler<DeleteRecurringCommand>
     {
@@ -20,18 +20,9 @@ namespace FinanceCore.Application.Features.RecurringTransaction.Commands.Delete
 
         public async Task Handle(DeleteRecurringCommand command, CancellationToken cancellationToken)
         {
-            // Load existing entity
-            var recurring = await _recurringRepository.GetByIdAsync(command.Id);
-            if (recurring == null)
-                throw new InvalidOperationException("Recurring transaction not found.");
-
             // Remove from repository
             await _recurringRepository.DeleteAsync(command.Id);
-
-            // dispatch event
-            await DomainEventDispatcher.DispatchAsync(_eventBus, recurring, cancellationToken);
-
-           
+         
         }
     }
 }

@@ -7,13 +7,10 @@ namespace FinanceCore.API.Requests.ReccuringTransations
         Guid AccountId,
         Guid CategoryId,
         decimal Amount,
-        EnCurrency Currency,
-        EnTransactionType Type,
         EnPeriod Period,
-        int Interval,
         string? Description,
         DateTime StartDate,
         DateTime? EndDate,
-        bool IsActive
+        bool IsActive = true
         );
 }

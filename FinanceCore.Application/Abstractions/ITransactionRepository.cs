@@ -10,8 +10,8 @@ namespace FinanceCore.Application.Abstractions
     {
         Task<Transaction?> GetByIdAsync(Guid id, CancellationToken token = default);
         Task<TransactionDto> TransferAsync(Transaction transaction, CancellationToken token = default);
-        Task<TransactionDto> IncomeTransactionAsync(Transaction transaction, CancellationToken token);
-        Task<TransactionDto> ExpenseTransactionAsync(Transaction transaction, CancellationToken token);
+        Task<TransactionDto> IncomeTransactionAsync(Transaction transaction, CancellationToken? token = default);
+        Task<TransactionDto> ExpenseTransactionAsync(Transaction transaction, CancellationToken? token = default);
         Task<IEnumerable<TransactionDto>> GetFilteredTransactionsAsync(Guid userId , Guid? accountId,Guid? toAccountId,Guid? categoryId, DateTime? start, DateTime? end, EnTransactionType? type, int page, int pageSize,CancellationToken token);
         Task UpdateAsync(Transaction transaction, CancellationToken token = default);
         Task DeleteAsync(Guid id, CancellationToken token = default);
@@ -19,7 +19,7 @@ namespace FinanceCore.Application.Abstractions
         Task<Transaction?> GetByIdAndUserId(Guid userId , Guid id , CancellationToken token = default);
         Task<TransactionDto?> GetDtoByIdAndUserId(Guid userId , Guid id , CancellationToken token = default);
         // reports
-        Task<IEnumerable<MonthlySummaryDto>> GetMonthlySummaryAsync(Guid userId , Guid? accountId, DateTime start, DateTime end, int page , int pageSize , CancellationToken token);
+        Task<IEnumerable<MonthlySummaryDto>> GetMonthlySummaryAsync(Guid userId , Guid? accountId, DateTime start, DateTime end, int page , int pageSize, CancellationToken token);
         Task<IEnumerable<SpendingByCategoryDto>> GetSpendingByCategoryAsync(
             Guid userId, Guid? accountId, DateTime start, DateTime end , int page , int pageSize , CancellationToken token = default);
         Task<bool> IsExistsAsync(Guid userId, Guid id, CancellationToken token = default);

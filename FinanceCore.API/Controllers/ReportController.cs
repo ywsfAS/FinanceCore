@@ -29,7 +29,7 @@ namespace FinanceCore.API.Controllers
         [ProducesResponseType(typeof(MonthlySummaryDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> GetMonthlySummary(Guid id, int year, int month,int page , int pageSize)
+        public async Task<IActionResult> GetMonthlySummary(Guid? id, int year, int month,int page = 1 , int pageSize = 10)
         {
             var UserId = GetUserId();
             var query = new GetAccountsMonthlySummaryQuery(UserId, id, year, month,page,pageSize);

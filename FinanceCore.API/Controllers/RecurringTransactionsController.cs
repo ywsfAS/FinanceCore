@@ -1,19 +1,16 @@
-using FinanceCore.API.Requests.Account;
 using FinanceCore.API.Requests.ReccuringTransations;
 using FinanceCore.Application.DTOs;
 using FinanceCore.Application.DTOs.RecurringTransaction;
-using FinanceCore.Application.Features.Accounts.Commands.Create;
-using FinanceCore.Application.Features.Accounts.Commands.Delete;
-using FinanceCore.Application.Features.Accounts.Commands.Update;
-using FinanceCore.Application.Features.RecurringTransaction.Commands.Delete;
-using FinanceCore.Application.Features.RecurringTransaction.Commands.Update;
-using FinanceCore.Application.Features.RecurringTransactions.commands.Create;
-using FinanceCore.Application.Features.RecurringTransactions.queries.GetRecurringById;
+using FinanceCore.Application.Features.Recurring.Commands.Delete;
+using FinanceCore.Application.Features.Recurring.Commands.Update;
+using FinanceCore.Application.Features.Recurring.commands.Create;
+using FinanceCore.Application.Features.Recurring.queries.GetRecurringById;
 using FinanceCore.Domain.Common;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
+using FinanceCore.Application.Features.Recurring.queries.GetRecurring;
 
 namespace FinanceCore.API.Controllers
 {
@@ -36,15 +33,15 @@ namespace FinanceCore.API.Controllers
         /// </summary>
         [HttpPost]
         [Produces("application/json")]
-        [ProducesResponseType(typeof(CreateRecurringTransactionDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(RecurringTransactionDto), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> CreateRecurringTransaction([FromBody] CreateRecurringTransactionRequest request)
         {
             var userId = GetUserId();
-            var command = new CreateRecurringCommand(userId, request.accountId, request.categoryId, new Money(request.amount,request.currency), request.type , request.period , request.interval , request.isActive , request.description , request.startDate , request.endDate );
+            var command = new CreateRecurringCommand(userId, request.AccountId, request.CategoryId,request.Amount,request.Period ,request.Description , request.StartDate , request.EndDate );
             var reccuring = await _mediator.Send(command);
-            return CreatedAtAction(nameof(GetRecurringByIdQuery), new { id = reccuring.id}, reccuring);
+            return CreatedAtAction(nameof(GetRecurringById), new { id = reccuring.Id }, reccuring);
         }
 
         /// <summary>
@@ -58,7 +55,7 @@ namespace FinanceCore.API.Controllers
         public async Task<IActionResult> UpdateRecurringTransaction([FromBody] UpdateRecurringTransactionRequest request)
         {
             var userId = GetUserId();
-            var command = new UpdateRecurringCommand(userId , request.Id , request.AccountId , request.CategoryId , new Money(request.Amount , request.Currency) , request.Type , request.Period , request.Interval , request.Description , request.StartDate , request.EndDate , request.IsActive);
+            var command = new UpdateRecurringCommand(userId , request.Id , request.AccountId , request.CategoryId , request.Amount , request.Period , request.Description , request.StartDate , request.EndDate , request.IsActive);
             await _mediator.Send(command);
             return NoContent();
         }
@@ -82,13 +79,28 @@ namespace FinanceCore.API.Controllers
         /// </summary>
         [HttpGet("{id}")]
         [Produces("application/json")]
-        [ProducesResponseType(typeof(CreateRecurringTransactionDto), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(RecurringTransactionDto), StatusCodes.Status201Created)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> GetRecurringById(Guid id)
         {
             var userId = GetUserId();
             var query = new GetRecurringByIdQuery(userId, id); 
+            var recurring = await _mediator.Send(query);
+            return Ok(recurring);
+        }
+        /// <summary>
+        /// Get recurring transaction With Filters
+        /// </summary>
+        [HttpGet]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(IEnumerable<RecurringTransactionDto>), StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> GetRecurringTransactions([FromQuery] GetRecurringFilteredRequest request)
+        {
+            var userId = GetUserId();
+            var query = new GetRecurringQuery(userId,request.AccountId,request.CategoryId,request.IsActive,request.Period,request.Start,request.End,request.Page , request.PageSize);
             var recurring = await _mediator.Send(query);
             return Ok(recurring);
         }

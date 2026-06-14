@@ -36,9 +36,11 @@ namespace FinanceCore.Infrastructure.BackgroundJobs
                     {
                         continue;
                     }
-                    var transaction = Transaction.Create(Guid.NewGuid(), recurringTransaction.accountId, recurringTransaction.amount, recurringTransaction.categoryId, recurringTransaction.type, now, recurringTransaction.description);
+                    var transaction = Transaction.Create(recurringTransaction.AccountId,null, recurringTransaction.Amount, recurringTransaction.CategoryId, recurringTransaction.Type, now, recurringTransaction.Description);
                     // should write to transactions
-                    recurringTransaction.markAsExecuted(now);
+                    if (transaction.IsExpense()) await _transactionRepository.ExpenseTransactionAsync(transaction);
+                    if (transaction.IsIncome()) await _transactionRepository.IncomeTransactionAsync(transaction);
+                    recurringTransaction.MarkAsExecuted(now);
                     await _recurringTransactionRepository.UpdateAsync(recurringTransaction);
                     _logger.LogInformation("Executed recurring transaction {Id}", recurringTransaction.Id);
                 }

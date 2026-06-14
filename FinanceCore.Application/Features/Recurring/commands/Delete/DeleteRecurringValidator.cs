@@ -6,10 +6,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace FinanceCore.Application.Features.RecurringTransactions.commands.Delete
+namespace FinanceCore.Application.Features.Recurring.commands.Delete
 {
     public class DeleteRecurringValidator : AbstractValidator<DeleteAccountCommand>
     {
-        public DeleteRecurringValidator() { }
+        public DeleteRecurringValidator() {
+            RuleFor(x => x.UserId).NotEmpty();
+            RuleFor(x => x.Id).NotEmpty();
+        }
     }
 } 

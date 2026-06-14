@@ -7,5 +7,5 @@ using System.Threading.Tasks;
 
 namespace FinanceCore.Domain.Events.RecurringTransaction
 {
-    public record desactivateRecurringTransaction(Guid id) : DomainEvent;
+    public record RecurringTransactionExecutedEvent(Guid id , Guid accountId , Money amount , DateTime executionTime) : DomainEvent;
 }

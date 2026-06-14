@@ -1,4 +1,4 @@
-﻿using FinanceCore.Domain.Enums;
+using FinanceCore.Domain.Enums;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -25,11 +25,11 @@ namespace FinanceCore.Domain.Exceptions
         public Guid CategoryId { get; }
         public string CategoryName { get; }
 
-        public InactiveCategoryException(Guid categoryId, string categoryName)
-            : base($"Category '{categoryName}' (ID: {categoryId}) is inactive.")
+        public InactiveCategoryException(Guid categoryId)
+            : base($"Category (ID: {categoryId}) is inactive.")
         {
             CategoryId = categoryId;
-            CategoryName = categoryName;
+          
         }
 
         public InactiveCategoryException(Guid categoryId, string categoryName, string operation)
