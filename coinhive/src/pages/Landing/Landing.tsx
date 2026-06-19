@@ -7,17 +7,18 @@ import PricingSection from "../../components/Pricingsection/PricingSection";
 import CtaSection from "../../components/Ctasection/CtaSection";
 import  HowItWorks from "../../components/Howitworks/HowItWorks";
 import styles from "./Landing.module.css";
+import ActiviyInsight from "../../components/ActivityInsights/ActivityInsight";
 
 const Landing: React.FC = () => {
     return (
         <main className={styles.page}>
             {/* Hero */}
             <HeroSection
-                title="Take Full Control of"
+                title="Take Full Control of Futur"
                 description="FinanceCore brings your accounts, budgets, goals, and investments into
                     one secure dashboard so you always know where you stand and where
                     you're headed."
-                mainBtnText="Start for Free"
+                mainBtnText="Get Started"
                 secondBtnText=" Watch Demo"
 
             />
@@ -45,14 +46,9 @@ const Landing: React.FC = () => {
                     />
                 </div>
            
-
+            <ActiviyInsight title="Activity Insights" description="See what's happening across your system in real time. Track actions, monitor background operations, and stay updated on important events as they unfold."/>
             {/* Testimonials */}
             <TestimonialsSection />
-
-            {/* Pricing */}
-            <div className={styles.container}>
-                <PricingSection />
-            </div>
 
             {/* CTA */}
             <div className={styles.container}>

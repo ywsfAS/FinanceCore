@@ -1,31 +1,17 @@
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import styles from "./LogoSection.module.css";
+import Svg from "../../assets/brand.svg";
 
-const logos = [
-    "Goldman Sachs", "Stripe", "Revolut", "N26",
-    "Wise", "Plaid", "Robinhood", "Coinbase",
-];
+const logos = new Array(5).fill(Svg);
 
 const LogoSection: React.FC = () => {
-    const ref = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-        const el = ref.current;
-        if (!el) return;
-        const observer = new IntersectionObserver(
-            ([entry]) => { if (entry.isIntersecting) { el.classList.add(styles.visible); observer.disconnect(); } },
-            { threshold: 0.1 }
-        );
-        observer.observe(el);
-        return () => observer.disconnect();
-    }, []);
-
     return (
-        <section className={styles.wrapper} ref={ref}>
-            <p className={styles.label}>Trusted by teams from the world's best fintech companies</p>
+        <section className={styles.wrapper} >
+            <h2 className={styles.title}>Partners We Trust</h2>
+            <p className={styles.label}>Partnering with industry-leading companies to help you manage your finances with confidence.</p>
             <div className={styles.logos}>
-                {logos.map((name) => (
-                    <div key={name} className={styles.logo}>{name}</div>
+                {logos.map((name , i) => (
+                    <img key={i} className={styles.logo} src={name} />
                 ))}
             </div>
         </section>
