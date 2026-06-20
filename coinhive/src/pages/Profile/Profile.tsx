@@ -7,10 +7,10 @@ import ChartsSection from "../../components/ChartsSection/ChartsSection";
 import { useProfile } from "../../hooks/Profile/useProfile";
 import { useUpdateProfile } from "../../hooks/Profile/useUpdateProfile";
 import { useUploadProfileImage} from "../../hooks/Profile/useUploadProfileImage"
-import OverviewHeader from "../../components/OverviewHeader/OverviewHeader";
 import ProfileEditPopUp from "../../components/ProfileEditPopUp/ProfilePopUp";
 import { useState } from 'react';
 import type { UpdateProfileParams, UploadProfileImageParams } from "../../services/profileService";
+import { BarChartCard } from "../../components/BarChartCard/BarChartCard";
 
 export default function ProfilePage() {
 
@@ -39,8 +39,8 @@ export default function ProfilePage() {
             console.error(err);
         }
     }
-    if (isLoading) return <div>Loading...</div>;
-    if (isError) return <div>{error.message}</div>;
+    //if (isLoading) return <div>Loading...</div>;
+    //if (isError) return <div>{error.message}</div>;
 
     const profile = data;
 
@@ -49,11 +49,10 @@ export default function ProfilePage() {
         <div className={styles.layout}>
             <ProfileCard profileData={profile} PopUpHandler={PopUpHandler} />
             <main className={styles.main}>
-                <OverviewHeader title={"Financial Overview"} description={"April 2026 · Last updated just now"} />
                 <ProfileStats />
-                <ChartsSection />
-                <InsightsRow />
-                <TransactionCard />
+                <div className = {styles.barChartContainer}>
+                    <BarChartCard/>
+                </div>
                 {active && <ProfileEditPopUp EditProfileImageHandler={updateProfileImage} EditProfileHandler={updateProfile} PopUpHandler={PopUpHandler} />}
             </main>
         </div>

@@ -8,7 +8,10 @@
     align-items: start;
     margin-top: 90px;
 }
-
+.barChartContainer{
+    height : 500px;
+    margin-top : 40px;
+}
 @media (max-width: 1080px) {
     .layout {
         grid-template-columns: 1fr;

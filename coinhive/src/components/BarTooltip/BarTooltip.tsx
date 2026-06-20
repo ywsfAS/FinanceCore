@@ -7,6 +7,7 @@ export function BarTooltip({ active, payload, label }: CustomBarTooltipProps) {
         <div className={styles.tooltip}>
             <div className={styles.label}>{label}</div>
             <div className={styles.value}>${payload[0].value.toLocaleString()}</div>
+            <div className={styles.value}>${payload[1].value.toLocaleString()}</div>
         </div>
     );
 }

@@ -1,75 +1,55 @@
-
-
 .grid {
-    --expense-color : #f87171;
-    --income-color : #34d399;
-    --net-color : #a5b4fc;
-
-
-    margin-top: 10px;
+    margin-top: var(--space-8);
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    column-gap: 5px;
-    color : var(--color-text);
+    column-gap: var(--space-4);
+    color: var(--text-primary);
 }
 .grid .box {
-    padding: 18px 16px;
-    position: relative;
+    display : flex;
+    flex-direction : column;
+    align-items : flex-start;
+    padding: var(--space-16);
     overflow: hidden;
     cursor: pointer;
-    border-radius: 25px;
-    background-color: var(--background);
-    box-shadow : var(--shadow);
+    border-radius: var(--space-16);
+    background-color: var(--surface);
+    box-shadow: var(--shadow-100);
+ }
+
+.box .title{
+    display : flex;
+   justify-content : center;
+   align-items : center;
+   gap : var(--space-8);
+    margin-bottom : var(--space-12);
 }
 .box .icon {
-    width: 36px;
-    height: 36px;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 16px;
-    margin-bottom: 12px;
    
-}
-.box .label {
-    font-size: 11px;
-    color: #64748b;
-    font-weight: 600;
-    letter-spacing: 0.4px;
-    text-transform: uppercase;
-    margin-bottom: 4px;
-}
-.box .value {
-    font-size: 22px;
-    font-weight: 600;
-    margin-bottom: 4px;
-}
-.box.income {
-    color: var(--income-color);   
-}
-.box.income .icon{
-    background-color: var(--income-color);
-    color : white;
+    width: var(--space-32);
+    height: var(--space-32);
 }
 
-.box.expense .icon{
-    background-color: var(--expense-color);
-    color : white;
+.box .label {
+    font-size: var(--font-size-14);
+    color: var(--text-primary);
+    font-weight: var(--font-weight-semibold);
+    letter-spacing: 0.4px;
+    text-transform: uppercase;
+    margin-bottom: var(--space-4);
 }
-.box.net .icon{
-    background-color: var(--net-color);
-    color : white;
+
+.box .value {
+    font-size: var(--font-size-24);
+    font-weight: var(--font-weight-semibold);
+    color: var(--primary-500);
+    margin-bottom: var(--space-4);
 }
-.box.expense {
-    color: var(--expense-color);
-}
-.box.net {
-    color: var(--net-color);
-}
+
 .box .change {
-    font-size: 11px;
+    font-size: var(--font-size-12);
+    color: var(--text-primary);
     display: flex;
     align-items: center;
-    gap: 3px;
+    gap: var(--space-4);
 }

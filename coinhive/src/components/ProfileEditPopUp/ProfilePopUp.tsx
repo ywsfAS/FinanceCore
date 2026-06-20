@@ -9,6 +9,16 @@ import type {
     UploadProfileImageParams
 } from "../../services/profileService";
 
+import {
+    PROFILE_POPUP_TITLE,
+    PROFILE_CLOSE_ARIA_LABEL,
+    PROFILE_PHOTO_ACCEPT,
+    PROFILE_FORM_LABELS,
+    PROFILE_FORM_PLACEHOLDERS,
+    PROFILE_FORM_ERRORS,
+    PROFILE_FORM_BUTTONS
+} from "./constants";
+
 interface ProfileEditPopUpProps {
     EditProfileHandler: (
         profile: UpdateProfileParams
@@ -106,13 +116,13 @@ const ProfileEditPopUp = ({
                     onClick={
                         PopUpHandler
                     }
-                    aria-label="Close popup"
+                    aria-label={PROFILE_CLOSE_ARIA_LABEL}
                 >
                     ×
                 </button>
 
                 <h1 className={styles.title}>
-                    Edit Your Profile
+                    {PROFILE_POPUP_TITLE}
                 </h1>
 
                 <div className={styles.name}>
@@ -121,7 +131,7 @@ const ProfileEditPopUp = ({
                             "name",
                             {
                                 required:
-                                    "Name is required"
+                                    PROFILE_FORM_ERRORS.nameRequired
                             }
                         )}
                         error={
@@ -130,8 +140,8 @@ const ProfileEditPopUp = ({
                         }
                         type="text"
                         borderStyle="dashed"
-                        label="Name"
-                        placeholder="Enter your new name"
+                        label={PROFILE_FORM_LABELS.name}
+                        placeholder={PROFILE_FORM_PLACEHOLDERS.name}
                     />
                 </div>
 
@@ -141,7 +151,7 @@ const ProfileEditPopUp = ({
                             "bio",
                             {
                                 required:
-                                    "Bio is required"
+                                    PROFILE_FORM_ERRORS.bioRequired
                             }
                         )}
                         error={
@@ -150,21 +160,21 @@ const ProfileEditPopUp = ({
                         }
                         type="text"
                         borderStyle="dashed"
-                        label="Bio"
-                        placeholder="Enter your new bio"
+                        label={PROFILE_FORM_LABELS.bio}
+                        placeholder={PROFILE_FORM_PLACEHOLDERS.bio}
                     />
                 </div>
 
                 <div className={styles.file}>
                     <Input
                         type="file"
-                        accept="image/*"
+                        accept={PROFILE_PHOTO_ACCEPT}
                         borderStyle="dashed"
                         label={
                             selectedPhoto?.[0]
                                 ?.name
                                 ? `Selected: ${selectedPhoto[0].name}`
-                                : "Upload Photo"
+                                : PROFILE_FORM_LABELS.photo
                         }
                         error={
                             errors.photo
@@ -183,7 +193,7 @@ const ProfileEditPopUp = ({
                 >
                     <Button
                         type="button"
-                        variant="purple"
+                        variant="secondary"
                         onClick={() =>
                             reset()
                         }
@@ -191,19 +201,18 @@ const ProfileEditPopUp = ({
                             isSubmitting
                         }
                     >
-                        Reset
+                        {PROFILE_FORM_BUTTONS.reset}
                     </Button>
 
                     <Button
                         type="submit"
-                        variant="purple"
                         disabled={
                             isSubmitting
                         }
                     >
                         {isSubmitting
-                            ? "Saving..."
-                            : "Save"}
+                            ? PROFILE_FORM_BUTTONS.saving
+                            : PROFILE_FORM_BUTTONS.save}
                     </Button>
                 </div>
             </form>
