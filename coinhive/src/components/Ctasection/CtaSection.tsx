@@ -1,6 +1,6 @@
-import React, { useEffect, useRef } from "react";
+import React from "react";
 import styles from "./CtaSection.module.css";
-
+import Button from "../Button/Button";
 interface CtaSectionProps {
     title: string,
     para: string,
@@ -10,25 +10,10 @@ interface CtaSectionProps {
 
 
 const CtaSection: React.FC<CtaSectionProps> = ({title , para , mainBtnMsg , secondBtnMsg}) => {
-    const ref = useRef<HTMLDivElement>(null);
-
-    useEffect(() => {
-        const el = ref.current;
-        if (!el) return;
-        const observer = new IntersectionObserver(
-            ([entry]) => { if (entry.isIntersecting) { el.classList.add(styles.visible); observer.disconnect(); } },
-            { threshold: 0.15 }
-        );
-        observer.observe(el);
-        return () => observer.disconnect();
-    }, []);
 
     return (
-        <section className={styles.wrapper} ref={ref}>
+        <section className={styles.wrapper} >
             <div className={styles.card}>
-                <div className={styles.blobLeft} aria-hidden="true" />
-                <div className={styles.blobRight} aria-hidden="true" />
-                <div className={styles.inner}>
                     <h2 className={styles.title}>
                         {title}<br />Starts Right Now
                     </h2>
@@ -36,11 +21,10 @@ const CtaSection: React.FC<CtaSectionProps> = ({title , para , mainBtnMsg , seco
                         {para}
                     </p>
                     <div className={styles.actions}>
-                        <a href="#" className={styles.btnPrimary}>{mainBtnMsg}</a>
-                        <a href="#" className={styles.btnSecondary}>{secondBtnMsg}</a>
+                        <Button>{mainBtnMsg}</Button>
+                        <Button variant="secondary">{secondBtnMsg}</Button>
                     </div>
                 </div>
-            </div>
         </section>
     );
 };

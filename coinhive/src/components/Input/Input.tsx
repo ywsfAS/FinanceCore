@@ -1,91 +1,50 @@
-import React from "react";
-import styles from  "./Input.module.css";
-import { CircleX } from 'lucide-react';
-import { useState , forwardRef} from 'react';
+import { forwardRef, type InputHTMLAttributes } from "react";
+import styles from "./Input.module.css";
 
-interface InputProps extends React.InputHTMLAttributes<HTMLInputElement>  {
-    variant?: 'primary' | 'secondary';
-    error?: string;
+type InputProps = {
     label?: string;
-    borderStyle?: 'dashed' | 'solid';
-    inputSize?: 'sm' | 'md' | 'lg';
-    InfoMessage?: string;
+    variant?: "filled" | "outline";
+    error?: boolean;
+    fullWidth?: boolean;
+} & InputHTMLAttributes<HTMLInputElement>;
 
-}
-export const Input = forwardRef<HTMLInputElement, InputProps>(
+const Input = forwardRef<HTMLInputElement, InputProps>(
     (
         {
-            variant = 'primary',
-            inputSize = 'md',
-            InfoMessage,
-            borderStyle = 'solid',
-            id,
-            className,
-            error,
             label,
-            type,
+            variant = "filled",
+            error = false,
+            fullWidth = false,
+            disabled = false,
+            className = "",
             ...props
         },
         ref
     ) => {
-        const [infoSection, setInfoSection] = useState(false);
+        const variantClass = styles[variant];
+        const errorClass = error ? styles.error : "";
+        const disabledClass = disabled ? styles.disabled : "";
+        const fullWidthClass = fullWidth ? styles.fullWidth : "";
 
-        const isFile = type === 'file';
-
-        const inputStyle = `
-            ${styles.customInput}
-            ${variant ? styles[variant] : ""}
-            ${error ? styles.error : ""}
-            ${borderStyle ? styles[borderStyle] : ""}
-            ${inputSize ? styles[inputSize] : ""}
-            ${className ?? ""}
-            ${isFile ? styles.hidden : ""}
-        `;
-
-        const errorMessageStyle = styles.errorMessage;
-
-        const labelStyle = `
-            ${styles.label}
-            ${isFile ? styles.uploadBox : ""}
+        const inputClass = `
+            ${styles.input}
+            ${variantClass}
+            ${errorClass}
+            ${disabledClass}
+            ${fullWidthClass}
+            ${className}
         `;
 
         return (
-            <div className={styles.inputWrapper}>
-                {label && (
-                    <label
-                        htmlFor={id}
-                        className={labelStyle}
-                    >
-                        {label}
-                    </label>
-                )}
+            <div className={styles.wrapper}>
+                {label && <label className={styles.label}>{label}</label>}
 
                 <input
                     ref={ref}
-                    id={id}
-                    className={inputStyle}
-                    type={type}
+                    className={inputClass}
+                    disabled={disabled}
                     {...props}
                 />
-
-                {error && (
-                    <div className={errorMessageStyle}>
-                        {error}
-
-                        <CircleX
-                            onClick={() =>
-                                setInfoSection(prev => !prev)
-                            }
-                            size={15}
-                        />
-                    </div>
-                )}
-
-                {infoSection && (
-                    <div className={styles.infoSection}>
-                        {InfoMessage}
-                    </div>
-                )}
             </div>
         );
     }

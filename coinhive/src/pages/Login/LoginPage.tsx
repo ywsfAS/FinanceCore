@@ -1,117 +1,103 @@
-import { useState } from "react";
+import { Link } from "react-router-dom";
+import { useForm } from "react-hook-form";
+
+import { useAuth } from "../../hooks/Auth/Auth";
 import Input from "../../components/Input/Input";
 import Checkbox from "../../components/Checkbox/Checkbox";
 import Button from "../../components/Button/Button";
+
 import styles from "./Login.module.css";
-import { useAuth } from "../../hooks/Auth/Auth";
-import { useTheme } from "../../hooks/Theme/Theme";
-import { Link } from "react-router-dom";
+import Image from "../../assets/Auth.png";
+
+export interface LoginInfos {
+    email: string;
+    password: string;
+    rememberMe: boolean;
+}
 
 const LoginPage = () => {
-    const messages = {
-        success: "Welcome back",
-        error: "Invalid email or password",
-    };
+    const { loginWithCredentials } = useAuth();
 
-    const { loginWithCredentials, user } = useAuth();
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [rememberMe, setRememberMe] = useState(false);
-    const [status, setStatus] = useState<"error" | "success" | null>(null);
-    const { theme } = useTheme();
+    const {
+        register,
+        handleSubmit,
+        formState: { errors },
+    } = useForm<LoginInfos>({
+        defaultValues: {
+            email: "",
+            password: "",
+            rememberMe: false,
+        },
+    });
 
-    const handleLogin = async () => {
-        if (!email || email.trim().length === 0) {
-            alert("Email can't be empty");
-            return;
-        }
-        if (!password || password.trim().length === 0) {
-            alert("Password can't be empty");
-            return;
-        }
-        try {
-            await loginWithCredentials(email, password);
-            setStatus("success");
-        } catch {
-            setStatus("error");
-        }
+    const onSubmit = async (data: LoginInfos) => {
+        const {email,password} = data;
+        await loginWithCredentials(email,password);
     };
 
     return (
-        <div className={`${styles.globalContainer} ${theme === "dark" ? styles.dark : ""}`}>
-            {/* Card */}
-            <div className={styles.card}>
+        <div className={styles.page}>
+            <div className={styles.container}>
 
-                {/* Brand */}
-                <div className={styles.brand}>
-                    <div className={styles.brandIcon}>
-                        <svg viewBox="0 0 20 20">
-                            <path d="M10 2L3 7v6l7 5 7-5V7l-7-5z" />
-                        </svg>
-                    </div>
-                    <span className={styles.brandName}>FinanceCore</span>
+                <div className={styles.imageContainer}>
+                    <img src={Image} alt="Finance illustration" />
                 </div>
 
-                {/* Heading */}
-                <h1 className={styles.title}>Welcome back</h1>
-                <p className={styles.titleP}>Sign in to continue to your workspace</p>
-
-                {/* Email */}
-                <div className={styles.inputField}>
-                    <label htmlFor="login-email">Email address</label>
-                    <Input
-                        type="email"
-                        placeholder="you@example.com"
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                    />
-                </div>
-
-                {/* Password */}
-                <div className={styles.inputField}>
-                    <label htmlFor="login-password">Password</label>
-                    <Input
-                        type="password"
-                        placeholder="Enter your password"
-                        value={password}
-                        onChange={(e) => setPassword(e.target.value)}
-                    />
-                </div>
-
-                {/* Remember me + Forgot */}
-                <div className={styles.row}>
-                    <Checkbox
-                        label="Remember me"
-                        checked={rememberMe}
-                        onChange={(e) => setRememberMe(e.target.checked)}
-                    />
-                    <Link  to="/forget-password"   className={styles.forgotPassword}>Forgot password?</Link>
-                </div>
-
-                {/* Submit */}
-                <Button
-                    type="submit"
-                    variant="primary"
-                    className={styles.btnPrimary}
-                    onClick={handleLogin}
+                <form
+                    className={styles.formContainer}
+                    onSubmit={handleSubmit(onSubmit)}
                 >
-                    Sign in
-                </Button>
+                    <h1 className={styles.title}>FinanceCore</h1>
 
-                {/* Status */}
-                {status && (
-                    <p className={status === "error" ? styles.error : styles.success}>
-                        {messages[status]}
+                    <p className={styles.subtitle}>
+                        Welcome back. Sign in to continue managing your finances.
                     </p>
-                )}
 
-                {/* Footer */}
-                <p className={styles.signUp}>
-                    Don't have an account?{" "}
-                    <Link to="/register" className={styles.signUpLink} >
-                        Sign up
-                    </Link>
-                </p>
+                    <div className={styles.inputField}>
+                        <label>Email</label>
+                        <Input
+                            type="email"
+                            placeholder="Enter your email"
+                            {...register("email", {
+                                required: "Email is required",
+                            })}
+                        />
+                    </div>
+
+                    <div className={styles.inputField}>
+                        <label>Password</label>
+                        <Input
+                            type="password"
+                            placeholder="Enter your password"
+                            {...register("password", {
+                                required: "Password is required",
+                            })}
+                        />
+                    </div>
+
+                    <div className={styles.optionsRow}>
+                        <Checkbox
+                            label="Remember me"
+                            {...register("rememberMe")}
+                        />
+
+                        <Link to="/forgot-password" className={styles.forgotLink}>
+                            Forgot password?
+                        </Link>
+                    </div>
+
+                    <Button type="submit" variant="primary">
+                        Sign In
+                    </Button>
+
+                    <p className={styles.registerText}>
+                        Don't have an account?{" "}
+                        <Link to="/register" className={styles.registerLink}>
+                            Create Account
+                        </Link>
+                    </p>
+                </form>
+
             </div>
         </div>
     );
