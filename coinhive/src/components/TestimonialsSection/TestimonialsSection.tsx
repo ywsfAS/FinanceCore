@@ -1,5 +1,5 @@
 import styles from "./TestimonialsSection.module.css";
-import { Quote } from "lucide-react";
+import { MessageSquareQuote } from "lucide-react";
 import { testimonials } from "./Constants";
 
 const TestimonialsSection = () => {
@@ -7,7 +7,7 @@ const TestimonialsSection = () => {
         <section className={styles.wrapper}>
             <div className={styles.header}>
                 <h2 className={styles.title}>
-                    Real People, Real Results
+                    Take Control With Confidence
                 </h2>
 
                 <p className={styles.subtitle}>
@@ -22,9 +22,8 @@ const TestimonialsSection = () => {
                         key={t.name}
                         className={styles.card}
                     >
-                        <Quote
-                            className={styles.quoteIcon}
-                        />
+                        <MessageSquareQuote size={16} strokeWidth={2} className={styles.quoteIcon} />
+                            
 
                         <p className={styles.quote}>
                             "{t.quote}"

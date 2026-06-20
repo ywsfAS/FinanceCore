@@ -2,10 +2,9 @@ import {
     BarChart2,
     Target,
     Bell,
-    Building2,
-    Cpu,
     ShieldCheck,
 } from "lucide-react";
+
 export interface Feature {
     icon: React.ReactNode;
     title: string;
@@ -16,45 +15,30 @@ export interface Feature {
 export const features: Feature[] = [
     {
         icon: <BarChart2 size={22} strokeWidth={1.6} />,
-        title: "Real-time dashboard",
+        title: "Your money, finally clear",
         description:
-            "See your full financial picture at a glance — balances, budgets, net worth, and spending trends updated live.",
+            "A real-time dashboard that shows exactly where your money goes — no guessing, no spreadsheets, just clarity.",
         color: "#0f6e56",
     },
     {
         icon: <Target size={22} strokeWidth={1.6} />,
-        title: "Smart goal tracking",
+        title: "Goals that actually move you",
         description:
-            "Set savings goals, track progress with visual milestones, and get AI-driven recommendations to reach them faster.",
+            "Set financial goals and watch real progress build up daily with smart, visual tracking that keeps you consistent.",
         color: "#185fa5",
     },
     {
         icon: <Bell size={22} strokeWidth={1.6} />,
-        title: "Intelligent alerts",
+        title: "Know before it becomes a problem",
         description:
-            "Get notified before you overspend, when bills are due, or when unusual activity is detected on your accounts.",
+            "Instant alerts for overspending, bills, and unusual activity — so you stay ahead, not surprised.",
         color: "#534ab7",
     },
     {
-        icon: <Building2 size={22} strokeWidth={1.6} />,
-        title: "Multi-account sync",
-        description:
-            "Connect all your banks, cards, wallets, and brokerages in one place with read-only, bank-grade secure access.",
-        color: "#854f0b",
-    },
-    {
-        icon: <Cpu size={22} strokeWidth={1.6} />,
-        title: "AI spending insights",
-        description:
-            "Our model analyzes your habits and surfaces personalized tips — from subscription audits to smarter budget splits.",
-        color: "#a32d2d",
-    },
-    {
         icon: <ShieldCheck size={22} strokeWidth={1.6} />,
-        title: "Bank-grade security",
+        title: "Security you don’t have to think about",
         description:
-            "256-bit AES encryption, biometric login, SOC 2 Type II certification, and zero data selling. Ever.",
+            "Bank-level encryption and strict protection systems keep your data safe while you focus on your money, not risk.",
         color: "#085041",
     },
 ];
-

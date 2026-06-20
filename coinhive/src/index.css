@@ -6,16 +6,15 @@
 }
 /* variables system*/
 :root {
-    --font-family : "Plus Jakarta Sans" , sans-serif;
+    --font-family: "Plus Jakarta Sans", sans-serif;
     font-family: var(--font-family);
     line-height: 1.5;
     /* Base font weight*/
-    --font-weight-regular : 400;
-    --font-weight-medium : 500;
-    --font-weight-semibold : 600;
+    --font-weight-regular: 400;
+    --font-weight-medium: 500;
+    --font-weight-semibold: 600;
     --font-weight-bold: 700;
     font-weight: var(--font-weight-regular);
-
     --background: #F8FAFC;
     --surface: #FFFFFF;
     /* Colors */
@@ -30,7 +29,6 @@
     --primary-700: #1D4ED8;
     --primary-800: #1E40AF;
     --primary-900: #1E3A8A;
-
     --gray-50: #F8FAFC;
     --gray-100: #F1F5F9;
     --gray-200: #E2E8F0;
@@ -41,7 +39,6 @@
     --gray-700: #334155;
     --gray-800: #1E293B;
     --gray-900: #0F172A;
-
     --success-50: #F8FAFC;
     --success-100: #F1F5F9;
     --success-200: #E2E8F0;
@@ -52,7 +49,6 @@
     --success-700: #334155;
     --success-800: #1E293B;
     --success-900: #0F172A;
-
     --warning-50: #FFFBEB;
     --warning-100: #FEF3C7;
     --warning-200: #FDE68A;
@@ -63,7 +59,6 @@
     --warning-700: #B45309;
     --warning-800: #92400E;
     --warning-900: #78350F;
-
     --danger-50: #FEF2F2;
     --danger-100: #FEE2E2;
     --danger-200: #FECACA;
@@ -74,43 +69,40 @@
     --danger-700: #B91C1C;
     --danger-800: #991B1B;
     --danger-900: #7F1D1D;
-
     --text-primary: #0F172A;
     --text-secondary: #475569;
     --text-tertiary: #94A3B8;
-    --text-white : #FFFFFF;
-
+    --text-white: #FFFFFF;
     /* Spacing system*/
-    --space-4 : 4px;
-    --space-8 : 8px;
-    --space-12 : 12px;
-    --space-16 : 16px;
-    --space-24 : 24px;
-    --space-32 : 32px;
-    --space-48 : 48px;
-    --space-64 : 64px;
-    --space-96 : 96px;
-    --space-128 : 128px;
-    --space-192 : 192px;
-    --space-256 : 256px;
-    --space-384 : 384px;
-    --space-512 : 512px;
-    --space-640 : 640px;
-    --space-768 : 768px;
-
+    --space-4: 4px;
+    --space-8: 8px;
+    --space-12: 12px;
+    --space-16: 16px;
+    --space-24: 24px;
+    --space-32: 32px;
+    --space-48: 48px;
+    --space-64: 64px;
+    --space-96: 96px;
+    --space-128: 128px;
+    --space-192: 192px;
+    --space-256: 256px;
+    --space-384: 384px;
+    --space-512: 512px;
+    --space-640: 640px;
+    --space-768: 768px;
     /* font size system*/
-    --font-size-12  : 12px;
-    --font-size-14  : 14px;
-    --font-size-16  : 16px;
-    --font-size-18  : 18px;
-    --font-size-20  : 20px;
-    --font-size-24  : 24px;
-    --font-size-30  : 30px;
-    --font-size-36  : 36px;
-    --font-size-48  : 48px;
-    --font-size-60  : 60px;
-    --font-size-72  : 72px;
-
+    --font-size-12: 12px;
+    --font-size-14: 14px;
+    --font-size-16: 16px;
+    --font-size-18: 18px;
+    --font-size-20: 20px;
+    --font-size-24: 24px;
+    --font-size-30: 30px;
+    --font-size-36: 36px;
+    --font-size-48: 48px;
+    --font-size-60: 60px;
+    --font-size-72: 72px;
+    --shadow-100: 0 10px 7px rgba(0, 0, 0, 0.09);
 }
 
 [data-theme="dark"] {

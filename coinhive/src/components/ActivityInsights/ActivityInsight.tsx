@@ -1,5 +1,5 @@
 import styles from "./ActiviyInsight.module.css";
-import Phone from "../../assets/Silver.png";
+import Phone from "../../assets/Insights.svg";
 
 export interface ActivityInsightProps {
     title: string;

@@ -1,6 +1,5 @@
 import React from "react";
 import HeroSection from "../../components/HeroSection/HeroSection";
-import LogoSection from "../../components/LogoSection/LogoSection";
 import FeaturesSection from "../../components/FeaturesSection/FeaturesSection";
 import TestimonialsSection from  "../../components/TestimonialsSection/TestimonialsSection";
 import PricingSection from "../../components/Pricingsection/PricingSection";
@@ -14,29 +13,21 @@ const Landing: React.FC = () => {
         <main className={styles.page}>
             {/* Hero */}
             <HeroSection
-                title="Take Full Control of Futur"
-                description="FinanceCore brings your accounts, budgets, goals, and investments into
-                    one secure dashboard so you always know where you stand and where
-                    you're headed."
+                title="Take Command of Your Financial Life"
+                description="FinanceCore unifies your accounts, budgets, goals, and investments into one intelligent dashboard so you don’t just track your money, you understand it."
                 mainBtnText="Get Started"
                 secondBtnText=" Watch Demo"
 
             />
-
-            {/* Social proof logos */}
-            <div className={styles.container}>
-                <LogoSection />
-            </div>
-
             {/* Features */}
             <div className={styles.container}>
                 <FeaturesSection
-                    title="Built for the Way You Actually Live"
-                    description="No more juggling five apps. FinanceCore handles every aspect of your
-                    financial life in one clean, secure platform."
+                    title="Why Choose FinanceCore?"
+                    description="From budgeting and expense tracking to savings goals and financial analytics, FinanceCore provides everything you need to organize your finances, make informed decisions, and build a stronger financial future."
                 />
             </div>
 
+            <ActiviyInsight title="Activity Insights" description="See what's happening across your system in real time. Track actions, monitor background operations, and stay updated on important events as they unfold."/>
             {/* How it works */}
             
                 <div className={styles.container}>
@@ -46,7 +37,6 @@ const Landing: React.FC = () => {
                     />
                 </div>
            
-            <ActiviyInsight title="Activity Insights" description="See what's happening across your system in real time. Track actions, monitor background operations, and stay updated on important events as they unfold."/>
             {/* Testimonials */}
             <TestimonialsSection />
 

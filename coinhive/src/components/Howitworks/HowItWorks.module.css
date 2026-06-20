@@ -1,5 +1,5 @@
 .wrapper {
-    padding: var(--space-96) 0;
+    margin: var(--space-64) 0;
 }
 
 .header {
@@ -49,7 +49,6 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: var(--primary-200);
     border: 1px solid var(--gray-200);
     color: var(--gray-500);
 }

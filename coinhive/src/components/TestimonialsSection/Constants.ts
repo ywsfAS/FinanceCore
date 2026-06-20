@@ -8,10 +8,9 @@ export interface Testimonial {
     color: string;
     stars: number;
 }
-
 export const testimonials: Testimonial[] = [
     {
-        quote: "FinanceCore replaced four apps I was using. My net worth went up 18% the first year just because I could actually see where my money was going.",
+        quote: "Before FinanceCore, I checked three different apps just to understand my finances. Now everything is in one place, and for the first time I actually feel in control of my money.",
         name: "Layla Hassan",
         role: "Freelance Designer, Dubai",
         initials: "LH",
@@ -19,7 +18,7 @@ export const testimonials: Testimonial[] = [
         stars: 5,
     },
     {
-        quote: "The AI insights are genuinely useful it caught a subscription I forgot about and flagged that I was overspending on dining before I even noticed.",
+        quote: "The spending insights have saved me hundreds. FinanceCore spotted recurring charges I completely forgot about and helped me build better habits without feeling restrictive.",
         name: "Tom Eriksson",
         role: "Software Engineer, Stockholm",
         initials: "TE",
@@ -27,7 +26,7 @@ export const testimonials: Testimonial[] = [
         stars: 5,
     },
     {
-        quote: "I've tried Mint, YNAB, and Personal Capital. FinVault is the first one that didn't feel like homework. The UX is just clean and it works.",
+        quote: "Most finance apps overwhelm you with charts. FinanceCore gives me exactly what I need to know at a glance. Clean, fast, and surprisingly enjoyable to use.",
         name: "Priya Nair",
         role: "Product Manager, London",
         initials: "PN",
@@ -35,7 +34,7 @@ export const testimonials: Testimonial[] = [
         stars: 5,
     },
     {
-        quote: "I hit my emergency fund goal in 11 months using the goal tracker. Having a visual progress bar genuinely changed my savings behavior.",
+        quote: "The goal tracker completely changed how I save. Watching my progress grow each month kept me motivated, and I reached my emergency fund months earlier than planned.",
         name: "Amara Diallo",
         role: "Nurse, Paris",
         initials: "AD",
@@ -43,7 +42,7 @@ export const testimonials: Testimonial[] = [
         stars: 5,
     },
     {
-        quote: "Our startup uses FinVault for expense tracking across the team. Saved us from hiring a bookkeeper for the first two years.",
+        quote: "As a founder, I need visibility into every dollar. FinanceCore gives me a clear picture of our finances without the complexity of traditional accounting software.",
         name: "James Wu",
         role: "Co-Founder, Singapore",
         initials: "JW",
