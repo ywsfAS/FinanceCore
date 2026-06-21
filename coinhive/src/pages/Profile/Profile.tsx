@@ -50,9 +50,12 @@ export default function ProfilePage() {
             <ProfileCard profileData={profile} PopUpHandler={PopUpHandler} />
             <main className={styles.main}>
                 <ProfileStats />
-                <div className = {styles.barChartContainer}>
+                <div className={styles.barChartContainer}>
+                    <h3 className={styles.title}>Cashflow</h3>
+                    <p className={styles.description}>Track monthly income and expenses across the year</p>
                     <BarChartCard/>
                 </div>
+                <TransactionCard/>
                 {active && <ProfileEditPopUp EditProfileImageHandler={updateProfileImage} EditProfileHandler={updateProfile} PopUpHandler={PopUpHandler} />}
             </main>
         </div>

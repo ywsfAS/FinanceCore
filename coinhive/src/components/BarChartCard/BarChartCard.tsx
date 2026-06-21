@@ -1,46 +1,37 @@
 import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer , Legend , ReferenceLine} from "recharts";
-import type { MonthlyEntry, SummaryItem } from "../types";
 import "../../styles/utility.css";
 import { BarTooltip } from "../BarTooltip/BarTooltip";
-import styles from "./BarChartCard.module.css";
+import { ChartLegend} from "../Legend/Legend";
+import { type BarChartCardProps, DEFAULT_CONFIG, DEFAULT_DATA, DEFAULT_KEY1 , DEFAULT_KEY2, type Data } from "./constants"; 
 
-const data = [
-    { name: "Jan", income: 100, expense: -50 },
-    { name: "Feb", income: 940, expense: -120 },
-    { name: "Mar", income: 650, expense: -30 },
-    { name: "Apr", income: 1000, expense: -224 },
-    { name: "May", income: 10, expense: -9 },
-];
-const tickConfig = {
-    fill: "#99B2C6",
-    fontSize: 14,
-    fontWeight: 500,
-    fontFamily : "Plus Jakarta Sans",
+
+const calculatePeak = (data : Data , keys  : string[]) : number => {
+    return Math.max(...data.flatMap((item) => keys.map(key => Math.abs(Number(item[key] || 0)))));
 }
-const max = Math.max(...data.flatMap((d) => [Math.abs(d.income), Math.abs(d.expense)]));
-export function BarChartCard() {
+export function BarChartCard({ data = DEFAULT_DATA, config = DEFAULT_CONFIG, dataKey1 = DEFAULT_KEY1, dataKey2 = DEFAULT_KEY2 }: BarChartCardProps) {
+    const peak = calculatePeak(data,[dataKey1,dataKey2]);
     return (
 
-        <ResponsiveContainer width="100%" height="100%">
+        <ResponsiveContainer width="100%" height="70%">
             <BarChart data={data} barGap={-60} barSize={60}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} />
 
-                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={tickConfig}
+                <XAxis dataKey="name" axisLine={false} tickLine={false} tick={config}
                 />
 
-                <YAxis width={40} domain={[-max, max]} axisLine={false} tickLine={false} tick={tickConfig} />
+                <YAxis width={40} domain={[-peak, peak]} axisLine={false} tickLine={false} tick={config} />
 
                 <Tooltip content={<BarTooltip/>} />
-                <Legend />
+                <Legend content={<ChartLegend/>} />
                 <ReferenceLine y={0} stroke="#E2E8F0" strokeWidth={4} />
                 <Bar
-                    dataKey="income"
+                    dataKey={dataKey1 }
                     fill="#3B82F6"
                     radius={[16, 16, 0, 0]}
                 />
                 
                 <Bar
-                    dataKey="expense"
+                    dataKey={dataKey2 }
                     fill="#60A5FA"
                     radius={[16, 16, 0, 0]}
                 />

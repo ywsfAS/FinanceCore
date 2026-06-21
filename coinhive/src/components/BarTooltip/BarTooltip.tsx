@@ -1,13 +1,25 @@
 import type { CustomBarTooltipProps } from "../types";
 import styles from "./BarTooltip.module.css";
 
-export function BarTooltip({ active, payload, label }: CustomBarTooltipProps) {
+export function BarTooltip({
+    active,
+    payload,
+    label,
+}: CustomBarTooltipProps) {
     if (!active || !payload?.length) return null;
+
     return (
         <div className={styles.tooltip}>
-            <div className={styles.label}>{label}</div>
-            <div className={styles.value}>${payload[0].value.toLocaleString()}</div>
-            <div className={styles.value}>${payload[1].value.toLocaleString()}</div>
+            <p className={styles.label}>{label}</p>
+
+            {payload.map((entry) => (
+                <div key={entry.dataKey} className={styles.item}>
+                    <span>{entry.name ?? entry.dataKey}</span>
+                    <span className={styles.value}>
+                        {Number(entry.value).toLocaleString()}
+                    </span>
+                </div>
+            ))}
         </div>
     );
 }

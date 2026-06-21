@@ -1,31 +1,38 @@
-
 .tooltip {
-    /* Colors */
-    --color-tooltip-bg: #1f2937;
-    --color-tooltip-text: #ffffff;
-    /* Padding */
-    --tooltip-padding: 8px 12px;
-    /* Border radius */
-    --tooltip-radius: 6px;
-    /* Font sizes */
-    --tooltip-font-size: 13px;
-    /* Font weights */
-    --fw-semibold: 600;
-    /* Spacing */
-    --value-margin-top: 2px;
-
-
-    background: var(--color-tooltip-bg);
-    color: var(--color-tooltip-text);
-    padding: var(--tooltip-padding);
-    border-radius: var(--tooltip-radius);
-    font-size: var(--tooltip-font-size);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+    padding: var(--space-12);
+    background: var(--surface);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--space-8);
+    box-shadow: var(--shadow-100);
+    min-width: 120px;
 }
 
 .label {
-    font-weight: var(--fw-semibold);
+    font-size: var(--font-size-14);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+    padding-bottom: var(--space-8);
+    border-bottom: 1px solid var(--gray-200);
+}
+
+.item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-16);
+}
+
+.name {
+    font-size: var(--font-size-14);
+    font-weight: var(--font-weight-medium);
+    color: var(--text-secondary);
 }
 
 .value {
-    margin-top: var(--value-margin-top);
+    font-size: var(--font-size-14);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
 }

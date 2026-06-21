@@ -1,55 +1,80 @@
-import styles from './TransactionCard.module.css';
-import { CircleArrowRight, BanknoteArrowDown, BanknoteArrowUp } from 'lucide-react';
-import { useFiltredTransactions } from '../../hooks/Transactions/useFiltredTransactions';
-import type { FiltredTransactionsParams } from '../../services/transactionService';
+import styles from "./TransactionCard.module.css";
+import TransactionRow from "./TransactionRow";
 
-export default function TransactionCard(filters: FiltredTransactionsParams) {
-    const { data, isLoading, isError, error } = useFiltredTransactions(filters);
+import { useFiltredTransactions } from "../../hooks/Transactions/useFiltredTransactions";
+import type { FiltredTransactionsParams } from "../../services/transactionService";
+
+import { TABLE_HEADERS  , DEFAULT_TRANSACTIONS} from "./constants";
+
+export default function TransactionTable(
+    filters: FiltredTransactionsParams
+) {
+    const {
+        data,
+        isLoading,
+        isError,
+        error,
+    } = useFiltredTransactions(filters);
+
     if (isLoading) return <div>Loading...</div>;
-    if (isError) return <div>{error.message}</div>;
-    if (!data || data.length === 0) return <div>No transactions</div>;
+    //if (isError) return <div>{error.message}</div>;
 
-    const transactionsUI = data.map(tx => ({
-        id: tx.id,
-        name: tx.description ?? tx.categoryName ?? 'Transaction',
-        date: new Date(tx.date).toLocaleDateString(),
-        amount: tx.amount.toFixed(2),
-        currency : tx.currency ?? 'not provided',
-        category: tx.categoryName ?? 'transfer',
-        positive: tx.type === 1,
-        sign: tx.type === 1 ? '+' : '−',
-        bgVar: tx.type === 1 ? '#dcfce7' : '#fee2e2'
-    }));
-    const transactionIcon = (isIncome : boolean) => {
-        if (isIncome) return <BanknoteArrowUp />;
-        return <BanknoteArrowDown />;
-    }
+    const transactions =
+        data?.length
+            ? data.map((tx) => ({
+                id: tx.id,
+                name:
+                    tx.description ??
+                    tx.categoryName ??
+                    "Transaction",
+
+                account: tx.accountName ?? "Mononiex",
+
+                date: new Date(
+                    tx.date
+                ).toLocaleString(),
+
+                amount: `${tx.type === 1 ? "+" : "-"}${tx.amount.toFixed(2)
+                    }`,
+
+                currency:
+                    tx.currency ?? "USD",
+
+                category:
+                    tx.categoryName ??
+                    "Transfer",
+
+                positive: tx.type === 1,
+            }))
+            : DEFAULT_TRANSACTIONS;
     return (
         <div className={styles.card}>
             <div className={styles.header}>
-                <span className={styles.title}>Recent Transactions</span>
-                <CircleArrowRight className={ styles.viewAll} size={20} />
+                <h2>Recent Transactions</h2>
+
+                <button
+                    className={styles.seeAll}
+                >
+                    See All
+                </button>
             </div>
 
-            {transactionsUI.map((tx) => (
-                <div key={tx.id} className={styles.item}>
-                    <div className={styles.ico} style={{ background: tx.bgVar }}>
-                        {transactionIcon(tx.positive)}
-                    </div>
-
-                    <div className={styles.meta}>
-                        <div className={styles.name}>{tx.name}</div>
-                        <div className={styles.date}>{tx.date}</div>
-                    </div>
-
-                    <div className={styles.right}>
-                        <div className={`${styles.amount} ${tx.positive ? styles.pos : styles.neg}`}>
-                            {tx.sign}{tx.amount}<span className={styles.currency}>{tx.currency}</span>
+            <div className={styles.table}>
+                <div className={styles.tableHeader}>
+                    {TABLE_HEADERS.map((item) => (
+                        <div key={item}>
+                            {item}
                         </div>
-                        <div className={styles.cat}>{tx.category}</div>
-                    </div>
+                    ))}
                 </div>
-            ))}
+
+                {transactions.map((tx) => (
+                    <TransactionRow
+                        key={tx.id}
+                        transaction={tx}
+                    />
+                ))}
+            </div>
         </div>
     );
 }
