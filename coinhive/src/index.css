@@ -103,6 +103,7 @@
     --font-size-60: 60px;
     --font-size-72: 72px;
     --shadow-100: 0 10px 7px rgba(0, 0, 0, 0.09);
+    --shadow-50: 0 3px 7px rgba(0, 0, 0, 0.04);
 }
 
 [data-theme="dark"] {

@@ -1,13 +1,6 @@
 import styles from './AccountCard.module.css';
-
-interface AccountCardProps {
-    id: string;
-    name: string;
-    type: string;
-    balance: number;
-    currency: string;
-    onView?: (id: string) => void;
-}
+import { CreditCard, ArrowUpFromDot } from "lucide-react";
+import type {AccountCardProps} from "./types"
 
 const AccountCard = ({
     id,
@@ -15,32 +8,24 @@ const AccountCard = ({
     type,
     balance,
     currency,
+    label,
     onView
 }: AccountCardProps) => {
     return (
-        <div className={styles.card}>
+        <div className={styles.card} id={id}>
             <div className={styles.top}>
+                <CreditCard /> 
                 <h3>{name}</h3>
-                <span>{type}</span>
             </div>
-
-            <div className={styles.currency}>
-                {currency}
+            <span className={styles.type}>{type}</span>
+            <div className={styles.balance }>
+                {balance.toLocaleString()}
+                <span className={styles.currency }>{currency}</span>
             </div>
-
-            <div className={styles.balanceContainer}>
-                <span>Balance</span>
-                <h2>
-                    {balance.toLocaleString()}
-                </h2>
+            <div className={styles.description}>
+                <ArrowUpFromDot size={15} />    
+                <span className={styles.label}>{label }</span>
             </div>
-
-            <button
-                className={styles.btn}
-                onClick={() => onView?.(id)}
-            >
-                View Details
-            </button>
         </div>
     );
 };

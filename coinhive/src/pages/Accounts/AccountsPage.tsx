@@ -1,105 +1,117 @@
-import styles from './AccountsPage.module.css';
-import { Plus, Search } from 'lucide-react';
-import { useState } from 'react';
-import AccountCard from '../../components/AccountCard/AccountCard';
+import styles from "./AccountsPage.module.css";
+import { Plus, Search } from "lucide-react";
+import { useState } from "react";
+
+import AccountCard from "../../components/AccountCard/AccountCard";
 import AccountCreatePopUp from "../../components/AccountCreatePopup/AccountCreatePopup";
+import Button from "../../components/Button/Button";
+import Input from "../../components/Input/Input";
+import CustomSelect from "../../components/Select/Select";
+
 import { useGetAccountsWithFilters } from "../../hooks/Account/useGetAccountWithFilters";
-import type {GetAccountWithFiltersParams } from "../../services/accountService";
-export enum AccountType {
-    checking = "checking",
-    credit = "credit",
-    savings = "savings",
-    cash = "cash"
-}
-const staticAccounts = [
-    {id : 1 , name : "account1" , type : AccountType.checking , balance : 100 , currency : "USD"},
-    {id : 2 , name : "account2" , type : AccountType.checking , balance : 200 , currency : "USD"},
-    {id : 3 , name : "account3" , type : AccountType.checking , balance : 300 , currency : "USD"},
-    {id : 4 , name : "account4" , type : AccountType.checking , balance : 400 , currency : "USD"}
-];
+
+import type { GetAccountWithFiltersParams } from "../../services/accountService";
+
+import {
+    ACCOUNT_TYPES,
+    CURRENCIES,
+    INITIAL_FILTERS,
+    MOCK_ACCOUNTS,
+} from "./constants";
 
 const AccountsPage = () => {
-    const initialFilters: GetAccountWithFiltersParams = {
-        name: "",
-        type: "",
-        currency: "",
-
-    }
     const [open, setOpen] = useState(false);
+
+    const [filters, setFilters] =
+        useState<GetAccountWithFiltersParams>(INITIAL_FILTERS);
+
+    const { data, isLoading, isError, error } =
+        useGetAccountsWithFilters(filters);
+
     const handleClose = () => {
         setOpen((prev) => !prev);
-    }
-    const [filters, setFilters] = useState<GetAccountWithFiltersParams>(initialFilters);
-
-    // get user accounts
-    const { data, isLoading, isError, error } = useGetAccountsWithFilters(filters);
-    if (isLoading) return <div>loading...</div>
-    if (isError) return <div>{error.message}</div>
-
-    const accounts = data ?? staticAccounts;
-
-    const onNameChangeHandler = (value: string) => {
-        setFilters((prev) => ({...prev, name : value  }));
     };
 
-    const onTypeChangeHandler = (value: string) => {
-        setFilters((prev) => ({...prev, type : value  }));
+    const updateFilter = (
+        key: keyof GetAccountWithFiltersParams,
+        value: string
+    ) => {
+        setFilters((prev) => ({
+            ...prev,
+            [key]: value,
+        }));
     };
 
-    const onCurrencyChangeHandler = (value: string) => {
-        setFilters((prev) => ({...prev, currency : value  }));
-    };
-    
+    if (isLoading) return <div>Loading...</div>;
+
+    //if (isError) return <div>{error.message}</div>;
+
+    const accounts = data?.length ? data : MOCK_ACCOUNTS;
+
     return (
         <div className={styles.wrapper}>
             <div className={styles.header}>
                 <div>
-                    <h1>Accounts</h1>
-                    <p>Manage and monitor your financial accounts</p>
+                    <h1 className={styles.title}>Accounts</h1>
+                    <p className={styles.subtitle}>
+                        Manage and monitor your financial accounts
+                    </p>
                 </div>
 
-                <button className={styles.btn} onClick={handleClose}>
-                    <Plus size={18} />
+                <Button
+                    onClick={handleClose}
+                >
                     New Account
-                </button>
+                </Button>
             </div>
 
             <div className={styles.filterSection}>
                 <div className={styles.searchContainer}>
-                    <Search size={18} />
-                    <input
-                        type="text"
+                    <Input
                         placeholder="Search account..."
                         value={filters.name}
-                        onChange={(e) => onNameChangeHandler(e.target.value)}
+                        onChange={(e) =>
+                            updateFilter("name", e.target.value)
+                        }
                     />
                 </div>
 
-                <select
+                <CustomSelect
                     value={filters.type}
-                    onChange={(e) => onTypeChangeHandler(e.target.value)}
-                >
-                    <option value="">All Types</option>
-                    <option value="checking">Checking</option>
-                    <option value="savings">Savings</option>
-                    <option value="cash">Cash</option>
-                </select>
-
-                <select
+                    onChange={(value) =>
+                        updateFilter("type", value)
+                    }
+                    options={ACCOUNT_TYPES}
+                   
+                />
+                <CustomSelect
                     value={filters.currency}
-                    onChange={(e) => onCurrencyChangeHandler(e.target.value)}
-                >
-                    <option value="">All Currencies</option>
-                    <option value="USD">USD</option>
-                    <option value="EUR">EUR</option>
-                    <option value="MAD">MAD</option>
-                </select>
+                    onChange={(value) =>
+                        updateFilter("currency", value)
+                    }
+                    options={CURRENCIES}
+                />
             </div>
 
             <div className={styles.accountsGrid}>
-                {accounts.map((acc) => <AccountCard id={acc.id} key={acc.id} name={acc.name} type={acc.type} balance={acc.balance} currency={acc.currency} />)}
+                {accounts.map((account) => (
+                    <AccountCard
+                        key={account.id}
+                        id={account.id}
+                        name={account.name}
+                        type={account.type}
+                        balance={account.balance}
+                        currency={account.currency}
+                        label={account.label}
+                    />
+                ))}
             </div>
-            {open && <AccountCreatePopUp handleClose={handleClose} /> }
+
+            {open && (
+                <AccountCreatePopUp
+                    handleClose={handleClose}
+                />
+            )}
         </div>
     );
 };

@@ -1,57 +1,45 @@
 .card {
-    background: white;
-    border-radius: 14px;
-    padding: 20px;
-    box-shadow: 0 5px 9px rgba(0,0,0,.1);
+    background: var(--surface);
+    border-radius: var(--space-12);
+    padding: var(--space-16);
+    box-shadow: var(--shadow-100);
     display: flex;
     flex-direction: column;
-    gap: 20px;
 }
 
 .top {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    gap: var(--space-12);
+}
+.type {
+    font-size: var(--font-size-14);
+    color: var(--text-secondary);
+    margin-bottom: var(--space-8);
 }
 .top h3 {
-    margin: 0;
-    font-size: 1.1rem;
+    font-size: var(--font-size-20);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
 }
-.top span {
-    color: #64748b;
-    font-size: .9rem;
-} 
-.currency {
-    font-size: .95rem;
-    font-weight: 600;
-    color: #2563eb;
+.balance {
+    font-size: var(--font-size-24);
+    font-weight: var(--font-weight-semibold);
+    color: var(--primary-500);
+    margin-bottom: var(--space-16);
 }
-
-.balanceContainer {
-    display: flex;
-    flex-direction: column;
-    gap: 5px;
+.currency{
+    font-size : var(--font-size-14);
+    margin-left : var(--space-4);
 }
-
-.balanceContainer span {
-    color: #64748b;
-    font-size: .9rem;
-} 
-.balanceContainer h2 {
-    margin: 0;
-    font-size: 1.8rem;
+.description{
+    display : flex;
+    gap : var(--space-4);
+   align-items : baseline;
+   color : var(--text-tertiary);
 }
 
-.btn {
-    padding: .75rem;
-    border: none;
-    border-radius: 8px;
-    background: #2563eb;
-    color: white;
-    font-weight: 600;
-    cursor: pointer;
+.label {
+    font-size: var(--font-size-14);
 }
 
-.btn:hover {
-    background: #1d4ed8;
-}
