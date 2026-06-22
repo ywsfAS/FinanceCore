@@ -17,6 +17,7 @@
     font-weight: var(--font-weight-regular);
     --background: #F8FAFC;
     --surface: #FFFFFF;
+    --overlay :rgba(0,0,0,.45); 
     /* Colors */
 
     --primary-50: #EFF6FF;

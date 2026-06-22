@@ -1,7 +1,7 @@
 .overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,.45);
+    background: var(--overlay);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -9,17 +9,22 @@
 }
 
 .popup {
-    background: white;
-    width: 500px;
-    border-radius: 14px;
-    padding: 24px;
+    background: var(--surface);
+    width: var(--space-512);
+    border-radius: var(--space-16);
+    padding: var(--space-24);
 }
 
 .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: var(--space-32);
+}
+.header h2{
+    font-size : var(--font-size-24);
+    font-weight : var(--font-weight-semibold);
+    color : var(--text-primary);
 }
 
 .closeBtn {
@@ -31,28 +36,13 @@
 .form {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: var(--space-20); 
 }
 
 .field {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: var(--space-12);
+    margin-bottom: var(--space-24);
 }
 
-.field input,
-.field select {
-    padding: 12px;
-    border-radius: 8px;
-    border: 1px solid #dbe3ee;
-}
-
-.submitBtn {
-    padding: 12px;
-    border: none;
-    border-radius: 8px;
-    background: #2563eb;
-    color: white;
-    font-weight: 600;
-    cursor: pointer;
-}

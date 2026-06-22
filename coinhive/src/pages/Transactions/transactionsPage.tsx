@@ -63,12 +63,12 @@ const TransactionsPage = () => {
     }
     // categories options
     const {data,isLoading,error,isError} = useUserCategoriesOptions();
-    if (isLoading) return <div>loading....</div>;
-    if (isError) return <div>{error.message}</div>;
+    //if (isLoading) return <div>loading....</div>;
+    //if (isError) return <div>{error.message}</div>;
     const categories = data ?? categoriesStatic;
    
     // get selected category id
-    const cat = data.find(cat => cat.name.toLowerCase() === filters.category);
+    const cat = categories.find(cat => cat.name.toLowerCase() === filters.category);
     const id = cat?.id;
 
   

@@ -1,10 +1,14 @@
-import styles from './AccountCreatePopup.module.css';
 import { X } from 'lucide-react';
 import { useForm } from 'react-hook-form';
-import type { CreateAccountParams } from '../../services/accountService';
 import { useCreateAccount } from '../../hooks/Account/useCreateAccount';
+import type { CreateAccountParams } from '../../services/accountService';
+import styles from './AccountCreatePopup.module.css';
+import Input from "../Input/Input"; 
+import Button from "../Button/Button";
+import {CURRENCIES , ACCOUNT_TYPES  } from "../../pages/Accounts/constants"
+import CostumSelect from "../Select/Select";
 
-interface Props {
+interface AccountCreatePopUpProps {
     handleClose: () => void;
 }
 
@@ -15,7 +19,7 @@ const initialCreateAccount: CreateAccountParams = {
     type: "cash",
 };
 
-const AccountCreatePopup = ({ handleClose }: Props) => {
+const AccountCreatePopup = ({ handleClose }: AccountCreatePopUpProps) => {
     const {
         register,
         handleSubmit,
@@ -55,11 +59,9 @@ const AccountCreatePopup = ({ handleClose }: Props) => {
                 </div>
 
                 <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
-
-                    
                     <div className={styles.field}>
                         <label>Name</label>
-                        <input
+                        <Input
                             {...register('name', {
                                 required: "Account name is required",
                                 maxLength: {
@@ -73,34 +75,28 @@ const AccountCreatePopup = ({ handleClose }: Props) => {
 
                     <div className={styles.field}>
                         <label>Type</label>
-                        <select
+                        <CostumSelect
                             {...register('type', {
                                 required: "Account type is required",
                             })}
-                        >
-                            <option value="checking">Checking</option>
-                            <option value="savings">Savings</option>
-                            <option value="cash">Cash</option>
-                        </select>
+                            options={ACCOUNT_TYPES}
+                        />
                         {errors.type && <div>{errors.type.message}</div>}
                     </div>
 
                     <div className={styles.field}>
                         <label>Currency</label>
-                        <select
+                        <CostumSelect
                             {...register('currency', {
                                 required: "Currency is required",
                             })}
-                        >
-                            <option value="USD">USD</option>
-                            <option value="EUR">EUR</option>
-                            <option value="MAD">MAD</option>
-                        </select>
+                            options={CURRENCIES}
+                        />
                         {errors.currency && <div>{errors.currency.message}</div>}
                     </div>
                     <div className={styles.field}>
                         <label>Initial Balance</label>
-                        <input
+                        <Input
                             type="number"
                             {...register('initialBalance', {
                                 valueAsNumber: true,
@@ -111,13 +107,12 @@ const AccountCreatePopup = ({ handleClose }: Props) => {
                         )}
                     </div>
 
-                    <button
+                    <Button
                         type="submit"
-                        className={styles.submitBtn}
                         disabled={isSubmitting || createAccountMutation.isPending}
                     >
                         Create Account
-                    </button>
+                    </Button>
                 </form>
             </div>
         </div>
