@@ -6,7 +6,7 @@ import type { FiltredTransactionsParams } from "../../services/transactionServic
 
 import { TABLE_HEADERS  , DEFAULT_TRANSACTIONS} from "./constants";
 
-export default function TransactionTable(
+export default function TransactionCard(
     filters: FiltredTransactionsParams
 ) {
     const {

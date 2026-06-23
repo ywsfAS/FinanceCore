@@ -1,12 +1,12 @@
-import styles from "./AccountsPage.module.css";
+import styles from "./Accounts.module.css";
 import { Plus, Search } from "lucide-react";
 import { useState } from "react";
 
-import AccountCard from "../../components/AccountCard/AccountCard";
-import AccountCreatePopUp from "../../components/AccountCreatePopup/AccountCreatePopup";
-import Button from "../../components/Button/Button";
-import Input from "../../components/Input/Input";
-import CustomSelect from "../../components/Select/Select";
+import AccountCard from "../AccountCard/AccountCard";
+import AccountCreatePopUp from "../AccountCreatePopup/AccountCreatePopup";
+import Button from "../Button/Button";
+import Input from "../Input/Input";
+import CustomSelect from "../Select/Select";
 
 import { useGetAccountsWithFilters } from "../../hooks/Account/useGetAccountWithFilters";
 
@@ -19,7 +19,7 @@ import {
     MOCK_ACCOUNTS,
 } from "./constants";
 
-const AccountsPage = () => {
+const Accounts = () => {
     const [open, setOpen] = useState(false);
 
     const [filters, setFilters] =
@@ -116,4 +116,4 @@ const AccountsPage = () => {
     );
 };
 
-export default AccountsPage;
+export default Accounts;

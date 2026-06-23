@@ -9,11 +9,9 @@ import Contact from './pages/Contact/Contact'
 import Footer from './components/Footer/Footer';
 import Landing from './pages/Landing/Landing';
 import LoginPage from './pages/Login/LoginPage';
-import ProtectedRoute from './routes/ProtectedRoute';
 import ForgotPasswordPage from "./pages/ForgotPasswordPage/ForgotpasswordpagE";
 import ResetPasswordPage from "./pages/ResetPasswordPage/Resetpasswordpage";
 import TransactionsPage from "./pages/Transactions/transactionsPage";
-import AccountsPage from "./pages/Accounts/AccountsPage";
 import CategoriesPage from "./pages/Categories/CategoriesPage";
 import BudgetsPage from "./pages/Budgets/BudgetsPage"
 
@@ -36,7 +34,6 @@ function App() {
                 <Route path="/reset-password" element={<ResetPasswordPage/> } />
                 <Route path="/profile" element={<ProfilePage />} />
                 <Route path="/transactions" element={<TransactionsPage />} />
-                <Route path="/accounts" element={<AccountsPage />} />
                 <Route path="/categories" element={<CategoriesPage/> } />
                 <Route path="/budgets" element={<BudgetsPage/>}/>
 

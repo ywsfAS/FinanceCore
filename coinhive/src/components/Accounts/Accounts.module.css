@@ -1,9 +1,6 @@
 .wrapper {
     max-width: var(--space-768); 
-    margin-inline: auto;
-    padding-block-start: var(--space-128);
-    padding-inline: var(--space-24);
-    margin-block-end: var(--space-64);
+    padding: var(--space-24);
     display: flex;
     flex-direction: column;
     gap: var(--space-24);

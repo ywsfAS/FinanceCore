@@ -1,4 +1,3 @@
-import { useState } from "react";
 import { UserRoundPen } from "lucide-react";
 
 import styles from "./ProfileCard.module.css";
@@ -12,9 +11,10 @@ import {
 export default function ProfileCard({
     profileData,
     PopUpHandler,
+    TabHandler,
+    active
 }) {
-    const [active, setActive] = useState<number>(0);
-
+    console.log(active);
     const data = profileData ?? DEFAULT_PROFILE;
     const name = `${data.firstName} ${data.lastName}`;
 
@@ -59,7 +59,7 @@ export default function ProfileCard({
                                 ? styles.navActive
                                 : ""
                             }`}
-                        onClick={() => setActive(index)}
+                        onClick={() => TabHandler(index)}
                     >
                         {item.icon}
                         {item.name}

@@ -5,7 +5,7 @@ import type { CreateAccountParams } from '../../services/accountService';
 import styles from './AccountCreatePopup.module.css';
 import Input from "../Input/Input"; 
 import Button from "../Button/Button";
-import {CURRENCIES , ACCOUNT_TYPES  } from "../../pages/Accounts/constants"
+import { CURRENCIES, ACCOUNT_TYPES } from "../Accounts/constants";
 import CostumSelect from "../Select/Select";
 
 interface AccountCreatePopUpProps {

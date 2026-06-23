@@ -1,16 +1,14 @@
 import styles from "./Profile.module.css";
 import ProfileCard from "../../components/ProfileCard/ProfileCard";
-import ProfileStats from "../../components/ProfileStats/ProfileStats";
-import InsightsRow from "../../components/InsightRow/InsightRow";
-import TransactionCard from "../../components/TransactionCard/TransactionCard";
-import ChartsSection from "../../components/ChartsSection/ChartsSection";
 import { useProfile } from "../../hooks/Profile/useProfile";
 import { useUpdateProfile } from "../../hooks/Profile/useUpdateProfile";
 import { useUploadProfileImage} from "../../hooks/Profile/useUploadProfileImage"
 import ProfileEditPopUp from "../../components/ProfileEditPopUp/ProfilePopUp";
 import { useState } from 'react';
 import type { UpdateProfileParams, UploadProfileImageParams } from "../../services/profileService";
-import { BarChartCard } from "../../components/BarChartCard/BarChartCard";
+import { EnNavLinks } from "../../components/ProfileCard/types";
+import Dashboard from "../../components/Dashboard/Dashboard";
+import Accounts from "../../components/Accounts/Accounts";
 
 export default function ProfilePage() {
 
@@ -18,6 +16,10 @@ export default function ProfilePage() {
     const updateProfileMutation = useUpdateProfile();
     const uploadProfileImageMutation = useUploadProfileImage();
     const [active, setActive] = useState(false);
+    const [activeTab, setActiveTab] = useState<EnNavLinks>(EnNavLinks.Dashboard);
+    const handleActiveTab = (activeTab : EnNavLinks) => {
+        setActiveTab(activeTab);
+    }
     const PopUpHandler = () => {
         setActive((prev) => !prev);
     }
@@ -43,19 +45,20 @@ export default function ProfilePage() {
     //if (isError) return <div>{error.message}</div>;
 
     const profile = data;
+    const DashboardContent = (() => {
+        switch (activeTab) {
+            case EnNavLinks.Dashboard:
+                return <Dashboard />
 
-
+            case EnNavLinks.Accounts:
+                return <Accounts/>
+        }
+    })();
     return (
         <div className={styles.layout}>
-            <ProfileCard profileData={profile} PopUpHandler={PopUpHandler} />
+            <ProfileCard profileData={profile} PopUpHandler={PopUpHandler} TabHandler={handleActiveTab} active={activeTab} />
             <main className={styles.main}>
-                <ProfileStats />
-                <div className={styles.barChartContainer}>
-                    <h3 className={styles.title}>Cashflow</h3>
-                    <p className={styles.description}>Track monthly income and expenses across the year</p>
-                    <BarChartCard/>
-                </div>
-                <TransactionCard/>
+                {DashboardContent}
                 {active && <ProfileEditPopUp EditProfileImageHandler={updateProfileImage} EditProfileHandler={updateProfile} PopUpHandler={PopUpHandler} />}
             </main>
         </div>
