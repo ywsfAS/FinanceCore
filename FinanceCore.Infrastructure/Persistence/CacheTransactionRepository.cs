@@ -53,6 +53,17 @@ namespace FinanceCore.Infrastructure.Persistence
                 entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
                 return _transactionRepository.ExpenseTransactionAsync(transaction, token);
             });
+        } 
+        public Task<IEnumerable<BudgetHealthDataDto>?> GetBudgetHealthAsync(Guid userId , int page ,int pageSize , CancellationToken token = default)
+        {
+
+            var key = $"Budget_Health_{userId}";
+            return _memoryCache.GetOrCreateAsync(key, entry =>
+            {
+                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
+                return _transactionRepository.GetBudgetHealthAsync(userId,page,pageSize,token);
+            });
+
         }
         public  Task<decimal> GetTotalSpendingByCategoryAsync(Guid userId,Guid categoryId,DateTime start,DateTime end,CancellationToken token)
         {

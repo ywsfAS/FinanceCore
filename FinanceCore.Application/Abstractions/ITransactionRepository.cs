@@ -25,6 +25,7 @@ namespace FinanceCore.Application.Abstractions
         Task<bool> IsExistsAsync(Guid userId, Guid id, CancellationToken token = default);
 
         Task<IEnumerable<MonthlyTrendDto>> GetMonthlyTrend(Guid accountId, int lastNMonth, CancellationToken token = default);
+        Task<IEnumerable<BudgetHealthDataDto>?> GetBudgetHealthAsync(Guid userId , int page ,int pageSize , CancellationToken token = default);
         Task<decimal> GetTotalSpendingByCategoryAsync(Guid userId, Guid categoryId, DateTime start, DateTime end, CancellationToken token);
 
     }

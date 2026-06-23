@@ -9,6 +9,7 @@ import type { UpdateProfileParams, UploadProfileImageParams } from "../../servic
 import { EnNavLinks } from "../../components/ProfileCard/types";
 import Dashboard from "../../components/Dashboard/Dashboard";
 import Accounts from "../../components/Accounts/Accounts";
+import Transactions from "../../components/Transactions/transactions";
 
 export default function ProfilePage() {
 
@@ -51,7 +52,9 @@ export default function ProfilePage() {
                 return <Dashboard />
 
             case EnNavLinks.Accounts:
-                return <Accounts/>
+                return <Accounts />
+            case EnNavLinks.Transactions:
+                return <Transactions/>
         }
     })();
     return (

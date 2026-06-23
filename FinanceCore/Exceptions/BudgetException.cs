@@ -66,6 +66,17 @@ namespace FinanceCore.Domain.Exceptions
         }
     }
 
+    // When budget spent amount is invalid
+    public class InvalidBudgetSpentException : DomainException
+    {
+        public Guid Id  { get; }
+
+        public InvalidBudgetSpentException(Guid id)
+            : base($"Invalid budget Spent amount {id}")
+        {
+            Id = id;
+        }
+    }
     // When budget period is invalid
     public class InvalidBudgetPeriodException : DomainException
     {

@@ -14,7 +14,6 @@ export default function ProfileCard({
     TabHandler,
     active
 }) {
-    console.log(active);
     const data = profileData ?? DEFAULT_PROFILE;
     const name = `${data.firstName} ${data.lastName}`;
 

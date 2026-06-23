@@ -61,6 +61,12 @@ namespace FinanceCore.Domain.Common
             EnsureSameCurrency(other);
             return Amount < other.Amount;
         }
+        public Money DividedBy(Money other)
+        {
+            EnsureSameCurrency(other);
+            return new Money(Amount / other.Amount, Currency);
+
+        }
         protected override IEnumerable<object> GetEqualityComponents()
         {
             yield return Amount;

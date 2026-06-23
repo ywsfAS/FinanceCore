@@ -1,4 +1,5 @@
 using FinanceCore.Application.DTOs;
+using FinanceCore.Application.Features.Report.GetBudgetHealth;
 using FinanceCore.Application.Features.Report.GetMonthlySummary;
 using FinanceCore.Application.Features.Report.GetMonthlyTrend;
 using FinanceCore.Application.Features.Report.GetSpendingByCategory;
@@ -38,6 +39,19 @@ namespace FinanceCore.API.Controllers
 
         }
 
+        [HttpGet("budgets-health")]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(BudgetHealthDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> GetBudgetHealth(int page = 1 , int pageSize = 10)
+        {
+            var UserId = GetUserId();
+            var query = new BudgetHealthQuery(UserId,page,pageSize);
+            var response = await _mediator.Send(query);
+            return Ok(response);
+
+        }
 
         [HttpGet("monthly/trend")]
         [Produces("application/json")]

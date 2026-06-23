@@ -11,7 +11,8 @@ namespace FinanceCore.Domain.Budgets
         public Guid UserId { get; private set; }
         public Guid CategoryId { get; private set; }
         public string Name { get; private set; } = string.Empty;
-        public Money Amount { get; private set; }
+        public Money Amount { get; init; }
+        public Money? Spent { get; init; }
         public EnPeriod Period { get; private set; }
         public DateTime StartDate { get; private set; }
         public DateTime EndDate { get; private set; }
@@ -19,6 +20,7 @@ namespace FinanceCore.Domain.Budgets
         public DateTime? UpdatedAt { get; private set; }
 
         private Budget() { }
+        public Budget() { }
 
         private Budget(
             Guid budgetId,
@@ -30,7 +32,9 @@ namespace FinanceCore.Domain.Budgets
             DateTime startDate,
             DateTime endDate,
             DateTime createdAt,
-            DateTime? updatedAt)
+            DateTime? updatedAt,
+            Money? spent = null
+            )
         {
             Id = budgetId;
             UserId = userId;
@@ -42,6 +46,7 @@ namespace FinanceCore.Domain.Budgets
             EndDate = endDate;
             CreatedAt = createdAt;
             UpdatedAt = updatedAt;
+            Spent = spent;
         }
 
         // Reconstitute from persistence
@@ -55,11 +60,13 @@ namespace FinanceCore.Domain.Budgets
             DateTime startDate,
             DateTime endDate,
             DateTime createdAt,
-            DateTime? updatedAt = null)
+            DateTime? updatedAt = null,
+            Money? spent = null
+            )
         {
             return new Budget(
                 budgetId, userId, categoryId, name,
-                amount, period, startDate, endDate, createdAt, updatedAt);
+                amount, period, startDate, endDate, createdAt, updatedAt,spent);
         }
 
         // Create new budget
@@ -185,6 +192,31 @@ namespace FinanceCore.Domain.Budgets
                 EnPeriod.Yearly => startDate.AddYears(1).AddSeconds(-1),
                 _ => throw new InvalidBudgetPeriodException(period)
             };
+        }
+        public decimal ComputeHealthScore()
+        {
+
+            if (Spent is null) throw new InvalidBudgetSpentException(Id); 
+            var percentage = Spent.DividedBy(Amount).Amount;
+            if(percentage <= 1)
+            {
+                return (100 - (50 * percentage));
+            }
+            else
+            {
+                var formula = 50 - 100 * (percentage - 1);
+                return Math.Max(0, formula);
+            }
+        }
+        public EnBudgetHealthStatus ComputeBudgetHealth()
+        {
+            var score = ComputeHealthScore();
+            if (score >= 60 && score <= 100) return EnBudgetHealthStatus.Healthy;
+            if (score >= 50 && score <= 60) return EnBudgetHealthStatus.Warning;
+            if (score >= 1 && score <= 49) return EnBudgetHealthStatus.OverBudget;
+            if (score == 0) return EnBudgetHealthStatus.Critical;
+            return EnBudgetHealthStatus.Unknown;
+
         }
     }
 

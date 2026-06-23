@@ -351,6 +351,36 @@ namespace FinanceCore.Infrastructure.Repositories
             return await connection.QueryFirstOrDefaultAsync<decimal>(cmd);
         }
 
+        public async Task<IEnumerable<BudgetHealthDataDto>?> GetBudgetHealthAsync(Guid userId , int page ,int pageSize , CancellationToken token = default)
+        {
+            using var connection = _connectionFactory.GetConnection();
+            var sql = new StringBuilder(@"
+            SELECT 
+	            b.Id,
+	            b.Name,
+	            b.Amount,
+	            COALESCE(SUM(t.Amount),0) AS Spent,
+	        CASE
+		        WHEN b.Amount = 0 THEN 0
+		        ELSE COALESCE(SUM(t.Amount),0) / b.Amount
+	        END
+	            AS Percentage
+            FROM Transactions t
+            INNER JOIN Categories c
+	            ON t.CategoryId = c.Id
+            INNER JOIN Budgets b
+	            ON b.CategoryId = c.Id 
+	        WHERE c.UserId = @UserId
+            GROUP BY b.Id,
+		        b.Name,
+		        b.Amount
+            Order BY b.Amount
+            OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY;
+            ");
+            var command = new CommandDefinition(sql.ToString(),new {UserId = userId , Offset = (page - 1) * pageSize , PageSize = pageSize } , cancellationToken : token);
+            return await connection.QueryAsync<BudgetHealthDataDto>(command);
+        }
+
         // passed
         public async Task<IEnumerable<MonthlyTrendDto>> GetMonthlyTrend(Guid userId, int lastNMonth ,CancellationToken token)
         {

@@ -1,28 +1,22 @@
-import styles from './transactionsPage.module.css';
+import styles from './transactions.module.css';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useState } from 'react';
 import { Calendar } from 'lucide-react';
 import { format} from "date-fns";
-import TransactionCard  from "../../components/TransactionCard/TransactionCard";
+import TransactionCard  from "../TransactionCard/TransactionCard";
 import { useUserCategoriesOptions } from '../../hooks/User/useUserCategoriesOptions';
-import TransactionCreatePopUp  from "../../components/TransactionCreatePopUp/TransactionCreatePopUp";
+import TransactionCreatePopUp from "../TransactionCreatePopUp/TransactionCreatePopUp";
+import Button from "../Button/Button";
+import { CATEGORIES} from "./constants";
+import CostumSelect from "../Select/Select";
 
 export interface Transactionfilters {
     fromDate: Date | null | undefined;
     toDate: Date | null | undefined;
     category: string;
 }
-
-
-const categoriesStatic = [
-    { id: 1, name: 'food' },
-    { id: 2, name: 'transport' },
-    { id: 3, name: 'salary' },
-    { id: 4, name: 'gym' },
-
-];
-const TransactionsPage = () => {
+const Transactions = () => {
     const initialFiltersState: Transactionfilters = {
         fromDate: null,
         toDate: null,
@@ -65,10 +59,10 @@ const TransactionsPage = () => {
     const {data,isLoading,error,isError} = useUserCategoriesOptions();
     //if (isLoading) return <div>loading....</div>;
     //if (isError) return <div>{error.message}</div>;
-    const categories = data ?? categoriesStatic;
+    const categories = data ?? CATEGORIES;
    
     // get selected category id
-    const cat = categories.find(cat => cat.name.toLowerCase() === filters.category);
+    const cat = categories.find(cat => cat.value.toLowerCase() === filters.category);
     const id = cat?.id;
 
   
@@ -79,41 +73,26 @@ const TransactionsPage = () => {
                     <h1 className={styles.title}>Transactions</h1>
                     <p>Track and manage all your financial activity</p>
                 </div>
-                <button className={styles.btn} onClick={() => setOpen((prev) => !prev)}>+ new transaction</button>
+                <Button  onClick={() => setOpen((prev) => !prev)}>new transaction</Button>
             </div>
             <div className={styles.filterSection}>
                 <div className={styles.left}>
-
-                    <div className={styles.from}>
-                        <div>from</div>
-                        <DatePicker selected={filters.fromDate} onChange={handleFromDateChange} customInput={<button className={styles.datePickerBtn}><Calendar />{filters.fromDate
+                    <DatePicker selected={filters.fromDate} onChange={handleFromDateChange} customInput={<button className={styles.datePickerBtn}><Calendar />{filters.fromDate
                             ? format(filters.fromDate, "dd/MM/yyyy")
                             : "Select start date"}</button>} />
-                    </div>
-                    <div className={styles.to}>
-                        <div>to</div>
-                        <DatePicker selected={filters.toDate} onChange={handleToDateChange} customInput={<button className={styles.datePickerBtn}><Calendar />{filters.toDate ?
+                    <DatePicker selected={filters.toDate} onChange={handleToDateChange} customInput={<button className={styles.datePickerBtn}><Calendar />{filters.toDate ?
                             format(filters.toDate, "dd/MM/yyyy") : "Select end date"}</button>} />
-                    </div>
-                    <div className={styles.category}>
-                        <div>category</div>
-                        <select value={filters.category} onChange={(e) => handleCategoryChange(e.target.value)}>
-                            <option value="">Select Category</option>
-                            {categories.map(({ id, name }) => <option key={id} value={name.toLowerCase()}>{name.toLowerCase()}</option>)}
-                        </select>
-                    </div>
-                    <div className={styles.type}>
-                    </div>
+                     <CostumSelect value={filters.category} options={CATEGORIES} onChange={(e) => handleCategoryChange(e.target.value)}/>
                 </div>
                 <div className={styles.right}>
-                    <button className={styles.btn}>save</button>
-                    <button className={styles.btn} onClick={handleReset}>reset</button>
+                    <Button  >save</Button>
+                    <Button variant='secondary' onClick={handleReset}>reset</Button>
                 </div>
             </div>
             <TransactionCard Page={page} PageSize={pageSize} Start={filters.fromDate} End={filters.toDate} CategoryId={id ?? ""} />
             <div className={styles.paginationBtnContainer}>
-                <button onClick={handleNextPage} className={styles.btn}>{`next page ${page + 1}`}</button>
-                <button onClick={handlePrevPage} className={styles.btn}>{`previous page ${page - 1}`}</button>
+                <Button onClick={handleNextPage} >{`next page ${page + 1}`}</Button>
+                <Button onClick={handlePrevPage} >{`previous page ${page - 1}`}</Button>
             </div>
             {open && <TransactionCreatePopUp handleClose={handleClose} />}
 
@@ -122,4 +101,4 @@ const TransactionsPage = () => {
         </div>
     );
 }
-export default TransactionsPage;
+export default Transactions;
