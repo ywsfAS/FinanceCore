@@ -13,12 +13,12 @@ namespace FinanceCore.Domain.RecurringTransaction
         public Money Amount { get; private set; }
         public string Description { get; private set; } = string.Empty;
         public EnTransactionType Type { get; private set; }
-        public DateTime StartDate { get; private set; }
+        public DateTime StartDate { get; set; }
         public DateTime? EndDate { get; private set; }
         public EnPeriod Period { get; private set; }
         public bool IsActive { get; private set; }
         public DateTime? LastExecutedDate { get; private set; }
-
+        public RecurringTransaction() { }
         public static RecurringTransaction Create(
             Guid accountId,
             Guid categoryId,

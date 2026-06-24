@@ -359,12 +359,13 @@ namespace FinanceCore.Infrastructure.Repositories
 	            b.Id,
 	            b.Name,
 	            b.Amount,
+                b.CurrencyId AS Currency,
 	            COALESCE(SUM(t.Amount),0) AS Spent,
 	        CASE
 		        WHEN b.Amount = 0 THEN 0
 		        ELSE COALESCE(SUM(t.Amount),0) / b.Amount
 	        END
-	            AS Percentage
+	            AS UsagePercentage
             FROM Transactions t
             INNER JOIN Categories c
 	            ON t.CategoryId = c.Id
@@ -373,7 +374,8 @@ namespace FinanceCore.Infrastructure.Repositories
 	        WHERE c.UserId = @UserId
             GROUP BY b.Id,
 		        b.Name,
-		        b.Amount
+		        b.Amount,
+                b.CurrencyId
             Order BY b.Amount
             OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY;
             ");

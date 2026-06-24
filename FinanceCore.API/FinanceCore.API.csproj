@@ -16,8 +16,4 @@
     <ProjectReference Include="..\FinanceCore\FinanceCore.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Requests\Report\" />
-  </ItemGroup>
-
 </Project>

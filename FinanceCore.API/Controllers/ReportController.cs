@@ -1,8 +1,10 @@
+using FinanceCore.API.Requests.Report;
 using FinanceCore.Application.DTOs;
 using FinanceCore.Application.Features.Report.GetBudgetHealth;
 using FinanceCore.Application.Features.Report.GetMonthlySummary;
 using FinanceCore.Application.Features.Report.GetMonthlyTrend;
 using FinanceCore.Application.Features.Report.GetSpendingByCategory;
+using FinanceCore.Application.Features.Report.GetSubscriptions;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -48,6 +50,20 @@ namespace FinanceCore.API.Controllers
         {
             var UserId = GetUserId();
             var query = new BudgetHealthQuery(UserId,page,pageSize);
+            var response = await _mediator.Send(query);
+            return Ok(response);
+
+        }
+
+        [HttpGet("subscriptions")]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(SubscriptionDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> GetSubscriptions([FromQuery] GetSubscriptionsRequest request,[FromQuery]int page = 1 ,[FromQuery] int pageSize = 10)
+        {
+            var UserId = GetUserId();
+            var query = new SubscriptionQuery(UserId,request.CategoryId,request.AccountId,request.Name,request.Period,request.Type,page,pageSize);
             var response = await _mediator.Send(query);
             return Ok(response);
 

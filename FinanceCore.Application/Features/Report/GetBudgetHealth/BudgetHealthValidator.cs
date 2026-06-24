@@ -12,8 +12,8 @@ namespace FinanceCore.Application.Features.Report.GetBudgetHealth
         public BudgetHealthValidator() {
 
             RuleFor(x => x.UserId).NotEmpty();
-            RuleFor(x => x.Page).NotEmpty().GreaterThan(1);
-            RuleFor(x => x.PageSize).NotEmpty().GreaterThan(1);
+            RuleFor(x => x.Page).NotEmpty().GreaterThanOrEqualTo(1);
+            RuleFor(x => x.PageSize).NotEmpty().GreaterThanOrEqualTo(1);
         
         }
     }

@@ -11,15 +11,14 @@ namespace FinanceCore.Domain.Budgets
         public Guid UserId { get; private set; }
         public Guid CategoryId { get; private set; }
         public string Name { get; private set; } = string.Empty;
-        public Money Amount { get; init; }
-        public Money? Spent { get; init; }
+        public Money Amount { get; set; }
+        public Money? Spent { get; set; }
         public EnPeriod Period { get; private set; }
         public DateTime StartDate { get; private set; }
         public DateTime EndDate { get; private set; }
         public DateTime CreatedAt { get; private set; }
         public DateTime? UpdatedAt { get; private set; }
 
-        private Budget() { }
         public Budget() { }
 
         private Budget(

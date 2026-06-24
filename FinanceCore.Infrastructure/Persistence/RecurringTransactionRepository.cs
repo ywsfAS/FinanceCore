@@ -1,14 +1,15 @@
 using Dapper;
 using FinanceCore.Application.Abstractions;
-using FinanceCore.Application.Models;
-using FinanceCore.Domain.RecurringTransaction;
-using FinanceCore.Infrastructure.Mappers;
-using FinanceCore.Infrastructure.context;
-using System.Data;
+using FinanceCore.Application.DTOs;
 using FinanceCore.Application.DTOs.RecurringTransaction;
+using FinanceCore.Application.Models;
 using FinanceCore.Domain.Enums;
-using System.Text;
+using FinanceCore.Domain.RecurringTransaction;
+using FinanceCore.Infrastructure.context;
+using FinanceCore.Infrastructure.Mappers;
 using System.Collections;
+using System.Data;
+using System.Text;
 
 namespace FinanceCore.Infrastructure.Persistence
 {
@@ -120,6 +121,33 @@ namespace FinanceCore.Infrastructure.Persistence
             var sql = "SELECT rt.Id , rt.AccountId , rt.CategoryId , rt.Amount , a.CurrencyId AS Currency , rt.Description ,rt.Type, rt.StartDate , rt.EndDate , rt.Period , rt.IsActive , rt.LastExecutedDate   FROM RecurringTransactions rt INNER JOIN Accounts a ON rt.AccountId = a.Id WHERE rt.IsActive = 1 ";
             var models = await connection.QueryAsync<RecurringTransactionModel>(sql);
             return models.Select(RecurringTransactionMapper.MapToDomain);
+        }
+        public async Task<IEnumerable<SubsriptionDataDto>> GetSubscriptions(Guid userId , Guid? accountId , Guid? categoryId , string? name , EnPeriod? period , EnTransactionType? type ,int page , int pageSize, CancellationToken token)
+        {
+            using var connection = _connectionFactory.GetConnection();
+            var sql = new StringBuilder(@"
+             SELECT 
+                rt.Name,
+                rt.Amount,
+                rt.Period AS Frequency,
+                rt.Type,
+                a.CurrencyId AS Currency,
+                rt.LastExecutedDate AS PreviousCharge
+             FROM RecurringTransactions tr
+                INNER JOIN Accounts a
+                    ON rt.AccountId = a.Id
+                WHERE rt.UserId = @UserId 
+            ");
+            if (accountId.HasValue) sql.Append(" AND AccountId = @AccountId");
+            if (categoryId.HasValue) sql.Append(" AND CategoryId = @CategoryId");
+            if (name is null) sql.Append(" AND Name LIKE @Name");
+            if (period.HasValue) sql.Append(" AND Period = @Period");
+            if (type.HasValue) sql.Append(" AND Type = @Type");
+            sql.Append(" ORDER BY Id DESC OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY");
+
+            var command = new CommandDefinition(sql.ToString(), new {UserId = userId , AccountId = accountId , CategoryId = categoryId , Name = $"%{name}%" , Period = period , Type = type , Page = (page - 1) * pageSize , PageSize = pageSize} , cancellationToken : token);
+            return await connection.QueryAsync<SubsriptionDataDto>(command);
+
         }
     }
 }
