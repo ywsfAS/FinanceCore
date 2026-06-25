@@ -5,6 +5,7 @@ using FinanceCore.Application.Features.Report.GetMonthlySummary;
 using FinanceCore.Application.Features.Report.GetMonthlyTrend;
 using FinanceCore.Application.Features.Report.GetSpendingByCategory;
 using FinanceCore.Application.Features.Report.GetSubscriptions;
+using FinanceCore.Application.Features.Report.GetSubscriptionsGrowth;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -64,6 +65,21 @@ namespace FinanceCore.API.Controllers
         {
             var UserId = GetUserId();
             var query = new SubscriptionQuery(UserId,request.CategoryId,request.AccountId,request.Name,request.Period,request.Type,page,pageSize);
+            var response = await _mediator.Send(query);
+            return Ok(response);
+
+
+        }
+
+        [HttpGet("subscriptions/growth")]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(SubscriptionGrowthDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> GetSubscriptionsGrowth([FromQuery] GetSubscriptionGrowthRequest request)
+        {
+            var UserId = GetUserId();
+            var query = new SubscriptionGrowthQuery(UserId,request.AccountId,request.Type,request.Start,request.End);
             var response = await _mediator.Send(query);
             return Ok(response);
 

@@ -21,7 +21,7 @@ namespace FinanceCore.Application.Features.Report.GetSubscriptions
         }
         public async Task<SubscriptionDto> Handle(SubscriptionQuery query , CancellationToken token)
         {
-            var subscriptions = await _recurringTransactionRepository.GetSubscriptions(query.UserId,query.AccountId,query.CategoryId,query.Name,query.Period,query.Type,query.Page , query.PageSize , token);
+            var subscriptions = await _recurringTransactionRepository.GetSubscriptionsAsync(query.UserId,query.AccountId,query.CategoryId,query.Name,query.Period,query.Type,query.Page , query.PageSize , token);
             var globalCurrency = EnCurrency.USD;
             foreach (var item in subscriptions) {
                 var recurringTransaction = new RecurringTransaction

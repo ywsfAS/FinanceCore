@@ -19,7 +19,8 @@ namespace FinanceCore.Application.Abstractions
         Task<IEnumerable<RecurringTransactionDto>> GetRecurringTransactionsAsync(Guid userId , Guid? accountId , Guid? categoryId , bool? isActive, EnPeriod? period, DateTime? start, DateTime? end, int page, int pageSize, CancellationToken token = default);
         Task AddAsync(RecurringTransaction recurringTransaction );
         Task UpdateAsync(RecurringTransaction recurringTransaction);
-        Task<IEnumerable<SubsriptionDataDto>> GetSubscriptions(Guid userId, Guid? accountId, Guid? categoryId, string? name, EnPeriod? period, EnTransactionType? type, int page, int pageSize, CancellationToken token);
+        Task<IEnumerable<SubsriptionDataDto>> GetSubscriptionsAsync(Guid userId, Guid? accountId, Guid? categoryId, string? name, EnPeriod? period, EnTransactionType? type, int page, int pageSize, CancellationToken token);
         Task DeleteAsync(Guid id);
+        Task<SubscriptionGrowthDto?> GetSubscriptionsGrowthAsync(Guid userId, Guid? accountId, EnTransactionType type, DateTime currentStartDate, DateTime currentEndDate, DateTime previousStartDate, DateTime previousEndDate, CancellationToken token);
     }
 }
