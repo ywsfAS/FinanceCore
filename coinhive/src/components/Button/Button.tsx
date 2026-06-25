@@ -11,7 +11,7 @@ type ButtonProps = {
     disabled?: boolean;
 } & ButtonHTMLAttributes<HTMLButtonElement>;
 export default function Button({ children, onClick = () => { }, variant = 'primary', size = 'medium', fullwidth = false , disabled = false , ...props}: ButtonProps) {
-    const fullwidthStyle = fullwidth ? styles.fullwidth : '';
+    const fullwidthStyle = fullwidth ? styles.fullWidth : '';
     const disabledStyle = disabled ? styles.disabled : '';
     const style = `${styles.button} ${styles[variant]} ${styles[size]} ${fullwidthStyle} ${disabledStyle}`;
     return (

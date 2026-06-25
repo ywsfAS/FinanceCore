@@ -9,7 +9,7 @@ import Contact from './pages/Contact/Contact'
 import Footer from './components/Footer/Footer';
 import Landing from './pages/Landing/Landing';
 import LoginPage from './pages/Login/LoginPage';
-import ForgotPasswordPage from "./pages/ForgotPasswordPage/ForgotpasswordpagE";
+import ForgotPasswordPage from "./pages/ForgotPasswordPage/Forgotpassword";
 import ResetPasswordPage from "./pages/ResetPasswordPage/Resetpasswordpage";
 import CategoriesPage from "./pages/Categories/CategoriesPage";
 import BudgetsPage from "./pages/Budgets/BudgetsPage"
