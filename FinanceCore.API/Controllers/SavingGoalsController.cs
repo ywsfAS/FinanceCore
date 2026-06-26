@@ -4,6 +4,7 @@ using FinanceCore.Application.DTOs.Goal;
 using FinanceCore.Application.Features.Goals.Commands.Create;
 using FinanceCore.Application.Features.Goals.Commands.Delete;
 using FinanceCore.Application.Features.Goals.Commands.Update;
+using FinanceCore.Application.Features.SavingGoals.commands.AddContribution;
 using FinanceCore.Application.Features.SavingGoals.commands.Cancel;
 using FinanceCore.Application.Features.SavingGoals.commands.Pause;
 using FinanceCore.Application.Features.SavingGoals.commands.Resume;
@@ -124,6 +125,23 @@ namespace FinanceCore.API.Controllers
             return Ok(saving);
         }
 
+        /// <summary>
+        /// Contribute to a saving goal
+        /// </summary>
+        [HttpPost("{id:guid}/contribute")]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> AddContribute([FromRoute] Guid id,[FromBody]AddGoalContributionRequest request, CancellationToken cancellationToken)
+        {
+            var userId = GetUserId();
+            var command = new AddContributionCommand(userId,id,request.AccountId,request.Amount,request.Currency,request.ContributionDate,request.Description);
+
+            await _mediator.Send(command, cancellationToken);
+
+            return Ok(new { Message = "Contribution Added Succesfully" });
+        }
         /// <summary>
         /// Pause a saving goal
         /// </summary>

@@ -14,5 +14,7 @@ namespace FinanceCore.Application.Abstractions
         Task DeleteAsync(Guid id , CancellationToken token);
 
         Task<bool> IsExistsAsync(Guid id , CancellationToken token);
+
+        Task AddContribution(SavingsContribution contribution, CancellationToken token);
     }
 }

@@ -150,6 +150,45 @@ namespace FinanceCore.Infrastructure.Persistence
                 new { Id = id });
 
             return result.HasValue;
+
+        }
+
+        public async Task AddContribution(SavingsContribution contribution, CancellationToken token)
+        {
+            using var connection = _connectionFactory.GetConnection();
+            const string sql = @"INSERT INTO Contributions(
+             Id,
+             SavingGoalId,
+             AccountId,
+             Amount,
+             Type,
+             CurrencyId,
+             Description,
+             Date
+             )
+             VALUES(
+             @Id,
+             @SavingGoalId,
+             @AccountId,
+             @Amount,
+             @Type,
+             @CurrencyId,
+             @Description,
+             @Date
+             )
+            ";
+            var command = new CommandDefinition(sql, new
+            {
+                Id = contribution.Id,
+                SavingGoalId = contribution.SavingGoalId,
+                AccountId = contribution.AccountId,
+                Amount = contribution.Amount.Amount,
+                CurrencyId = contribution.Amount.Currency,
+                Type = contribution.Type,
+                Description = contribution.Description,
+                Date = contribution.Date
+            },cancellationToken: token);
+            await connection.ExecuteAsync(command);
         }
     }
 }
