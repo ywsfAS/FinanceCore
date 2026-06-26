@@ -1,4 +1,4 @@
-﻿using FinanceCore.Domain.Common;
+using FinanceCore.Domain.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,8 +9,8 @@ namespace FinanceCore.Domain.Events.Goal
 {
     // Contribution added to goal
     public record GoalContributionAddedEvent(
+        Guid ContributionId,
         Guid GoalId,
-        Money ContributionAmount,
-        Money NewTotalAmount,
-        decimal PercentageComplete) : DomainEvent;
+        Money ContributionAmount
+        ) : DomainEvent;
 }

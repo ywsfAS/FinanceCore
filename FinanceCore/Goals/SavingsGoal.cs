@@ -116,31 +116,32 @@ public class SavingsGoal : AggregateRoot
     {
         return CurrentAmount.IsGreaterOrEqual(TargetAmount);
     }
-    public void AddContribution(Money amount)
+    public SavingsContribution AddContribution(Guid accountId,DateTime date,Money amount,string? description)
     {
+        if(accountId == Guid.Empty) throw new AccountNotFoundException(accountId);
         if (Status != EnGoalStatus.Active)
             throw new InvalidOperationException("Cannot contribute to inactive goal.");
 
         if (amount.IsLessOrEqual(Money.Zero(amount.Currency)))
             throw new InvalidContributionAmountException(amount.Amount);
-
-        CurrentAmount = CurrentAmount.Add(amount);
-        UpdatedAt = DateTime.UtcNow;
-
+        var contribution = SavingsContribution.Create(Id, accountId, amount, date, description);
+        // fire Contribution event
         AddDomainEvent(new GoalContributionAddedEvent(
+            contribution.Id,
             Id,
-            amount,
-            CurrentAmount,
-            GetPercentageComplete()));
+            amount
+            ));
 
         // Check if goal completed
         if (IsCompleted())
         {
             Complete();
         }
+        CurrentAmount.Add(amount);
+        return contribution;
     }
 
-    public void WithdrawContribution(Money amount)
+    public SavingsContribution WithdrawContribution(Guid accountId , Money amount , string? description)
     {
         if (Status == EnGoalStatus.Completed)
             throw new CannotWithdrawFromCompletedGoalException(Id); ;
@@ -152,12 +153,12 @@ public class SavingsGoal : AggregateRoot
         if (amount.IsGreaterOrEqual(CurrentAmount))
             throw new InsufficientGoalFundsException(Id, amount.Amount, CurrentAmount.Amount);
         CurrentAmount = CurrentAmount.Subtract(amount);
-        UpdatedAt = DateTime.UtcNow;
-
+        var contribution = SavingsContribution.Create(Id,accountId,amount,DateTime.UtcNow,description,null,SavingsType.WithDarawl);
         AddDomainEvent(new GoalWithdrawalEvent(
             Id,
             amount,
             CurrentAmount));
+        return contribution;
     }
 
     private void Complete()
