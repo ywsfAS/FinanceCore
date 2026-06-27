@@ -1,5 +1,6 @@
 using FinanceCore.API.Requests.Report;
 using FinanceCore.Application.DTOs;
+using FinanceCore.Application.Features.Report.ContributionsTrend;
 using FinanceCore.Application.Features.Report.GetBudgetHealth;
 using FinanceCore.Application.Features.Report.GetMonthlySummary;
 using FinanceCore.Application.Features.Report.GetMonthlyTrend;
@@ -99,6 +100,19 @@ namespace FinanceCore.API.Controllers
 
         }
 
+        [HttpGet("monthly/contributions/trend")]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(IEnumerable<ContributionsTrendDto>), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> GetContributionsTrend([FromQuery]int lastNMonth)
+        {
+            var UserId = GetUserId();
+            var query = new ContributionsTrendQuery(UserId,lastNMonth);
+            var response = await _mediator.Send(query);
+            return Ok(response);
+
+        }
 
 
 

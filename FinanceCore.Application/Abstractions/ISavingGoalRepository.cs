@@ -1,3 +1,4 @@
+using FinanceCore.Application.DTOs;
 using FinanceCore.Application.DTOs.Goal;
 using FinanceCore.Domain.Enums;
 using FinanceCore.Domain.Goals;
@@ -15,6 +16,7 @@ namespace FinanceCore.Application.Abstractions
 
         Task<bool> IsExistsAsync(Guid id , CancellationToken token);
 
-        Task AddContribution(SavingsContribution contribution, CancellationToken token);
+        Task AddContributionAsync(SavingsContribution contribution, CancellationToken token);
+        Task<ContributionsTrendDto?> GetContributionsTrendAsync(Guid userId, int lastNMonth,CancellationToken token);
     }
 }

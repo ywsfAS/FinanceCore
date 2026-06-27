@@ -29,7 +29,7 @@ namespace FinanceCore.Application.Features.SavingGoals.commands.AddContribution
             if(savingGoal is null) throw new GoalNotFoundException(command.GoalId);
             var amount = new Money(command.Amount, command.Currency);
             var contribution = savingGoal.AddContribution(command.AccountId, command.ContributionDate, amount, command.Description);
-            await _savingGoalRepository.AddContribution(contribution, token);
+            await _savingGoalRepository.AddContributionAsync(contribution, token);
             
         }
     }
