@@ -11,6 +11,7 @@ import Dashboard from "../../components/Dashboard/Dashboard";
 import Accounts from "../../components/Accounts/Accounts";
 import Transactions from "../../components/Transactions/transactions";
 import Categories from "../../components/Categories/Categories";
+import { PieChartCard } from "../../components/PieChartCard/PieChartCard";
 
 export default function ProfilePage() {
 
@@ -58,6 +59,8 @@ export default function ProfilePage() {
                 return <Transactions />
             case EnNavLinks.Categories:
                 return <Categories />
+            case EnNavLinks.Analytics:
+              return <PieChartCard/>  
         }
     })();
     return (

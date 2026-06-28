@@ -1,26 +1,50 @@
-
-
-
 .tooltip {
-    --tooltip-bg: #1f2937;
-    --tooltip-text: #ffffff;
-    --tooltip-padding: 8px 12px;
-    --tooltip-radius: 6px;
-    --fs-tooltip: 13px;
-    --fw-semibold: 600;
-    --spacing-xs: 2px;
-
-    background: var(--tooltip-bg);
-    color: var(--tooltip-text);
-    padding: var(--tooltip-padding);
-    border-radius: var(--tooltip-radius);
-    font-size: var(--fs-tooltip);
+    display: flex;
+    align-items: center;
+    gap: var(--space-12);
+    padding: var(--space-12);
+    background: var(--surface);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--space-8);
+    box-shadow: var(--shadow-100);
+    min-width: 160px;
 }
 
-.label {
-    font-weight: var(--fw-semibold);
+.swatch {
+    width: var(--space-12);
+    height: var(--space-12);
+    border-radius: 999px; 
+    flex-shrink: 0;
+}
+
+.body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+    flex: 1;
+}
+
+.name {
+    font-size: var(--font-size-14);
+    font-weight: var(--font-weight-medium);
+    color: var(--text-secondary);
+}
+
+.valueRow {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-16);
 }
 
 .value {
-    margin-top: var(--spacing-xs);
+    font-size: var(--font-size-16);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+}
+
+.percent {
+    font-size: var(--font-size-12);
+    font-weight: var(--font-weight-medium);
+    color: var(--text-tertiary);
 }
