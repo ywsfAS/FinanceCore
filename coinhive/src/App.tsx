@@ -11,7 +11,6 @@ import Landing from './pages/Landing/Landing';
 import LoginPage from './pages/Login/LoginPage';
 import ForgotPasswordPage from "./pages/ForgotPasswordPage/Forgotpassword";
 import ResetPasswordPage from "./pages/ResetPasswordPage/Resetpasswordpage";
-import CategoriesPage from "./pages/Categories/CategoriesPage";
 import BudgetsPage from "./pages/Budgets/BudgetsPage"
 
 function App() {
@@ -32,7 +31,6 @@ function App() {
                 <Route path="/forget-password" element={<ForgotPasswordPage/> } />
                 <Route path="/reset-password" element={<ResetPasswordPage/> } />
                 <Route path="/profile" element={<ProfilePage />} />
-                <Route path="/categories" element={<CategoriesPage/> } />
                 <Route path="/budgets" element={<BudgetsPage/>}/>
 
             </Routes>

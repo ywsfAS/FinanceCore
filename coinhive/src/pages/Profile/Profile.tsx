@@ -10,6 +10,7 @@ import { EnNavLinks } from "../../components/ProfileCard/types";
 import Dashboard from "../../components/Dashboard/Dashboard";
 import Accounts from "../../components/Accounts/Accounts";
 import Transactions from "../../components/Transactions/transactions";
+import Categories from "../../components/Categories/Categories";
 
 export default function ProfilePage() {
 
@@ -54,7 +55,9 @@ export default function ProfilePage() {
             case EnNavLinks.Accounts:
                 return <Accounts />
             case EnNavLinks.Transactions:
-                return <Transactions/>
+                return <Transactions />
+            case EnNavLinks.Categories:
+                return <Categories />
         }
     })();
     return (

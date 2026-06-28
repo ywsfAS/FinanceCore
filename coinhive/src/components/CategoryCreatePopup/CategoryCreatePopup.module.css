@@ -1,7 +1,7 @@
 .overlay {
     position: fixed;
     inset: 0;
-    background: rgba(0,0,0,.45);
+    background: var(--overlay);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -10,54 +10,60 @@
 
 .popup {
     width: 450px;
-    background: white;
-    border-radius: 14px;
-    padding: 24px;
+    background: var(--surface);
+    border-radius: 16px; 
+    padding: var(--space-24);
 }
 
 .header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: var(--space-16);
 }
+
+    .header h2 {
+        font-size: var(--font-size-20);
+        font-weight: var(--font-weight-semibold);
+        color: var(--text-primary);
+    }
 
 .closeBtn {
     background: transparent;
     border: none;
     cursor: pointer;
+    color: var(--text-tertiary);
+    padding: var(--space-4);
+    border-radius: 6px; 
+    display: flex;
+    align-items: center;
 }
+
+    .closeBtn:hover,
+    .closeBtn:focus-visible {
+        background: var(--gray-100);
+        color: var(--text-secondary);
+    }
 
 .form {
     display: flex;
     flex-direction: column;
-    gap: 18px;
+    gap: var(--space-16);
 }
 
 .field {
     display: flex;
     flex-direction: column;
-    gap: 6px;
+    gap: var(--space-8);
 }
 
-    .field input,
-    .field select {
-        padding: 12px;
-        border-radius: 8px;
-        border: 1px solid #dbe3ee;
-    }
+.label {
+    font-size: var(--font-size-14);
+    font-weight: var(--font-weight-medium);
+    color: var(--text-secondary);
+}
 
 .error {
-    color: #dc2626;
-    font-size: .85rem;
-}
-
-.submitBtn {
-    border: none;
-    border-radius: 8px;
-    padding: 12px;
-    background: #2563eb;
-    color: white;
-    cursor: pointer;
-    font-weight: 600;
+    color: var(--danger-600);
+    font-size: var(--font-size-14);
 }

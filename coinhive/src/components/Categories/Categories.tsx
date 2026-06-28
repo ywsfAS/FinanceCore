@@ -1,26 +1,19 @@
 import { Search, Plus } from 'lucide-react';
 import { useState } from 'react';
 
-import styles from './CategoriesPage.module.css';
+import styles from './Categories.module.css';
 
-import CategoryCard from '../../components/CategoryCard/CategoryCard';
-import CategoryCreatePopup from '../../components/CategoryCreatePopup/CategoryCreatePopup';
+import CategoryCard from '../CategoryCard/CategoryCard';
+import CategoryCreatePopup from '../CategoryCreatePopup/CategoryCreatePopup';
 import type {CategoriesWithFiltersParams , RemoveCategoryParams} from '../../services/categoriesService';
 import { useGetCategoriesWithFilters } from "../../hooks/Categories/useGetCategoriesWithFilter";
 import { useRemoveCategory } from "../../hooks/Categories/useRemoveCategory";
-const initialCategoryFilter: CategoriesWithFiltersParams = {
-    name: "",
-    type: "",
-    page: 1,
-    pageSize : 10,
-}
-const staticCategories = [
-    { id: 1, name : "food" , type : "Expense" },
-    { id: 2, name : "sport" , type : "Epense" },
-    { id: 3, name : "gym" , type : "Expense" },
-
-];
-const CategoriesPage = () => {
+import { CATEGORY_CARDS, initialCategoryFilter } from "./constants";
+import Button from "../Button/Button";
+import Input from "../Input/Input";
+import CostumeSelect from "../Select/Select";
+import { ACCOUNT_TYPES  } from "../Accounts/constants";
+const Categories = () => {
     const [open, setOpen] = useState(false);
     const [filters, setFilters] = useState<CategoriesWithFiltersParams>(initialCategoryFilter);
     const RemoveCategoryMutation = useRemoveCategory();
@@ -33,7 +26,6 @@ const CategoriesPage = () => {
             console.error(err.message);
         }
     }
-
     const handleClose = () => {
         setOpen((prev) => !prev);
     }
@@ -45,78 +37,56 @@ const CategoriesPage = () => {
     }
     
     const { data, isLoading, error, isError } = useGetCategoriesWithFilters(filters);
-    if (isLoading) return <div>loading...</div>
-    if (isError) return <div>{error.message}</div>
 
-    const categories = data ?? staticCategories;
 
 
     return (
         <div className={styles.wrapper}>
             <div className={styles.header}>
                 <div>
-                    <h1>Categories</h1>
-                    <p>
+                    <h1 className={styles.title }>Categories</h1>
+                    <p className={styles.subtitle }>
                         Manage your income and expense
                         categories
                     </p>
                 </div>
-
-                <button
-                    className={styles.btn}
+                <Button
                     onClick={() => setOpen(true)}
                 >
                     <Plus size={18} />
                     New Category
-                </button>
+                </Button>
             </div>
-
             <div className={styles.filterSection}>
-                <div className={styles.searchContainer}>
-                    <Search size={18} />
-
-                    <input
+                    <Input
                         placeholder="Search category..."
                         value={filters.name}
                         onChange={(e) =>
                             ChangeNameHandler(e.target.value)
                         }
                     />
-                </div>
 
-                <select
+                <CostumeSelect
                     value={filters.type}
-                    onChange={(e) =>
-                        ChangeTypeHandler(e.target.value)
+                    onChange={(value) =>
+                        ChangeTypeHandler(value)
                     }
-                >
-                    <option value="">
-                        All Types
-                    </option>
-
-                    <option value="Expense">
-                        Expense
-                    </option>
-
-                    <option value="Income">
-                        Income
-                    </option>
-                </select>
+                    options={ACCOUNT_TYPES}
+                   
+                />
             </div>
 
             <div className={styles.categoriesContainer}>
-                {categories.map((cat) => <CategoryCard name={cat.name} type={cat.type} id={cat.id} key={cat.id} onDelete={handleRemoveCategory} />)}
+                {CATEGORY_CARDS.map((cat) => <CategoryCard name={cat.name} type={cat.type} id={cat.id} icon={cat.icon} key={cat.id} onDelete={handleRemoveCategory} amount={cat.amount} percentage={cat.percentage} />)}
             </div>
 
             {open && (
                 <CategoryCreatePopup
-                    handleClose={() =>
-                        setOpen(false)
-                    }
+                    handleClose={handleClose}
                 />
             )}
         </div>
     );
 };
 
-export default CategoriesPage;
+export default Categories;

@@ -1,38 +1,32 @@
 import { X } from 'lucide-react';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import styles from './CategoryCreatePopup.module.css';
-import type { CreateCategoryParams } from "../../services/categoriesService";
-import {useCreateCategory} from "../../hooks/Categories/useCreateCategory";
-interface Props {
-    handleClose: () => void;
-}
+import type { CreateCategoryParams } from '../../services/categoriesService';
+import { useCreateCategory } from '../../hooks/Categories/useCreateCategory';
+import Button from '../Button/Button';
+import Input from '../Input/Input';
+import CustomSelect from '../Select/Select';
+import type { CategoryCreatePopupProps } from './types';
+import { CATEGORY_TYPE_OPTIONS, DEFAULT_CATEGORY_VALUES } from './constants';
 
-
-const CategoryCreatePopup = ({
-    handleClose
-}: Props) => {
+const CategoryCreatePopup = ({ handleClose }: CategoryCreatePopupProps) => {
     const {
         register,
         handleSubmit,
-        formState: { errors }
+        control,
+        formState: { errors },
     } = useForm<CreateCategoryParams>({
-        defaultValues: {
-            name: '',
-            type: 'Expense',
-            description : '',
-        }
+        defaultValues: DEFAULT_CATEGORY_VALUES,
     });
+
     const createCategoryMutation = useCreateCategory();
-    const onSubmit = async  (data: CreateCategoryParams) => {
-        console.log(data);
+
+    const onSubmit = async (data: CreateCategoryParams) => {
         try {
             await createCategoryMutation.mutateAsync(data);
         } catch (err) {
             console.log(err);
         }
-
-        
-
         handleClose();
     };
 
@@ -41,28 +35,25 @@ const CategoryCreatePopup = ({
             <div className={styles.popup}>
                 <div className={styles.header}>
                     <h2>Create Category</h2>
-
                     <button
+                        type="button"
                         className={styles.closeBtn}
                         onClick={handleClose}
+                        aria-label="Close"
                     >
-                        <X />
+                        <X size={20} />
                     </button>
                 </div>
 
-                <form
-                    className={styles.form}
-                    onSubmit={handleSubmit(onSubmit)}
-                >
+                <form className={styles.form} onSubmit={handleSubmit(onSubmit)}>
                     <div className={styles.field}>
-                        <label>Name</label>
-
-                        <input
+                        <label className={styles.label}>Name</label>
+                        <Input
+                            placeholder="e.g. Groceries"
                             {...register('name', {
-                                required: 'Name is required'
+                                required: 'Name is required',
                             })}
                         />
-
                         {errors.name && (
                             <span className={styles.error}>
                                 {errors.name.message}
@@ -71,25 +62,28 @@ const CategoryCreatePopup = ({
                     </div>
 
                     <div className={styles.field}>
-                        <label>Type</label>
-
-                        <select {...register('type')}>
-                            <option value="Expense">
-                                Expense
-                            </option>
-
-                            <option value="Income">
-                                Income
-                            </option>
-                        </select>
+                        <label className={styles.label}>Type</label>
+                        <Controller
+                            control={control}
+                            name="type"
+                            render={({ field }) => (
+                                <CustomSelect
+                                    value={field.value}
+                                    onChange={field.onChange}
+                                    options={CATEGORY_TYPE_OPTIONS}
+                                />
+                            )}
+                        />
                     </div>
 
-                    <button
+                    <Button
                         type="submit"
-                        className={styles.submitBtn}
+                        disabled={createCategoryMutation.isPending}
                     >
-                        Create Category
-                    </button>
+                        {createCategoryMutation.isPending
+                            ? 'Creating...'
+                            : 'Create Category'}
+                    </Button>
                 </form>
             </div>
         </div>
