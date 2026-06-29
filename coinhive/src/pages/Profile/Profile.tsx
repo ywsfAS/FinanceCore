@@ -60,7 +60,7 @@ export default function ProfilePage() {
             case EnNavLinks.Categories:
                 return <Categories />
             case EnNavLinks.Analytics:
-              return <PieChartCard/>  
+                return <PieChartCard title="Categories" subtitle="Analyze your spending distribution across categories"/>  
         }
     })();
     return (

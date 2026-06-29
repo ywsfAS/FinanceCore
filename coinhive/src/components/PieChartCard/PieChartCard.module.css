@@ -1,0 +1,28 @@
+.card {
+    display: flex;
+    flex-direction: column;
+    max-width: var(--space-384);
+    justify-content: center;
+    align-items: center;
+    gap: var(--space-16);
+    background: var(--surface);
+    padding: var(--space-24);
+    border-radius: var(--space-24);
+    box-shadow: var(--shadow-100);
+}
+.title {
+    font-size: var(--font-size-30);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-12);
+}
+
+.subtitle {
+    font-size: var(--font-size-14);
+    color: var(--text-secondary);
+}
+.content{
+    display : flex;
+    flex-direction : column;
+    align-items : start;
+}
