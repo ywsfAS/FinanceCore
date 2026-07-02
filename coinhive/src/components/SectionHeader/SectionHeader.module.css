@@ -1,0 +1,17 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: var(--space-16);
+}
+
+.title {
+    font-size: var(--font-size-30);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+}
+
+.subtitle {
+    font-size: var(--font-size-14);
+    color: var(--text-secondary);
+}

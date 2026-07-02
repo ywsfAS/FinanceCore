@@ -8,6 +8,7 @@ const CategoryCard = ({
     name,
     icon,
     amount = 200,
+    currency,
     percentage = 20,
     onEdit,
     onDelete,
@@ -63,7 +64,7 @@ const CategoryCard = ({
                 </div>
             </div>
 
-            <p className={styles.amount}>{amount}</p>
+            <p className={styles.amount}>{amount}{currency}</p>
             <p className={styles.subtitle}>{safePercentage}% of total spending</p>
 
             <div className={styles.progressTrack}>

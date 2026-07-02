@@ -1,5 +1,4 @@
 import type { GetAccountWithFiltersParams } from "../../services/accountService";
-
 export enum AccountType {
     checking = "checking",
     credit = "credit",
@@ -27,7 +26,11 @@ export const CURRENCIES = [
     { value: "EUR", label: "EUR" },
     { value: "MAD", label: "MAD" },
 ];
-
+export const HEADER = {
+    title: "Accounts",
+    subtitle: "Manage and monitor your financial accounts",
+    btnName: "new Account",
+}
 export const MOCK_ACCOUNTS = [
     {
         id: 1,

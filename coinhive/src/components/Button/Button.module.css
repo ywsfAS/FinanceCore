@@ -1,9 +1,7 @@
-
-
 .button {
-    font-family : var(--font-family);
-    display : flex;
-    justify-content : center;
+    font-family: var(--font-family);
+    display: flex;
+    justify-content: center;
     align-items: center;
     border: none;
     border-radius: var(--space-4);
@@ -14,7 +12,7 @@
 
 .button:hover {
     opacity: 1;
-     transform: translateY(-1px);
+    transform: translateY(-1px);
 }
 
 .button:active {
@@ -23,7 +21,7 @@
 
 .button:disabled {
     background-color: var(--color-button-disabled);
-     cursor: not-allowed;
+    cursor: not-allowed;
 }
 
 /* Variants */
@@ -31,15 +29,18 @@
     background-color: var(--primary-500);
     color: var(--text-white);
 }
+
 .secondary {
     background-color: var(--gray-100);
     color: var(--text-primary);
-    border : 1px solid var(--gray-200);
+    border: 1px solid var(--gray-200);
 }
-.danger{
-    background-color : var(--danger-500);
-    color : var(--color-white);
+
+.danger {
+    background-color: var(--danger-500);
+    color: var(--color-white);
 }
+
 .success {
     background-color: var(--success-500);
     color: var(--color-white);
@@ -49,55 +50,61 @@
     background-color: var(--warning-500);
     color: var(--color-white);
 }
-.ghost{
-    background-color : transparent;
-    color : var(--text-secondary);
+
+.ghost {
+    background-color: transparent;
+    color: var(--text-secondary);
 }
+
 /* States */
-.primary:hover{
+.primary:hover {
     background-color: var(--primary-600);
 }
-.primary:active{
-    background-color : var(--primary-700);
+
+.primary:active {
+    background-color: var(--primary-700);
 }
-.secondary:hover{
+
+.secondary:hover {
     background-color: var(--secondary-600);
 }
 
-.secondary:active{
+.secondary:active {
     background-color: var(--secondary-700);
 }
 
-.danger:hover{
+.danger:hover {
     background-color: var(--danger-600);
 }
 
-.danger:active{
+.danger:active {
     background-color: var(--danger-700);
 }
 
-.success:hover{
+.success:hover {
     background-color: var(--success-600);
 }
 
-.success:active{
+.success:active {
     background-color: var(--success-700);
 }
 
-.warning:hover{
+.warning:hover {
     background-color: var(--warning-600);
 }
 
-.warning:active{
+.warning:active {
     background-color: var(--warning-700);
 }
-.ghost:hover{
+
+.ghost:hover {
     background-color: var(--ghost-600);
 }
 
-.ghost:active{
+.ghost:active {
     background-color: var(--ghost-700);
 }
+
 /* Sizes */
 .small {
     padding: var(--space-8) var(--space-12);
@@ -111,14 +118,15 @@
 
 .large {
     padding: var(--space-12) var(--space-24);
-    font-size: var(--font-size-20);
+    font-size: var(--font-size-18);
 }
 
 /* Full width option */
 .fullWidth {
     width: 100%;
 }
-.disabled{
-    background-color : var(--gray-200);
-    color : var(--gray-400);
+
+.disabled {
+    background-color: var(--gray-200);
+    color: var(--gray-400);
 }

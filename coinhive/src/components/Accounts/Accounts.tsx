@@ -1,10 +1,8 @@
 import styles from "./Accounts.module.css";
-import { Plus, Search } from "lucide-react";
 import { useState } from "react";
 
 import AccountCard from "../AccountCard/AccountCard";
 import AccountCreatePopUp from "../AccountCreatePopup/AccountCreatePopup";
-import Button from "../Button/Button";
 import Input from "../Input/Input";
 import CustomSelect from "../Select/Select";
 
@@ -17,7 +15,9 @@ import {
     CURRENCIES,
     INITIAL_FILTERS,
     MOCK_ACCOUNTS,
+    HEADER,
 } from "./constants";
+import SectionHeader from "../SectionHeader/SectionHeader";
 
 const Accounts = () => {
     const [open, setOpen] = useState(false);
@@ -50,21 +50,7 @@ const Accounts = () => {
 
     return (
         <div className={styles.wrapper}>
-            <div className={styles.header}>
-                <div>
-                    <h1 className={styles.title}>Accounts</h1>
-                    <p className={styles.subtitle}>
-                        Manage and monitor your financial accounts
-                    </p>
-                </div>
-
-                <Button
-                    onClick={handleClose}
-                >
-                    New Account
-                </Button>
-            </div>
-
+            <SectionHeader title={HEADER.title} subtitle={HEADER.subtitle} btnName={HEADER.btnName} handler={handleClose} />
             <div className={styles.filterSection}>
                 <div className={styles.searchContainer}>
                     <Input
@@ -82,7 +68,6 @@ const Accounts = () => {
                         updateFilter("type", value)
                     }
                     options={ACCOUNT_TYPES}
-                   
                 />
                 <CustomSelect
                     value={filters.currency}

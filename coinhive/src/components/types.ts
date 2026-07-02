@@ -31,3 +31,8 @@ export type LegendItem = {
     value: number;
     icon?: ReactNode;
 };
+export enum Currency {
+    USD = "USD",
+    EUR = "EUR",
+    MAD = "MAD",
+}

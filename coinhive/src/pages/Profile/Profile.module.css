@@ -1,6 +1,6 @@
 .layout {
     display: grid;
-    grid-template-columns: 300px 1fr;
+    grid-template-columns: var(--space-384) 1fr;
     gap: 12px;
     max-width: 1200px;
     margin: 24px auto;
@@ -8,6 +8,7 @@
     align-items: start;
     margin-top: 90px;
 }
+
 @media (max-width: 1080px) {
     .layout {
         grid-template-columns: 1fr;
