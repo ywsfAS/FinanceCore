@@ -1,9 +1,10 @@
 * {
     box-sizing: border-box;
-    text-decoration : none;
+    text-decoration: none;
     margin: 0;
     padding: 0;
 }
+
 /* variables system*/
 :root {
     --font-family: "Plus Jakarta Sans", sans-serif;
@@ -17,7 +18,7 @@
     font-weight: var(--font-weight-regular);
     --background: #F8FAFC;
     --surface: #FFFFFF;
-    --overlay :rgba(0,0,0,.45); 
+    --overlay: rgba(0, 0, 0, .45);
     /* Colors */
 
     --primary-50: #EFF6FF;
@@ -107,11 +108,24 @@
     --shadow-50: 0 3px 7px rgba(0, 0, 0, 0.04);
 }
 
-[data-theme="dark"] {
-    
-}
+[data-theme="dark"] {}
 
 body {
     overflow-x: hidden;
     background: var(--background);
+}
+
+.react-datepicker,
+.react-datepicker * {
+    font-family: var(--font-family) !important;
+}
+
+.react-datepicker-wrapper,
+.react-datepicker__input-container {
+    display: inline-block;
+}
+
+.react-datepicker-popper {
+    position: absolute !important;
+    z-index: 1500;
 }

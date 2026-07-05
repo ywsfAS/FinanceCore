@@ -1,21 +1,20 @@
 import { useQuery } from "@tanstack/react-query";
 import {
     savingGoalService,
-    type GetGoalsParams 
+    type GetGoalsParams
 } from "../../services/savingGoalService";
 
-export function useGoals{
+export function useGoals({
     page = 1,
-    pageSize = 5
+    pageSize = 5,
 }: GetGoalsParams) {
     return useQuery({
-        queryKey: ["user-goals", month],
-
+        queryKey: ["user-goals", page, pageSize],
         queryFn: () =>
             savingGoalService.GetGoals({
-                page,PageSize
+                page,
+                pageSize,
             }),
-
         staleTime: 1000 * 60 * 5,
     });
 }

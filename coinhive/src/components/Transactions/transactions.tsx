@@ -71,11 +71,23 @@ const Transactions = () => {
             <SectionHeader title={HEADER.title} subtitle={HEADER.subtitle} btnName={HEADER.btnName} handler={() => setOpen((prev) => !prev)} />
             <div className={styles.filterSection}>
                 <div className={styles.left}>
-                    <DatePicker selected={filters.fromDate} onChange={handleFromDateChange} customInput={<button className={styles.datePickerBtn}><Calendar />{filters.fromDate
-                        ? format(filters.fromDate, "dd/MM/yyyy")
-                        : "Select start date"}</button>} />
-                    <DatePicker selected={filters.toDate} onChange={handleToDateChange} customInput={<button className={styles.datePickerBtn}><Calendar />{filters.toDate ?
-                        format(filters.toDate, "dd/MM/yyyy") : "Select end date"}</button>} />
+                    <DatePicker
+                        selected={filters.fromDate}
+                        onChange={handleFromDateChange}
+                        wrapperClassName={styles.datePickerWrapper}
+                        popperClassName={styles.datePickerPopper}
+                        customInput={<button className={styles.datePickerBtn}><Calendar />{filters.fromDate
+                            ? format(filters.fromDate, "dd/MM/yyyy")
+                            : "Select start date"}</button>}
+                    />
+                    <DatePicker
+                        selected={filters.toDate}
+                        onChange={handleToDateChange}
+                        wrapperClassName={styles.datePickerWrapper}
+                        popperClassName={styles.datePickerPopper}
+                        customInput={<button className={styles.datePickerBtn}><Calendar />{filters.toDate ?
+                            format(filters.toDate, "dd/MM/yyyy") : "Select end date"}</button>}
+                    />
                     <CostumSelect value={filters.category} options={CATEGORIES} onChange={(e) => handleCategoryChange(e.target.value)} />
                 </div>
                 <div className={styles.right}>

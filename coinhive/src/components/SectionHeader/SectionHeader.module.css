@@ -6,12 +6,12 @@
 }
 
 .title {
-    font-size: var(--font-size-30);
+    font-size: var(--font-size-48);
     font-weight: var(--font-weight-bold);
     color: var(--text-primary);
 }
 
 .subtitle {
-    font-size: var(--font-size-14);
+    font-size: var(--font-size-18);
     color: var(--text-secondary);
 }

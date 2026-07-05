@@ -2,7 +2,7 @@ import styles from "./Profile.module.css";
 import ProfileCard from "../../components/ProfileCard/ProfileCard";
 import { useProfile } from "../../hooks/Profile/useProfile";
 import { useUpdateProfile } from "../../hooks/Profile/useUpdateProfile";
-import { useUploadProfileImage} from "../../hooks/Profile/useUploadProfileImage"
+import { useUploadProfileImage } from "../../hooks/Profile/useUploadProfileImage"
 import ProfileEditPopUp from "../../components/ProfileEditPopUp/ProfilePopUp";
 import { useState } from 'react';
 import type { UpdateProfileParams, UploadProfileImageParams } from "../../services/profileService";
@@ -11,6 +11,7 @@ import Dashboard from "../../components/Dashboard/Dashboard";
 import Accounts from "../../components/Accounts/Accounts";
 import Transactions from "../../components/Transactions/transactions";
 import Categories from "../../components/Categories/Categories";
+import Savings from "../../components/Savings/Savings";
 import { PieChartCard } from "../../components/PieChartCard/PieChartCard";
 
 export default function ProfilePage() {
@@ -20,13 +21,13 @@ export default function ProfilePage() {
     const uploadProfileImageMutation = useUploadProfileImage();
     const [active, setActive] = useState(false);
     const [activeTab, setActiveTab] = useState<EnNavLinks>(EnNavLinks.Dashboard);
-    const handleActiveTab = (activeTab : EnNavLinks) => {
+    const handleActiveTab = (activeTab: EnNavLinks) => {
         setActiveTab(activeTab);
     }
     const PopUpHandler = () => {
         setActive((prev) => !prev);
     }
-    const updateProfile = async (profile : UpdateProfileParams ) => {
+    const updateProfile = async (profile: UpdateProfileParams) => {
         try {
             await updateProfileMutation.mutateAsync(profile);
             console.log("profile updated successfully");
@@ -60,7 +61,9 @@ export default function ProfilePage() {
             case EnNavLinks.Categories:
                 return <Categories />
             case EnNavLinks.Analytics:
-                return <PieChartCard title="Categories" subtitle="Analyze your spending distribution across categories"/>  
+                return <PieChartCard title="Categories" subtitle="Analyze your spending distribution across categories" />
+            case EnNavLinks.Savings:
+                return <Savings />
         }
     })();
     return (

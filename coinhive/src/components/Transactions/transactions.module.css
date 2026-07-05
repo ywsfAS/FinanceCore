@@ -8,12 +8,12 @@
     display: flex;
     gap: 10px;
     background-color: var(--surface);
-    border-radius: var(--space-16);
+    border-radius: var(--space-8);
     padding: var(--space-12);
     justify-content: space-between;
     border: 1px solid rgba(255, 255, 255, 0.08);
     box-shadow: var(--shadow-100);
-    margin-bottom: var(--space-12);
+    margin: var(--space-16) 0;
     flex-wrap: wrap;
 }
 
@@ -38,10 +38,18 @@
     box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
 }
 
-.datePickerButton:focus-visible {
+.datePickerBtn:focus-visible {
     outline: none;
     border-color: #2563eb;
     box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+.datePickerWrapper {
+    display: inline-block;
+}
+
+.datePickerPopper {
+    z-index: 1500;
 }
 
 .left,
