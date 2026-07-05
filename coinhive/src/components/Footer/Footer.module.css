@@ -1,135 +1,99 @@
 .footer {
-    /* Local CSS variables */
-    --color-bg: #fafafa;
-    --color-border: #e5e7eb;
-    --color-primary: #10b981;
-    --color-text: #0a0a0a;
-    --color-text-secondary: #6b7280;
-    --color-text-muted: #9ca3af;
-    --font-family: 'Montserrat', sans-serif;
-    --fs-logo: 22px;
-    --fs-tagline: 13px;
-    --fs-link: 13px;
-    --fs-group-title: 10px;
-    --fs-bottom-text: 12px;
-    --radius-badge: 100px;
-    --gap-sm: 10px;
-    --gap-md: 12px;
-    --gap-lg: 48px;
-    --gap-xl: 64px;
-    --padding-footer: 64px 50px 32px;
-    --padding-bottom: 28px;
-    border-top: 1px solid var(--color-border);
-    padding: var(--padding-footer);
-    background: var(--color-bg);
-}
-.dark {
-    --color-bg: black;
-    --color-border: #2a2a2a;
-    --color-primary: #10b981;
-    --color-text: #f5f5f5;
-    --color-text-secondary: #a1a1aa;
-    --color-text-muted: #6b7280;
+    padding: var(--space-64);
+    background: var(--surface);
 }
 
 .inner {
     display: flex;
     justify-content: space-between;
-    gap: var(--gap-lg);
-    margin-bottom: var(--gap-lg);
+    margin-bottom: var(--space-12);
     flex-wrap: wrap;
 }
 
 .brand {
     display: flex;
     flex-direction: column;
-    gap: var(--gap-sm);
+    gap: var(--space-8);
     max-width: 220px;
 }
 
 .logo {
-    font-family: var(--font-family);
-    font-size: var(--fs-logo);
-    font-weight: 800;
-    color: var(--color-text);
-    letter-spacing: -0.02em;
+    font-size: var(--font-size-24);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
 }
 
 .tagline {
-    font-family: var(--font-family);
-    font-size: var(--fs-tagline);
-    color: var(--color-text-muted);
-    line-height: 1.6;
+    font-size: var(--font-size-16);
+    color: var(--text-secondary);
     margin: 0;
 }
 
 .links {
     display: flex;
-    gap: var(--gap-xl);
+    gap: var(--space-48);
     flex-wrap: wrap;
 }
 
 .linkGroup {
     display: flex;
     flex-direction: column;
-    gap: var(--gap-sm);
+    gap: var(--space-12);
 }
 
 .linkGroup a {
-    font-family: var(--font-family);
-     font-size: var(--fs-link);
-     font-weight: 500;
-     color: var(--color-text-secondary);
-     text-decoration: none;
-     transition: color 0.2s ease;
+    font-size: var(--font-size-14);
+    font-weight: var(--font-weight-regular);
+    color: var(--text-secondary);
+    transition: color 0.2s ease;
 }
 
 .linkGroup a:hover {
-     color: var(--color-primary);
+    color: var(--primary-500);
 }
 
 .groupTitle {
-    font-family: var(--font-family);
-    font-size: var(--fs-group-title);
-    font-weight: 700;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    color: var(--color-text);
-    margin-bottom: 4px;
+    font-size: var(--font-size-18);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+    margin-bottom: var(--space-8);
 }
 
 .bottom {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding-top: var(--padding-bottom);
-    border-top: 1px solid var(--color-border);
+    padding-top: var(--space-12);
     flex-wrap: wrap;
-    gap: var(--gap-md);
+    gap: var(--space-12);
 }
 
 .bottom span {
-    font-family: var(--font-family);
-     font-size: var(--fs-bottom-text);
-    color: var(--color-text-muted);
- }
-
-.badge {
-    font-size: 11px !important;
-    font-weight: 600 !important;
-    color: var(--color-primary) !important;
-    background: #f0fdf4;
-    padding: 4px 12px;
-    border-radius: var(--radius-badge);
-    border: 1px solid #d1fae5;
+    font-size: var(--font-size-12);
+    color: var(--text-secondary);
 }
 
-@media (max-width: 640px) {
+.badge {
+    font-size: var(--font-size-10);
+    font-weight: var(--font-weight-semibold);
+    color: var(--primary-500);
+    padding: var(--space-12);
+    border-radius: var(--space-16);
+}
+
+@media (max-width: 700px) {
+    .footer {
+        padding: var(--space-48);
+    }
+
     .inner {
         flex-direction: column;
+        gap: var(--space-64);
     }
 
     .links {
-        gap: 32px;
+        gap: var(--space-36);
+        margin-bottom: var(--space-14);
     }
+
 }
