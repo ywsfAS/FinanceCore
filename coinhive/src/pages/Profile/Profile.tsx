@@ -13,6 +13,7 @@ import Transactions from "../../components/Transactions/transactions";
 import Categories from "../../components/Categories/Categories";
 import Savings from "../../components/Savings/Savings";
 import { PieChartCard } from "../../components/PieChartCard/PieChartCard";
+import { Settings } from "../../components/Settings/Settings";
 
 export default function ProfilePage() {
 
@@ -64,6 +65,8 @@ export default function ProfilePage() {
                 return <PieChartCard title="Categories" subtitle="Analyze your spending distribution across categories" />
             case EnNavLinks.Savings:
                 return <Savings />
+            case EnNavLinks.Settings:
+                return <Settings />
         }
     })();
     return (

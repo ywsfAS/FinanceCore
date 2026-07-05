@@ -1,0 +1,87 @@
+.sectionCard {
+    display: grid;
+    gap: var(--space-16);
+    padding: var(--space-24);
+    border-radius: var(--space-16);
+    background: var(--surface);
+    border: 1px solid var(--gray-200);
+    box-shadow: var(--shadow-50);
+}
+
+.sectionHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-12);
+}
+
+.sectionTitle {
+    font-size: var(--font-size-18);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+}
+
+.sectionDescription {
+    color: var(--text-secondary);
+    margin-top: var(--space-4);
+}
+
+.badge {
+    padding: 6px 10px;
+    border-radius: 999px;
+    font-size: var(--font-size-12);
+    font-weight: var(--font-weight-semibold);
+    color: var(--primary-700);
+    background: var(--primary-50);
+}
+
+.itemList {
+    display: grid;
+    gap: var(--space-16);
+}
+
+.valueItem {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-16);
+    padding: var(--space-16);
+    border-radius: var(--space-12);
+    background: var(--gray-50);
+    border: 1px solid var(--gray-200);
+}
+
+.itemText {
+    display: grid;
+    gap: var(--space-4);
+}
+
+.itemLabel {
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+}
+
+.itemDescription {
+    color: var(--text-secondary);
+    font-size: var(--font-size-14);
+}
+
+.valuePill {
+    min-width: 92px;
+    text-align: center;
+    padding: 8px 12px;
+    border-radius: 999px;
+    background: var(--surface);
+    color: var(--primary-700);
+    border: 1px solid var(--primary-100);
+    font-weight: var(--font-weight-semibold);
+}
+
+@media (max-width: 640px) {
+
+    .sectionHeader,
+    .valueItem {
+        align-items: flex-start;
+        flex-direction: column;
+    }
+}
