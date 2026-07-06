@@ -1,31 +1,50 @@
 .wrapper {
-    padding: var(--space-12);
+    padding: var(--space-24);
     display: flex;
     flex-direction: column;
+    gap: var(--space-24);
+    margin: 0 auto;
 }
 
 .filterSection {
     display: flex;
-    gap: 10px;
-    background-color: var(--surface);
-    border-radius: var(--space-8);
-    padding: var(--space-12);
+    align-items: center;
     justify-content: space-between;
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    box-shadow: var(--shadow-100);
-    margin: var(--space-16) 0;
+    gap: var(--space-16);
+    background: var(--surface);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--space-16);
+    padding: var(--space-16);
+    box-shadow: var(--shadow-50);
+    flex-wrap: wrap;
+}
+
+.left {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: var(--space-12);
+    flex: 1;
+    min-width: min(100%, 420px);
+}
+
+.right {
+    display: flex;
+    align-items: center;
+    gap: var(--space-12);
     flex-wrap: wrap;
 }
 
 .datePickerBtn {
+    width: 100%;
     font-family: var(--font-family);
     display: inline-flex;
     align-items: center;
-    gap: var(--space-4);
-    padding: var(--space-8) var(--space-8);
-    border: 1px solid #d1d5db;
-    border-radius: var(--space-4);
-    background-color: var(--surface);
+    justify-content: center;
+    gap: var(--space-8);
+    padding: var(--space-12) var(--space-16);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--space-8);
+    background: var(--surface);
     color: var(--text-secondary);
     font-size: var(--font-size-14);
     font-weight: var(--font-weight-regular);
@@ -33,36 +52,70 @@
     transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
 }
 
+.datePickerBtn svg {
+    color: var(--primary-500);
+}
+
 .datePickerBtn:hover {
-    border-color: #2563eb;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    border-color: var(--primary-400);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.12);
 }
 
 .datePickerBtn:focus-visible {
     outline: none;
-    border-color: #2563eb;
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+    border-color: var(--primary-500);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.16);
 }
 
 .datePickerWrapper {
-    display: inline-block;
+    display: block;
+    width: 100%;
 }
 
 .datePickerPopper {
     z-index: 1500;
 }
 
-.left,
-.right {
-    display: flex;
-    gap: var(--space-12);
-    flex-wrap: wrap;
-
-}
-
 .paginationBtnContainer {
     display: flex;
-    justify-content: center;
-    gap: var(--space-24);
+    justify-content: flex-end;
     margin-top: var(--space-24);
+    gap: var(--space-12);
+}
+
+@media (max-width: 768px) {
+    .wrapper {
+        padding: var(--space-16);
+        gap: var(--space-16);
+    }
+
+    .filterSection {
+        padding: var(--space-16);
+        align-items: stretch;
+    }
+
+    .left,
+    .right {
+        width: 100%;
+    }
+
+    .right {
+        justify-content: flex-start;
+    }
+
+    .paginationBtnContainer {
+        justify-content: stretch;
+        flex-wrap: wrap;
+    }
+
+    .paginationBtnContainer button {
+        flex: 1;
+    }
+}
+
+.listContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
 }

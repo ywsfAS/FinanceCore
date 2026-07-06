@@ -1,30 +1,40 @@
 .card {
     background: var(--surface);
+    border: 1px solid var(--gray-200);
     border-radius: var(--space-24);
     padding: var(--space-24);
-    box-shadow: var(--shadow-100);
-    margin-top : var(--space-24);
+    box-shadow: var(--shadow-50);
 }
 
 .header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    margin-bottom: var(--space-24);
+    align-items: flex-start;
+    gap: var(--space-16);
+    margin-bottom: var(--space-16);
 }
 
-    .header h2 {
-        font-size: var(--font-size-24);
-        font-weight: var(--font-weight-semibold);
-        color: var(--text-primary);
-    }
+.header h2 {
+    font-size: var(--font-size-24);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+}
+
+.subtitle {
+    margin-top: var(--space-4);
+    font-size: var(--font-size-14);
+    color: var(--text-secondary);
+}
 
 .seeAll {
-    border: none;
-    background: none;
+    border: 1px solid var(--gray-200);
+    background: var(--gray-50);
+    border-radius: 999px;
+    padding: var(--space-8) var(--space-12);
     cursor: pointer;
-    color: var(--text-secondary);
+    color: var(--text-primary);
     font-size: var(--font-size-14);
+    font-weight: var(--font-weight-medium);
 }
 
 .table {
@@ -35,7 +45,7 @@
 
 .tableHeader {
     display: grid;
-    grid-template-columns: 64px 2fr 1fr 1.5fr 1fr 1fr;
+    grid-template-columns: 56px minmax(140px, 1.8fr) minmax(120px, 1fr) minmax(160px, 1.4fr) minmax(100px, 0.8fr) minmax(96px, 0.7fr);
     align-items: center;
     background: var(--gray-100);
     border-radius: var(--space-12);
@@ -47,18 +57,21 @@
 
 .row {
     display: grid;
-    grid-template-columns: 64px 2fr 1fr 1.5fr 1fr 1fr;
+    grid-template-columns: 56px minmax(140px, 1.8fr) minmax(120px, 1fr) minmax(160px, 1.4fr) minmax(100px, 0.8fr) minmax(96px, 0.7fr);
     align-items: center;
-    padding: var(--space-12);
+    padding: var(--space-12) var(--space-16);
     border-radius: var(--space-12);
-    transition: 0.2s;
+    transition: background-color 0.2s ease, transform 0.2s ease;
     gap: var(--space-12);
     font-size: var(--font-size-14);
+    border: 1px solid transparent;
 }
 
-    .row:hover {
-        background: var(--gray-50);
-    }
+.row:hover {
+    background: var(--gray-50);
+    border-color: var(--gray-200);
+    transform: translateY(-1px);
+}
 
 .iconWrapper {
     width: 40px;
@@ -68,20 +81,88 @@
     justify-content: center;
     border-radius: var(--space-12);
     background: var(--primary-50);
-    color: var(--primary-500);
+    border: 1px solid var(--primary-100);
+    color: var(--primary-600);
+}
+
+.nameBlock {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+.name {
+    font-weight: var(--font-weight-medium);
+    color: var(--text-primary);
+}
+
+.category,
+.account,
+.date {
+    color: var(--text-secondary);
+    font-size: var(--font-size-14);
+}
+
+.amount {
+    text-align: right;
+    font-weight: var(--font-weight-semibold);
 }
 
 .positive {
-    color: var(--primary-500);
-    font-weight: var(--font-weight-semibold);
+    color: var(--success-600);
 }
 
 .negative {
-    color: var(--primary-500);
-    font-weight: var(--font-weight-semibold);
+    color: var(--danger-600);
 }
 
-.status {
-    color: var(--success-600);
+.statusPill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-8) var(--space-12);
+    border-radius: 999px;
+    background: var(--success-50);
+    color: var(--success-700);
+    font-size: var(--font-size-12);
     font-weight: var(--font-weight-medium);
+    width: fit-content;
+}
+
+.loading {
+    padding: var(--space-24);
+    border-radius: var(--space-16);
+    background: var(--gray-50);
+    color: var(--text-secondary);
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    .card {
+        padding: var(--space-16);
+    }
+
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .tableHeader {
+        display: none;
+    }
+
+    .row {
+        grid-template-columns: 40px 1fr auto;
+        gap: var(--space-8);
+        padding: var(--space-12);
+    }
+
+    .account,
+    .date {
+        grid-column: 2 / span 2;
+    }
+
+    .amount {
+        text-align: left;
+    }
 }

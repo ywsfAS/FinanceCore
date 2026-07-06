@@ -1,0 +1,116 @@
+.overlay {
+    position: fixed;
+    inset: 0;
+    background: var(--overlay);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-16);
+    z-index: 2000;
+    animation: fadeIn 0.2s ease-out;
+}
+
+.popup {
+    width: min(100%, 560px);
+    background: var(--surface);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--space-24);
+    box-shadow: var(--shadow-100);
+    padding: var(--space-24);
+    animation: slideUp 0.25s ease-out;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-24);
+}
+
+.header h2 {
+    font-size: var(--font-size-24);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+}
+
+.closeBtn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border: 1px solid var(--gray-200);
+    border-radius: 999px;
+    background: var(--gray-50);
+    color: var(--text-secondary);
+    cursor: pointer;
+}
+
+.form {
+    display: grid;
+    gap: var(--space-16);
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+}
+
+.field label {
+    font-size: var(--font-size-14);
+    font-weight: var(--font-weight-medium);
+    color: var(--text-primary);
+}
+
+.field input,
+.field select {
+    width: 100%;
+    border: 1px solid var(--gray-200);
+    border-radius: var(--space-8);
+    padding: var(--space-12) var(--space-16);
+    background: var(--surface);
+    color: var(--text-primary);
+    font: inherit;
+}
+
+.field input:focus,
+.field select:focus {
+    outline: none;
+    border-color: var(--primary-500);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.16);
+}
+
+.error {
+    font-size: var(--font-size-12);
+    color: var(--danger-600);
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: var(--space-12);
+    margin-top: var(--space-8);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(12px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

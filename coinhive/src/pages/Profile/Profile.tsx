@@ -14,6 +14,7 @@ import Categories from "../../components/Categories/Categories";
 import Savings from "../../components/Savings/Savings";
 import { PieChartCard } from "../../components/PieChartCard/PieChartCard";
 import { Settings } from "../../components/Settings/Settings";
+import Budgets from "../../components/Budgets/Budgets";
 
 export default function ProfilePage() {
 
@@ -67,6 +68,8 @@ export default function ProfilePage() {
                 return <Savings />
             case EnNavLinks.Settings:
                 return <Settings />
+            case EnNavLinks.Budgets:
+                return <Budgets />
         }
     })();
     return (

@@ -1,17 +1,7 @@
+import { CreditCard, Pencil, Trash2 } from 'lucide-react';
+import Button from '../Button/Button';
 import styles from './BudgetCard.module.css';
-
-interface BudgetCardProps {
-    id: string;
-    name: string;
-    amount: number;
-    currency: string;
-    categoryName: string;
-    period: string;
-    startDate: Date;
-    endDate: Date;
-    onEdit?: (id: string) => void;
-    onDelete?: (id: string) => Promise<void>;
-}
+import type { BudgetCardProps } from './types';
 
 const BudgetCard = ({
     id,
@@ -23,46 +13,46 @@ const BudgetCard = ({
     startDate,
     endDate,
     onEdit,
-    onDelete
+    onDelete,
 }: BudgetCardProps) => {
     return (
-        <div className={styles.card}>
-            <div className={styles.info}>
-                <h3>{name}</h3>
+        <article className={styles.card} id={id}>
+            <div className={styles.topRow}>
+                <div className={styles.iconWrapper}>
+                    <CreditCard size={30} />
+                </div>
 
-                <span className={styles.category}>
-                    {categoryName}
-                </span>
+                <div className={styles.meta}>
+                    <h3>{name}</h3>
+                    <span className={styles.category}>{categoryName}</span>
+                </div>
 
-                <span className={styles.period}>
-                    {period}
-                </span>
+                <span className={styles.period}>{period}</span>
+            </div>
 
-                <h2>
+            <div className={styles.amountRow}>
+                <p className={styles.amount}>
                     {currency} {amount.toLocaleString()}
-                </h2>
-
-                <p>
-                    {startDate.toISOString()} → {endDate.toISOString()}
                 </p>
+                <span className={styles.label}>
+                    Start : {startDate}
+                </span>
+                <span className={styles.label}>
+                    End : {endDate}
+                </span>
             </div>
 
             <div className={styles.actions}>
-                <button
-                    className={styles.editBtn}
-                    onClick={() => onEdit?.(id)}
-                >
+                <Button size="small" variant="ghost" onClick={() => onEdit?.(id)}>
+                    <Pencil size={14} className={styles.icon} />
                     Edit
-                </button>
-
-                <button
-                    className={styles.deleteBtn}
-                    onClick={() => onDelete?.(id)}
-                >
+                </Button>
+                <Button size="small" variant="ghost" onClick={() => onDelete?.(id)}>
+                    <Trash2 size={14} className={styles.icon} />
                     Delete
-                </button>
+                </Button>
             </div>
-        </div>
+        </article>
     );
 };
 

@@ -15,25 +15,22 @@ export default function TransactionRow({
                 {getTransactionIcon(transaction.positive)}
             </div>
 
-            <div>{transaction.name}</div>
+            <div className={styles.nameBlock}>
+                <span className={styles.name}>{transaction.name}</span>
+                <span className={styles.category}>{transaction.category}</span>
+            </div>
 
-            <div>{transaction.account}</div>
+            <div className={styles.account}>{transaction.account}</div>
 
-            <div>{transaction.date}</div>
+            <div className={styles.date}>{transaction.date}</div>
 
             <div
-                className={
-                    transaction.positive
-                        ? styles.positive
-                        : styles.negative
-                }
+                className={`${styles.amount} ${transaction.positive ? styles.positive : styles.negative}`}
             >
                 {transaction.amount}
             </div>
 
-            <div className={styles.status}>
-                Completed
-            </div>
+            <div className={styles.statusPill}>Completed</div>
         </div>
     );
 }

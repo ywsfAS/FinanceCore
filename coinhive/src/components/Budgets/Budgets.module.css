@@ -1,0 +1,20 @@
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-24);
+    padding: var(--space-24);
+}
+
+.cards {
+    display: grid;
+    gap: var(--space-16);
+    grid-template-columns: repeat(auto-fill, minmax(var(--space-256), 1fr));
+
+}
+
+@media (max-width: 768px) {
+    .wrapper {
+        padding: var(--space-16);
+        gap: var(--space-16);
+    }
+}
