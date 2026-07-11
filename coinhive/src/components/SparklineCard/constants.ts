@@ -1,7 +1,7 @@
-import type { SparklineCard } from './types'
+import type { SparklineCardProps } from './types'
 import { Heart } from 'lucide-react';
 
-export const DEFAULT: SparklineCard = {
+export const DEFAULT: SparklineCardProps = {
     id: Date.now().toString(),
     icon: Heart,
     title: "Heart",

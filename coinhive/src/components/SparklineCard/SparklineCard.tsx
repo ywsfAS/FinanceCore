@@ -1,9 +1,9 @@
 import styles from "./SparklineCard.module.css";
 import { DEFAULT } from './constants';
-import type { SparklineCard } from './types';
+import type { SparklineCardProps } from './types';
 
 
-const SparklineCard = ({ title = DEFAULT.title, subtitle = DEFAULT.subtitle, icon: Icon = DEFAULT.icon, id }: SparklineCard) => {
+const SparklineCardProps = ({ title = DEFAULT.title, subtitle = DEFAULT.subtitle, icon: Icon = DEFAULT.icon, id }: SparklineCardProps) => {
 
     const fillId = `vertical-gradient-${id}`
     return (
@@ -54,4 +54,4 @@ const SparklineCard = ({ title = DEFAULT.title, subtitle = DEFAULT.subtitle, ico
 
 
 }
-export default SparklineCard;
+export default SparklineCardProps;

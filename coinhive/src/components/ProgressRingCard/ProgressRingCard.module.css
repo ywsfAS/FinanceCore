@@ -3,7 +3,7 @@
     padding: var(--space-16);
     border-radius: var(--space-24);
     box-shadow: var(--shadow-100);
-    width: fit-content;
+    width: 100%;
 }
 
 .header {

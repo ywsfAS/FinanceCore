@@ -1,7 +1,7 @@
 import { type LucideIcon } from "lucide-react";
 
 
-export interface ProgressRingCard {
+export interface ProgressRingCardProps {
     icon?: LucideIcon;
     title: string;
     label: string;

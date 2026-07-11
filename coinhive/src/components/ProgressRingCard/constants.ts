@@ -1,7 +1,7 @@
-import type { ProgressRingCard } from './types';
+import type { ProgressRingCardProps } from './types';
 import { Moon } from 'lucide-react';
 
-export const DEFAULT: ProgressRingCard = {
+export const DEFAULT: ProgressRingCardProps = {
     icon: Moon,
     title: "Health",
     label: "hr",

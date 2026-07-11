@@ -1,9 +1,9 @@
-import type { ProgressRingCard } from './types';
+import type { ProgressRingCardProps } from './types';
 import { DEFAULT } from './constants';
 import styles from './ProgressRingCard.module.css';
 
-const ProgressRingCard = ({ maxValue = DEFAULT.maxValue, value = DEFAULT.value, title = DEFAULT.title, subtitle = DEFAULT.subtitle
-    , icon: Icon = DEFAULT.icon, label = DEFAULT.label, radius = DEFAULT.radius }: ProgressRingCard) => {
+const ProgressRingCardProps = ({ maxValue = DEFAULT.maxValue, value = DEFAULT.value, title = DEFAULT.title, subtitle = DEFAULT.subtitle
+    , icon: Icon = DEFAULT.icon, label = DEFAULT.label, radius = DEFAULT.radius }: ProgressRingCardProps) => {
     const circumference = 2 * Math.PI * radius;
     const percentage = Math.min((value / maxValue) * 100, 100);
     const strokOffset = circumference - (percentage / 100) * circumference;
@@ -42,4 +42,4 @@ const ProgressRingCard = ({ maxValue = DEFAULT.maxValue, value = DEFAULT.value, 
 
 
 }
-export default ProgressRingCard;
+export default ProgressRingCardProps;

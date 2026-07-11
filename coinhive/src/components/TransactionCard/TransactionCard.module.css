@@ -65,6 +65,7 @@
     gap: var(--space-12);
     font-size: var(--font-size-14);
     border: 1px solid transparent;
+    cursor: pointer;
 }
 
 .row:hover {

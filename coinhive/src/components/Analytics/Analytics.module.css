@@ -1,0 +1,96 @@
+.wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-32);
+    color: var(--text-primary);
+    padding: var(--space-24);
+}
+
+.summaryGrid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: var(--space-24);
+}
+
+
+.mainGrid {
+    display: grid;
+    grid-template-columns: 1.6fr 1fr;
+    gap: var(--space-24);
+}
+
+.chartAndProgressWrapper {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-24);
+}
+
+.chartPanel {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-24);
+    background-color: var(--surface);
+    padding: var(--space-24);
+    border-radius: var(--space-24);
+    box-shadow: var(--shadow-100);
+}
+
+.chartHeader {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-12);
+}
+
+.chartTitle {
+    margin: 0;
+    font-size: var(--font-size-30);
+    font-weight: var(--font-weight-bold);
+    color: var(--text-primary);
+}
+
+.chartSubtitle {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: var(--font-size-16);
+    line-height: 1.75;
+}
+
+.barChartWrapper {
+    min-height: 317px;
+    width: 100%;
+}
+
+.sideSection {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-24);
+}
+
+.progressGrid {
+    display: flex;
+    gap: var(--space-24);
+}
+
+@media (max-width: 1080px) {
+
+    .summaryGrid,
+    .progressGrid {
+        grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    }
+
+    .mainGrid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 720px) {
+
+    .summaryGrid,
+    .progressGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .wrapper {
+        gap: var(--space-24);
+    }
+}

@@ -15,6 +15,7 @@ import Savings from "../../components/Savings/Savings";
 import { PieChartCard } from "../../components/PieChartCard/PieChartCard";
 import { Settings } from "../../components/Settings/Settings";
 import Budgets from "../../components/Budgets/Budgets";
+import Analytics from "../../components/Analytics/Analytics";
 
 export default function ProfilePage() {
 
@@ -63,7 +64,7 @@ export default function ProfilePage() {
             case EnNavLinks.Categories:
                 return <Categories />
             case EnNavLinks.Analytics:
-                return <PieChartCard title="Categories" subtitle="Analyze your spending distribution across categories" />
+                return <Analytics />
             case EnNavLinks.Savings:
                 return <Savings />
             case EnNavLinks.Settings:

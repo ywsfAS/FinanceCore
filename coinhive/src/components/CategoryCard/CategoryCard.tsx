@@ -64,6 +64,7 @@ const CategoryCard = ({
                 </div>
             </div>
 
+            <p className={styles.limit}>Spending limit</p>
             <p className={styles.amount}>{amount}{currency}</p>
             <p className={styles.subtitle}>{safePercentage}% of total spending</p>
 
