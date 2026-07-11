@@ -1,15 +1,18 @@
 using FinanceCore.API;
+using FinanceCore.API.Configuration;
 using FinanceCore.Application;
 using FinanceCore.Infrastructure;
 using FinanceCore.Infrastructure.Services;
 using FluentValidation;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using System.Text.Json.Serialization;
+using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,7 +24,6 @@ builder.Services.AddControllers()
     });
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
@@ -61,7 +63,34 @@ builder.Services.AddCors(options =>
               .AllowCredentials();
     });
 });
+var rateLimitOptions = builder.Configuration
+    .GetSection("RateLimiting")
+    .Get<RateLimitingOptions>()!;
+// Add Rate Limiting 
+builder.Services.AddRateLimiter(options => {
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    options.AddFixedWindowLimiter("Auth",opt =>
+    {
+       
+        opt.Window = TimeSpan.FromMinutes(rateLimitOptions.Authentication.WindowInMinutes);
+        opt.PermitLimit = rateLimitOptions.Authentication.PermitLimit;
+    });
 
+    options.AddSlidingWindowLimiter("Default", opt =>
+    {
+        opt.PermitLimit = rateLimitOptions.Default.PermitLimit;
+        opt.Window = TimeSpan.FromMinutes(rateLimitOptions.Default.WindowInMinutes);
+        opt.SegmentsPerWindow = rateLimitOptions.Default.SegmentsPerWindow;
+
+    });
+
+    options.AddConcurrencyLimiter("Reports", opt =>
+    {
+        opt.PermitLimit = rateLimitOptions.Reporting.PermitLimit;
+        opt.QueueLimit = rateLimitOptions.Reporting.QueueLimit;
+    });
+
+});
 var app = builder.Build();
 app.UseGlobalException();
 app.UseCors("AllowFrontend");
@@ -77,6 +106,7 @@ app.UseHttpsRedirection();
 
 app.UseStaticFiles();
 app.UseAuthentication();
+app.UseRateLimiter();
 app.UseAuthorization();
 
 app.MapControllers();

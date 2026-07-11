@@ -5,50 +5,53 @@ using FinanceCore.Application.Features.Contact.Commands.Mark;
 using FinanceCore.Domain.Common;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
-namespace FinanceCore.API.Controllers;
-
-[ApiController]
-[Route("api/v1/contacts")]
-public class ContactMessageController : ControllerBase
+namespace FinanceCore.API.Controllers
 {
-    private readonly IMediator _mediator;
-
-    public ContactMessageController(IMediator mediator)
+    [EnableRateLimiting("Default")]
+    [ApiController]
+    [Route("api/v1/contacts")]
+    public class ContactMessageController : ControllerBase
     {
-        _mediator = mediator;
-    }
+        private readonly IMediator _mediator;
 
-    /// <summary>
-    /// Create a new contact message.
-    /// </summary>
-    [HttpPost]
-    [Produces("application/json")]
-    [ProducesResponseType(StatusCodes.Status201Created)]
-    [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> CreateMessage([FromBody] CreateContactMessageRequest request)
-    {
-        var command = new CreateContactMessageCommand(
-            request.FullName,
-            new Email(request.Email),
-            request.Subject,
-            request.Message);
+        public ContactMessageController(IMediator mediator)
+        {
+            _mediator = mediator;
+        }
 
-        await _mediator.Send(command);
+        /// <summary>
+        /// Create a new contact message.
+        /// </summary>
+        [HttpPost]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status201Created)]
+        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> CreateMessage([FromBody] CreateContactMessageRequest request)
+        {
+            var command = new CreateContactMessageCommand(
+                request.FullName,
+                new Email(request.Email),
+                request.Subject,
+                request.Message);
 
-        return StatusCode(StatusCodes.Status201Created);
-    }
+            await _mediator.Send(command);
 
-    /// <summary>
-    /// Mark a contact message as seen.
-    /// </summary>
-    [HttpPatch("{id}/seen")]
-    [ProducesResponseType(StatusCodes.Status204NoContent)]
-    [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
-    public async Task<IActionResult> MarkMessage([FromRoute] Guid id)
-    {
-        await _mediator.Send(new MarkContactMessageCommand(id));
+            return StatusCode(StatusCodes.Status201Created);
+        }
 
-        return NoContent();
+        /// <summary>
+        /// Mark a contact message as seen.
+        /// </summary>
+        [HttpPatch("{id}/seen")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> MarkMessage([FromRoute] Guid id)
+        {
+            await _mediator.Send(new MarkContactMessageCommand(id));
+
+            return NoContent();
+        }
     }
 }

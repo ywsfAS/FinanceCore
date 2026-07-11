@@ -12,12 +12,14 @@ using FinanceCore.Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using System.Net.Mime;
 using System.Runtime.ExceptionServices;
 using System.Security.Claims;
 
 namespace FinanceCore.API.Controllers
 {
+    [EnableRateLimiting("Default")]
     [ApiController]
     [Route("api/v1/transactions")]
     [Authorize]

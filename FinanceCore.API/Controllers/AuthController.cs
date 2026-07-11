@@ -7,12 +7,14 @@ using FinanceCore.Application.Features.Auth.Commands.ResetPassword;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 
 namespace FinanceCore.API.Controllers
 {
     /// <summary>
     /// Controller for authentication operations including user registration and login
     /// </summary>
+    [EnableRateLimiting("Auth")]
     [ApiController]
     [Route("api/v1/auth")]
     [AllowAnonymous]

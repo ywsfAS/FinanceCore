@@ -10,11 +10,13 @@ using FinanceCore.Application.Features.Report.GetSubscriptionsGrowth;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.AspNetCore.Routing.Constraints;
 using System.Security.Claims;
 
 namespace FinanceCore.API.Controllers
 {
+    [EnableRateLimiting("Reports")]
     [ApiController]
     [Route("api/v1/reports")]
     [Authorize]

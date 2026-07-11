@@ -12,10 +12,12 @@ using FinanceCore.Domain.Common;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using System.Security.Claims;
 
 namespace FinanceCore.API.Controllers
 {
+    [EnableRateLimiting("Default")]
     [ApiController]
     [Route("api/v1/budgets")]
     [Authorize]

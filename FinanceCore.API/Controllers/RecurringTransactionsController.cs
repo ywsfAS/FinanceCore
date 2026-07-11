@@ -1,19 +1,21 @@
 using FinanceCore.API.Requests.ReccuringTransations;
 using FinanceCore.Application.DTOs;
 using FinanceCore.Application.DTOs.RecurringTransaction;
+using FinanceCore.Application.Features.Recurring.commands.Create;
 using FinanceCore.Application.Features.Recurring.Commands.Delete;
 using FinanceCore.Application.Features.Recurring.Commands.Update;
-using FinanceCore.Application.Features.Recurring.commands.Create;
+using FinanceCore.Application.Features.Recurring.queries.GetRecurring;
 using FinanceCore.Application.Features.Recurring.queries.GetRecurringById;
 using FinanceCore.Domain.Common;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using System.Security.Claims;
-using FinanceCore.Application.Features.Recurring.queries.GetRecurring;
 
 namespace FinanceCore.API.Controllers
 {
+    [EnableRateLimiting("Default")]
     [ApiController]
     [Route("api/v1/recurring-transactions")]
     [Authorize]

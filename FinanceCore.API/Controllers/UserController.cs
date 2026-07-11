@@ -6,6 +6,7 @@ using FinanceCore.Application.Features.Users.Queries.GetUserById;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.RateLimiting;
 using System.Security.Claims;
 
 namespace FinanceCore.API.Controllers
@@ -13,6 +14,7 @@ namespace FinanceCore.API.Controllers
     /// <summary>
     /// Controller for managing user profile operations
     /// </summary>
+    [EnableRateLimiting("Default")]
     [ApiController]
     [Route("api/v1/users")]
     [Authorize]
