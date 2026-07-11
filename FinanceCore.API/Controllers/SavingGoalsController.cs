@@ -56,15 +56,15 @@ namespace FinanceCore.API.Controllers
         /// <summary>
         /// Update an existing saving Goal
         /// </summary>
-        [HttpPut]
+        [HttpPut("{id:guid}")]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> UpdateSavingGoal([FromBody] UpdateSavingsGoalRequest request, CancellationToken cancellationToken)
+        public async Task<IActionResult> UpdateSavingGoal([FromRoute] Guid id,[FromBody] UpdateSavingsGoalRequest request, CancellationToken cancellationToken)
         {
             var userId = GetUserId();
-            var command = new UpdateSavingsGoalCommand(userId, request.Id, request.Name, new Money(request.TargetAmount, request.Currency), request.TargetDate, request.Description, request.Status);
+            var command = new UpdateSavingsGoalCommand(userId,id,request.Name, new Money(request.TargetAmount, request.Currency), request.TargetDate, request.Description, request.Status);
 
             await _mediator.Send(command, cancellationToken);
 

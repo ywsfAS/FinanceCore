@@ -47,15 +47,15 @@ namespace FinanceCore.API.Controllers
         /// <summary>
         /// Update an existing recurring transaction
         /// </summary>
-        [HttpPut]
+        [HttpPut("{id:guid}")]
         [Produces("application/json")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> UpdateRecurringTransaction([FromBody] UpdateRecurringTransactionRequest request)
+        public async Task<IActionResult> UpdateRecurringTransaction([FromRoute] Guid id,[FromBody] UpdateRecurringTransactionRequest request)
         {
             var userId = GetUserId();
-            var command = new UpdateRecurringCommand(userId , request.Id , request.AccountId , request.CategoryId , request.Amount , request.Period , request.Description , request.StartDate , request.EndDate , request.IsActive);
+            var command = new UpdateRecurringCommand(userId , id , request.AccountId , request.CategoryId , request.Amount , request.Period , request.Description , request.StartDate , request.EndDate , request.IsActive);
             await _mediator.Send(command);
             return NoContent();
         }

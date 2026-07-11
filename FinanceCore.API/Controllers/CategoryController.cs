@@ -113,7 +113,7 @@ namespace FinanceCore.API.Controllers
         /// <summary>
         /// Get all categories name for a user
         /// </summary>
-        [HttpGet("categories/options")]
+        [HttpGet("options")]
         [Produces("application/json")]
         [ProducesResponseType(typeof(IEnumerable<CategoryOptionDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]

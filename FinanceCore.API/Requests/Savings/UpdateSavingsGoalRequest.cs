@@ -3,7 +3,6 @@ using FinanceCore.Domain.Enums;
 namespace FinanceCore.API.Requests.Savings
 {
     public record UpdateSavingsGoalRequest(
-    Guid Id,
     string Name,
     decimal TargetAmount,
     EnCurrency Currency,

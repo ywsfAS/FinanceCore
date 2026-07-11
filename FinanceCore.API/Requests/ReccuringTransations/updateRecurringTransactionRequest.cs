@@ -3,7 +3,6 @@ using FinanceCore.Domain.Enums;
 namespace FinanceCore.API.Requests.ReccuringTransations
 {
     public record UpdateRecurringTransactionRequest(
-        Guid Id,
         Guid AccountId,
         Guid CategoryId,
         decimal Amount,
