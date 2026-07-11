@@ -3,6 +3,7 @@ using FinanceCore.Application.DTOs;
 using FinanceCore.Application.DTOs.Transaction;
 using FinanceCore.Application.Features.Transactions.Commands.Delete;
 using FinanceCore.Application.Features.Transactions.Commands.Transactions;
+using FinanceCore.Application.Features.Transactions.Export;
 using FinanceCore.Application.Features.Transactions.Queries.GetFiltredTransactions;
 using FinanceCore.Application.Features.Transactions.Queries.GetTransactionById;
 using FinanceCore.Application.Features.Users.Queries.GetUserById;
@@ -11,6 +12,7 @@ using FinanceCore.Domain.Enums;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Net.Mime;
 using System.Runtime.ExceptionServices;
 using System.Security.Claims;
 
@@ -80,6 +82,20 @@ namespace FinanceCore.API.Controllers
             return Ok(transactions);
         }
 
+        /// <summary>
+        /// export transactions with filters
+        /// </summary>
+        [HttpGet("export")]
+        [ProducesResponseType(typeof(File), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> ExportTransactionsByFilters(Guid? accountId , Guid ? toAccountId, Guid? CategoryId , DateTime? Start , DateTime? End , EnTransactionType? Type , int Page = 1 ,int PageSize = 10 )
+        {
+            var userId = GetUserId();
+            var query = new ExportCSVQuery(userId,accountId,toAccountId,CategoryId, Start, End, Type, Page, PageSize);
+            var result = await _mediator.Send(query);
+            return File(result.content,result.contentType , result.fileName);
+        }
         /// <summary>
         /// Delete a transaction
         /// </summary>

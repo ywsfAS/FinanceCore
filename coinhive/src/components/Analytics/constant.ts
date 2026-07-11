@@ -1,8 +1,4 @@
-import { Activity } from 'lucide-react';
-import { DollarSign } from 'lucide-react';
-import { TrendingUp } from 'lucide-react';
-import { Bell } from 'lucide-react';
-import { BarChart3 } from 'lucide-react';
+import { Activity, DollarSign, TrendingUp, Bell, BarChart3 } from 'lucide-react';
 import { type AnalyticsStat, type AnalyticsMetric } from './types';
 
 export const HEADER = {

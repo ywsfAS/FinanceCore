@@ -59,6 +59,7 @@ namespace FinanceCore.Infrastructure
             services.AddScoped<IProfileRepository, ProfileRepository>();
             services.AddScoped<IPasswordResetTokenRepository,PasswordResetTokenRepository>();
             services.AddScoped<IContactMessageRepository, ContactMessageRepository>();
+            services.AddScoped<ITransactionExporter, TransactionExporter>();
 
             services.AddScoped<IPasswordHasher, PasswordHasher>();
             services.AddScoped<ICurrencyConverter, CurrencyConverter>();
