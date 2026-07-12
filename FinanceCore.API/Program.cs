@@ -10,6 +10,8 @@ using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Serilog;
+using Serilog.AspNetCore;
 using System.Text;
 using System.Text.Json.Serialization;
 using System.Threading.RateLimiting;
@@ -91,6 +93,7 @@ builder.Services.AddRateLimiter(options => {
     });
 
 });
+builder.Services.AddSerilog((configuration) => configuration.ReadFrom.Configuration(builder.Configuration));
 var app = builder.Build();
 app.UseGlobalException();
 app.UseCors("AllowFrontend");
@@ -101,7 +104,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 app.UseHttpsRedirection();
-
+app.MapHealthChecks("health");
+app.UseSerilogRequestLogging();
 
 
 app.UseStaticFiles();

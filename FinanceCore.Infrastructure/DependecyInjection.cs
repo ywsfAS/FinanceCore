@@ -4,12 +4,14 @@ using FinanceCore.Infrastructure.Auth;
 using FinanceCore.Infrastructure.BackgroundJobs;
 using FinanceCore.Infrastructure.context;
 using FinanceCore.Infrastructure.context.ConnectionFactory;
+using FinanceCore.Infrastructure.Health;
 using FinanceCore.Infrastructure.Persistence;
 using FinanceCore.Infrastructure.Repositories;
 using FinanceCore.Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.IdentityModel.Tokens;
 using Quartz;
 using System.Text;
@@ -66,6 +68,9 @@ namespace FinanceCore.Infrastructure
             services.AddScoped<IExchangeRateRepository, ExchangeRateRepository>();
             services.AddHttpClient<IExchangeRateApiService, ExchangeRateApiService>();
             services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
+
+            services.AddHealthChecks().AddCheck<DatabaseHealthCheck>("database",HealthStatus.Unhealthy);
+                
 
             services.Configure<JwtSettings>(
                 config.GetSection("JwtSettings"));

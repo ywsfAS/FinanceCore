@@ -1,5 +1,6 @@
-﻿using FluentValidation;
+using FluentValidation;
 using MediatR;
+using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,10 +13,11 @@ namespace FinanceCore.Application
         : IPipelineBehavior<TRequest, TResponse>
     {
         private readonly IEnumerable<IValidator<TRequest>> _validators;
-
-        public ValidationBehavior(IEnumerable<IValidator<TRequest>> validators)
+        private readonly ILogger<ValidationBehavior<TRequest, TResponse>> _logger;
+        public ValidationBehavior(IEnumerable<IValidator<TRequest>> validators, ILogger<ValidationBehavior<TRequest,TResponse>> logger)
         {
             _validators = validators;
+            _logger = logger;
         }
 
         public async Task<TResponse> Handle(
@@ -23,6 +25,9 @@ namespace FinanceCore.Application
             RequestHandlerDelegate<TResponse> next,
             CancellationToken cancellationToken)
         {
+
+            _logger.LogInformation("Validating Request {@RequestName}, {@DateTime}",typeof(TRequest).Name,DateTime.UtcNow);
+
             if (_validators.Any())
             {
                 var context = new ValidationContext<TRequest>(request);
@@ -34,9 +39,11 @@ namespace FinanceCore.Application
                     .ToList();
 
                 if (failures.Count != 0)
+
                     throw new ValidationException(failures);
             }
 
+            _logger.LogDebug("Validation passed for {@RequestName} {@DateTime}",typeof(TRequest).Name,DateTime.UtcNow);
             return await next();
         }
     }
