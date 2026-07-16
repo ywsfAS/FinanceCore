@@ -4,10 +4,8 @@ using FinanceCore.Application.DTOs;
 using FinanceCore.Application.Models.FinanceCore.Infrastructure.Models;
 using FinanceCore.Domain.Categories;
 using FinanceCore.Domain.Enums;
-using FinanceCore.Domain.Users;
 using FinanceCore.Infrastructure.context;
 using FinanceCore.Infrastructure.Mappers;
-using Microsoft.EntityFrameworkCore.ValueGeneration.Internal;
 using System.Data;
 
 namespace FinanceCore.Infrastructure.Repositories

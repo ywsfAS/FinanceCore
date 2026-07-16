@@ -1,6 +1,6 @@
-﻿namespace FinanceCore.API.Requests.Transaction
+namespace FinanceCore.API.Requests.Transaction
 {
-    public record UpdateTrasnactionRequest(  
+    public record UpdateTransactionRequest(  
         Guid Id,
         Guid? CategoryId,
         decimal Amount,

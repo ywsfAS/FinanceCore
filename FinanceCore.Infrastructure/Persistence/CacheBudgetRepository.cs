@@ -3,14 +3,7 @@ using FinanceCore.Application.DTOs;
 using FinanceCore.Domain.Budgets;
 using FinanceCore.Domain.Enums;
 using FinanceCore.Infrastructure.Repositories;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Caching.Memory;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace FinanceCore.Infrastructure.Persistence
 {

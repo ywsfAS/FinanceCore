@@ -1,9 +1,8 @@
-﻿using Dapper;
-using FinanceCore.Infrastructure.context;
-using Microsoft.Data.SqlClient;
+using Dapper;
 using System.Data;
+using Microsoft.Data.SqlClient;
 
-namespace FinanceCore.Infrastructure.context.ConnectionFactory
+namespace FinanceCore.Infrastructure.Context
 {
     public class SqlConnectionFactory : IConnectionFactory
     {

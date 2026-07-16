@@ -12,10 +12,10 @@ using System.Threading.Tasks;
 
 namespace FinanceCore.Application.Features.Profiles.Commands.Create
 {
-    public class CreateProfleHandler : IRequestHandler<CreateProfileCommand, ProfileDto>
+    public class CreateProfileHandler : IRequestHandler<CreateProfileCommand, ProfileDto>
     {
         private readonly IProfileRepository _profileRepository;
-        public CreateProfleHandler(IProfileRepository profileRepository)
+        public CreateProfileHandler(IProfileRepository profileRepository)
         {
             _profileRepository = profileRepository;
         }

@@ -18,7 +18,7 @@ using System.Text;
 
 namespace FinanceCore.Infrastructure
 {
-    public static class DependecyInjection
+    public static class DependencyInjection
     {
         public static IServiceCollection AddInfrastructure(
             this IServiceCollection services,

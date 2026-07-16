@@ -2,12 +2,6 @@ using Dapper;
 using FinanceCore.Application.Abstractions;
 using FinanceCore.Domain.Enums;
 using FinanceCore.Infrastructure.context;
-using Microsoft.EntityFrameworkCore.Update.Internal;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FinanceCore.Infrastructure.Persistence
 {

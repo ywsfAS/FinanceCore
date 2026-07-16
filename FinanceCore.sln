@@ -11,7 +11,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinanceCore.Infrastructure"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinanceCore.API", "FinanceCore.API\FinanceCore.API.csproj", "{FC548B36-0396-4627-B717-A17473EACB89}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DomainCore.Domain.Tests", "DomainCore.Domain.Tests\DomainCore.Domain.Tests.csproj", "{85C2835E-C75A-425D-BA3B-D50C76B328B8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinanceCore.Domain.Tests", "DomainCore.Domain.Tests\FinanceCore.Domain.Tests.csproj", "{85C2835E-C75A-425D-BA3B-D50C76B328B8}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinanceCore.Application.Tests", "FinanceCore.Application.Tests\FinanceCore.Application.Tests.csproj", "{3FC88968-C2C9-44AC-9216-15081C14C0DC}"
 EndProject
