@@ -1,6 +1,5 @@
 using FinanceCore.Domain.Common;
 using FinanceCore.Domain.Enums;
-using FinanceCore.Domain.Events;
 using FinanceCore.Domain.Events.Goal;
 using FinanceCore.Domain.Exceptions;
 

@@ -1,6 +1,5 @@
 using FinanceCore.Domain.Common;
 using FinanceCore.Domain.Enums;
-using FinanceCore.Domain.Events.Account;
 using FinanceCore.Domain.Events.RecurringTransaction;
 using System;
 

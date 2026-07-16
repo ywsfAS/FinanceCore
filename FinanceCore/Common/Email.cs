@@ -1,4 +1,3 @@
-﻿using FinanceCore.Domain.Common;
 
 namespace FinanceCore.Domain.Common;
 

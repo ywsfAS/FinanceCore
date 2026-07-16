@@ -1,5 +1,4 @@
 using FinanceCore.Domain.Common;
-using FinanceCore.Domain.Enums;
 using FinanceCore.Domain.Events.User;
 using FinanceCore.Domain.Exceptions;
 

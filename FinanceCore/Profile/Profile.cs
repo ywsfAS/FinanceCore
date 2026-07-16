@@ -4,9 +4,6 @@ using FinanceCore.Domain.Events.Profile;
 using FinanceCore.Domain.Exceptions;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static FinanceCore.Domain.Exceptions.ProfileException;
 
 namespace FinanceCore.Domain.Profile
