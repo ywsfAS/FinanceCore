@@ -7,7 +7,7 @@ using MediatR;
 using FinanceCore.Domain.Exceptions;
 using FinanceCore.Domain.Common;
 
-namespace FinanceCore.Application.Features.Recurring.commands.Create
+namespace FinanceCore.Application.Features.Recurring.Commands.Create
 {
     public class CreateRecurringHandler : IRequestHandler<CreateRecurringCommand, RecurringTransactionDto>
     {

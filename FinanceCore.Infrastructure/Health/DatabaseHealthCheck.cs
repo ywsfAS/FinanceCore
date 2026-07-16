@@ -1,5 +1,5 @@
 using Dapper;
-using FinanceCore.Infrastructure.context;
+using FinanceCore.Infrastructure.Context;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using System;
 using System.Collections.Generic;

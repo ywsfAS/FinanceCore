@@ -1,8 +1,6 @@
 using FinanceCore.Application.DTOs;
 using FinanceCore.Domain.Enums;
 using MediatR;
-using System;
-using System.ComponentModel;
 
 
 namespace FinanceCore.Application.Features.Categories.Queries.GetFiltredCategories

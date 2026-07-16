@@ -1,5 +1,3 @@
-﻿using System;
-using System.Collections.Generic;
 using FluentValidation;
 namespace FinanceCore.Application.Features.Users.Queries.GetUserById
 {

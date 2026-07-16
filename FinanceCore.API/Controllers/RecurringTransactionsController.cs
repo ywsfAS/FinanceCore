@@ -1,11 +1,11 @@
 using FinanceCore.API.Requests.ReccuringTransations;
 using FinanceCore.Application.DTOs;
 using FinanceCore.Application.DTOs.RecurringTransaction;
-using FinanceCore.Application.Features.Recurring.commands.Create;
+using FinanceCore.Application.Features.Recurring.Commands.Create;
 using FinanceCore.Application.Features.Recurring.Commands.Delete;
 using FinanceCore.Application.Features.Recurring.Commands.Update;
-using FinanceCore.Application.Features.Recurring.queries.GetRecurring;
-using FinanceCore.Application.Features.Recurring.queries.GetRecurringById;
+using FinanceCore.Application.Features.Recurring.Queries.GetRecurring;
+using FinanceCore.Application.Features.Recurring.Queries.GetRecurringById;
 using FinanceCore.Domain.Common;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;

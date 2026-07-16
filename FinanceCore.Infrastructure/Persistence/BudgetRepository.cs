@@ -5,7 +5,7 @@ using FinanceCore.Application.Models;
 using FinanceCore.Domain.Budgets;
 using FinanceCore.Domain.Enums;
 using FinanceCore.Infrastructure.Mappers;
-using FinanceCore.Infrastructure.context;
+using FinanceCore.Infrastructure.Context;
 using System.Text;
 
 namespace FinanceCore.Infrastructure.Repositories

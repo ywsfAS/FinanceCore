@@ -1,7 +1,6 @@
 using FinanceCore.Application.Abstractions;
 using FinanceCore.Application.DTOs;
 using FinanceCore.Domain.Budgets;
-using FinanceCore.Domain.Common;
 using FinanceCore.Domain.Exceptions;
 using MediatR;
 namespace FinanceCore.Application.Features.Budgets.Commands.Create

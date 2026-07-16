@@ -1,13 +1,8 @@
 using FinanceCore.Application.Abstractions;
 using MediatR;
 using FinanceCore.Domain.Exceptions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace FinanceCore.Application.Features.SavingGoals.commands.Pause
+namespace FinanceCore.Application.Features.SavingGoals.Commands.Pause
 {
     public class PauseSavingGoalHandler : IRequestHandler<PauseSavingGoalCommand>
     {

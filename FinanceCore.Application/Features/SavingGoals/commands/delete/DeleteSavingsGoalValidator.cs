@@ -1,7 +1,7 @@
 using FinanceCore.Application.Features.Goals.Commands.Delete;
 using FluentValidation;
 
-namespace FinanceCore.Application.Features.SavingGoals.commands.delete
+namespace FinanceCore.Application.Features.SavingGoals.Commands.Delete
 {
     public class DeleteSavingsGoalValidator : AbstractValidator<DeleteSavingsGoalCommand>
     {

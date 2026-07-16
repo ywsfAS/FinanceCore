@@ -1,6 +1,4 @@
 using FinanceCore.Application.Abstractions;
-using FinanceCore.Application.Events;
-using FinanceCore.Domain.RecurringTransaction;
 using MediatR;
 
 namespace FinanceCore.Application.Features.Recurring.Commands.Delete

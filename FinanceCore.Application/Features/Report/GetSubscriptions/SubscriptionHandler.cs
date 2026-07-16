@@ -3,12 +3,6 @@ using FinanceCore.Application.DTOs;
 using FinanceCore.Domain.Enums;
 using FinanceCore.Domain.RecurringTransaction;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 namespace FinanceCore.Application.Features.Report.GetSubscriptions
 {
     public class SubscriptionHandler : IRequestHandler<SubscriptionQuery,SubscriptionDto>

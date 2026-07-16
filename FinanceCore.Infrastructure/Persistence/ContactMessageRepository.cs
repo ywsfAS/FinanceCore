@@ -2,7 +2,7 @@ using Dapper;
 using FinanceCore.Application.Abstractions;
 using FinanceCore.Application.Models;
 using FinanceCore.Domain.ContactMessage;
-using FinanceCore.Infrastructure.context;
+using FinanceCore.Infrastructure.Context;
 using FinanceCore.Infrastructure.Mappers;
 using System;
 using System.Collections.Generic;

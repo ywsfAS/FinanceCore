@@ -1,13 +1,8 @@
 using FinanceCore.Application.Abstractions;
 using FinanceCore.Application.DTOs.Goal;
 using FinanceCore.Application.Events;
-using FinanceCore.Domain.Common;
 using FinanceCore.Domain.Exceptions;
-using FinanceCore.Domain.Goals;
 using MediatR;
-using System;
-using System.Threading;
-using System.Threading.Tasks;
 
 namespace FinanceCore.Application.Features.Goals.Commands.Update
 {

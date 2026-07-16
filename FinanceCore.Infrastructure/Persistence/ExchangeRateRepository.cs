@@ -1,7 +1,7 @@
 using Dapper;
 using FinanceCore.Application.Abstractions;
 using FinanceCore.Domain.Enums;
-using FinanceCore.Infrastructure.context;
+using FinanceCore.Infrastructure.Context;
 
 namespace FinanceCore.Infrastructure.Persistence
 {

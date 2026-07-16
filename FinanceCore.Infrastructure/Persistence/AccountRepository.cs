@@ -4,7 +4,7 @@ using FinanceCore.Application.DTOs;
 using FinanceCore.Application.Models;
 using FinanceCore.Domain.Accounts;
 using FinanceCore.Domain.Enums;
-using FinanceCore.Infrastructure.context;
+using FinanceCore.Infrastructure.Context;
 using FinanceCore.Infrastructure.Mappers;
 using Microsoft.AspNetCore.Routing;
 using System.Data;

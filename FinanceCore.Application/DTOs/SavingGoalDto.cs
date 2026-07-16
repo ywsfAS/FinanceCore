@@ -1,5 +1,4 @@
 using FinanceCore.Domain.Enums;
-using System;
 
 namespace FinanceCore.Application.DTOs.Goal
 {

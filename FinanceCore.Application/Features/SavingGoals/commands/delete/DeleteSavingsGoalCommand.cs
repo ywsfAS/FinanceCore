@@ -1,5 +1,4 @@
 using MediatR;
-using System;
 
 namespace FinanceCore.Application.Features.Goals.Commands.Delete
 {

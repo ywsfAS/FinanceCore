@@ -1,8 +1,6 @@
 using FinanceCore.Domain.Enums;
 using MediatR;
 using FinanceCore.Application.DTOs.RecurringTransaction;
-using System;
-using FinanceCore.Domain.Common;
 
 namespace FinanceCore.Application.Features.Recurring.Commands.Update
 {

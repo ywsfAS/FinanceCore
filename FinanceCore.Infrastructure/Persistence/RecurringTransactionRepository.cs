@@ -5,7 +5,7 @@ using FinanceCore.Application.DTOs.RecurringTransaction;
 using FinanceCore.Application.Models;
 using FinanceCore.Domain.Enums;
 using FinanceCore.Domain.RecurringTransaction;
-using FinanceCore.Infrastructure.context;
+using FinanceCore.Infrastructure.Context;
 using FinanceCore.Infrastructure.Mappers;
 using System.Collections;
 using System.Data;

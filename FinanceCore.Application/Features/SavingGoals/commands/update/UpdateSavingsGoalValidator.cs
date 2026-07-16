@@ -1,12 +1,7 @@
 using FinanceCore.Application.Features.Goals.Commands.Update;
 using FluentValidation;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace FinanceCore.Application.Features.SavingGoals.commands.update
+namespace FinanceCore.Application.Features.SavingGoals.Commands.Update
 {
     public class UpdateSavingsGoalValidator : AbstractValidator<UpdateSavingsGoalCommand>
     {

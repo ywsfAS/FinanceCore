@@ -5,7 +5,7 @@ using FinanceCore.Application.DTOs.Goal;
 using FinanceCore.Application.Models;
 using FinanceCore.Domain.Enums;
 using FinanceCore.Domain.Goals;
-using FinanceCore.Infrastructure.context;
+using FinanceCore.Infrastructure.Context;
 using FinanceCore.Infrastructure.Mappers;
 using System.Data;
 using System.Text;

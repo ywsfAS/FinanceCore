@@ -1,7 +1,7 @@
 using Dapper;
 using FinanceCore.Application.Abstractions;
 using FinanceCore.Domain.Audit;
-using FinanceCore.Infrastructure.context;
+using FinanceCore.Infrastructure.Context;
 using FinanceCore.Infrastructure.Persistence.Mappers;
 
 namespace FinanceCore.Infrastructure.Persistence

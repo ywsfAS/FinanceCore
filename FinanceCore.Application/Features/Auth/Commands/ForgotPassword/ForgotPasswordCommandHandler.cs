@@ -1,11 +1,6 @@
 using FinanceCore.Application.Abstractions;
 using MediatR;
 using FinanceCore.Domain.PasswordRestToken;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using FinanceCore.Domain.Common;
 
 namespace FinanceCore.Application.Features.Auth.Commands.ForgotPassword

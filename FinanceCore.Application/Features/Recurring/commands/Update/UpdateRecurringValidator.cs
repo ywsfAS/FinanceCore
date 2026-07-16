@@ -1,7 +1,6 @@
-using FinanceCore.Application.Features.Recurring.Commands.Update;
 using FluentValidation;
 
-namespace FinanceCore.Application.Features.Recurring.commands.Update
+namespace FinanceCore.Application.Features.Recurring.Commands.Update
 {
     public class UpdateRecurringValidator : AbstractValidator<UpdateRecurringCommand>
     {

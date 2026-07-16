@@ -1,11 +1,6 @@
 using FinanceCore.Application.Abstractions;
 using FinanceCore.Domain.Exceptions;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using static FinanceCore.Domain.Exceptions.ResetPasswordException;
 
 namespace FinanceCore.Application.Features.Auth.Commands.ResetPassword

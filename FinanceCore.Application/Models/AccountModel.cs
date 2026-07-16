@@ -1,4 +1,3 @@
-﻿using System;
 
 namespace FinanceCore.Application.Models
 {

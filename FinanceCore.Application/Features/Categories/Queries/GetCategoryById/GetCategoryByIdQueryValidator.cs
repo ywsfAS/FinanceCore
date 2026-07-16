@@ -1,4 +1,3 @@
-﻿using System;
 using FluentValidation;
 namespace FinanceCore.Application.Features.Categories.Queries.GetCategoryById
 {

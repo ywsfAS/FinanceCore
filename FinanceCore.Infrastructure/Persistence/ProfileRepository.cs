@@ -2,7 +2,7 @@ using Dapper;
 using FinanceCore.Application.Abstractions;
 using FinanceCore.Application.Models;
 using FinanceCore.Domain.Profile;
-using FinanceCore.Infrastructure.context;
+using FinanceCore.Infrastructure.Context;
 using FinanceCore.Infrastructure.Mappers;
 using System.Data;
 using System.Formats.Tar;

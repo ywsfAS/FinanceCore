@@ -3,7 +3,6 @@ using FinanceCore.Domain.Users;
 using FinanceCore.Domain.Exceptions;
 using MediatR;
 using FinanceCore.Domain.Common;
-using System.ComponentModel.DataAnnotations;
 using FinanceCore.Application.DTOs.Auth;
 using FinanceCore.Application.Events;
 

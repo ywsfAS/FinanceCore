@@ -1,4 +1,3 @@
-using FinanceCore.Domain.Enums;
 using MediatR;
 
 namespace FinanceCore.Application.Features.Users.Command.Update

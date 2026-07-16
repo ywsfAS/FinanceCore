@@ -1,6 +1,5 @@
 using FinanceCore.Application.Abstractions;
 using MediatR;
-using FinanceCore.Domain.Exceptions;
 using FinanceCore.Application.DTOs.Transaction;
 namespace FinanceCore.Application.Features.Transactions.Queries.GetTransactionById
 {

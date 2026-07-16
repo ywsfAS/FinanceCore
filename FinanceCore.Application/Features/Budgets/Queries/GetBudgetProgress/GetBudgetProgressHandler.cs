@@ -2,11 +2,6 @@ using FinanceCore.Application.Abstractions;
 using FinanceCore.Application.DTOs;
 using MediatR;
 using FinanceCore.Domain.Exceptions;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using FinanceCore.Domain.Enums;
 
 namespace FinanceCore.Application.Features.Budgets.Queries.GetBudgetProgress
 {

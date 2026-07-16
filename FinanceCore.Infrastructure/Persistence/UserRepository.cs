@@ -3,7 +3,7 @@ using FinanceCore.Application.Abstractions;
 using FinanceCore.Application.Models;
 using FinanceCore.Domain.Common;
 using FinanceCore.Domain.Users;
-using FinanceCore.Infrastructure.context;
+using FinanceCore.Infrastructure.Context;
 using FinanceCore.Infrastructure.Mappers;
 using System.Data;
 

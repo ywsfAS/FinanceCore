@@ -1,5 +1,4 @@
 using FinanceCore.Application.Abstractions;
-using FinanceCore.Domain.Common;
 using MediatR;
 using FinanceCore.Domain.Exceptions;
 namespace FinanceCore.Application.Features.Budgets.Commands.Update

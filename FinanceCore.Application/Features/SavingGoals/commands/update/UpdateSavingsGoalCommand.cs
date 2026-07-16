@@ -2,7 +2,6 @@ using FinanceCore.Application.DTOs.Goal;
 using FinanceCore.Domain.Common;
 using FinanceCore.Domain.Enums;
 using MediatR;
-using System;
 
 namespace FinanceCore.Application.Features.Goals.Commands.Update
 {

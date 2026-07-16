@@ -4,7 +4,6 @@ using FinanceCore.Application.Events;
 using FinanceCore.Domain.Common;
 using FinanceCore.Domain.Enums;
 using FinanceCore.Domain.Exceptions;
-using FinanceCore.Domain.RecurringTransaction;
 using MediatR;
 
 namespace FinanceCore.Application.Features.Recurring.Commands.Update

@@ -4,7 +4,7 @@ using FinanceCore.Application.DTOs;
 using FinanceCore.Application.Models.FinanceCore.Infrastructure.Models;
 using FinanceCore.Domain.Categories;
 using FinanceCore.Domain.Enums;
-using FinanceCore.Infrastructure.context;
+using FinanceCore.Infrastructure.Context;
 using FinanceCore.Infrastructure.Mappers;
 using System.Data;
 

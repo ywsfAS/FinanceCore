@@ -1,14 +1,8 @@
 using FinanceCore.Application.Abstractions;
 using FinanceCore.Application.DTOs.RecurringTransaction;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics.Contracts;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace FinanceCore.Application.Features.Recurring.queries.GetRecurringById
+namespace FinanceCore.Application.Features.Recurring.Queries.GetRecurringById
 {
     public class GetRecurringHandler : IRequestHandler<GetRecurringByIdQuery,RecurringTransactionDto?>
     {
