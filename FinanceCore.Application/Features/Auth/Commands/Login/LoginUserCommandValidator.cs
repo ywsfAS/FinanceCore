@@ -6,7 +6,7 @@ namespace FinanceCore.Application.Features.Auth.Commands.Login
     {
         public LoginUserCommandValidator() { 
             RuleFor(x => x.Email).NotEmpty().EmailAddress();
-            RuleFor(x => x.Password).NotEmpty().MaximumLength(15);
+            RuleFor(x => x.Password).NotEmpty().MinimumLength(8).MaximumLength(128);
        
         }
     }

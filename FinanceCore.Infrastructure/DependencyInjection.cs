@@ -52,8 +52,6 @@ namespace FinanceCore.Infrastructure
             services.AddScoped<IBudgetRepository, CacheBudgetRepository>();
             services.AddScoped<IUserRepository, CacheUserRepository>();
             services.AddScoped<ITransactionRepository, CacheTransactionRepository>();
-            services.AddScoped<IBudgetRepository, BudgetRepository>();
-            services.AddScoped<ICategoryRepository, CategoryRepository>();
             services.AddScoped<IAuditRepository, AuditLogRepository>();
             services.AddScoped<IRecurringTransactionRepository , RecurringTransactionRepository>();
             services.AddScoped<ISavingsGoalRepository,SavingsGoalRepository>();
@@ -103,6 +101,11 @@ namespace FinanceCore.Infrastructure
             });
             var emailSection = config.GetSection("EmailSettings");
             services.Configure<EmailSettings>(emailSection);
+
+            var frontendSettingsSection = config.GetSection("Frontend");
+            services.Configure<FrontendOptions>(frontendSettingsSection);
+
+            services.AddSingleton<IFrontendSettingsProvider, FrontendSettingsProvider>();
 
             return services;
         }

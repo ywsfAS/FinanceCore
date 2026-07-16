@@ -4,6 +4,7 @@ using FinanceCore.Application.Features.Contact.Commands.Create;
 using FinanceCore.Application.Features.Contact.Commands.Mark;
 using FinanceCore.Domain.Common;
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 
@@ -11,6 +12,7 @@ namespace FinanceCore.API.Controllers
 {
     [EnableRateLimiting("Default")]
     [ApiController]
+    [Authorize]
     [Route("api/v1/contacts")]
     public class ContactMessageController : ControllerBase
     {
