@@ -4,11 +4,6 @@ using FinanceCore.Domain.Categories;
 using FinanceCore.Domain.Enums;
 using FinanceCore.Infrastructure.Repositories;
 using Microsoft.Extensions.Caching.Memory;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FinanceCore.Infrastructure.Persistence
 {

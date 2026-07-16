@@ -1,13 +1,8 @@
 using FinanceCore.Application.Abstractions;
 using FinanceCore.Domain.Common;
 using Microsoft.Extensions.Options;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net;
 using System.Net.Mail;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FinanceCore.Infrastructure.Services
 {

@@ -1,7 +1,6 @@
 using FinanceCore.Application.Abstractions;
 using FinanceCore.Application.DTOs;
 using FinanceCore.Application.DTOs.Transaction;
-using FinanceCore.Application.Models;
 using FinanceCore.Domain.Enums;
 using FinanceCore.Domain.Transactions;
 using FinanceCore.Infrastructure.Repositories;

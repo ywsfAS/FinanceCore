@@ -1,13 +1,7 @@
 using FinanceCore.Application.Abstractions;
 using FinanceCore.Application.DTOs;
 using FinanceCore.Domain.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http.Json;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Extensions.Options;
 
 namespace FinanceCore.Infrastructure.Services

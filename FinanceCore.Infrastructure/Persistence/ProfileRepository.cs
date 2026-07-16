@@ -5,7 +5,6 @@ using FinanceCore.Domain.Profile;
 using FinanceCore.Infrastructure.Context;
 using FinanceCore.Infrastructure.Mappers;
 using System.Data;
-using System.Formats.Tar;
 
 namespace FinanceCore.Infrastructure.Persistence
 {

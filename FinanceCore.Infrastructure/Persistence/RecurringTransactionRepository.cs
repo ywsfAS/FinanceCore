@@ -7,7 +7,6 @@ using FinanceCore.Domain.Enums;
 using FinanceCore.Domain.RecurringTransaction;
 using FinanceCore.Infrastructure.Context;
 using FinanceCore.Infrastructure.Mappers;
-using System.Collections;
 using System.Data;
 using System.Text;
 

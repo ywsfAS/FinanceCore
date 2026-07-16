@@ -6,9 +6,7 @@ using FinanceCore.Domain.Accounts;
 using FinanceCore.Domain.Enums;
 using FinanceCore.Infrastructure.Context;
 using FinanceCore.Infrastructure.Mappers;
-using Microsoft.AspNetCore.Routing;
 using System.Data;
-using System.Linq;
 using System.Text;
 namespace FinanceCore.Infrastructure.Repositories
 {

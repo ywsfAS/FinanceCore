@@ -1,7 +1,6 @@
 using FinanceCore.Application.Models;
 using FinanceCore.Domain.RecurringTransaction;
 using FinanceCore.Domain.Enums;
-using System;
 using FinanceCore.Domain.Common;
 
 namespace FinanceCore.Infrastructure.Mappers

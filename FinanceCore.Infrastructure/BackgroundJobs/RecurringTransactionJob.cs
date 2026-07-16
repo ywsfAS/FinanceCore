@@ -1,12 +1,6 @@
 using FinanceCore.Application.Abstractions;
 using Quartz;
 using FinanceCore.Domain.Transactions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.VisualBasic;
 using Microsoft.Extensions.Logging;
 
 namespace FinanceCore.Infrastructure.BackgroundJobs

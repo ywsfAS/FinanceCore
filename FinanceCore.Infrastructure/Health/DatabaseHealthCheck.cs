@@ -1,12 +1,7 @@
 using Dapper;
 using FinanceCore.Infrastructure.Context;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FinanceCore.Infrastructure.Health
 {

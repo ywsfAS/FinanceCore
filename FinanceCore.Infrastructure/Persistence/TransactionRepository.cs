@@ -7,8 +7,6 @@ using FinanceCore.Domain.Enums;
 using FinanceCore.Domain.Transactions;
 using FinanceCore.Infrastructure.Context;
 using FinanceCore.Infrastructure.Mappers;
-using Microsoft.Extensions.Primitives;
-using Microsoft.IdentityModel.Protocols;
 using System.Text;
 
 namespace FinanceCore.Infrastructure.Repositories
