@@ -4,14 +4,12 @@ using FinanceCore.Application.Features.Report.ContributionsTrend;
 using FinanceCore.Application.Features.Report.GetBudgetHealth;
 using FinanceCore.Application.Features.Report.GetMonthlySummary;
 using FinanceCore.Application.Features.Report.GetMonthlyTrend;
-using FinanceCore.Application.Features.Report.GetSpendingByCategory;
 using FinanceCore.Application.Features.Report.GetSubscriptions;
 using FinanceCore.Application.Features.Report.GetSubscriptionsGrowth;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
-using Microsoft.AspNetCore.Routing.Constraints;
 using System.Security.Claims;
 
 namespace FinanceCore.API.Controllers

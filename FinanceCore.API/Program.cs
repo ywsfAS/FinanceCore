@@ -2,19 +2,10 @@ using FinanceCore.API;
 using FinanceCore.API.Configuration;
 using FinanceCore.Application;
 using FinanceCore.Infrastructure;
-using FinanceCore.Infrastructure.Services;
-using FluentValidation;
-using Microsoft.AspNetCore.Authentication.JwtBearer;
-using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.RateLimiting;
-using Microsoft.Extensions.Configuration;
-using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using Serilog;
-using Serilog.AspNetCore;
-using System.Text;
 using System.Text.Json.Serialization;
-using System.Threading.RateLimiting;
 
 var builder = WebApplication.CreateBuilder(args);
 

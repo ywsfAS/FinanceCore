@@ -1,7 +1,6 @@
 using FinanceCore.API.Models;
 using FinanceCore.Domain.Exceptions;
 using FluentValidation;
-using Microsoft.AspNetCore.Mvc;
 namespace FinanceCore.API
 {
     public class ExceptionMiddleware

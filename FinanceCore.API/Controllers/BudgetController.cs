@@ -1,7 +1,6 @@
 using FinanceCore.API.Requests;
 using FinanceCore.API.Requests.Budget;
 using FinanceCore.Application.DTOs;
-using FinanceCore.Application.Features.Accounts.Commands.Update;
 using FinanceCore.Application.Features.Budgets.Commands.Create;
 using FinanceCore.Application.Features.Budgets.Commands.Delete;
 using FinanceCore.Application.Features.Budgets.Commands.Update;
