@@ -17,6 +17,17 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinanceCore.Application.Tes
 EndProject
 Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "coinhive", "CoinHive\coinhive.esproj", "{56E3DEAF-1F98-032E-8E2D-2C1EAC1ED3B0}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "database", "database", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "migrations", "migrations", "{8A21DA98-8ED6-458F-B17A-1568083C04F7}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "procedures", "procedures", "{52073E5A-C174-41A6-9471-A414B95923B5}"
+	ProjectSection(SolutionItems) = preProject
+		sp_CreateExpense.sql = sp_CreateExpense.sql
+		sp_CreateIncome.sql = sp_CreateIncome.sql
+		sp_Transfer.sql = sp_Transfer.sql
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -56,6 +67,10 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{8A21DA98-8ED6-458F-B17A-1568083C04F7} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{52073E5A-C174-41A6-9471-A414B95923B5} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {380E1909-8C0F-4183-9D27-EBF6DE929C21}

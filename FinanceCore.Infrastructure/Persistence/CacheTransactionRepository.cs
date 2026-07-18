@@ -16,16 +16,6 @@ namespace FinanceCore.Infrastructure.Persistence
             _transactionRepository = transactionRepository;
             _memoryCache = memoryCache;
         }
-        public Task<Transaction?> GetByIdAsync(Guid id, CancellationToken token = default)
-        {
-            var key = $"Transaction_{id}";
-            return _memoryCache.GetOrCreateAsync(key, entry =>
-            {
-                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
-                return _transactionRepository.GetByIdAsync(id, token);
-            });
-
-        }
         public Task<TransactionDto> TransferAsync(Transaction transaction, CancellationToken token = default)
         {
             var key = $"Transfer_{transaction.Id}";

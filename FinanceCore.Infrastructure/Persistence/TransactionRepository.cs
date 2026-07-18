@@ -44,29 +44,6 @@ namespace FinanceCore.Infrastructure.Repositories
             var result = await connection.ExecuteScalarAsync<int?>(cmd);
             return result.HasValue;
         }
-
-        public async Task<TransactionModel?> GetModelByIdAsync(Guid id, CancellationToken token = default)
-        {
-            using var connection = _connectionFactory.GetConnection();
-
-            var sql = @"
-                SELECT t.Id, t.AccountId, t.ToAccountId, t.CategoryId,
-                       t.Amount, t.TransactionTypeId, t.Date, t.CreatedAt, t.UpdatedAt, t.Description
-                FROM Transactions t
-                INNER JOIN Accounts a ON a.Id = t.AccountId
-                WHERE t.Id = @Id AND a.UserId = @UserId";
-            var cmd = new CommandDefinition(sql, new { Id = id}, cancellationToken: token);
-            return await connection.QueryFirstOrDefaultAsync<TransactionModel>(cmd);
-
-
-        }
-        public async Task<Transaction?> GetByIdAsync(Guid id , CancellationToken token)
-        {
-            var model = await GetModelByIdAsync(id,token);
-            if (model == null) return null;
-            return TransactionMapper.MapToDomain(model);
-        }
-
         public async Task<TransactionDto?> GetDtoByIdAndUserId(Guid userId,Guid id,CancellationToken token = default)
         {
             using var connection = _connectionFactory.GetConnection();
@@ -74,12 +51,11 @@ namespace FinanceCore.Infrastructure.Repositories
             const string sql = @"
             SELECT
             t.Id,
-            t.CurrencyId AS Currency
+            t.CurrencyId AS Currency,
             a.Name  AS AccountName,
             ta.Name AS ToAccountName,
             c.Name  AS CategoryName,
             t.Amount,
-            a.CurrencyId AS Currency,
             t.TransactionTypeId AS Type,
             t.CreatedAt AS Date,
             t.Description
