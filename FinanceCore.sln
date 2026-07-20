@@ -17,6 +17,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinanceCore.Application.Tes
 EndProject
 Project("{54A90642-561A-4BB1-A94E-469ADEE60C69}") = "coinhive", "CoinHive\coinhive.esproj", "{56E3DEAF-1F98-032E-8E2D-2C1EAC1ED3B0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FinanceCore.Database", "FinanceCore.Database\FinanceCore.Database.csproj", "{475CD18E-526C-440B-B755-166F8D350D6F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -53,6 +55,10 @@ Global
 		{56E3DEAF-1F98-032E-8E2D-2C1EAC1ED3B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{56E3DEAF-1F98-032E-8E2D-2C1EAC1ED3B0}.Release|Any CPU.Build.0 = Release|Any CPU
 		{56E3DEAF-1F98-032E-8E2D-2C1EAC1ED3B0}.Release|Any CPU.Deploy.0 = Release|Any CPU
+		{475CD18E-526C-440B-B755-166F8D350D6F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{475CD18E-526C-440B-B755-166F8D350D6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{475CD18E-526C-440B-B755-166F8D350D6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{475CD18E-526C-440B-B755-166F8D350D6F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
