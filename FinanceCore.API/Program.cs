@@ -2,6 +2,8 @@ using FinanceCore.API;
 using FinanceCore.API.Configuration;
 using FinanceCore.Application;
 using FinanceCore.Infrastructure;
+using FinanceCore.Infrastructure.Health;
+using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.OpenApi.Models;
 using Serilog;
@@ -95,7 +97,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 app.UseHttpsRedirection();
-app.MapHealthChecks("health");
+app.MapHealthChecks("/health/live");
+app.MapHealthChecks("/health/ready", new HealthCheckOptions
+{
+    Predicate = check => check.Tags.Contains("ready"),
+    ResponseWriter = WriteHeathJsonReport.WriteHealthCheckResponse,
+});
 app.UseSerilogRequestLogging();
 
 

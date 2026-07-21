@@ -66,7 +66,7 @@ namespace FinanceCore.Infrastructure
             services.AddHttpClient<IExchangeRateApiService, ExchangeRateApiService>();
             services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
 
-            services.AddHealthChecks().AddCheck<DatabaseHealthCheck>("database",HealthStatus.Unhealthy);
+            services.AddHealthChecks().AddCheck<DatabaseHealthCheck>("database",HealthStatus.Unhealthy, tags : new[] {"ready"});
                 
 
             services.Configure<JwtSettings>(
