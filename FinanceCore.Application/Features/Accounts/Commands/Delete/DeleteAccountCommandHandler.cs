@@ -20,7 +20,7 @@ namespace FinanceCore.Application.Features.Accounts.Commands.Delete
             if (!isAccountExist)
                 throw new AccountNotFoundException(command.Id);
 
-            await _accountRepository.DeleteAsync(command.Id, cancellationToken);
+            await _accountRepository.DeleteAsync(command.UserId,command.Id, cancellationToken);
         }
     }
 }

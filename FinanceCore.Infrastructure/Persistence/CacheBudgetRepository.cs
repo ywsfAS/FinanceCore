@@ -119,9 +119,9 @@ namespace FinanceCore.Infrastructure.Persistence
         {
             return _budgetRepository.UpdateAsync(budget, cancellationToken);
         }
-        public Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
+        public Task DeleteAsync(Guid userId , Guid id, CancellationToken cancellationToken = default)
         {
-            return _budgetRepository.DeleteAsync(id, cancellationToken);
+            return _budgetRepository.DeleteAsync(userId,id, cancellationToken);
         }
         public Task<bool> IsExists(Guid userId, Guid id, CancellationToken token = default)
         {

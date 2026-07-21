@@ -12,7 +12,6 @@ namespace FinanceCore.Application.Abstractions
         Task<TransactionDto> IncomeTransactionAsync(Transaction transaction, CancellationToken? token = default);
         Task<TransactionDto> ExpenseTransactionAsync(Transaction transaction, CancellationToken? token = default);
         Task<IEnumerable<TransactionDto>> GetFilteredTransactionsAsync(Guid userId , Guid? accountId,Guid? toAccountId,Guid? categoryId, DateTime? start, DateTime? end, EnTransactionType? type, int page, int pageSize,CancellationToken token);
-        Task UpdateAsync(Transaction transaction, CancellationToken token = default);
         Task DeleteAsync(Guid id, CancellationToken token = default);
         // Get a single transaction read/write
         Task<Transaction?> GetByIdAndUserId(Guid userId , Guid id , CancellationToken token = default);

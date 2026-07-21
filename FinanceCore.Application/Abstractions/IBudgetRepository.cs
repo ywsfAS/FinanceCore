@@ -14,7 +14,7 @@ namespace FinanceCore.Application.Abstractions
         Task<Budget?> GetByIdAndUserIdAsync(Guid userId, Guid id, CancellationToken token);
         Task AddAsync(Budget budget, CancellationToken cancellationToken = default);
         Task UpdateAsync(Budget budget, CancellationToken cancellationToken = default);
-        Task DeleteAsync(Guid id, CancellationToken cancellationToken = default);
+        Task DeleteAsync(Guid userId , Guid id, CancellationToken cancellationToken = default);
         Task<bool> IsExists(Guid userId, Guid id, CancellationToken token = default);
         Task<IEnumerable<BudgetInfoDto>?> GetBudgetsFilteredAsync(Guid userId , string? name , Guid? categoryId , EnPeriod? period , int page  , int pageSize, CancellationToken token);
     }

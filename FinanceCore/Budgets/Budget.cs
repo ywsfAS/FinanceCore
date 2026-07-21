@@ -19,6 +19,8 @@ namespace FinanceCore.Domain.Budgets
         public DateTime CreatedAt { get; private set; }
         public DateTime? UpdatedAt { get; private set; }
 
+        public byte[]? RowVersion { get; private set; }
+
         public Budget() { }
 
         private Budget(
@@ -33,6 +35,9 @@ namespace FinanceCore.Domain.Budgets
             DateTime createdAt,
             DateTime? updatedAt,
             Money? spent = null
+            ,
+            byte[]? rowVersion = null
+
             )
         {
             Id = budgetId;
@@ -46,6 +51,7 @@ namespace FinanceCore.Domain.Budgets
             CreatedAt = createdAt;
             UpdatedAt = updatedAt;
             Spent = spent;
+            RowVersion = rowVersion;
         }
 
         // Reconstitute from persistence
@@ -60,12 +66,13 @@ namespace FinanceCore.Domain.Budgets
             DateTime endDate,
             DateTime createdAt,
             DateTime? updatedAt = null,
-            Money? spent = null
+            Money? spent = null,
+            byte[]? rowVersion = null
             )
         {
             return new Budget(
                 budgetId, userId, categoryId, name,
-                amount, period, startDate, endDate, createdAt, updatedAt,spent);
+                amount, period, startDate, endDate, createdAt, updatedAt,spent,rowVersion);
         }
 
         // Create new budget

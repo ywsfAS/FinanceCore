@@ -1,4 +1,5 @@
 using FinanceCore.API.Models;
+using FinanceCore.Application.Exceptions;
 using FinanceCore.Domain.Exceptions;
 using FluentValidation;
 namespace FinanceCore.API
@@ -77,6 +78,14 @@ namespace FinanceCore.API
                     problemDetail.Type = ErrorCodes.Conflict;
                     problemDetail.Title = "Operation conflict.";
                     problemDetail.Detail = invalidOpException.Message;
+                    break;
+
+                case ConcurrencyException concurrencyException:
+                    context.Response.StatusCode = StatusCodes.Status409Conflict;
+                    problemDetail.Status = StatusCodes.Status409Conflict;
+                    problemDetail.Type = ErrorCodes.Conflict;
+                    problemDetail.Title = "Concurrency conflict.";
+                    problemDetail.Detail = concurrencyException.Message;
                     break;
 
                 case UnauthorizedAccessException unauthorizedException:

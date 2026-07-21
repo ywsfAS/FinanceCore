@@ -1,18 +1,23 @@
 using Dapper;
 using FinanceCore.Application.Abstractions;
 using FinanceCore.Application.DTOs;
+using FinanceCore.Application.Exceptions;
 using FinanceCore.Application.Models;
 using FinanceCore.Domain.Budgets;
 using FinanceCore.Domain.Enums;
-using FinanceCore.Infrastructure.Mappers;
 using FinanceCore.Infrastructure.Context;
+using FinanceCore.Infrastructure.Mappers;
 using System.Text;
 
 namespace FinanceCore.Infrastructure.Repositories
 {
     public class BudgetRepository : IBudgetRepository
     {
-        private readonly IConnectionFactory  _connectionFactory;
+        private readonly IConnectionFactory _connectionFactory;
+
+        private const string BudgetColumns = @"
+                Id, UserId, CategoryId, Name, Amount, CurrencyId,
+                BudgetPeriodId, StartDate, EndDate, CreatedAt, UpdatedAt, RowVersion";
 
         public BudgetRepository(IConnectionFactory connectionFactory)
         {
@@ -36,13 +41,12 @@ namespace FinanceCore.Infrastructure.Repositories
             return result.HasValue;
         }
 
-        // Get budget by Id
         public async Task<Budget?> GetByIdAsync(Guid id, CancellationToken token)
         {
             using var connection = _connectionFactory.GetConnection();
 
-            const string sql = @"
-                SELECT *
+            var sql = $@"
+                SELECT {BudgetColumns}
                 FROM Budgets
                 WHERE Id = @Id";
 
@@ -53,13 +57,12 @@ namespace FinanceCore.Infrastructure.Repositories
             return model is null ? null : BudgetMapper.MapToDomain(model);
         }
 
-        // Get budget overlapping a category period
         public async Task<BudgetDto?> GetByCategoryIdAsync(Guid userId, Guid categoryId, DateTime start, DateTime end, CancellationToken token)
         {
             using var connection = _connectionFactory.GetConnection();
 
-            const string sql = @"
-                SELECT TOP 1 *
+            var sql = $@"
+                SELECT TOP 1 {BudgetColumns}
                 FROM Budgets
                 WHERE UserId = @UserId
                   AND CategoryId = @CategoryId
@@ -85,8 +88,8 @@ namespace FinanceCore.Infrastructure.Repositories
         {
             using var connection = _connectionFactory.GetConnection();
 
-            const string sql = @"
-                SELECT *
+            var sql = $@"
+                SELECT {BudgetColumns}
                 FROM Budgets
                 WHERE UserId = @UserId";
 
@@ -102,8 +105,8 @@ namespace FinanceCore.Infrastructure.Repositories
         {
             using var connection = _connectionFactory.GetConnection();
 
-            const string sql = @"
-                SELECT *
+            var sql = $@"
+                SELECT {BudgetColumns}
                 FROM Budgets
                 WHERE UserId = @UserId";
 
@@ -154,25 +157,29 @@ namespace FinanceCore.Infrastructure.Repositories
                     EndDate = @EndDate,
                     UpdatedAt = @UpdatedAt,
                     Name = @Name
-                WHERE Id = @Id AND UserId = @UserId";
+                WHERE Id = @Id AND UserId = @UserId AND RowVersion = @RowVersion";
 
             var model = BudgetMapper.MapToModel(budget);
 
             var cmd = new CommandDefinition(sql, model, cancellationToken: token);
 
-            await connection.ExecuteAsync(cmd);
+            var result = await connection.ExecuteAsync(cmd);
+            if (result == 0)
+            {
+                throw new ConcurrencyException("The budget was modified by another request.");
+            }
         }
 
         // Delete budget
-        public async Task DeleteAsync(Guid id, CancellationToken token)
+        public async Task DeleteAsync(Guid userId , Guid id, CancellationToken token)
         {
             using var connection = _connectionFactory.GetConnection();
 
             const string sql = @"
                 DELETE FROM Budgets
-                WHERE Id = @Id";
+                WHERE Id = @Id AND UserId = @UserId";
 
-            var cmd = new CommandDefinition(sql, new { Id = id }, cancellationToken: token);
+            var cmd = new CommandDefinition(sql, new { Id = id , UserId = userId }, cancellationToken: token);
 
             await connection.ExecuteAsync(cmd);
         }
@@ -236,13 +243,14 @@ namespace FinanceCore.Infrastructure.Repositories
 
             return await connection.QueryAsync<BudgetInfoDto>(command);
         }
+
         // Get by Id + UserId
         public async Task<Budget?> GetByIdAndUserIdAsync(Guid userId, Guid id, CancellationToken token)
         {
             using var connection = _connectionFactory.GetConnection();
 
-            const string sql = @"
-                SELECT *
+            var sql = $@"
+                SELECT {BudgetColumns}
                 FROM Budgets
                 WHERE Id = @Id AND UserId = @UserId";
 

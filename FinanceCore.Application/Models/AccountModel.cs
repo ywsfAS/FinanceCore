@@ -13,6 +13,7 @@ namespace FinanceCore.Application.Models
         public bool IsActive { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
+        public byte[]? RowVersion { get; set; } = null;
     }
 
 }

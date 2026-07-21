@@ -14,6 +14,7 @@ namespace FinanceCore.Domain.Accounts
         public Money Balance { get; private set; }
         public Money InitialBalance { get; private set; }
         public bool IsActive { get; private set; }
+        public byte[]? RowVersion { get; private set; }
         public DateTime CreatedAt { get; private set; }
         public DateTime? UpdatedAt { get; private set; }
 
@@ -28,7 +29,9 @@ namespace FinanceCore.Domain.Accounts
             Money initialBalance,
             bool isActive,
             DateTime createdAt,
-            DateTime? updatedAt)
+            DateTime? updatedAt,
+            byte[]? rowVersion
+            )
         {
             Id = accountId;
             UserId = userId;
@@ -39,6 +42,7 @@ namespace FinanceCore.Domain.Accounts
             IsActive = isActive;
             CreatedAt = createdAt;
             UpdatedAt = updatedAt;
+            RowVersion = rowVersion;
         }
 
         // Reconstitute from persistence
@@ -51,9 +55,11 @@ namespace FinanceCore.Domain.Accounts
             Money initialBalance,
             bool isActive,
             DateTime createdAt,
-            DateTime? updatedAt = null)
+            DateTime? updatedAt = null,
+            byte[]? rowVersion = null
+            )
         {
-            return new Account(id, userId, name, type, balance,initialBalance, isActive, createdAt, updatedAt);
+            return new Account(id, userId, name, type, balance,initialBalance, isActive, createdAt, updatedAt,rowVersion);
         }
 
         // Create new account

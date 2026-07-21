@@ -1,6 +1,7 @@
 using Dapper;
 using FinanceCore.Application.Abstractions;
 using FinanceCore.Application.DTOs;
+using FinanceCore.Application.Exceptions;
 using FinanceCore.Application.Models;
 using FinanceCore.Domain.Accounts;
 using FinanceCore.Domain.Enums;
@@ -85,7 +86,8 @@ namespace FinanceCore.Infrastructure.Repositories
             IsActive = @IsActive,
             UpdatedAt = @UpdatedAt
             WHERE Id = @Id
-          AND UserId = @UserId";
+            AND UserId = @UserId
+            AND RowVersion = @RowVersion";
 
             var model = AccountMapper.MapToModel(account);
 
@@ -99,18 +101,18 @@ namespace FinanceCore.Infrastructure.Repositories
                     commandType: CommandType.Text));
 
             if (affectedRows == 0)
-                throw new KeyNotFoundException("Account not found or does not belong to the user.");
+                throw new ConcurrencyException("The account was modified by another request.");
         }
 
-        public async Task DeleteAsync(Guid id, CancellationToken token = default)
+        public async Task DeleteAsync(Guid userId ,Guid id, CancellationToken token = default)
         {
             const string sql = @"
                 DELETE FROM Accounts
-                WHERE Id = @Id";
+                WHERE UserId = @UserId AND Id = @Id";
 
             using var connection = _connectionFactory.GetConnection();
             await connection.ExecuteAsync(
-                new CommandDefinition(sql, new { Id = id }, cancellationToken: token, commandType: CommandType.Text));
+                new CommandDefinition(sql, new { Id = id , UserId = userId }, cancellationToken: token));
         }
 
         public async Task<Account?> GetByIdAndUserIdAsync(Guid userId, Guid id, CancellationToken token = default)
@@ -154,7 +156,8 @@ namespace FinanceCore.Infrastructure.Repositories
                        InitialBalance,
                        IsActive,
                        CreatedAt,
-                       UpdatedAt
+                       UpdatedAt,
+                       RowVersion
                 FROM Accounts
                 WHERE Id = @Id AND UserId = @UserId";
 

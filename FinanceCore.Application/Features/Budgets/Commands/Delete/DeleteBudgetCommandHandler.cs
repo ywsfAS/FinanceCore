@@ -1,4 +1,4 @@
-﻿using FinanceCore.Application.Abstractions;
+using FinanceCore.Application.Abstractions;
 using MediatR;
 using FinanceCore.Domain.Exceptions;
 namespace FinanceCore.Application.Features.Budgets.Commands.Delete
@@ -19,7 +19,7 @@ namespace FinanceCore.Application.Features.Budgets.Commands.Delete
             if (!result)
                 throw new BudgetNotFoundException(command.Id);
 
-            await _budgetRepository.DeleteAsync(command.Id, cancellationToken);
+            await _budgetRepository.DeleteAsync(command.UserId,command.Id, cancellationToken);
         }
     }
 }

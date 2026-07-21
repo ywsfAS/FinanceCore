@@ -74,10 +74,6 @@ namespace FinanceCore.Infrastructure.Persistence
                 return _transactionRepository.GetFilteredTransactionsAsync(userId,accountId,toAccountId,categoryId, start, end, type, page, pageSize,token);
             });
         }
-        public Task UpdateAsync(Transaction transaction, CancellationToken token = default)
-        {
-            return _transactionRepository.UpdateAsync(transaction, token);
-        }
         public Task DeleteAsync(Guid id, CancellationToken token = default)
         {
             return _transactionRepository.DeleteAsync(id, token);

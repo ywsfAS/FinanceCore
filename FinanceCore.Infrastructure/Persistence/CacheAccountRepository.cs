@@ -72,9 +72,9 @@ namespace FinanceCore.Infrastructure.Persistence
              return _accountRepository.UpdateAsync(account, token);
      
         }
-        public  Task DeleteAsync(Guid accountId, CancellationToken token = default)
+        public  Task DeleteAsync(Guid userId, Guid accountId, CancellationToken token = default)
         {
-            return _accountRepository.DeleteAsync(accountId,token);
+            return _accountRepository.DeleteAsync(userId, accountId,token);
         }
         public Task<bool> IsExistsAsync(Guid userId, Guid id, CancellationToken token = default)
         {

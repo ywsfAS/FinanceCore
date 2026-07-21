@@ -129,15 +129,6 @@ namespace FinanceCore.Infrastructure.Repositories
                 TransactionDate = model.Date
             });
         }
-
-        public async Task UpdateAsync(Transaction transaction, CancellationToken token = default)
-        {
-            using var connection = _connectionFactory.GetConnection();
-            const string sql = @"";
-            var command = new CommandDefinition(sql,cancellationToken : token);
-            await connection.ExecuteAsync(command);
-        }
-
         public async Task DeleteAsync(Guid id, CancellationToken token = default)
         {
             using var connection = _connectionFactory.GetConnection();
