@@ -115,7 +115,7 @@ public class SavingsGoal : AggregateRoot
     {
         return CurrentAmount.IsGreaterOrEqual(TargetAmount);
     }
-    public SavingsContribution AddContribution(Guid accountId,DateTime date,Money amount,string? description)
+    public SavingsContribution AddContribution(Guid accountId,DateTime date,Money amount,string? description = null)
     {
         if(accountId == Guid.Empty) throw new AccountNotFoundException(accountId);
         if (Status != EnGoalStatus.Active)
@@ -123,6 +123,10 @@ public class SavingsGoal : AggregateRoot
 
         if (amount.IsLessOrEqual(Money.Zero(amount.Currency)))
             throw new InvalidContributionAmountException(amount.Amount);
+        if (IsCompleted())
+        {
+            throw new InvalidOperationException("Cannot contribute to a completed goal");
+        }
         var contribution = SavingsContribution.Create(Id, accountId, amount, date, description);
         // fire Contribution event
         AddDomainEvent(new GoalContributionAddedEvent(
@@ -131,16 +135,17 @@ public class SavingsGoal : AggregateRoot
             amount
             ));
 
+        CurrentAmount = CurrentAmount.Add(amount);
         // Check if goal completed
         if (IsCompleted())
         {
             Complete();
         }
-        CurrentAmount.Add(amount);
+        UpdatedAt = DateTime.UtcNow;
         return contribution;
     }
 
-    public SavingsContribution WithdrawContribution(Guid accountId , Money amount , string? description)
+    public SavingsContribution WithdrawContribution(Guid accountId , Money amount , string? description = null)
     {
         if (Status == EnGoalStatus.Completed)
             throw new CannotWithdrawFromCompletedGoalException(Id); ;

@@ -21,7 +21,7 @@ namespace FinanceCore.Domain.Users
             Email email,
             string passwordHash,
             string? timeZone,
-            DateTime createdAt,
+            DateTime? createdAt,
             DateTime? updatedAt = null)
         {
             Id = id;
@@ -29,7 +29,7 @@ namespace FinanceCore.Domain.Users
             Email = email;
             PasswordHash = passwordHash;
             TimeZone = timeZone;
-            CreatedAt = createdAt;
+            CreatedAt = createdAt ?? DateTime.UtcNow;
             UpdatedAt = updatedAt;
         }
 
@@ -39,8 +39,8 @@ namespace FinanceCore.Domain.Users
             string name,
             Email email,
             string passwordHash,
-            string? timeZone,
-            DateTime createdAt,
+            string? timeZone = null,
+            DateTime? createdAt = null,
             DateTime? updatedAt = null)
         {
             return new User(id, name, email, passwordHash, timeZone, createdAt, updatedAt);

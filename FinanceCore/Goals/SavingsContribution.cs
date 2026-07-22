@@ -29,7 +29,6 @@ namespace FinanceCore.Domain.Goals
             if(accountId == Guid.Empty) throw new AccountNotFoundException(accountId);
             if (amount == null || amount.IsLessOrEqual(Money.Zero(amount.Currency))) throw new MoneyIsNegativeException();
             if(date == DateTime.MinValue) throw new ArgumentException("Date is not valid");
-            if (string.IsNullOrEmpty(description)) throw new ArgumentException("description cannot be empty");
 
 
             return new SavingsContribution

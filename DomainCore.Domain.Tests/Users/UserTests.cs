@@ -3,8 +3,6 @@ using FinanceCore.Domain.Enums;
 using FinanceCore.Domain.Exceptions;
 using FinanceCore.Domain.Users;
 using FluentAssertions;
-using System;
-using Xunit;
 
 namespace FinanceCore.Domain.Tests.Users
 {
@@ -17,17 +15,15 @@ namespace FinanceCore.Domain.Tests.Users
             var name = "John Doe";
             var email = new Email("john@example.com");
             var passwordHash = "hashed_password";
-            var defaultCurrency = EnCurrency.USD;
             var timeZone = "UTC";
 
             // Act
-            var user = User.Create(name, email, passwordHash, defaultCurrency, timeZone);
+            var user = User.Create(Guid.NewGuid(),name, email, passwordHash, timeZone);
 
             // Assert
             user.Name.Should().Be(name);
             user.Email.Address.Should().Be(email.Address);
             user.PasswordHash.Should().Be(passwordHash);
-            user.DefaultCurrency.Should().Be(defaultCurrency);
             user.TimeZone.Should().Be(timeZone);
             user.UpdatedAt.Should().BeNull();
         }
@@ -60,7 +56,7 @@ namespace FinanceCore.Domain.Tests.Users
         public void CreateUser_WithInvalidTimeZone_ShouldThrow()
         {
             var email = new Email("john@example.com");
-            Action act = () => User.Create("John", email, "hash", EnCurrency.USD, "InvalidTZ");
+            Action act = () => User.Create("John", email, "hash", "InvalidTZ");
             act.Should().Throw<InvalidTimeZoneException>();
         }
 
@@ -139,26 +135,6 @@ namespace FinanceCore.Domain.Tests.Users
 
             Action act = () => user.ChangePassword("newhash", "wrongold");
             act.Should().Throw<InvalidCredentialsException>();
-        }
-
-        [Fact]
-        public void ChangeDefaultCurrency_ShouldUpdateCurrency()
-        {
-            var user = User.Create("John", new Email("john@example.com"), "hash", EnCurrency.USD);
-
-            user.ChangeDefaultCurrency(EnCurrency.EUR);
-
-            user.DefaultCurrency.Should().Be(EnCurrency.EUR);
-            user.UpdatedAt.Should().NotBeNull();
-        }
-
-        [Fact]
-        public void ChangeDefaultCurrency_SameCurrency_ShouldThrow()
-        {
-            var user = User.Create("John", new Email("john@example.com"), "hash", EnCurrency.USD);
-
-            Action act = () => user.ChangeDefaultCurrency(EnCurrency.USD);
-            act.Should().Throw<CurrencyUnchangedException>();
         }
     }
 }
