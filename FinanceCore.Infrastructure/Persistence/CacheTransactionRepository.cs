@@ -135,5 +135,9 @@ namespace FinanceCore.Infrastructure.Persistence
                 return _transactionRepository.IsExistsAsync(userId, id, token);
             });
         }
+        public Task AddAsync(Transaction transaction , IUnitOfWork? unitOfWork = null , CancellationToken cancellationToken = default)
+        {
+            return _transactionRepository.AddAsync(transaction , unitOfWork , cancellationToken);
+        }
     }
 }

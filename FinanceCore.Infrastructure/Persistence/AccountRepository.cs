@@ -74,7 +74,7 @@ namespace FinanceCore.Infrastructure.Repositories
             if (affectedRows == 0)
                 throw new InvalidOperationException("Failed to insert account into the database.");
         }
-        public async Task UpdateAsync(Account account, CancellationToken token = default)
+        public async Task UpdateAsync(Account account , IUnitOfWork? unitOfWork = null, CancellationToken token = default)
         {
             const string sql = @"
             UPDATE Accounts
@@ -90,15 +90,22 @@ namespace FinanceCore.Infrastructure.Repositories
             AND RowVersion = @RowVersion";
 
             var model = AccountMapper.MapToModel(account);
-
-            using var connection = _connectionFactory.GetConnection();
-
-            var affectedRows = await connection.ExecuteAsync(
-                new CommandDefinition(
+            var cmd = new CommandDefinition(
                     sql,
                     model,
                     cancellationToken: token,
-                    commandType: CommandType.Text));
+                    transaction : unitOfWork.Transaction,
+                    commandType: CommandType.Text);
+            int affectedRows = 0;
+            if(unitOfWork != null)
+            {
+               affectedRows = await unitOfWork.Connection.ExecuteAsync(cmd);
+            }
+            else
+            {
+                using var connection = _connectionFactory.GetConnection();
+                affectedRows = await connection.ExecuteAsync(cmd);
+            }
 
             if (affectedRows == 0)
                 throw new ConcurrencyException("The account was modified by another request.");

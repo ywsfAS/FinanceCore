@@ -21,7 +21,7 @@ namespace FinanceCore.Application.Features.Accounts.Commands.Update
 
             account.UpdateDetails(command.Name,command.AccountType);
 
-            await _accountRepository.UpdateAsync(account, cancellationToken);
+            await _accountRepository.UpdateAsync(account,null,cancellationToken);
         }
     }
 }

@@ -15,7 +15,7 @@ namespace FinanceCore.Infrastructure.Repositories
     {
         private readonly IConnectionFactory _connectionFactory;
 
-        public TransactionRepository(IConnectionFactory connectionFactory)
+        public TransactionRepository(IConnectionFactory connectionFactory )
         {
             _connectionFactory = connectionFactory;
         }
@@ -34,7 +34,18 @@ namespace FinanceCore.Infrastructure.Repositories
             var cmd = new CommandDefinition(sql, new { Id = id, UserId = userId }, cancellationToken: token);
             return await connection.QuerySingleOrDefaultAsync<TransactionModel>(cmd);
         }
+        public async Task AddAsync(Transaction transaction , IUnitOfWork? unitOfWork = null ,CancellationToken token = default)
+        {
+            var sql = "";
 
+            var model = TransactionMapper.MapToModel(transaction);
+            var cmd = new CommandDefinition(sql,model, unitOfWork.Transaction , cancellationToken: token);
+            if (unitOfWork != null) {
+                await unitOfWork.Connection.ExecuteAsync(cmd);
+            }
+            using var connection = _connectionFactory.GetConnection();
+            await connection.ExecuteAsync(cmd);
+        }
         public async Task<bool> IsExistsAsync(Guid userId, Guid id, CancellationToken token)
         {
             using var connection = _connectionFactory.GetConnection();

@@ -8,6 +8,8 @@ namespace FinanceCore.Application.Abstractions
 {
     public interface ITransactionRepository
     {
+
+        Task AddAsync(Transaction transaction, IUnitOfWork? unitOfWork = null, CancellationToken token = default);
         Task<TransactionDto> TransferAsync(Transaction transaction, CancellationToken token = default);
         Task<TransactionDto> IncomeTransactionAsync(Transaction transaction, CancellationToken? token = default);
         Task<TransactionDto> ExpenseTransactionAsync(Transaction transaction, CancellationToken? token = default);

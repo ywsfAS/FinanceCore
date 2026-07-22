@@ -1,4 +1,3 @@
-using Dapper;
 using FinanceCore.Application.Abstractions;
 using FinanceCore.Infrastructure.Auth;
 using FinanceCore.Infrastructure.BackgroundJobs;
@@ -59,6 +58,7 @@ namespace FinanceCore.Infrastructure
             services.AddScoped<IPasswordResetTokenRepository,PasswordResetTokenRepository>();
             services.AddScoped<IContactMessageRepository, ContactMessageRepository>();
             services.AddScoped<ITransactionExporter, TransactionExporter>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             services.AddScoped<IPasswordHasher, PasswordHasher>();
             services.AddScoped<ICurrencyConverter, CurrencyConverter>();
