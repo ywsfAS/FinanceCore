@@ -1,11 +1,7 @@
 using FinanceCore.Application.Abstractions;
 using MediatR;
 using FinanceCore.Domain.Exceptions;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using FinanceCore.Application.Events;
 
 namespace FinanceCore.Application.Features.Profiles.Commands.ProfileImage
 {
@@ -13,12 +9,15 @@ namespace FinanceCore.Application.Features.Profiles.Commands.ProfileImage
     {
         private readonly IImageStorage _imageStorage;
         private readonly IProfileRepository _profileRepository;
+        private readonly IMediator _eventBus;
 
         public UploadProfileImageHandler(
+            IMediator eventBus,
             IImageStorage imageStorage, IProfileRepository profileRepository)
         {
             _imageStorage = imageStorage;
             _profileRepository = profileRepository;
+            _eventBus = eventBus;
         }
 
         public async Task<string> Handle(UploadProfileImageCommand request, CancellationToken token)
@@ -34,6 +33,7 @@ namespace FinanceCore.Application.Features.Profiles.Commands.ProfileImage
                request.FileName,
                request.UserId);
             profile.UpdateAvatar(path);
+            await DomainEventDispatcher.DispatchAsync(_eventBus,profile, token);
             await _profileRepository.UpdateAsync(profile , token);
             return path;
         }

@@ -1,27 +1,25 @@
 using FinanceCore.Application.Abstractions;
 using FinanceCore.Application.DTOs;
+using FinanceCore.Application.Events;
 using FinanceCore.Domain.Profile;
-using FluentValidation.Internal;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.AccessControl;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FinanceCore.Application.Features.Profiles.Commands.Create
 {
     public class CreateProfileHandler : IRequestHandler<CreateProfileCommand, ProfileDto>
     {
         private readonly IProfileRepository _profileRepository;
-        public CreateProfileHandler(IProfileRepository profileRepository)
+        private readonly IMediator _eventBus;
+        public CreateProfileHandler(IProfileRepository profileRepository , IMediator eventBus)
         {
             _profileRepository = profileRepository;
+            _eventBus = eventBus;
         }
         public async Task<ProfileDto> Handle(CreateProfileCommand command , CancellationToken token)
         {
             var profile = Profile.Create(command.UserId, command.FirstName, command.LastName, command.Bio, "Not Selected", command.Curreny);
+            
+            await DomainEventDispatcher.DispatchAsync(_eventBus, profile,token);
             await _profileRepository.AddAsync(profile,token);
             return new ProfileDto
             {

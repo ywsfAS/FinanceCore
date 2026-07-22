@@ -1,4 +1,5 @@
 using FinanceCore.Application.Abstractions;
+using FinanceCore.Application.Events;
 using FinanceCore.Domain.Exceptions;
 using MediatR;
 using static FinanceCore.Domain.Exceptions.ResetPasswordException;
@@ -11,15 +12,17 @@ namespace FinanceCore.Application.Features.Auth.Commands.ResetPassword
         private readonly IPasswordResetTokenRepository _tokenRepository;
         private readonly IUserRepository _userRepository;
         private readonly IPasswordHasher _passwordHasher;
-
+        private readonly IMediator _eventBus;
         public ResetPasswordCommandHandler(
             IPasswordResetTokenRepository tokenRepository,
             IUserRepository userRepository,
+            IMediator eventBus,
             IPasswordHasher passwordHasher)
         {
             _tokenRepository = tokenRepository;
             _userRepository = userRepository;
             _passwordHasher = passwordHasher;
+            _eventBus = eventBus;
         }
 
         public async Task Handle(
@@ -44,6 +47,7 @@ namespace FinanceCore.Application.Features.Auth.Commands.ResetPassword
             var hashedPassword = _passwordHasher.Hash(request.NewPassword);
             user.ChangePassword(hashedPassword);
             await _userRepository.UpdateAsync(user);
+            await DomainEventDispatcher.DispatchAsync(_eventBus,user,cancellationToken);
             // Mark token as Used
             resetToken.MarkAsUsed();
             await _tokenRepository.MarkAsUsedAsync(resetToken,cancellationToken);

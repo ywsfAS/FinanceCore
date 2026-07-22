@@ -1,6 +1,7 @@
 using FinanceCore.Application.Abstractions;
 using MediatR;
 using FinanceCore.Domain.Exceptions;
+
 namespace FinanceCore.Application.Features.Profiles.Commands.Delete
 {
     public class DeleteProfileHandler : IRequestHandler<DeleteProfileCommand>

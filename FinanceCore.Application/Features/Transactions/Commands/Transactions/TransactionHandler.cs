@@ -1,11 +1,13 @@
 using FinanceCore.Application.Abstractions;
 using FinanceCore.Application.DTOs.Transaction;
+using FinanceCore.Application.Events;
 using FinanceCore.Domain.Accounts;
 using FinanceCore.Domain.Common;
 using FinanceCore.Domain.Enums;
 using FinanceCore.Domain.Exceptions;
 using FinanceCore.Domain.Transactions;
 using MediatR;
+using System.Transactions;
 
 namespace FinanceCore.Application.Features.Transactions.Commands.Transactions
 {
@@ -16,17 +18,20 @@ namespace FinanceCore.Application.Features.Transactions.Commands.Transactions
         private readonly IAccountRepository _accountRepository;
         private readonly ICategoryRepository _categoryRepository;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IMediator _eventBus;
 
         public TransactionHandler(
             ITransactionRepository transactionRepository,
             IAccountRepository accountRepository,
             ICategoryRepository categoryRepository,
+            IMediator bus,
             IUnitOfWork unitOfWork)
         {
             _transactionRepository = transactionRepository;
             _accountRepository = accountRepository;
             _categoryRepository = categoryRepository;
             _unitOfWork = unitOfWork;
+            _eventBus = bus;
         }
 
         public async Task<TransactionDto> Handle(
@@ -93,6 +98,10 @@ namespace FinanceCore.Application.Features.Transactions.Commands.Transactions
                     transaction,
                     _unitOfWork,
                     token);
+
+                // Dispatch events
+                await Task.WhenAll(new Entity[] {account,transaction}.Select(e => DomainEventDispatcher.DispatchAsync(_eventBus,e,token)));
+
 
                 await _unitOfWork.CommitAsync(token);
             }
@@ -161,6 +170,8 @@ namespace FinanceCore.Application.Features.Transactions.Commands.Transactions
                     transfer,
                     _unitOfWork,
                     token);
+
+                await Task.WhenAll(new Entity[] { account, transfer}.Select(e => DomainEventDispatcher.DispatchAsync(_eventBus, e, token)));
 
                 await _unitOfWork.CommitAsync(token);
             }

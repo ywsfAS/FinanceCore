@@ -2,6 +2,7 @@ using FinanceCore.Application.Abstractions;
 using MediatR;
 using FinanceCore.Domain.Exceptions;
 using FinanceCore.Domain.Common;
+using FinanceCore.Application.Events;
 
 namespace FinanceCore.Application.Features.SavingGoals.Commands.AddContribution
 {
@@ -9,10 +10,12 @@ namespace FinanceCore.Application.Features.SavingGoals.Commands.AddContribution
     {
         private readonly ISavingsGoalRepository _savingGoalRepository;
         private readonly IAccountRepository _accountRepository;
-        public AddContributionHandler(ISavingsGoalRepository _repo, IAccountRepository accountRepository)
+        private readonly IMediator _eventBus;
+        public AddContributionHandler(ISavingsGoalRepository _repo, IAccountRepository accountRepository , IMediator eventBus)
         {
             _savingGoalRepository = _repo;
             _accountRepository = accountRepository;
+            _eventBus = eventBus;
         }
         public async Task Handle(AddContributionCommand command, CancellationToken token)
         {
@@ -22,6 +25,7 @@ namespace FinanceCore.Application.Features.SavingGoals.Commands.AddContribution
             if(savingGoal is null) throw new GoalNotFoundException(command.GoalId);
             var amount = new Money(command.Amount, command.Currency);
             var contribution = savingGoal.AddContribution(command.AccountId, command.ContributionDate, amount, command.Description);
+            await DomainEventDispatcher.DispatchAsync(_eventBus, contribution,token);
             await _savingGoalRepository.AddContributionAsync(contribution, token);
             
         }
