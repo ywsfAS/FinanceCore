@@ -34,17 +34,62 @@ namespace FinanceCore.Infrastructure.Repositories
             var cmd = new CommandDefinition(sql, new { Id = id, UserId = userId }, cancellationToken: token);
             return await connection.QuerySingleOrDefaultAsync<TransactionModel>(cmd);
         }
-        public async Task AddAsync(Transaction transaction , IUnitOfWork? unitOfWork = null ,CancellationToken token = default)
+        public async Task AddAsync( Transaction transaction,IUnitOfWork? unitOfWork = null,CancellationToken token = default)
         {
-            var sql = "";
+            var sql = """
+        INSERT INTO Transactions
+        (
+            Id,
+            AccountId,
+            ToAccountId,
+            CategoryId,
+            Amount,
+            CurrencyId,
+            TransactionTypeId,
+            Date,
+            CreatedAt,
+            UpdatedAt,
+            Description
+        )
+        VALUES
+        (
+            @Id,
+            @AccountId,
+            @ToAccountId,
+            @CategoryId,
+            @Amount,
+            @CurrencyId,
+            @TransactionTypeId,
+            @Date,
+            @CreatedAt,
+            @UpdatedAt,
+            @Description
+        );
+        """;
 
             var model = TransactionMapper.MapToModel(transaction);
-            var cmd = new CommandDefinition(sql,model, unitOfWork.Transaction , cancellationToken: token);
-            if (unitOfWork != null) {
-                await unitOfWork.Connection.ExecuteAsync(cmd);
+
+            if (unitOfWork is not null)
+            {
+                var cmd = new CommandDefinition(
+                    sql,
+                    model,
+                    unitOfWork.Transaction,
+                    cancellationToken: token);
+
+                await unitOfWork.Connection!.ExecuteAsync(cmd);
+
+                return;
             }
+
             using var connection = _connectionFactory.GetConnection();
-            await connection.ExecuteAsync(cmd);
+
+            var command = new CommandDefinition(
+                sql,
+                model,
+                cancellationToken: token);
+
+            await connection.ExecuteAsync(command);
         }
         public async Task<bool> IsExistsAsync(Guid userId, Guid id, CancellationToken token)
         {
@@ -94,51 +139,6 @@ namespace FinanceCore.Infrastructure.Repositories
         {
             var model = await GetModelByIdAndUserIdAsync(userId, id, token);
             return model is null ? null : TransactionMapper.MapToDomain(model);
-        }
-
-        public async Task<TransactionDto> TransferAsync(
-            Transaction transaction,
-            CancellationToken token = default)
-        {
-            var model = TransactionMapper.MapToModel(transaction);
-
-            return await _connectionFactory.QuerySingleAsync<TransactionDto>(
-                "sp_Transfer",
-                new
-                {
-                    SourceAccountId = model.AccountId,
-                    DestinationAccountId = model.ToAccountId,
-                    Amount = model.Amount,
-                    Description = model.Description,
-                    TransactionDate = model.Date
-                });
-        }
-
-        public async Task<TransactionDto> IncomeTransactionAsync(Transaction transaction, CancellationToken? token = default)
-        {
-            var model = TransactionMapper.MapToModel(transaction);
-             return await _connectionFactory.QuerySingleAsync<TransactionDto>("sp_CreateIncome", new
-            {
-                AccountId = model.AccountId,
-                CategoryId = model.CategoryId,
-                Amount = model.Amount,
-                Description = model.Description,
-                TransactionDate = model.Date,
-            });
-
-        }
-
-        public async Task<TransactionDto> ExpenseTransactionAsync(Transaction transaction, CancellationToken? token = default)
-        {
-            var model = TransactionMapper.MapToModel(transaction);
-            return await _connectionFactory.QuerySingleAsync<TransactionDto>("sp_CreateExpense", new
-            {
-                AccountId = model.AccountId,
-                CategoryId = model.CategoryId,
-                Amount = model.Amount,
-                Description = model.Description,
-                TransactionDate = model.Date
-            });
         }
         public async Task DeleteAsync(Guid id, CancellationToken token = default)
         {

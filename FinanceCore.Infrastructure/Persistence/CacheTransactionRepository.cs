@@ -16,33 +16,6 @@ namespace FinanceCore.Infrastructure.Persistence
             _transactionRepository = transactionRepository;
             _memoryCache = memoryCache;
         }
-        public Task<TransactionDto> TransferAsync(Transaction transaction, CancellationToken token = default)
-        {
-            var key = $"Transfer_{transaction.Id}";
-            return _memoryCache.GetOrCreateAsync(key, entry =>
-            {
-                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
-                return _transactionRepository.TransferAsync(transaction, token);
-            });
-        }
-        public Task<TransactionDto> IncomeTransactionAsync(Transaction transaction, CancellationToken? token)
-        {
-            var key = $"Income_{transaction.Id}";
-            return _memoryCache.GetOrCreateAsync(key, entry =>
-            {
-                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
-                return _transactionRepository.IncomeTransactionAsync(transaction, token);
-            });
-        }
-        public Task<TransactionDto> ExpenseTransactionAsync(Transaction transaction, CancellationToken? token)
-        {
-            var key = $"Expense_{transaction.Id}";
-            return _memoryCache.GetOrCreateAsync(key, entry =>
-            {
-                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
-                return _transactionRepository.ExpenseTransactionAsync(transaction, token);
-            });
-        } 
         public Task<IEnumerable<BudgetHealthDataDto>?> GetBudgetHealthAsync(Guid userId , int page ,int pageSize , CancellationToken token = default)
         {
 
