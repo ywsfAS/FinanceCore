@@ -1,12 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using FluentValidation;
 
 namespace FinanceCore.Application.Features.Auth.Commands.Refresh
 {
-    internal class RefreshValidator
+    public class RefreshValidator : AbstractValidator<RefreshCommand>
     {
+        public RefreshValidator() {
+            RuleFor(x => x.refreshToken).NotEmpty(); 
+        }
     }
 }
