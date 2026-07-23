@@ -1,4 +1,5 @@
 using DbUp;
+using FinanceCore.Database;
 
 var connectionString =
     "Server=.;Database=FinanceCore;Trusted_Connection=True;TrustServerCertificate=True";
@@ -13,7 +14,6 @@ var upgrader =
         .Build();
 
 var result = upgrader.PerformUpgrade();
-
 if (!result.Successful)
 {
     Console.ForegroundColor = ConsoleColor.Red;
