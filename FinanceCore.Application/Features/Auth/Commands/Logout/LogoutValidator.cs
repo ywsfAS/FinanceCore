@@ -10,7 +10,7 @@ namespace FinanceCore.Application.Features.Auth.Commands.Logout
     public class LogoutValidator : AbstractValidator<LogoutCommand>
     {
         public LogoutValidator() {
-            RuleFor(x => x.refreshToken).NotEmpty();
+            RuleFor(x => x.RefreshToken).NotEmpty();
         }
     }
 }

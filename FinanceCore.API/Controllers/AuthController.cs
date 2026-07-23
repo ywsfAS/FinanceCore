@@ -3,6 +3,7 @@ using FinanceCore.Application.DTOs.Auth;
 using FinanceCore.Application.Features.Auth.Commands.ForgotPassword;
 using FinanceCore.Application.Features.Auth.Commands.Login;
 using FinanceCore.Application.Features.Auth.Commands.Logout;
+using FinanceCore.Application.Features.Auth.Commands.LogoutAll;
 using FinanceCore.Application.Features.Auth.Commands.Refresh;
 using FinanceCore.Application.Features.Auth.Commands.Register;
 using FinanceCore.Application.Features.Auth.Commands.ResetPassword;
@@ -111,6 +112,15 @@ namespace FinanceCore.API.Controllers
         {
             await _mediator.Send(command);
             return Ok("Logout successfully");
+        }
+        [HttpPost("logout-all")]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ValidationErrorDto),StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> LogoutAll([FromBody] LogoutAllCommand command)
+        {
+            await _mediator.Send(command);
+            return Ok("Logout all successfully");
         }
     }
 }

@@ -16,7 +16,7 @@ namespace FinanceCore.Application.Features.Auth.Commands.Logout
 
         public async Task Handle(LogoutCommand cmd , CancellationToken token)
         {
-            var hash = _hasher.Hash(cmd.refreshToken);
+            var hash = _hasher.Hash(cmd.RefreshToken);
             var refreshToken = await _refreshTokenRepository.GetByTokenHashAsync(hash,token);
             if (refreshToken is null) { 
                 throw new InvalidCredentialsException();
