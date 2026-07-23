@@ -7,7 +7,6 @@ using FinanceCore.Domain.Enums;
 using FinanceCore.Domain.Exceptions;
 using FinanceCore.Domain.Transactions;
 using MediatR;
-using System.Transactions;
 
 namespace FinanceCore.Application.Features.Transactions.Commands.Transactions
 {

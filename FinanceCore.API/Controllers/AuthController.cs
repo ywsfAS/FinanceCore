@@ -2,6 +2,7 @@ using FinanceCore.Application.DTOs;
 using FinanceCore.Application.DTOs.Auth;
 using FinanceCore.Application.Features.Auth.Commands.ForgotPassword;
 using FinanceCore.Application.Features.Auth.Commands.Login;
+using FinanceCore.Application.Features.Auth.Commands.Refresh;
 using FinanceCore.Application.Features.Auth.Commands.Register;
 using FinanceCore.Application.Features.Auth.Commands.ResetPassword;
 using MediatR;
@@ -91,5 +92,14 @@ namespace FinanceCore.API.Controllers
             return Ok("Password reset successful");
         }
 
+        [HttpPost("refresh")]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ValidationErrorDto),StatusCodes.Status400BadRequest)]
+        public async Task<IActionResult> Refresh([FromBody] RefreshCommand command)
+        {
+            await _mediator.Send(command);
+            return Ok("Refresh token successfully");
+        }
     }
 }

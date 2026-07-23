@@ -47,9 +47,8 @@ public sealed class RefreshTokenRepository : IRefreshTokenRepository
 
     public async Task AddAsync(
         RefreshToken token,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken, IUnitOfWork? unitOfWork)
     {
-        using var connection = _connectionFactory.GetConnection();
 
         const string sql = """
             INSERT INTO RefreshTokens
@@ -77,20 +76,25 @@ public sealed class RefreshTokenRepository : IRefreshTokenRepository
                 @CreatedAt
             );
             """;
+        var command = new CommandDefinition(
+                 sql,
+                 token,
+                 transaction : unitOfWork.Transaction,
+                 cancellationToken: cancellationToken);
 
-        await connection.ExecuteAsync(
-            new CommandDefinition(
-                sql,
-                token,
-                cancellationToken: cancellationToken));
+        if (unitOfWork is null) { 
+            using var connection = _connectionFactory.GetConnection();
+            await connection.ExecuteAsync(command);
+            return;
+        }
+        await unitOfWork.Connection.ExecuteAsync(command);
     }
 
     public async Task RevokeRefreshTokenAsync(
         Guid refreshTokenId,
         DateTime revokedAt,
-        CancellationToken cancellationToken)
+        CancellationToken cancellationToken,IUnitOfWork? unitOfWork)
     {
-        using var connection = _connectionFactory.GetConnection();
 
         const string sql = """
             UPDATE RefreshTokens
@@ -99,15 +103,22 @@ public sealed class RefreshTokenRepository : IRefreshTokenRepository
               AND RevokedAt IS NULL;
             """;
 
-        await connection.ExecuteAsync(
-            new CommandDefinition(
-                sql,
-                new
+        var command = new CommandDefinition(
+                 sql,
+                 new
                 {
                     RefreshTokenId = refreshTokenId,
                     RevokedAt = revokedAt
                 },
-                cancellationToken: cancellationToken));
+                 transaction : unitOfWork.Transaction,
+                 cancellationToken: cancellationToken);
+
+        if (unitOfWork is null) { 
+            using var connection = _connectionFactory.GetConnection();
+            await connection.ExecuteAsync(command);
+            return;
+        }
+        await unitOfWork.Connection.ExecuteAsync(command);
     }
 
     public async Task RevokeAllForUserAsync(

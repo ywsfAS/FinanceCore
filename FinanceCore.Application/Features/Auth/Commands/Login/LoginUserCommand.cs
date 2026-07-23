@@ -3,6 +3,6 @@ using MediatR;
 
 namespace FinanceCore.Application.Features.Auth.Commands.Login
 {
-    public record LoginUserCommand(string Email , string Password) : IRequest<LoginDto>;
+    public sealed record LoginUserCommand(string Email , string Password) : IRequest<LoginDto>;
 
 }

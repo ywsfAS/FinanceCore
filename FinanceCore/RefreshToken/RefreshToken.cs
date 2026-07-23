@@ -47,8 +47,8 @@ namespace FinanceCore.Domain.RefreshToken
             Guid userId,
             string tokenHash,
             DateTime expiresAt,
-            string? deviceLabel,
-            string? userAgent)
+            string? deviceLabel = null,
+            string? userAgent = null)
         {
             return new RefreshToken(
                 Guid.NewGuid(),
