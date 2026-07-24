@@ -39,7 +39,7 @@ namespace FinanceCore.Infrastructure
             new SqlConnectionFactory(connectionString));
 
             services.AddScoped<IEmailService, EmailService>();
-            services.AddScoped<IImageStorage, LocalImageStorage>();
+            services.AddSingleton<IImageStorage, LocalImageStorage>();
             services.AddMemoryCache();
             services.AddScoped<AccountRepository>();
             services.AddScoped<UserRepository>();
@@ -67,6 +67,7 @@ namespace FinanceCore.Infrastructure
             services.AddHttpClient<IExchangeRateApiService, ExchangeRateApiService>();
             services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
             services.AddScoped<IRefreshTokenGenerator, RefreshTokenGenerator>();
+            services.AddScoped<IImageProcessor, ImageProcessor>();
 
             services.AddHealthChecks().AddCheck<DatabaseHealthCheck>("database",HealthStatus.Unhealthy, tags : new[] {"ready"});
                 

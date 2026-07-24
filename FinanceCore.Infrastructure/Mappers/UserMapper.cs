@@ -9,11 +9,11 @@ namespace FinanceCore.Infrastructure.Mappers
         public static UserModel MapToModel(User user)
         {
   
-            return new UserModel { Id = user.Id, Name = user.Name, Email = user.Email.Address, PasswordHash = user.PasswordHash, TimeZone = user.TimeZone, CreatedAt = user.CreatedAt, UpdatedAt = user.UpdatedAt , role = (int)user.Role };
+            return new UserModel { Id = user.Id, Name = user.Name, Email = user.Email.Address, PasswordHash = user.PasswordHash, TimeZone = user.TimeZone, CreatedAt = user.CreatedAt, UpdatedAt = user.UpdatedAt , Role = (int)user.Role , LockedUntil = user.LockedUntil , Attempts = user.FailedLoginAttempts};
         }
         public static User MapToDomain(UserModel model)
         {
-            return User.Load(model.Id, model.Name,new Email(model.Email), model.PasswordHash,(UserRole)model.role, model.TimeZone,model.CreatedAt,model.UpdatedAt);
+            return User.Load(model.Id, model.Name,new Email(model.Email), model.PasswordHash,(UserRole)model.Role,model.Attempts,model.LockedUntil,model.TimeZone,model.CreatedAt,model.UpdatedAt);
 
         }
     }
