@@ -1,0 +1,5 @@
+ALTER TABLE Users 
+ADD FailedLoginAttempts INT NOT NULL DEFAULT 0;
+
+ALTER TABLE Users
+ADD LockedUntil DATETIME2 NULL;

@@ -14,6 +14,8 @@ namespace FinanceCore.Domain.Users
         public DateTime CreatedAt { get; private set; }
         public DateTime? UpdatedAt { get; private set; }
         public UserRole Role {  get; private set; }
+        public int FailedLoginAttempts { get; private set; } = 0;
+        public DateTime? LockedUntil { get; private set; } = null;
 
         private User() { }
 
@@ -23,6 +25,8 @@ namespace FinanceCore.Domain.Users
             Email email,
             string passwordHash,
             UserRole role,
+            int attempts,
+            DateTime? lockedUntil,
             string? timeZone,
             DateTime? createdAt,
             DateTime? updatedAt = null)
@@ -35,6 +39,8 @@ namespace FinanceCore.Domain.Users
             CreatedAt = createdAt ?? DateTime.UtcNow;
             UpdatedAt = updatedAt;
             Role = role;
+            LockedUntil = lockedUntil;
+            FailedLoginAttempts = attempts;
         }
 
         // Reconstitute from persistence
@@ -44,11 +50,13 @@ namespace FinanceCore.Domain.Users
             Email email,
             string passwordHash,
             UserRole role,
+            int attempts,
+            DateTime? lockedUntil = null,
             string? timeZone = null,
             DateTime? createdAt = null,
             DateTime? updatedAt = null)
         {
-            return new User(id, name, email, passwordHash,role, timeZone, createdAt, updatedAt);
+            return new User(id, name, email, passwordHash,role,attempts,lockedUntil, timeZone, createdAt, updatedAt);
         }
 
         // Create new user
@@ -129,7 +137,31 @@ namespace FinanceCore.Domain.Users
                 AddDomainEvent(new UserProfileUpdatedEvent(Id, Name));
             }
         }
+        public void ResetLoginAttempts()
+        {
+            FailedLoginAttempts = 0;
+            LockedUntil = null;
+            if (IsLocked())
+            {
+                AddDomainEvent(new UserAccountUnlockedEvent(Id,Email));
+            }
+        }
+        public void RecordFailedLoginAttempt(int maxAttempts , TimeSpan lockDuration)
+        {
+            FailedLoginAttempts++;
+            if(FailedLoginAttempts >= maxAttempts)
+            {
+                LockedUntil = DateTime.UtcNow.Add(lockDuration);
 
+                // add domain event user is locked !
+                AddDomainEvent(new UserAccountLockedEvent(Id,LockedUntil.Value,Email));
+            }
+
+        }
+        public bool IsLocked()
+        {
+            return LockedUntil.HasValue;
+        }
         public void ChangeEmail(Email newEmail)
         {
             if (newEmail == null)

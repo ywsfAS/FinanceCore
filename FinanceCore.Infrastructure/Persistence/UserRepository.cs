@@ -6,6 +6,7 @@ using FinanceCore.Domain.Users;
 using FinanceCore.Infrastructure.Context;
 using FinanceCore.Infrastructure.Mappers;
 using System.Data;
+using System.Text;
 
 namespace FinanceCore.Infrastructure.Repositories
 {
@@ -23,6 +24,21 @@ namespace FinanceCore.Infrastructure.Repositories
             const string sql = @"SELECT * FROM Users WHERE Id = @Id";
             var command = new CommandDefinition(sql, new { Id = id }, cancellationToken: token);
             return await connection.QueryFirstOrDefaultAsync<UserModel>(command);
+        }
+
+        public async Task UpdateLoginSecurityStateAsync(Guid userId, int failedLoginAttempts, DateTime? lockedUntil,CancellationToken token = default)
+        {
+            using var connection = _connectionFactory.GetConnection();
+            const string sql = """
+            UPDATE Users
+            SET FailedLoginAttempts = @FailedLoginAttempts,
+            LockedUntil = @LockedUntil,
+            UpdatedAt = SYSUTCDATETIME()
+            WHERE Id = @UserId;
+            """;
+            var command = new CommandDefinition(sql, new {UserId = userId} , cancellationToken : token);
+
+            await connection.ExecuteAsync(command);
         }
         public async Task<User?> GetByIdAsync(Guid id, CancellationToken token = default)
         {

@@ -1,5 +1,6 @@
 using FinanceCore.Application.Abstractions;
 using FinanceCore.Domain.Common;
+using FinanceCore.Domain.Users;
 using FinanceCore.Infrastructure.Repositories;
 using Microsoft.Extensions.Caching.Memory;
 
@@ -14,7 +15,7 @@ namespace FinanceCore.Infrastructure.Persistence
             _userRepository = userRepository;
             _memoryCache = memoryCache;
         }
-        public Task<Domain.Users.User?> GetByIdAsync(Guid id, CancellationToken token = default)
+        public Task<User?> GetByIdAsync(Guid id, CancellationToken token = default)
         {
             var key = $"User_{id}";
             return _memoryCache.GetOrCreateAsync(key, entry =>
@@ -23,7 +24,11 @@ namespace FinanceCore.Infrastructure.Persistence
                 return _userRepository.GetByIdAsync(id, token);
             });
         }
-        public Task<Domain.Users.User?> GetByEmailAsync(Email email, CancellationToken token = default)
+        public Task UpdateLoginSecurityStateAsync(Guid userId , int failedLoginAttempts , DateTime? lockedUntil, CancellationToken token = default)
+        {
+            return _userRepository.UpdateLoginSecurityStateAsync(userId,failedLoginAttempts,lockedUntil,token);
+        }
+        public Task<User?> GetByEmailAsync(Email email, CancellationToken token = default)
         {
             var key = $"User_Email_{email}";
             return _memoryCache.GetOrCreateAsync(key, entry =>
@@ -32,11 +37,11 @@ namespace FinanceCore.Infrastructure.Persistence
                 return _userRepository.GetByEmailAsync(email, token);
             });
         }
-        public Task AddAsync(Domain.Users.User user, CancellationToken token = default)
+        public Task AddAsync(User user, CancellationToken token = default)
         {
             return _userRepository.AddAsync(user, token);
         }
-        public Task UpdateAsync(Domain.Users.User user, CancellationToken token = default)
+        public Task UpdateAsync(User user, CancellationToken token = default)
         {
             return _userRepository.UpdateAsync(user, token);
         }

@@ -27,13 +27,24 @@ namespace FinanceCore.Application.Features.Auth.Commands.Login
         {
             var email = new Email(command.Email);
             var user = await _userRepository.GetByEmailAsync(email);
-            if (user == null) {
+            if (user is null) {
                 throw new InvalidCredentialsException();  
+            }
+            if (user.IsLocked())
+            {
+                throw new UserAccountLockedException(user.Id,user.LockedUntil);
             }
             var IsPasswordValid = _hasher.Verify(command.Password, user.PasswordHash);
-            if (!IsPasswordValid) { 
+            if (!IsPasswordValid) {
+
+                user.RecordFailedLoginAttempt(5,TimeSpan.FromMinutes(10));
+                await _userRepository.UpdateLoginSecurityStateAsync(user.Id,user.FailedLoginAttempts,user.LockedUntil,token);
                 throw new InvalidCredentialsException();  
             }
+
+            user.ResetLoginAttempts();
+            await _userRepository.UpdateLoginSecurityStateAsync(user.Id,user.FailedLoginAttempts,user.LockedUntil,token);
+
             var JwtToken =  _JwtGenerator.GenerateToken(user);
             var rawRefreshToken = _refreshTokenGenerator.GenerateRefreshToken();
             var refreshTokenHash = _hasher.Hash(rawRefreshToken);
@@ -47,7 +58,6 @@ namespace FinanceCore.Application.Features.Auth.Commands.Login
 
             await _refreshTokenRepository.AddAsync(refreshToken, token);
         
-
             return new LoginDto(user.Id, user.Email.Address, JwtToken,rawRefreshToken,expiresAt);
 
         }
