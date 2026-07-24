@@ -8,6 +8,7 @@ namespace FinanceCore.Application.Models
         public string Email { get; set; } = string.Empty ;
         public string PasswordHash { get; set; } = string.Empty;
         public string? TimeZone { get; set; }
+        public int role { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime? UpdatedAt { get; set; } = null;
     }

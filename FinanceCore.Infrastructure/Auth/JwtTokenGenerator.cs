@@ -27,6 +27,7 @@ namespace FinanceCore.Infrastructure.Auth
                  new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),
                 new Claim(JwtRegisteredClaimNames.Name, user.Name),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(ClaimTypes.Role , user.Role.ToString()),
             };
 
             // Create signing credentials using secret key

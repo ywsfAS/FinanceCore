@@ -1,4 +1,5 @@
 using FinanceCore.Domain.Common;
+using FinanceCore.Domain.Enums;
 using FinanceCore.Domain.Events.User;
 using FinanceCore.Domain.Exceptions;
 
@@ -12,6 +13,7 @@ namespace FinanceCore.Domain.Users
         public string? TimeZone { get; private set; }
         public DateTime CreatedAt { get; private set; }
         public DateTime? UpdatedAt { get; private set; }
+        public UserRole Role {  get; private set; }
 
         private User() { }
 
@@ -20,6 +22,7 @@ namespace FinanceCore.Domain.Users
             string name,
             Email email,
             string passwordHash,
+            UserRole role,
             string? timeZone,
             DateTime? createdAt,
             DateTime? updatedAt = null)
@@ -31,19 +34,21 @@ namespace FinanceCore.Domain.Users
             TimeZone = timeZone;
             CreatedAt = createdAt ?? DateTime.UtcNow;
             UpdatedAt = updatedAt;
+            Role = role;
         }
 
         // Reconstitute from persistence
-        public static User Create(
+        public static User Load(
             Guid id,
             string name,
             Email email,
             string passwordHash,
+            UserRole role,
             string? timeZone = null,
             DateTime? createdAt = null,
             DateTime? updatedAt = null)
         {
-            return new User(id, name, email, passwordHash, timeZone, createdAt, updatedAt);
+            return new User(id, name, email, passwordHash,role, timeZone, createdAt, updatedAt);
         }
 
         // Create new user
@@ -78,7 +83,8 @@ namespace FinanceCore.Domain.Users
                 Email = email,
                 PasswordHash = passwordHash,
                 TimeZone = timeZone,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = DateTime.UtcNow,
+                Role = UserRole.User,
             };
 
             user.AddDomainEvent(new UserCreatedEvent(
@@ -138,7 +144,10 @@ namespace FinanceCore.Domain.Users
 
             AddDomainEvent(new UserEmailChangedEvent(Id, oldEmail.Address, newEmail.Address));
         }
-
+        public bool IsAdmin()
+        {
+            return Role == UserRole.Admin;
+        }
         public void ChangePassword(string newPasswordHash, string? oldPasswordHash = null)
         {
             if (string.IsNullOrWhiteSpace(newPasswordHash))

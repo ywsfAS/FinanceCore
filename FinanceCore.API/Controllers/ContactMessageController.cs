@@ -46,6 +46,7 @@ namespace FinanceCore.API.Controllers
         /// <summary>
         /// Mark a contact message as seen.
         /// </summary>
+        [Authorize(Roles = "Admin")]
         [HttpPatch("{id}/seen")]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
