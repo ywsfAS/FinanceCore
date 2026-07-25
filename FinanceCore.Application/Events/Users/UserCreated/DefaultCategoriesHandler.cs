@@ -1,14 +1,10 @@
-﻿using FinanceCore.Application.Abstractions;
+using FinanceCore.Application.Abstractions;
 using FinanceCore.Application.Features.Categories.Commands.Create;
 using FinanceCore.Domain.Categories;
 using FinanceCore.Domain.Enums;
 using FinanceCore.Domain.Events.User;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 
 namespace FinanceCore.Application.Events.Users.UserCreated
 {
@@ -16,10 +12,12 @@ namespace FinanceCore.Application.Events.Users.UserCreated
     {
         private readonly ICategoryRepository _categoryRepository;
         private readonly IMediator _eventBus;
-        public DefaultCategoriesHandler(ICategoryRepository categoryRepository, IMediator eventBus)
+        private readonly ILogger<DefaultCategoriesHandler> _logger;
+        public DefaultCategoriesHandler(ICategoryRepository categoryRepository, IMediator eventBus, ILogger<DefaultCategoriesHandler> logger)
         {
             _categoryRepository = categoryRepository;
             _eventBus = eventBus;
+            _logger = logger;
         }
         public async Task Handle(UserCreatedEvent notification, CancellationToken cancellationToken)
         {
@@ -59,8 +57,18 @@ namespace FinanceCore.Application.Events.Users.UserCreated
                 command.Name,
                 command.Type,
                 command.Description);
-                await _categoryRepository.AddAsync(category, cancellationToken);
-                await DomainEventDispatcher.DispatchAsync(_eventBus, category, cancellationToken);
+
+                try
+                {
+                    await _categoryRepository.AddAsync(category, cancellationToken);
+                    await DomainEventDispatcher.DispatchAsync(_eventBus, category, cancellationToken);
+                }
+                catch(Exception ex)
+                {
+                    _logger.LogCritical(ex, "Failed to create default categories for {email}", notification.Email);
+                    throw;
+                }
+
             }
             
 

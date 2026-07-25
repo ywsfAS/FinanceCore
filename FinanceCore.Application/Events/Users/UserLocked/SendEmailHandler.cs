@@ -1,6 +1,7 @@
 using FinanceCore.Application.Abstractions;
 using FinanceCore.Domain.Events.User;
 using MediatR;
+using Microsoft.Extensions.Logging;
 
 namespace FinanceCore.Application.Events.Users.UserLocked
 {
@@ -8,10 +9,12 @@ namespace FinanceCore.Application.Events.Users.UserLocked
         : INotificationHandler<UserAccountLockedEvent>
     {
         private readonly IEmailService _emailService;
+        private readonly ILogger<SendEmailHandler> _logger;
 
-        public SendEmailHandler(IEmailService emailService)
+        public SendEmailHandler(IEmailService emailService,ILogger<SendEmailHandler> logger)
         {
             _emailService = emailService;
+            _logger = logger;
         }
         public async Task Handle( UserAccountLockedEvent notification, CancellationToken cancellationToken)
         {
@@ -30,11 +33,17 @@ namespace FinanceCore.Application.Events.Users.UserLocked
             Best regards,
             The FinanceCore Team
             """;
-
-            await _emailService.SendEmailAsync(
-                notification.Email,
-                subject,
-                body);
+            try
+            {
+                await _emailService.SendEmailAsync(
+                    notification.Email,
+                    subject,
+                    body);
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex, "Failed to send email to {email}", notification.Email.Address);
+            }
         }
     }
 }

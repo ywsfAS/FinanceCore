@@ -1,26 +1,22 @@
 using FinanceCore.Application.Abstractions;
-using FinanceCore.Application.DTOs;
-using FinanceCore.Application.Features.Accounts.Commands.Create;
 using FinanceCore.Domain.Enums;
 using FinanceCore.Domain.Events.User;
 using MediatR;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using FinanceCore.Domain.Accounts;
 using FinanceCore.Domain.Common;
+using Microsoft.Extensions.Logging;
 namespace FinanceCore.Application.Events.Users.UserCreated
 {
     public class DefaultAccountHandler : INotificationHandler<UserCreatedEvent>
     {
         private readonly IAccountRepository _accountRepository;
         private readonly IMediator _eventBus;
-        public DefaultAccountHandler(IAccountRepository accountRepository, IMediator eventBus)
+        private readonly ILogger<DefaultAccountHandler> _logger;
+        public DefaultAccountHandler(IAccountRepository accountRepository, IMediator eventBus, ILogger<DefaultAccountHandler> logger)
         {
             _accountRepository = accountRepository;
             _eventBus = eventBus;
+            _logger = logger;
         }
         public async Task Handle(UserCreatedEvent notification, CancellationToken cancellationToken)
         {
@@ -29,11 +25,16 @@ namespace FinanceCore.Application.Events.Users.UserCreated
                 "Default Account",
                 EnAccountType.Cash,
                 Money.Zero(EnCurrency.USD));
-
-            await _accountRepository.AddAsync(account, cancellationToken);
-
-            await DomainEventDispatcher.DispatchAsync(_eventBus, account, cancellationToken);
-
+            try
+            {
+                await _accountRepository.AddAsync(account, cancellationToken);
+                await DomainEventDispatcher.DispatchAsync(_eventBus, account, cancellationToken);
+            }
+            catch(Exception ex)
+            {
+                _logger.LogCritical(ex,"Failed to create default account for user : {userId} {email}",notification.UserId,notification.Email);
+                throw;
+            }
         }
     }
 }
