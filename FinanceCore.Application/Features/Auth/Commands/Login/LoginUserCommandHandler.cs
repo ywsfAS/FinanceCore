@@ -13,15 +13,17 @@ namespace FinanceCore.Application.Features.Auth.Commands.Login
         private readonly IRefreshTokenRepository _refreshTokenRepository;
         private readonly IJwtTokenGenerator _JwtGenerator;
         private readonly IPasswordHasher _hasher;
+        private readonly IRefreshTokenHasher _refreshTokenHasher;
         private readonly IRefreshTokenGenerator _refreshTokenGenerator;
 
-        public LoginUserCommandHandler(IUserRepository userRepository , IRefreshTokenRepository tokenRepository,IPasswordHasher hasher , IJwtTokenGenerator jwtGenerator , IRefreshTokenGenerator generator)
+        public LoginUserCommandHandler(IUserRepository userRepository ,IRefreshTokenHasher refreshTokenHasher, IRefreshTokenRepository tokenRepository,IPasswordHasher hasher , IJwtTokenGenerator jwtGenerator , IRefreshTokenGenerator generator)
         {
             _userRepository = userRepository;
             _hasher = hasher;
             _JwtGenerator = jwtGenerator;
             _refreshTokenGenerator = generator;
             _refreshTokenRepository = tokenRepository;
+            _refreshTokenHasher = refreshTokenHasher;
         }
         public async Task<LoginDto> Handle(LoginUserCommand command , CancellationToken token = default)
         {
@@ -47,7 +49,7 @@ namespace FinanceCore.Application.Features.Auth.Commands.Login
 
             var JwtToken =  _JwtGenerator.GenerateToken(user);
             var rawRefreshToken = _refreshTokenGenerator.GenerateRefreshToken();
-            var refreshTokenHash = _hasher.Hash(rawRefreshToken);
+            var refreshTokenHash = _refreshTokenHasher.Hash(rawRefreshToken);
             DateTime expiresAt = DateTime.UtcNow.AddDays(7);
 
             var refreshToken = RefreshToken.Create(

@@ -40,6 +40,7 @@ namespace FinanceCore.Infrastructure
 
             services.AddScoped<IEmailService, EmailService>();
             services.AddSingleton<IImageStorage, LocalImageStorage>();
+            services.AddSingleton<IRefreshTokenHasher, RefreshTokenHasher>();
             services.AddMemoryCache();
             services.AddScoped<AccountRepository>();
             services.AddScoped<UserRepository>();

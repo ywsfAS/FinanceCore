@@ -7,8 +7,8 @@ namespace FinanceCore.Application.Features.Auth.Commands.Logout
     public sealed class LogoutHandler : IRequestHandler<LogoutCommand>
     {
         private readonly IRefreshTokenRepository _refreshTokenRepository;
-        private readonly IPasswordHasher _hasher;
-        public LogoutHandler(IRefreshTokenRepository refreshTokenRepository , IPasswordHasher hasher)
+        private readonly IRefreshTokenHasher _hasher;
+        public LogoutHandler(IRefreshTokenRepository refreshTokenRepository , IRefreshTokenHasher hasher)
         {
             _refreshTokenRepository = refreshTokenRepository;
             _hasher = hasher;

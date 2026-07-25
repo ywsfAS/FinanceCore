@@ -8,13 +8,13 @@ namespace FinanceCore.Application.Features.Auth.Commands.Refresh
 {
     public sealed class RefreshHandler : IRequestHandler<RefreshCommand,LoginDto>
     {
-        private readonly IPasswordHasher _hasher;
+        private readonly IRefreshTokenHasher _hasher;
         private readonly IRefreshTokenRepository _refreshTokenRepository;
         private readonly IUserRepository _userRepository;
         private readonly IRefreshTokenGenerator _refreshTokenGenerator;
         private readonly IJwtTokenGenerator _jwtTokenGenerator;
         private readonly IUnitOfWork _unitOfWork;
-        public RefreshHandler(IPasswordHasher hasher,IUnitOfWork unitOfWork,IJwtTokenGenerator jwtGenerator, IRefreshTokenRepository refreshRepository , IUserRepository repo , IRefreshTokenGenerator generator) {
+        public RefreshHandler(IRefreshTokenHasher hasher,IUnitOfWork unitOfWork,IJwtTokenGenerator jwtGenerator, IRefreshTokenRepository refreshRepository , IUserRepository repo , IRefreshTokenGenerator generator) {
             _refreshTokenRepository = refreshRepository;
             _userRepository = repo;
             _hasher = hasher; 

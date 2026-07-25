@@ -36,7 +36,7 @@ namespace FinanceCore.Infrastructure.Repositories
             UpdatedAt = SYSUTCDATETIME()
             WHERE Id = @UserId;
             """;
-            var command = new CommandDefinition(sql, new {UserId = userId} , cancellationToken : token);
+            var command = new CommandDefinition(sql, new {UserId = userId , FailedLoginAttempts = failedLoginAttempts , LockedUntil = lockedUntil} , cancellationToken : token);
 
             await connection.ExecuteAsync(command);
         }

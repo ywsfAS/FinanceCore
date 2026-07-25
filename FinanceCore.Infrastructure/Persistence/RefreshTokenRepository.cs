@@ -79,7 +79,7 @@ public sealed class RefreshTokenRepository : IRefreshTokenRepository
         var command = new CommandDefinition(
                  sql,
                  token,
-                 transaction : unitOfWork.Transaction,
+                 transaction : unitOfWork?.Transaction,
                  cancellationToken: cancellationToken);
 
         if (unitOfWork is null) { 
@@ -110,7 +110,7 @@ public sealed class RefreshTokenRepository : IRefreshTokenRepository
                     RefreshTokenId = refreshTokenId,
                     RevokedAt = revokedAt
                 },
-                 transaction : unitOfWork.Transaction,
+                 transaction : unitOfWork?.Transaction,
                  cancellationToken: cancellationToken);
 
         if (unitOfWork is null) { 
