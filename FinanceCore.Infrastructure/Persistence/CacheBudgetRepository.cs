@@ -3,136 +3,88 @@ using FinanceCore.Application.DTOs;
 using FinanceCore.Domain.Budgets;
 using FinanceCore.Domain.Enums;
 using FinanceCore.Infrastructure.Repositories;
-using Microsoft.Extensions.Caching.Memory;
 
 namespace FinanceCore.Infrastructure.Persistence
 {
     public class CacheBudgetRepository : IBudgetRepository
     {
         private readonly BudgetRepository _budgetRepository;
-        private readonly IMemoryCache _memoryCache;
-        public CacheBudgetRepository(BudgetRepository budgetRepository, IMemoryCache memoryCache)
+        private readonly ICacheService _cache;
+
+        private static string Tag(Guid userId) => $"Budgets_{userId}";
+
+        public CacheBudgetRepository(BudgetRepository budgetRepository, ICacheService cache)
         {
             _budgetRepository = budgetRepository;
-            _memoryCache = memoryCache;
+            _cache = cache;
         }
+
+        // No userId available here — can't scope by user tag. See note below.
         public Task<Budget?> GetByIdAsync(Guid id, CancellationToken cancellationToken = default)
         {
-            string key = $"Budget_{id}";
-            return _memoryCache.GetOrCreateAsync(key, async entry =>
-            {
-                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
-                return await _budgetRepository.GetByIdAsync(id, cancellationToken);
-            });
-
-
+            return _budgetRepository.GetByIdAsync(id, cancellationToken);
         }
+
         public Task<BudgetDto?> GetByCategoryIdAsync(Guid userId, Guid categoryId, DateTime start, DateTime end, CancellationToken token)
         {
-            string key = $"Budget_Category_{userId}_{categoryId}_{start:yyyyMMdd}_{end:yyyyMMdd}";
-            return _memoryCache.GetOrCreateAsync(key, async entry =>
-            {
-                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
-                return await _budgetRepository.GetByCategoryIdAsync(userId,categoryId,start,end,token);
-            });
-
-
+            string key = $"Budget_Category_{categoryId}_{start:yyyyMMdd}_{end:yyyyMMdd}";
+            return _cache.GetOrCreateAsync(Tag(userId), key, () => _budgetRepository.GetByCategoryIdAsync(userId, categoryId, start, end, token));
         }
-       public Task<IEnumerable<Budget>> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken = default)
+
+        public Task<IEnumerable<Budget>> GetByUserIdAsync(Guid userId, CancellationToken cancellationToken = default)
         {
-            string key = $"Budgets_User_{userId}";
-            return _memoryCache.GetOrCreateAsync(key,entry =>
-            {
-                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
-                return _budgetRepository.GetByUserIdAsync(userId, cancellationToken);
-            });
-
+            string key = "Budgets_ByUser";
+            return _cache.GetOrCreateAsync(Tag(userId), key, () => _budgetRepository.GetByUserIdAsync(userId, cancellationToken));
         }
-        public async Task<IEnumerable<BudgetInfoDto>?> GetBudgetsFilteredAsync(
-            Guid userId,
-            string? name,
-            Guid? categoryId,
-            EnPeriod? period,
-            int page = 1,
-            int pageSize = 10,
-            CancellationToken token = default)
+
+        public Task<IEnumerable<BudgetInfoDto>?> GetBudgetsFilteredAsync(
+            Guid userId, string? name, Guid? categoryId, EnPeriod? period, int page = 1, int pageSize = 10, CancellationToken token = default)
         {
-            string key = $"budgets:filtered:{userId}:{name}:{categoryId}:{period}:{page}:{pageSize}";
-
-            if (_memoryCache.TryGetValue(key, out IEnumerable<BudgetInfoDto>? cached))
-                return cached;
-
-            var result = await _budgetRepository.GetBudgetsFilteredAsync(
-                userId,
-                name,
-                categoryId,
-                period,
-                page,
-                pageSize,
-                token
-            );
-
-            _memoryCache.Set(
-                key,
-                result,
-                TimeSpan.FromMinutes(10)
-            );
-
-            return result;
+            string key = $"BudgetsFiltered_{name}_{categoryId}_{period}_{page}_{pageSize}";
+            return _cache.GetOrCreateAsync(Tag(userId), key,
+                () => _budgetRepository.GetBudgetsFilteredAsync(userId, name, categoryId, period, page, pageSize, token));
         }
+
         public Task<IEnumerable<BudgetDto>?> GetDtoByUserIdAsync(Guid userId, CancellationToken cancellationToken = default)
         {
-            string key = $"BudgetDtos_User_{userId}";
-            return _memoryCache.GetOrCreateAsync(key, entry =>
-            {
-                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
-                return _budgetRepository.GetDtoByUserIdAsync(userId, cancellationToken);
-            });
-
+            string key = "BudgetDtos_ByUser";
+            return _cache.GetOrCreateAsync(Tag(userId), key, () => _budgetRepository.GetDtoByUserIdAsync(userId, cancellationToken));
         }
+
         public Task<BudgetDto?> GetDtoByIdAndUserIdAsync(Guid userId, Guid id, CancellationToken token)
         {
-            string key = $"BudgetDto_{userId}_{id}";
-            return _memoryCache.GetOrCreateAsync(key, entry =>
-            {
-                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
-                return _budgetRepository.GetDtoByIdAndUserIdAsync(userId, id, token);
-            });
-
+            string key = $"BudgetDto_{id}";
+            return _cache.GetOrCreateAsync(Tag(userId), key, () => _budgetRepository.GetDtoByIdAndUserIdAsync(userId, id, token));
         }
+
         public Task<Budget?> GetByIdAndUserIdAsync(Guid userId, Guid id, CancellationToken token)
         {
-            string key = $"Budget_{userId}_{id}";
-            return _memoryCache.GetOrCreateAsync(key, entry =>
-            {
-                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
-                return _budgetRepository.GetByIdAndUserIdAsync(userId, id, token);
-            });
+            string key = $"Budget_{id}";
+            return _cache.GetOrCreateAsync(Tag(userId), key, () => _budgetRepository.GetByIdAndUserIdAsync(userId, id, token));
+        }
 
-        }
-        public Task AddAsync(Budget budget, CancellationToken cancellationToken = default)
-        {
-            return _budgetRepository.AddAsync(budget, cancellationToken);
-
-        }
-        public Task UpdateAsync(Budget budget, CancellationToken cancellationToken = default)
-        {
-            return _budgetRepository.UpdateAsync(budget, cancellationToken);
-        }
-        public Task DeleteAsync(Guid userId , Guid id, CancellationToken cancellationToken = default)
-        {
-            return _budgetRepository.DeleteAsync(userId,id, cancellationToken);
-        }
         public Task<bool> IsExists(Guid userId, Guid id, CancellationToken token = default)
         {
-            string key = $"BudgetExists_{userId}_{id}";
-            return _memoryCache.GetOrCreateAsync(key, entry =>
-            {
-                entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(10);
-                return _budgetRepository.IsExists(userId, id, token);
-            });
-            
+            string key = $"BudgetExists_{id}";
+            return _cache.GetOrCreateAsync(Tag(userId), key, () => _budgetRepository.IsExists(userId, id, token));
         }
 
+        public async Task AddAsync(Budget budget, CancellationToken cancellationToken = default)
+        {
+            await _budgetRepository.AddAsync(budget, cancellationToken);
+            await _cache.InvalidateTagAsync(Tag(budget.UserId));
+        }
+
+        public async Task UpdateAsync(Budget budget, CancellationToken cancellationToken = default)
+        {
+            await _budgetRepository.UpdateAsync(budget, cancellationToken);
+            await _cache.InvalidateTagAsync(Tag(budget.UserId));
+        }
+
+        public async Task DeleteAsync(Guid userId, Guid id, CancellationToken cancellationToken = default)
+        {
+            await _budgetRepository.DeleteAsync(userId, id, cancellationToken);
+            await _cache.InvalidateTagAsync(Tag(userId));
+        }
     }
 }

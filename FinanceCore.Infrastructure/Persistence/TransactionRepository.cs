@@ -140,11 +140,14 @@ namespace FinanceCore.Infrastructure.Repositories
             var model = await GetModelByIdAndUserIdAsync(userId, id, token);
             return model is null ? null : TransactionMapper.MapToDomain(model);
         }
-        public async Task DeleteAsync(Guid id, CancellationToken token = default)
+        public async Task DeleteAsync(Guid userId , Guid id, CancellationToken token = default)
         {
             using var connection = _connectionFactory.GetConnection();
-            const string sql = @"DELETE FROM Transactions WHERE Id = @Id";
-            var command = new CommandDefinition(sql, new {Id = id} , cancellationToken : token); 
+            const string sql = @"DELETE t FROM Transactions t
+            INNER JOIN Accounts a 
+            ON t.AccountId = a.Id
+            WHERE a.UserId = @UserId AND t.Id = @Id";
+            var command = new CommandDefinition(sql, new {Id = id , UserId = userId} , cancellationToken : token); 
             await connection.ExecuteAsync(command);
         }
         //passed

@@ -69,6 +69,7 @@ namespace FinanceCore.Infrastructure
             services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
             services.AddScoped<IRefreshTokenGenerator, RefreshTokenGenerator>();
             services.AddScoped<IImageProcessor, ImageProcessor>();
+            services.AddSingleton<ICacheService, MemoryCacheService>();
 
             services.AddHealthChecks().AddCheck<DatabaseHealthCheck>("database",HealthStatus.Unhealthy, tags : new[] {"ready"});
                 
