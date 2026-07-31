@@ -1,9 +1,9 @@
 using DbUp;
-using FinanceCore.Database;
 
 var connectionString =
-    "Server=.;Database=FinanceCore;Trusted_Connection=True;TrustServerCertificate=True";
-
+    Environment.GetEnvironmentVariable("ConnectionStrings__FinanceCore")
+    ?? throw new InvalidOperationException(
+        "ConnectionStrings__FinanceCore is not configured.");
 EnsureDatabase.For.SqlDatabase(connectionString);
 
 var upgrader =
