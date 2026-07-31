@@ -22,6 +22,7 @@ namespace FinanceCore.Infrastructure.Services
             Stream stream,
             CancellationToken cancellationToken)
         {
+            if (stream.CanSeek) stream.Position = 0;
             var newFilename = $"{Guid.NewGuid()}.webp";
 
             var path = Path.Combine(

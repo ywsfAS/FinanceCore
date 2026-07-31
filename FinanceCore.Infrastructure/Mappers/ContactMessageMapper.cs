@@ -22,8 +22,7 @@ namespace FinanceCore.Infrastructure.Mappers
         }
         public static ContactMessage MapToDomain(ContactMessageModel model)
         {
-            return new ContactMessage(model.FullName, new Email(model.Email), (EnMessageSubject)model.Subject, model.Message, model.CreatedAt);
-
+           return ContactMessage.Load(model.Id, model.FullName,new Email(model.Email),(EnMessageSubject)model.Subject,model.Message,model.CreatedAt);
         }
     }
 }

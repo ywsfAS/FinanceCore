@@ -21,6 +21,17 @@ namespace FinanceCore.Domain.ContactMessage
             Message = message;
             CreatedAt = createdAt;
         }
+        public static ContactMessage Load(Guid id , string fullName, Email email, EnMessageSubject subject, string message, DateTime createdAt) {
+            return new ContactMessage
+            {
+                Id = id,
+                FullName = fullName,
+                Email = email,
+                Subject = subject,
+                Message = message,
+                CreatedAt = createdAt
+            }; 
+        }
         public void MarkAsProccessed()
         {
             IsProccessed = true;

@@ -2,6 +2,7 @@ using FinanceCore.Application.Abstractions;
 using FinanceCore.Application.Features.Profiles.Commands.Create;
 using FinanceCore.Domain.Enums;
 using FinanceCore.Domain.Events.User;
+using FinanceCore.Domain.Profile;
 using MediatR;
 using Microsoft.Extensions.Logging;
 
@@ -19,8 +20,8 @@ namespace FinanceCore.Application.Events.Users.UserCreated
         }
         public async Task Handle(UserCreatedEvent notification , CancellationToken token)
         {
-            var command = new CreateProfileCommand(notification.UserId,notification.Name,"AS","No Bio",EnCurrency.USD);
-            var profile = Domain.Profile.Profile.Create(command.UserId,command.FirstName,command.LastName,command.Bio,"Not Selected",command.Curreny);
+            var command = new CreateProfileCommand(notification.UserId,notification.Name,"","No Bio",EnCurrency.USD);
+            var profile = Profile.Create(command.UserId,command.FirstName,command.LastName,command.Bio,"Not Selected",command.Curreny);
             try
             {
                 await _profileRepository.AddAsync(profile,token);
