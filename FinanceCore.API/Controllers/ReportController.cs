@@ -34,10 +34,11 @@ namespace FinanceCore.API.Controllers
         [ProducesResponseType(typeof(MonthlySummaryDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> GetMonthlySummary(Guid? id, int year, int month,int page = 1 , int pageSize = 10)
+        public async Task<IActionResult> GetMonthlySummary(Guid? id, int? year, int? month,int page = 1 , int pageSize = 10)
         {
-            var UserId = GetUserId();
-            var query = new GetAccountsMonthlySummaryQuery(UserId, id, year, month,page,pageSize);
+            var userId = GetUserId();
+            var today = DateTime.Today;
+            var query = new GetAccountsMonthlySummaryQuery(userId, id, year ?? today.Year, month ?? today.Month,page,pageSize);
             var response = await _mediator.Send(query);
             return Ok(response);
 
@@ -50,8 +51,8 @@ namespace FinanceCore.API.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> GetBudgetHealth(int page = 1 , int pageSize = 10)
         {
-            var UserId = GetUserId();
-            var query = new BudgetHealthQuery(UserId,page,pageSize);
+            var userId = GetUserId();
+            var query = new BudgetHealthQuery(userId,page,pageSize);
             var response = await _mediator.Send(query);
             return Ok(response);
 
@@ -64,8 +65,8 @@ namespace FinanceCore.API.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> GetSubscriptions([FromQuery] GetSubscriptionsRequest request,[FromQuery]int page = 1 ,[FromQuery] int pageSize = 10)
         {
-            var UserId = GetUserId();
-            var query = new SubscriptionQuery(UserId,request.CategoryId,request.AccountId,request.Name,request.Period,request.Type,page,pageSize);
+            var userId = GetUserId();
+            var query = new SubscriptionQuery(userId,request.CategoryId,request.AccountId,request.Name,request.Period,request.Type,page,pageSize);
             var response = await _mediator.Send(query);
             return Ok(response);
 
@@ -79,8 +80,8 @@ namespace FinanceCore.API.Controllers
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> GetSubscriptionsGrowth([FromQuery] GetSubscriptionGrowthRequest request)
         {
-            var UserId = GetUserId();
-            var query = new SubscriptionGrowthQuery(UserId,request.AccountId,request.Type,request.Start,request.End);
+            var userId = GetUserId();
+            var query = new SubscriptionGrowthQuery(userId,request.AccountId,request.Type,request.Start,request.End);
             var response = await _mediator.Send(query);
             return Ok(response);
 
@@ -91,10 +92,10 @@ namespace FinanceCore.API.Controllers
         [ProducesResponseType(typeof(IEnumerable<MonthlyTrendDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> GetTrend([FromQuery]int lastNMonth)
+        public async Task<IActionResult> GetTrend([FromQuery]int lastNMonth = 1)
         {
-            var UserId = GetUserId();
-            var query = new MonthlyTrendQuery(UserId,lastNMonth);
+            var userId = GetUserId();
+            var query = new MonthlyTrendQuery(userId,lastNMonth);
             var response = await _mediator.Send(query);
             return Ok(response);
 
@@ -105,10 +106,10 @@ namespace FinanceCore.API.Controllers
         [ProducesResponseType(typeof(IEnumerable<ContributionsTrendDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> GetContributionsTrend([FromQuery]int lastNMonth)
+        public async Task<IActionResult> GetContributionsTrend([FromQuery]int lastNMonth = 1)
         {
-            var UserId = GetUserId();
-            var query = new ContributionsTrendQuery(UserId,lastNMonth);
+            var userId = GetUserId();
+            var query = new ContributionsTrendQuery(userId,lastNMonth);
             var response = await _mediator.Send(query);
             return Ok(response);
 

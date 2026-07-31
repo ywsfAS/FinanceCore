@@ -57,7 +57,7 @@ namespace FinanceCore.Infrastructure.Persistence
             if (name is not null) sql.Append(" AND Name LIKE @Name");
             if (currency.HasValue) sql.Append(" AND CurrencyId = @Currency");
             if (status.HasValue) sql.Append(" AND StatusId = @Status");
-            sql.Append(" OFFSET @Skip ROWS FETCH NEXT @PageSize ROWS ONLY;");
+            sql.Append(" ORDER BY Id OFFSET @Skip ROWS FETCH NEXT @PageSize ROWS ONLY;");
 
             var command = new CommandDefinition(
                 sql.ToString(),
