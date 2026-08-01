@@ -6,8 +6,11 @@ using FinanceCore.Application;
 using FinanceCore.Infrastructure;
 using FinanceCore.Infrastructure.Health;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.OpenApi.Models;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Trace;
 using Serilog;
 using System.Text.Json.Serialization;
 
@@ -30,6 +33,39 @@ builder.Services.AddApiVersioning(config =>
     config.GroupNameFormat = "'v'V";
     config.SubstituteApiVersionInUrl = true;
 });
+
+builder.Services.AddOptions<OpenTelemetryOptions>()
+    .BindConfiguration("OpenTelemetry")
+    .ValidateDataAnnotations()
+    .ValidateOnStart();
+var oltpUrl = builder.Configuration["OpenTelemetry:OtlpEndpoint"];
+builder.Services
+    .AddOpenTelemetry()
+    .WithTracing(tracing =>
+    {
+        tracing
+            .AddSqlClientInstrumentation()
+            .AddAspNetCoreInstrumentation()
+            .AddHttpClientInstrumentation()
+            .AddOtlpExporter(options =>
+            {
+                options.Endpoint = new Uri(oltpUrl!);
+            });
+    }
+    )
+    .WithMetrics(metrics =>
+    {
+        metrics
+            .AddAspNetCoreInstrumentation()
+            .AddHttpClientInstrumentation()
+            .AddRuntimeInstrumentation()
+            .AddOtlpExporter(options =>
+            {
+                options.Endpoint = new Uri(oltpUrl!);
+            }); 
+
+    });
+
 
 
 builder.Services
