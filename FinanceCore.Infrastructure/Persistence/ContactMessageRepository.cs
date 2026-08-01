@@ -46,7 +46,12 @@ namespace FinanceCore.Infrastructure.Persistence
             const string sql = @"UPDATE ContactMessages SET IsProccessed = 1 WHERE Id = @Id";
             var command = new CommandDefinition(sql , new { Id = msg.Id },cancellationToken : token);
 
-            await connection.ExecuteAsync(command);
+            var afftectedRows = await connection.ExecuteAsync(command);
+            if(afftectedRows == 0)
+            {
+                throw new InvalidOperationException(
+                $"Contact message with ID {msg.Id} was not found.");
+            }
 
         }
         private async Task<ContactMessageModel?> FindAsync(Guid msgId , CancellationToken token)

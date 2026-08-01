@@ -1,0 +1,71 @@
+name: FinanceCore CI
+
+on:
+    push:
+        branches:
+            - main
+            - dev
+
+    pull_request:
+        branches:
+            - main
+            - dev
+jobs:
+    build:
+        name: Build solution
+        runs-on: ubuntu-24.04
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Setup .NET
+              uses: actions/setup-dotnet@v4
+              with:
+                  dotnet-version: "8.0.x"
+
+            - name: Restore dependencies
+              run: dotnet restore
+
+            - name: Build solution
+              run: dotnet build --no-restore --configuration Release
+
+    domain-tests:
+        name: Domain tests
+        needs: build
+        runs-on: ubuntu-24.04
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Setup .NET
+              uses: actions/setup-dotnet@v4
+              with:
+                  dotnet-version: "8.0.x"
+
+            - name: Restore dependencies
+              run: dotnet restore
+
+            - name: Run Domain tests
+              run: dotnet test FinanceCore.Domain.Tests/FinanceCore.Domain.Tests.csproj --no-restore --configuration Release
+
+    application-tests:
+        name: Application tests
+        needs: build
+        runs-on: ubuntu-24.04
+
+        steps:
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Setup .NET
+              uses: actions/setup-dotnet@v4
+              with:
+                  dotnet-version: "8.0.x"
+
+            - name: Restore dependencies
+              run: dotnet restore
+
+            - name: Run Application tests
+              run: dotnet test FinanceCore.Application.Tests/FinanceCore.Application.Tests.csproj --no-restore --configuration Release

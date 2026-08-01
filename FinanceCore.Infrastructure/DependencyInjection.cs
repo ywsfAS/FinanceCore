@@ -22,8 +22,10 @@ namespace FinanceCore.Infrastructure
             this IServiceCollection services,
             IConfiguration config)
         {
-            services.Configure<ExchangeRateApiSettings>(
-            config.GetSection("ExchangeRateApi"));
+            services.AddOptions<ExchangeRateApiSettings>()
+                .BindConfiguration("ExchangeRateApi")
+                .ValidateDataAnnotations()
+                .ValidateOnStart();
             // Recurring Transactions Job Config + Sync Exchange Rates Job Config 
             services.AddJobWithTrigger<RecurringTransactionJob>("RecurringTransactionJob", "RecurringTranactionTrigger", 2);
             services.AddJobWithTrigger<ExchangeRateSyncJob>("ExchangeRateJob", "ExchangeRateTrigger", 6);
@@ -69,12 +71,14 @@ namespace FinanceCore.Infrastructure
             services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
             services.AddScoped<IRefreshTokenGenerator, RefreshTokenGenerator>();
             services.AddScoped<IImageProcessor, ImageProcessor>();
+            services.AddSingleton<ICacheService, MemoryCacheService>();
 
             services.AddHealthChecks().AddCheck<DatabaseHealthCheck>("database",HealthStatus.Unhealthy, tags : new[] {"ready"});
-                
 
-            services.Configure<JwtSettings>(
-                config.GetSection("JwtSettings"));
+            services.AddOptions<JwtSettings>()
+                .BindConfiguration("JwtSettings")
+                .ValidateDataAnnotations()
+                .ValidateOnStart();
 
             var jwtSettings =
                 config.GetSection("JwtSettings")
@@ -103,11 +107,13 @@ namespace FinanceCore.Infrastructure
                                 Encoding.UTF8.GetBytes(jwtSettings.SecretKey))
                     };
             });
-            var emailSection = config.GetSection("EmailSettings");
-            services.Configure<EmailSettings>(emailSection);
+            services.AddOptions<EmailSettings>()
+                    .BindConfiguration("EmailSettings")
+                    .ValidateDataAnnotations();
 
-            var frontendSettingsSection = config.GetSection("Frontend");
-            services.Configure<FrontendOptions>(frontendSettingsSection);
+            services.AddOptions<FrontendOptions>()
+                    .BindConfiguration("Frontend")
+                    .ValidateDataAnnotations();
 
             services.AddSingleton<IFrontendSettingsProvider, FrontendSettingsProvider>();
 

@@ -20,7 +20,7 @@ namespace FinanceCore.Application.Features.Categories.Commands.Delete
             if (!result)
                 throw new CategoryNotFoundException(command.Id);
 
-            await _categoryRepository.DeleteAsync(command.Id,cancellationToken);
+            await _categoryRepository.DeleteAsync(command.UserId,command.Id,cancellationToken);
         }
     }
 

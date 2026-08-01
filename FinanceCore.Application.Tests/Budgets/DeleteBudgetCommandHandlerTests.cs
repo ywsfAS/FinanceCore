@@ -1,12 +1,7 @@
-﻿using FinanceCore.Application.Abstractions;
+using FinanceCore.Application.Abstractions;
 using FinanceCore.Application.Features.Budgets.Commands.Delete;
 using FinanceCore.Domain.Exceptions;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FinanceCore.Application.Tests.Budgets
 {
@@ -31,7 +26,7 @@ namespace FinanceCore.Application.Tests.Budgets
             // Act
             await _handler.Handle(command, default);
             // Assert
-            _budgetRepository.Verify(repo => repo.DeleteAsync(budgetId, It.IsAny<CancellationToken>()), Times.Once);
+            _budgetRepository.Verify(repo => repo.DeleteAsync(userId,budgetId, It.IsAny<CancellationToken>()), Times.Once);
 
 
         }
@@ -47,7 +42,7 @@ namespace FinanceCore.Application.Tests.Budgets
             // Act
             await Assert.ThrowsAsync<BudgetNotFoundException>(() => _handler.Handle(command, default));
             // Assert
-            _budgetRepository.Verify(repo => repo.DeleteAsync(budgetId, It.IsAny<CancellationToken>()), Times.Never);
+            _budgetRepository.Verify(repo => repo.DeleteAsync(userId,budgetId, It.IsAny<CancellationToken>()), Times.Never);
 
 
         }

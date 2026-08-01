@@ -2,11 +2,6 @@ using FinanceCore.Application.Abstractions;
 using FinanceCore.Application.Features.Accounts.Commands.Delete;
 using FinanceCore.Domain.Exceptions;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FinanceCore.Application.Tests.Accounts
 {
@@ -31,7 +26,7 @@ namespace FinanceCore.Application.Tests.Accounts
             // Act
             await _handler.Handle(command,default);
             // Assert
-            _accountRepository.Verify(repo => repo.DeleteAsync(accountId, It.IsAny<CancellationToken>()), Times.Once);
+            _accountRepository.Verify(repo => repo.DeleteAsync(userId,accountId, It.IsAny<CancellationToken>()), Times.Once);
 
         }
         [Fact]
@@ -52,7 +47,7 @@ namespace FinanceCore.Application.Tests.Accounts
 
             // Assert
             _accountRepository.Verify(
-                r => r.DeleteAsync(It.IsAny<Guid>(), It.IsAny<CancellationToken>()),
+                r => r.DeleteAsync(userId,It.IsAny<Guid>(), It.IsAny<CancellationToken>()),
                 Times.Never);
         }
 

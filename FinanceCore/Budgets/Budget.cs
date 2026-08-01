@@ -202,8 +202,11 @@ namespace FinanceCore.Domain.Budgets
         public decimal ComputeHealthScore()
         {
 
-            if (Spent is null) throw new InvalidBudgetSpentException(Id); 
-            var percentage = Spent.DividedBy(Amount).Amount;
+            if (Spent is null) throw new InvalidBudgetSpentException(Id);
+            var percentage = 0m;
+            if(Amount.Amount != 0) {
+               percentage = Spent.DividedBy(Amount).Amount;
+            }
             if(percentage <= 1)
             {
                 return (100 - (50 * percentage));

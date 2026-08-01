@@ -20,7 +20,7 @@ namespace FinanceCore.Application.Features.Transactions.Commands.Delete
             if (!result)
                 throw new TransactionNotFoundException(command.Id);
 
-            await _transactionRepository.DeleteAsync(command.Id, cancellationToken);
+            await _transactionRepository.DeleteAsync(command.UserId,command.Id, cancellationToken); 
         }
     }
 

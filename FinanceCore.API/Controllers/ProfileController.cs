@@ -50,27 +50,6 @@ namespace FinanceCore.API.Controllers
         }
 
         /// <summary>
-        /// Create a profile for the current user.
-        /// </summary>
-        [HttpPost]
-        [Produces("application/json")]
-        [ProducesResponseType(typeof(ProfileDto), StatusCodes.Status201Created)]
-        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> CreateProfile(
-            [FromBody] CreateProfileRequest request)
-        {
-            var userId = GetUserId();
-            var command = new CreateProfileCommand(userId, request.FirstName, request.LastName, request.Bio, request.Currency);
-            var profile = await _mediator.Send(command);
-
-            return CreatedAtAction(
-                nameof(GetProfile),
-                null,
-                profile);
-        }
-
-        /// <summary>
         /// Update the current user's profile.
         /// </summary>
         [HttpPut]

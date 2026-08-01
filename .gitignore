@@ -16,5 +16,6 @@ obj/
 wwwroot/
 # Others
 *.log
+*.env
 /FinanceCore.API/appsettings.json
 /FinanceCore.API/appsettings.Development.json

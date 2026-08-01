@@ -95,11 +95,12 @@ namespace FinanceCore.Infrastructure.Repositories
                 throw new Exception("Category not found.");
         }
 
-        public async Task DeleteAsync(Guid id, CancellationToken cancellationToken = default)
+        public async Task DeleteAsync(Guid userId , Guid id, CancellationToken cancellationToken = default)
         {
-            await _connectionFactory.ExecuteNonQueryAsync(
-                "sp_DeleteCategory",
-                new { id });
+            using var connection = _connectionFactory.GetConnection();
+            var sql = @"DELETE FROM Categories WHERE UserId  = @userId AND Id = @Id";
+            var command = new CommandDefinition(sql,new {UserId = userId , Id = id}, cancellationToken: cancellationToken);
+            await connection.ExecuteAsync(command);
         }
 
         public async Task<IEnumerable<CategoryDto>> GetFiltredCategoriesAsync(Guid UserId, string? Name , CategoryType? Type ,DateTime? CreatedAt,int Page, int PageSize,CancellationToken token = default)

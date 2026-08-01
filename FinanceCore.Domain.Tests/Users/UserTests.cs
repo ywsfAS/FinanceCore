@@ -18,7 +18,7 @@ namespace FinanceCore.Domain.Tests.Users
             var timeZone = "UTC";
 
             // Act
-            var user = User.Load(Guid.NewGuid(),name, email, passwordHash, timeZone);
+            var user = User.Load(Guid.NewGuid(),name, email, passwordHash,UserRole.User,0,null,timeZone);
 
             // Assert
             user.Name.Should().Be(name);

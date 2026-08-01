@@ -1,15 +1,11 @@
-﻿using FinanceCore.Application.Abstractions;
+using FinanceCore.Application.Abstractions;
 using FinanceCore.Application.Features.Accounts.Commands.Create;
 using FinanceCore.Domain.Accounts;
+using FinanceCore.Domain.Common;
 using FinanceCore.Domain.Enums;
 using FluentAssertions;
 using MediatR;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FinanceCore.Application.Tests.Accounts
 {
@@ -30,12 +26,12 @@ namespace FinanceCore.Application.Tests.Accounts
         public async Task Handle_Should_CreateAccount_And_Save()
         {
             // Arrange
+            var commandMoney = new Money(1000, EnCurrency.USD);
             var command = new CreateAccountCommand(
                 Guid.NewGuid(),
                 "Test Account",
                 EnAccountType.Checking,
-                EnCurrency.USD,
-                1000
+                commandMoney
                 );
             // Act 
             var result = await _handler.Handle(command,default);
@@ -44,23 +40,21 @@ namespace FinanceCore.Application.Tests.Accounts
             _accountRepositoryMock.Verify(
                 repo => repo.AddAsync(It.IsAny<Account>(), It.IsAny<CancellationToken>()), Times.Once
                 );
-            
+            var resultMoney = new Money(result.Balance, result.Currency);
             result.Should().NotBeNull();
             result.Name.Should().Be(command.Name);
-            result.Balance.Should().Be(command.InitialBalance);
-            result.Currency.Should().Be(command.Currency);
-
+            resultMoney.Should().Be(commandMoney);
         }
         [Fact]
         public async Task Handle_Should_Dispatch_AccountCreatedEvent()
         {
             // Arange
+            var commandMoney = new Money(1000m, EnCurrency.USD);
             var command = new CreateAccountCommand(
                 Guid.NewGuid(),
                 "Test Account",
                 EnAccountType.Checking,
-                EnCurrency.USD,
-                1000
+                commandMoney
                 );
             // Act 
             var result = await _handler.Handle(command, default);

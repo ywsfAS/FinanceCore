@@ -1,15 +1,10 @@
-﻿using FinanceCore.Application.Abstractions;
+using FinanceCore.Application.Abstractions;
 using FinanceCore.Application.Features.Auth.Commands.Login;
 using FinanceCore.Domain.Common;
 using FinanceCore.Domain.Exceptions;
 using FinanceCore.Domain.Users;
 using FluentAssertions;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FinanceCore.Application.Tests.Auth
 {
@@ -17,14 +12,20 @@ namespace FinanceCore.Application.Tests.Auth
     {
         private readonly LoginUserCommandHandler _handler;
         private readonly Mock<IPasswordHasher> _hasherMock;
+        private readonly Mock<IRefreshTokenHasher> _refreshHasher;
+        private readonly Mock<IRefreshTokenRepository> _refreshRepo;
         private readonly Mock<IJwtTokenGenerator> _JwtGeneratorMock;
         private readonly Mock<IUserRepository> _UserRepositoryMock;
+        private readonly Mock<IRefreshTokenGenerator> _generator;
         public LoginCommandHandlerTests()
         {
             _UserRepositoryMock = new();
             _JwtGeneratorMock = new();
             _hasherMock = new();
-            _handler = new LoginUserCommandHandler(_UserRepositoryMock.Object,_hasherMock.Object,_JwtGeneratorMock.Object);
+            _refreshHasher = new();
+            _refreshRepo = new();
+            _generator = new();
+            _handler = new LoginUserCommandHandler(_UserRepositoryMock.Object,_refreshHasher.Object,_refreshRepo.Object ,_hasherMock.Object,_JwtGeneratorMock.Object,_generator.Object);
         }
         [Fact]
         public async Task Handle_Should_ReturnToken_WhenCredentialsAreValid()
@@ -34,14 +35,14 @@ namespace FinanceCore.Application.Tests.Auth
             var password = "password";
             var command = new LoginUserCommand(email.Address,password);
             var user = User.Create("UserTest",email,password);
-            _UserRepositoryMock.Setup(repo => repo.GetByEmailAsync(email.Address, It.IsAny<CancellationToken>()))
+            _UserRepositoryMock.Setup(repo => repo.GetByEmailAsync(email, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(user);
              _hasherMock.Setup(hasher => hasher.Verify(password, user.PasswordHash)).Returns(true);
              _JwtGeneratorMock.Setup(gen => gen.GenerateToken(user)).Returns("test_token");
             // Act
             var result = await _handler.Handle(command, default);
             // Assert
-            _UserRepositoryMock.Verify(repo => repo.GetByEmailAsync(email.Address, It.IsAny<CancellationToken>()), Times.Once);
+            _UserRepositoryMock.Verify(repo => repo.GetByEmailAsync(email, It.IsAny<CancellationToken>()), Times.Once);
             _hasherMock.Verify(hasher => hasher.Verify(password, user.PasswordHash), Times.Once);
             _JwtGeneratorMock.Verify(gen => gen.GenerateToken(user), Times.Once);
             result.Should().NotBeNull();
@@ -57,14 +58,14 @@ namespace FinanceCore.Application.Tests.Auth
             var password = "password";
             var command = new LoginUserCommand(email.Address, password);
             var user = User.Create("UserTest", email, password);
-            _UserRepositoryMock.Setup(repo => repo.GetByEmailAsync(email.Address, It.IsAny<CancellationToken>()))
+            _UserRepositoryMock.Setup(repo => repo.GetByEmailAsync(email, It.IsAny<CancellationToken>()))
                 .ReturnsAsync((User)null);
             _hasherMock.Setup(hasher => hasher.Verify(password, user.PasswordHash)).Returns(true);
             _JwtGeneratorMock.Setup(gen => gen.GenerateToken(user)).Returns("test_token");
             // Act
             await Assert.ThrowsAsync<InvalidCredentialsException>(() => _handler.Handle(command, default));
             // Assert
-            _UserRepositoryMock.Verify(repo => repo.GetByEmailAsync(email.Address, It.IsAny<CancellationToken>()), Times.Once);
+            _UserRepositoryMock.Verify(repo => repo.GetByEmailAsync(email, It.IsAny<CancellationToken>()), Times.Once);
             _hasherMock.Verify(hasher => hasher.Verify(password, user.PasswordHash), Times.Never);
             _JwtGeneratorMock.Verify(gen => gen.GenerateToken(user), Times.Never);
         }
@@ -76,14 +77,14 @@ namespace FinanceCore.Application.Tests.Auth
             var password = "password";
             var command = new LoginUserCommand(email.Address, password);
             var user = User.Create("UserTest", email, password);
-            _UserRepositoryMock.Setup(repo => repo.GetByEmailAsync(email.Address, It.IsAny<CancellationToken>()))
+            _UserRepositoryMock.Setup(repo => repo.GetByEmailAsync(email, It.IsAny<CancellationToken>()))
                 .ReturnsAsync(user);
             _hasherMock.Setup(hasher => hasher.Verify(password, user.PasswordHash)).Returns(false);
             _JwtGeneratorMock.Setup(gen => gen.GenerateToken(user)).Returns("test_token");
             // Act
             await Assert.ThrowsAsync<InvalidCredentialsException>(() => _handler.Handle(command, default));
             // Assert
-            _UserRepositoryMock.Verify(repo => repo.GetByEmailAsync(email.Address, It.IsAny<CancellationToken>()), Times.Once);
+            _UserRepositoryMock.Verify(repo => repo.GetByEmailAsync(email, It.IsAny<CancellationToken>()), Times.Once);
             _hasherMock.Verify(hasher => hasher.Verify(password, user.PasswordHash), Times.Once);
             _JwtGeneratorMock.Verify(gen => gen.GenerateToken(user), Times.Never);
         }

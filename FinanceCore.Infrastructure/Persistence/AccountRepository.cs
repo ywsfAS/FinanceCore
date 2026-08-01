@@ -94,7 +94,7 @@ namespace FinanceCore.Infrastructure.Repositories
                     sql,
                     model,
                     cancellationToken: token,
-                    transaction : unitOfWork.Transaction,
+                    transaction : unitOfWork?.Transaction,
                     commandType: CommandType.Text);
             int affectedRows = 0;
             if(unitOfWork != null)

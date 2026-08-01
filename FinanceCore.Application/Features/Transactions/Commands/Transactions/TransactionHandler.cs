@@ -81,7 +81,7 @@ namespace FinanceCore.Application.Features.Transactions.Commands.Transactions
                 amount: money,
                 categoryId: command.CategoryId,
                 type: command.Type,
-                date: DateTime.UtcNow,
+                date: command.TransactionDate,
                 description: command.Description);
 
             await _unitOfWork.BeginAsync(token);

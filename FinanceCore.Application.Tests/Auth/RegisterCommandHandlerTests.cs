@@ -1,4 +1,4 @@
-﻿using FinanceCore.Application.Abstractions;
+using FinanceCore.Application.Abstractions;
 using FinanceCore.Application.Features.Auth.Commands.Register;
 using FinanceCore.Domain.Common;
 using FinanceCore.Domain.Events.User;
@@ -7,11 +7,6 @@ using FinanceCore.Domain.Users;
 using FluentAssertions;
 using MediatR;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FinanceCore.Application.Tests.Auth
 {
@@ -32,10 +27,10 @@ namespace FinanceCore.Application.Tests.Auth
         public async Task Handle_Should_CreateUser_And_Save()
         {
             // Arrange
-            var email = "Test@gmail.com";
+            var email = new Email("Test@gmail.com");
             var name = "Test User";
             var password = "password";
-            var command = new RegisterUserCommand(name, email, password);
+            var command = new RegisterUserCommand(name, email.Address, password);
             _hasherMock.Setup(hasher => hasher.Hash(password)).Returns("hashed_password");
             _userRepositoryMock.Setup(repo => repo.GetByEmailAsync(email, It.IsAny<CancellationToken>())).ReturnsAsync((User)null);
             // Act
@@ -53,11 +48,11 @@ namespace FinanceCore.Application.Tests.Auth
         public async Task Handle_Should_NotCreateUser_WhenEmailFound()
         {
             // Arrange
-            var email = "Test@gmail.com";
+            var email = new Email("Test@gmail.com");
             var name = "Test User";
             var password = "password";
-            var command = new RegisterUserCommand(name, email, password);
-            var user = User.Create(name, new Email(email), password);
+            var command = new RegisterUserCommand(name, email.Address, password);
+            var user = User.Create(name,email, password);
             _hasherMock.Setup(hasher => hasher.Hash(password)).Returns("hashed_password");
             _userRepositoryMock.Setup(repo => repo.GetByEmailAsync(email, It.IsAny<CancellationToken>())).ReturnsAsync(user);
             // Act

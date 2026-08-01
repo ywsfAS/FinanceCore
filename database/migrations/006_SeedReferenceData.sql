@@ -75,3 +75,13 @@ INSERT INTO TransactionTypes (TransactionTypeId,Code,Name)
 VALUES (4,'Credit','Credit Transaction')
 
 
+SET IDENTITY_INSERT MessageSubjects ON;
+INSERT INTO MessageSubjects (Id, Name)
+VALUES
+    (1, 'Account and Billing'),
+    (2, 'Technical Support'),
+    (3, 'Feature Request'),
+    (4, 'Partnership'),
+    (5, 'Security'),
+    (6, 'Other');
+SET IDENTITY_INSERT MessageSubjects OFF;

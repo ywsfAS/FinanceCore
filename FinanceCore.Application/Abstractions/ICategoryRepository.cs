@@ -8,7 +8,7 @@ namespace FinanceCore.Application.Abstractions
     {
         Task AddAsync(Category category, CancellationToken cancellationToken = default);
         Task UpdateAsync(Category category, CancellationToken cancellationToken = default);
-        Task DeleteAsync(Guid id, CancellationToken cancellationToken = default);
+        Task DeleteAsync(Guid userId ,Guid id, CancellationToken cancellationToken = default);
         Task<CategoryDto?> GetDtoCategoryByIdAndUserIdAsync(Guid userId, Guid id, CancellationToken token = default);
         Task<Category?> GetCategoryByIdAndUserIdAsync(Guid userId , Guid id , CancellationToken token = default);
         Task<IEnumerable<CategoryDto>> GetFiltredCategoriesAsync(Guid userId, string? name, CategoryType? type, DateTime? createdAt, int page, int pageSize,CancellationToken token = default);
