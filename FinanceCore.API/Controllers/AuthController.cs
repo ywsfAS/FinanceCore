@@ -1,3 +1,4 @@
+using Asp.Versioning;
 using FinanceCore.Application.DTOs;
 using FinanceCore.Application.DTOs.Auth;
 using FinanceCore.Application.Features.Auth.Commands.ForgotPassword;
@@ -19,7 +20,8 @@ namespace FinanceCore.API.Controllers
     /// </summary>
     [EnableRateLimiting("Auth")]
     [ApiController]
-    [Route("api/v1/auth")]
+    [Route("api/v{version:apiVersion}/auth")]
+    [ApiVersion("1.0")]
     [AllowAnonymous]
     public class AuthController : ControllerBase
     {

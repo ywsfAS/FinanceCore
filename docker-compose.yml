@@ -43,6 +43,7 @@ services:
     environment:
       ASPNETCORE_ENVIRONMENT: Development
       ASPNETCORE_HTTP_PORTS: "8080"
+      Serilog__WriteTo__1__Args__serverUrl: "${SEQ_SERVER_URL}"
       ConnectionStrings__DefaultConnection: "Server=sqlserver,1433;Database=FinanceCore;User Id=sa;Password=${SA_PASSWORD};TrustServerCertificate=True"
     networks:
       - financecore-network
@@ -51,6 +52,7 @@ services:
     image: datalust/seq
     environment:
       ACCEPT_EULA: "Y"
+      SEQ_FIRSTRUN_ADMINUSERNAME: "${SEQ_ADMIN_USERNAME}"
       SEQ_FIRSTRUN_ADMINPASSWORD: "${SEQ_ADMIN_PASSWORD}"
     ports:
       - "5341:80"

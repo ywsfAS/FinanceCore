@@ -1,3 +1,4 @@
+using Asp.Versioning;
 using FinanceCore.API.Requests.Transaction;
 using FinanceCore.Application.DTOs;
 using FinanceCore.Application.DTOs.Transaction;
@@ -17,7 +18,8 @@ namespace FinanceCore.API.Controllers
 {
     [EnableRateLimiting("Default")]
     [ApiController]
-    [Route("api/v1/transactions")]
+    [Route("api/v{version:apiVersion}/transactions")]
+    [ApiVersion("1.0")]
     [Authorize]
     public class TransactionsController : ControllerBase
     {

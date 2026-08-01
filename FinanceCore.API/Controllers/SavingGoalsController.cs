@@ -1,3 +1,4 @@
+using Asp.Versioning;
 using FinanceCore.API.Requests.Savings;
 using FinanceCore.Application.DTOs;
 using FinanceCore.Application.DTOs.Goal;
@@ -21,7 +22,8 @@ namespace FinanceCore.API.Controllers
 {
     [EnableRateLimiting("Default")]
     [ApiController]
-    [Route("api/v1/savings")]
+    [Route("api/v{version:apiVersion}/savings")]
+    [ApiVersion("1.0")]
     [Authorize]
     public class SavingGoalsController : ControllerBase
     {

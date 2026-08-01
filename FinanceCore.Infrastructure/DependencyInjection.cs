@@ -10,7 +10,10 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
+using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
+using Polly;
+using Polly.Extensions.Http;
 using Quartz;
 using System.Text;
 
@@ -67,13 +70,32 @@ namespace FinanceCore.Infrastructure
             services.AddScoped<IPasswordHasher, PasswordHasher>();
             services.AddScoped<ICurrencyConverter, CurrencyConverter>();
             services.AddScoped<IExchangeRateRepository, ExchangeRateRepository>();
-            services.AddHttpClient<IExchangeRateApiService, ExchangeRateApiService>();
             services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
             services.AddScoped<IRefreshTokenGenerator, RefreshTokenGenerator>();
             services.AddScoped<IImageProcessor, ImageProcessor>();
             services.AddSingleton<ICacheService, MemoryCacheService>();
 
             services.AddHealthChecks().AddCheck<DatabaseHealthCheck>("database",HealthStatus.Unhealthy, tags : new[] {"ready"});
+
+            var retryPolicy = HttpPolicyExtensions
+                .HandleTransientHttpError()
+                .WaitAndRetryAsync(3, (n) => TimeSpan.FromMinutes(Math.Pow(2, n)));
+
+            var circuitBreakerPolicy = HttpPolicyExtensions
+                .HandleTransientHttpError()
+                .CircuitBreakerAsync(
+                    handledEventsAllowedBeforeBreaking: 3,
+                    durationOfBreak: TimeSpan.FromSeconds(30)
+                );
+
+            var timeoutPolicy = Policy.TimeoutAsync<HttpResponseMessage>(
+                TimeSpan.FromSeconds(5)
+            );
+
+            services.AddHttpClient<IExchangeRateApiService, ExchangeRateApiService>()
+                .AddPolicyHandler(retryPolicy)
+                .AddPolicyHandler(circuitBreakerPolicy)
+                .AddPolicyHandler(timeoutPolicy);
 
             services.AddOptions<JwtSettings>()
                 .BindConfiguration("JwtSettings")

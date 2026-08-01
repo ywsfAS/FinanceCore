@@ -1,3 +1,4 @@
+using Asp.Versioning;
 using FinanceCore.API.Requests.ContactMessage;
 using FinanceCore.Application.DTOs;
 using FinanceCore.Application.Features.Contact.Commands.Create;
@@ -13,7 +14,8 @@ namespace FinanceCore.API.Controllers
     [EnableRateLimiting("Default")]
     [ApiController]
     [Authorize]
-    [Route("api/v1/contacts")]
+    [Route("api/v{version:apiVersion}/contacts")]
+    [ApiVersion("1.0")]
     public class ContactMessageController : ControllerBase
     {
         private readonly IMediator _mediator;

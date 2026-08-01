@@ -2,8 +2,6 @@ using FinanceCore.Domain.Common;
 using FinanceCore.Domain.Enums;
 using FinanceCore.Domain.Events.Profile;
 using FinanceCore.Domain.Exceptions;
-using System;
-using System.Collections.Generic;
 using static FinanceCore.Domain.Exceptions.ProfileException;
 
 namespace FinanceCore.Domain.Profile
@@ -24,7 +22,7 @@ namespace FinanceCore.Domain.Profile
             if (userId == Guid.Empty)
                 throw new UserIdNotProvidedException();
 
-            if (string.IsNullOrWhiteSpace(firstName) || string.IsNullOrWhiteSpace(lastName))
+            if (string.IsNullOrWhiteSpace(firstName))
                 throw new InvalidFirstNameException(firstName + lastName,"Invalid name");
 
             var profile = new Profile

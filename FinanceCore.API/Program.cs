@@ -1,3 +1,5 @@
+using Asp.Versioning;
+using Asp.Versioning.Conventions;
 using FinanceCore.API;
 using FinanceCore.API.Configuration;
 using FinanceCore.Application;
@@ -15,6 +17,20 @@ builder.Services.AddHttpsRedirection(policy =>
 {
     policy.RedirectStatusCode = StatusCodes.Status308PermanentRedirect;
 });
+
+builder.Services.AddApiVersioning(config =>
+{
+    config.DefaultApiVersion = new ApiVersion(1, 0);
+    config.AssumeDefaultVersionWhenUnspecified = true;
+}).AddMvc(config =>
+{
+    config.Conventions.Add(new VersionByNamespaceConvention());
+}).AddApiExplorer(config =>
+{
+    config.GroupNameFormat = "'v'V";
+    config.SubstituteApiVersionInUrl = true;
+});
+
 
 builder.Services
     .AddControllers()

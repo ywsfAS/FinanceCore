@@ -1,3 +1,4 @@
+using Asp.Versioning;
 using FinanceCore.API.Requests.Profile;
 using FinanceCore.Application.DTOs;
 using FinanceCore.Application.Features.Profiles.Commands.Create;
@@ -16,7 +17,8 @@ namespace FinanceCore.API.Controllers
 
     [EnableRateLimiting("Default")]
     [ApiController]
-    [Route("api/v1/profile")]
+    [Route("api/v{version:apiVersion}/profile")]
+    [ApiVersion("1.0")]
     [Authorize]
     public class ProfileController : ControllerBase
     {
