@@ -11,105 +11,167 @@ using System.Text.Json.Serialization;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-builder.Services.AddControllers()
-    .AddJsonOptions(opts =>
-    {
-        opts.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-    });
-builder.Services.AddApplication();
-builder.Services.AddInfrastructure(builder.Configuration);
-builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(c =>
+builder.Services.AddHttpsRedirection(policy =>
 {
-    c.SwaggerDoc("v1", new OpenApiInfo { Title = "FinanceCore API", Version = "v1" });
+    policy.RedirectStatusCode = StatusCodes.Status308PermanentRedirect;
+});
 
-    // Define the security scheme
-    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+builder.Services
+    .AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Add(
+            new JsonStringEnumConverter());
+    });
+
+builder.Services.AddApplication();
+
+builder.Services.AddInfrastructure(builder.Configuration);
+
+builder.Services.AddEndpointsApiExplorer();
+
+
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "FinanceCore API",
+        Version = "v1"
+    });
+
+    options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Name = "Authorization",
         Type = SecuritySchemeType.Http,
         Scheme = "Bearer",
         BearerFormat = "JWT",
         In = ParameterLocation.Header,
-        Description = "Enter 'Bearer {token}'",
+        Description = "Enter 'Bearer {token}'"
     });
 
-    // Require JWT for all endpoints in Swagger
-    c.AddSecurityRequirement(new OpenApiSecurityRequirement
+    options.AddSecurityRequirement(new OpenApiSecurityRequirement
     {
         {
             new OpenApiSecurityScheme
             {
-                Reference = new OpenApiReference { Type = ReferenceType.SecurityScheme, Id = "Bearer" }
+                Reference = new OpenApiReference
+                {
+                    Type = ReferenceType.SecurityScheme,
+                    Id = "Bearer"
+                }
             },
-            new string[] { }
+            Array.Empty<string>()
         }
     });
 });
-// Add CQRS policy
+
+
+var allowedOrigins = builder.Configuration
+    .GetSection("AllowedCorsOrigins")
+    .Get<string[]>() ?? [];
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowFrontend", policy =>
     {
-        policy.WithOrigins("http://localhost:5173") // React dev server
-              .AllowAnyHeader()
-              .AllowAnyMethod()
-              .AllowCredentials();
+        policy
+            .WithOrigins(allowedOrigins)
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .AllowCredentials();
     });
 });
+
+
+builder.Services
+    .AddOptions<RateLimitingOptions>()
+    .BindConfiguration("RateLimiting")
+    .ValidateDataAnnotations()
+    .ValidateOnStart();
+
 var rateLimitOptions = builder.Configuration
     .GetSection("RateLimiting")
     .Get<RateLimitingOptions>()!;
-// Add Rate Limiting 
-builder.Services.AddRateLimiter(options => {
+
+builder.Services.AddRateLimiter(options =>
+{
     options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
-    options.AddFixedWindowLimiter("Auth",opt =>
+
+    options.AddFixedWindowLimiter("Auth", options =>
     {
-       
-        opt.Window = TimeSpan.FromMinutes(rateLimitOptions.Authentication.WindowInMinutes);
-        opt.PermitLimit = rateLimitOptions.Authentication.PermitLimit;
+        options.Window = TimeSpan.FromMinutes(
+            rateLimitOptions.Authentication.WindowInMinutes);
+
+        options.PermitLimit =
+            rateLimitOptions.Authentication.PermitLimit;
     });
 
-    options.AddSlidingWindowLimiter("Default", opt =>
+    options.AddSlidingWindowLimiter("Default", options =>
     {
-        opt.PermitLimit = rateLimitOptions.Default.PermitLimit;
-        opt.Window = TimeSpan.FromMinutes(rateLimitOptions.Default.WindowInMinutes);
-        opt.SegmentsPerWindow = rateLimitOptions.Default.SegmentsPerWindow;
+        options.PermitLimit =
+            rateLimitOptions.Default.PermitLimit;
 
+        options.Window = TimeSpan.FromMinutes(
+            rateLimitOptions.Default.WindowInMinutes);
+
+        options.SegmentsPerWindow =
+            rateLimitOptions.Default.SegmentsPerWindow;
     });
 
-    options.AddConcurrencyLimiter("Reports", opt =>
+    options.AddConcurrencyLimiter("Reports", options =>
     {
-        opt.PermitLimit = rateLimitOptions.Reporting.PermitLimit;
-        opt.QueueLimit = rateLimitOptions.Reporting.QueueLimit;
-    });
+        options.PermitLimit =
+            rateLimitOptions.Reporting.PermitLimit;
 
+        options.QueueLimit =
+            rateLimitOptions.Reporting.QueueLimit;
+    });
 });
-builder.Services.AddSerilog((configuration) => configuration.ReadFrom.Configuration(builder.Configuration));
+
+
+builder.Services.AddSerilog(
+    configuration => configuration
+        .ReadFrom.Configuration(builder.Configuration));
+
 var app = builder.Build();
+
 app.UseGlobalException();
+
+if (!app.Environment.IsDevelopment())
+{
+    app.UseHsts();
+}
+
+app.UseHttpsRedirection();
+
+
+app.UseSerilogRequestLogging();
+
 app.UseCors("AllowFrontend");
-// Configure the HTTP request pipeline.
+
+app.UseStaticFiles();
+
+app.UseAuthentication();
+
+app.UseRateLimiter();
+
+app.UseAuthorization();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-app.UseHttpsRedirection();
+
 app.MapHealthChecks("/health/live");
-app.MapHealthChecks("/health/ready", new HealthCheckOptions
-{
-    Predicate = check => check.Tags.Contains("ready"),
-    ResponseWriter = WriteHeathJsonReport.WriteHealthCheckResponse,
-});
-app.UseSerilogRequestLogging();
 
-
-app.UseStaticFiles();
-app.UseAuthentication();
-app.UseRateLimiter();
-app.UseAuthorization();
+app.MapHealthChecks(
+    "/health/ready",
+    new HealthCheckOptions
+    {
+        Predicate = check => check.Tags.Contains("ready"),
+        ResponseWriter = WriteHeathJsonReport.WriteHealthCheckResponse
+    });
 
 app.MapControllers();
 
