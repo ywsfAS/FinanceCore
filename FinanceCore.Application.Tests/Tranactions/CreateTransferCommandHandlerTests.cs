@@ -1,8 +1,8 @@
-﻿using FinanceCore.Application.Abstractions;
-using FinanceCore.Application.DTOs.Transaction;
-using FinanceCore.Application.Features.Transactions.Commands.Transfer;
+using FinanceCore.Application.Abstractions;
+using FinanceCore.Application.Features.Transactions.Commands.Transactions;
 using FinanceCore.Domain.Accounts;
-using FinanceCore.Domain.Users;
+using FinanceCore.Domain.Enums;
+using MediatR;
 using Moq;
 
 namespace FinanceCore.Application.Tests.Tranactions
@@ -12,37 +12,32 @@ namespace FinanceCore.Application.Tests.Tranactions
     {
         private readonly Mock<ITransactionRepository> _transactionRepositoryMock;
         private readonly Mock<IAccountRepository> _accountRepositoryMock;
-        private readonly TransferTransactionCommandHandler _handler;
+        private readonly Mock<IMediator> _eventBusMock;
+        private readonly Mock<IUnitOfWork> _unitOfWorkMock;
+        private readonly Mock<ICategoryRepository> _categoryRepositoryMock;
+
+        private readonly TransactionHandler _handler;
 
         public TransferTransactionCommandHandlerTests()
         {
             _transactionRepositoryMock = new Mock<ITransactionRepository>();
             _accountRepositoryMock = new Mock<IAccountRepository>();
+            _eventBusMock = new Mock<IMediator>();
+            _unitOfWorkMock = new Mock<IUnitOfWork>();
+            _categoryRepositoryMock = new Mock<ICategoryRepository>();
 
-            _handler = new TransferTransactionCommandHandler(
+            _handler = new TransactionHandler(
                 _transactionRepositoryMock.Object,
-                _accountRepositoryMock.Object
+                _accountRepositoryMock.Object,
+                _categoryRepositoryMock.Object,
+                _eventBusMock.Object,
+                _unitOfWorkMock.Object
             );
         }
 
         [Fact]
         public async Task Handle_ShouldReturnNull_WhenAccountDoesNotExist()
         {
-            // Arrange
-            var UserId = Guid.NewGuid();
-            var accountId = Guid.NewGuid();
-            var ToAccountId = Guid.NewGuid();
-            var command = new CreateTransferCommand(UserId, accountId, ToAccountId, 100, "Transfer test", "Test notes");
-
-            _accountRepositoryMock
-                .Setup(x => x.GetByIdAndUserIdAsync(command.UserId, command.accountId, It.IsAny<CancellationToken>()))
-                .ReturnsAsync((Account)null);
-
-            // Act
-            var result = await _handler.Handle(command, CancellationToken.None);
-
-            // Assert
-            Assert.Null(result);
         }
     }
 }

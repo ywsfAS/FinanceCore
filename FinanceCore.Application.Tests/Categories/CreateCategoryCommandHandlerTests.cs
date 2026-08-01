@@ -1,13 +1,9 @@
-﻿using FinanceCore.Application.Abstractions;
+using FinanceCore.Application.Abstractions;
 using FinanceCore.Application.Features.Categories.Commands.Create;
 using FinanceCore.Domain.Enums;
 using FluentAssertions;
+using MediatR;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FinanceCore.Application.Tests.Categories
 {
@@ -15,10 +11,12 @@ namespace FinanceCore.Application.Tests.Categories
     {
         private readonly Mock<ICategoryRepository> _categoryRepositoryMock;
         private readonly CreateCategoryCommandHandler _handler;
+        private readonly Mock<IMediator> _eventBusMock;
         public CreateCategoryCommandHandlerTests()
         {
             _categoryRepositoryMock = new();
-            _handler = new(_categoryRepositoryMock.Object);
+            _eventBusMock = new();
+            _handler = new(_categoryRepositoryMock.Object , _eventBusMock.Object);
         }
         [Fact]
         public async Task Handle_Should_CreateCategory()

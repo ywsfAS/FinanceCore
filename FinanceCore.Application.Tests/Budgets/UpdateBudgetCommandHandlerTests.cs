@@ -1,92 +1,111 @@
 using FinanceCore.Application.Abstractions;
 using FinanceCore.Application.Features.Budgets.Commands.Update;
 using FinanceCore.Domain.Budgets;
+using FinanceCore.Domain.Common;
 using FinanceCore.Domain.Enums;
 using FinanceCore.Domain.Exceptions;
 using FluentAssertions;
+using MediatR;
 using Moq;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace FinanceCore.Application.Tests.Budgets
 {
     public class UpdateBudgetCommandHandlerTests
     {
-        private readonly Mock<IBudgetRepository> _budgetRepositoryMock;
+        private readonly Mock<IBudgetRepository> _budgetRepository;
+        private readonly Mock<IMediator> _eventBus;
         private readonly UpdateBudgetCommandHandler _handler;
+
         public UpdateBudgetCommandHandlerTests()
         {
-            _budgetRepositoryMock = new();
-            _handler = new UpdateBudgetCommandHandler(_budgetRepositoryMock.Object);
+            _budgetRepository = new();
+            _eventBus = new();
 
+            _handler = new UpdateBudgetCommandHandler(
+                _budgetRepository.Object,
+                _eventBus.Object);
         }
+
         [Fact]
         public async Task Handle_Should_UpdateBudget_WhenBudgetExists()
         {
-            // Arrange 
+            // Arrange
             var userId = Guid.NewGuid();
-            var budgetId = Guid.NewGuid();
             var categoryId = Guid.NewGuid();
-            var budget = Budget.Create(
-               budgetId,
-               userId,
-               categoryId,
-               "Old Name",
-               EnCurrency.USD,
-               1000,
-               EnPeriod.Monthly,
-               DateTime.UtcNow,
-               DateTime.UtcNow.AddMonths(1),
-               DateTime.UtcNow
-               );
-            var command = new UpdateBudgetCommand(userId, budgetId, "New Name", 2000, EnCurrency.USD, EnPeriod.Weekly, DateTime.UtcNow);
-            _budgetRepositoryMock.Setup(repo => repo.GetByIdAndUserIdAsync(userId, budgetId, It.IsAny<CancellationToken>()))
-                .ReturnsAsync(budget);
-            // Act
-            await _handler.Handle(command,default);
-            // Assert
-            _budgetRepositoryMock.Verify(repo => repo.UpdateAsync(budget, It.IsAny<CancellationToken>()), Times.Once);
-            budget.Name.Should().Be("New Name");
-            budget.Amount.Amount.Should().Be(2000);
-            budget.Currency.Should().Be(EnCurrency.USD);
-            budget.Period.Should().Be(EnPeriod.Weekly);
 
+            var budget = Budget.Create(
+                userId,
+                categoryId,
+                "Old Name",
+                new Money(1000m, EnCurrency.USD),
+                EnPeriod.Monthly,
+                DateTime.UtcNow.AddMonths(1)
+            );
+
+            var command = new UpdateBudgetCommand(
+                userId,
+                budget.Id,
+                "New Name",
+                new Money(2000m, EnCurrency.USD),
+                EnPeriod.Weekly,
+                DateTime.UtcNow
+            );
+
+            _budgetRepository
+                .Setup(repo => repo.GetByIdAndUserIdAsync(
+                    userId,
+                    budget.Id,
+                    It.IsAny<CancellationToken>()))
+                .ReturnsAsync(budget);
+
+            // Act
+            await _handler.Handle(command, default);
+
+            // Assert
+            _budgetRepository.Verify(
+                repo => repo.UpdateAsync(
+                    budget,
+                    It.IsAny<CancellationToken>()),
+                Times.Once);
+
+            budget.Name.Should().Be("New Name");
+            budget.Amount.Should().Be(new Money(2000m, EnCurrency.USD));
+            budget.Period.Should().Be(EnPeriod.Weekly);
         }
+
         [Fact]
         public async Task Handle_Should_NotUpdateBudget_WhenBudgetNotExists()
         {
-            // Arrange 
+            // Arrange
             var userId = Guid.NewGuid();
             var budgetId = Guid.NewGuid();
-            var categoryId = Guid.NewGuid();
-            var budget = Budget.Create(
-               budgetId,
-               userId,
-               categoryId,
-               "Old Name",
-               EnCurrency.USD,
-               1000,
-               EnPeriod.Monthly,
-               DateTime.UtcNow,
-               DateTime.UtcNow.AddMonths(1),
-               DateTime.UtcNow
-               );
-            var command = new UpdateBudgetCommand(userId, budgetId, "New Name", 2000, EnCurrency.USD, EnPeriod.Weekly, DateTime.UtcNow);
-            _budgetRepositoryMock.Setup(repo => repo.GetByIdAndUserIdAsync(userId, budgetId, It.IsAny<CancellationToken>()))
+
+            _budgetRepository
+                .Setup(repo => repo.GetByIdAndUserIdAsync(
+                    userId,
+                    budgetId,
+                    It.IsAny<CancellationToken>()))
                 .ReturnsAsync((Budget)null);
+
+            var command = new UpdateBudgetCommand(
+                userId,
+                budgetId,
+                "New Name",
+                new Money(2000m, EnCurrency.USD),
+                EnPeriod.Weekly,
+                DateTime.UtcNow
+            );
+
             // Act
-            await Assert.ThrowsAsync<BudgetNotFoundException>(() => _handler.Handle(command, default));
+            await Assert.ThrowsAsync<BudgetNotFoundException>(
+                () => _handler.Handle(command, default));
+
             // Assert
-            _budgetRepositoryMock.Verify(repo => repo.UpdateAsync(budget, It.IsAny<CancellationToken>()), Times.Never);
-            budget.Name.Should().Be("Old Name");
-            budget.Amount.Amount.Should().Be(1000);
-            budget.Currency.Should().Be(EnCurrency.USD);
-            budget.Period.Should().Be(EnPeriod.Monthly);
-
+            _budgetRepository.Verify(
+                repo => repo.UpdateAsync(
+                    It.IsAny<Budget>(),
+                    It.IsAny<CancellationToken>()),
+                Times.Never);
         }
-
     }
 }

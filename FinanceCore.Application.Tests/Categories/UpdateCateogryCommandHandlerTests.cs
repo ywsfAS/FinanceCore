@@ -1,9 +1,10 @@
-﻿using FinanceCore.Application.Abstractions;
+using FinanceCore.Application.Abstractions;
 using FinanceCore.Application.Features.Categories.Commands.Update;
 using FinanceCore.Domain.Categories;
 using FinanceCore.Domain.Enums;
 using FinanceCore.Domain.Exceptions;
 using FluentAssertions;
+using MediatR;
 using Moq;
 using System;
 using System.Collections.Generic;
@@ -17,11 +18,13 @@ namespace FinanceCore.Application.Tests.Categories
     {
         private readonly Mock<ICategoryRepository> _categoryRepositoryMock;
         private readonly UpdateCategoryCommandHandler _handler;
+        private readonly Mock<IMediator> _eventBusMock;
 
         public UpdateCateogryCommandHandlerTests()
         {
             _categoryRepositoryMock = new Mock<ICategoryRepository>();
-            _handler = new UpdateCategoryCommandHandler(_categoryRepositoryMock.Object);
+            _eventBusMock = new Mock<IMediator>();
+            _handler = new UpdateCategoryCommandHandler(_categoryRepositoryMock.Object , _eventBusMock.Object);
         }
         [Fact]
         public async Task Handle_Should_UpdateCategory_WhenCategoryExists()
