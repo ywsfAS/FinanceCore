@@ -415,6 +415,11 @@ namespace FinanceCore.Infrastructure.Repositories
               
             );
         }
+        public Task InsertTransactions(IEnumerable<Transaction> transactions , CancellationToken token)
+        {
+            // TO BE CONTINUED
+            return Task.CompletedTask;
+        }
 
     }
 }

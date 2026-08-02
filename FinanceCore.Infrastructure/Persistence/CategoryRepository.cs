@@ -183,5 +183,10 @@ namespace FinanceCore.Infrastructure.Repositories
             return await connection.QueryAsync<CategoryOptionDto>(command);
 
         }
+        public Task<IDictionary<string,Guid?>> ResolveCategoriesId(Guid userId,IEnumerable<string> names, CancellationToken token)
+        {
+            IDictionary<string,Guid?> result = null;
+            return Task.FromResult(result);
+        }
     }
 }

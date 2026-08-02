@@ -21,4 +21,5 @@ COPY --from=build /app/publish .
 
 COPY database/migrations ./migrations
 
+USER $APP_UID
 ENTRYPOINT ["dotnet", "FinanceCore.Database.dll"]

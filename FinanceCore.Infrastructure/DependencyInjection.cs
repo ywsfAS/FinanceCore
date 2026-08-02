@@ -1,8 +1,10 @@
 using FinanceCore.Application.Abstractions;
+using FinanceCore.Application.DTOs.Transaction;
 using FinanceCore.Infrastructure.Auth;
 using FinanceCore.Infrastructure.BackgroundJobs;
 using FinanceCore.Infrastructure.Context;
 using FinanceCore.Infrastructure.Health;
+using FinanceCore.Infrastructure.Imports;
 using FinanceCore.Infrastructure.Persistence;
 using FinanceCore.Infrastructure.Repositories;
 using FinanceCore.Infrastructure.Services;
@@ -74,7 +76,9 @@ namespace FinanceCore.Infrastructure
             services.AddScoped<IRefreshTokenGenerator, RefreshTokenGenerator>();
             services.AddScoped<IImageProcessor, ImageProcessor>();
             services.AddSingleton<ICacheService, MemoryCacheService>();
-
+            services.AddScoped<
+                ITransactionParser<TransactionImport>,
+                CsvTransactionParser>();
             services.AddHealthChecks().AddCheck<DatabaseHealthCheck>("database",HealthStatus.Unhealthy, tags : new[] {"ready"});
 
             var retryPolicy = HttpPolicyExtensions
