@@ -1,6 +1,7 @@
 using Dapper;
 using FinanceCore.Application.Abstractions;
 using FinanceCore.Application.DTOs;
+using FinanceCore.Application.Models;
 using FinanceCore.Application.Models.FinanceCore.Infrastructure.Models;
 using FinanceCore.Domain.Categories;
 using FinanceCore.Domain.Enums;
@@ -183,10 +184,18 @@ namespace FinanceCore.Infrastructure.Repositories
             return await connection.QueryAsync<CategoryOptionDto>(command);
 
         }
-        public Task<IDictionary<string,Guid?>> ResolveCategoriesId(Guid userId,IEnumerable<string> names, CancellationToken token)
+        public async Task<IDictionary<string,Guid>> ResolveCategoriesId(Guid userId,IEnumerable<string> names, CancellationToken token)
         {
-            IDictionary<string,Guid?> result = null;
-            return Task.FromResult(result);
+            const string sql = @"SELECT Name , Id FROM Categories WHERE UserId = @UserId AND Name IN @Names";
+
+            using var connection = _connectionFactory.GetConnection();
+
+            var command = new CommandDefinition(sql, new { UserId = userId, Names = names }, cancellationToken: token);
+
+            var categories = await connection.QueryAsync<CategoryLookup>(command);
+
+            return categories.ToDictionary(x => x.Name, x => x.Id);
+
         }
     }
 }

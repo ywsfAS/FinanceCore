@@ -66,7 +66,7 @@ namespace FinanceCore.Infrastructure.Persistence
             var key = $"CategoryOptions_{page}_{pageSize}";
             return _cache.GetOrCreateAsync(Tag(userId), key, () => _categoryRepository.GetCategoriesByUserOptionsAsync(userId, page, pageSize, token));
         }
-        public async Task<IDictionary<string,Guid?>> ResolveCategoriesId(Guid userId,IEnumerable<string> names, CancellationToken token)
+        public async Task<IDictionary<string,Guid>> ResolveCategoriesId(Guid userId,IEnumerable<string> names, CancellationToken token)
         {
             var result = await _categoryRepository.ResolveCategoriesId(userId, names, token);
             await _cache.InvalidateTagAsync(Tag(userId));

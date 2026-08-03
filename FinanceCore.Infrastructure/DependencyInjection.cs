@@ -2,6 +2,7 @@ using FinanceCore.Application.Abstractions;
 using FinanceCore.Application.DTOs.Transaction;
 using FinanceCore.Infrastructure.Auth;
 using FinanceCore.Infrastructure.BackgroundJobs;
+using FinanceCore.Infrastructure.Configuration;
 using FinanceCore.Infrastructure.Context;
 using FinanceCore.Infrastructure.Health;
 using FinanceCore.Infrastructure.Imports;
@@ -100,6 +101,8 @@ namespace FinanceCore.Infrastructure
                 .AddPolicyHandler(retryPolicy)
                 .AddPolicyHandler(circuitBreakerPolicy)
                 .AddPolicyHandler(timeoutPolicy);
+
+            DapperPlusConfiguration.Configure();
 
             services.AddOptions<JwtSettings>()
                 .BindConfiguration("JwtSettings")

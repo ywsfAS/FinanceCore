@@ -74,6 +74,7 @@ public sealed class Handler : IRequestHandler<Command>
 
         await _transactionRepository.InsertTransactions(
             transactions,
+            null,
             cancellationToken);
     }
 }
