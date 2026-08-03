@@ -7,7 +7,7 @@ namespace FinanceCore.Infrastructure.Mappers
     {
         public static TransactionModel MapToModel(Transaction transaction)
         {
-            return new TransactionModel { Id = transaction.Id, AccountId = transaction.AccountId, CategoryId = transaction.CategoryId,Type = transaction.Type ,Amount = transaction.Amount.Amount , Currency = transaction.Amount.Currency, ToAccountId = transaction.ToAccountId, Date = transaction.Date, Description = transaction.Description, CreatedAt = transaction.CreatedAt, UpdatedAt = transaction.UpdatedAt };
+            return new TransactionModel { Id = transaction.Id, AccountId = transaction.AccountId, CategoryId = transaction.CategoryId,Type = transaction.Type ,Amount = transaction.Amount.Amount , Currency = transaction.Amount.Currency, ToAccountId = transaction.ToAccountId, Date = transaction.Date, Description = transaction.Description, CreatedAt = transaction.CreatedAt, UpdatedAt = transaction.UpdatedAt , BatchId = transaction.BatchId};
 
         }
     public static Transaction MapToDomain(TransactionModel model)

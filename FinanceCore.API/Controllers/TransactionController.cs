@@ -3,6 +3,7 @@ using FinanceCore.API.Requests.Transaction;
 using FinanceCore.Application.DTOs;
 using FinanceCore.Application.DTOs.Transaction;
 using FinanceCore.Application.Features.Transactions.Commands.Delete;
+using FinanceCore.Application.Features.Transactions.Commands.TransactionImports;
 using FinanceCore.Application.Features.Transactions.Commands.Transactions;
 using FinanceCore.Application.Features.Transactions.Export;
 using FinanceCore.Application.Features.Transactions.Queries.GetFiltredTransactions;
@@ -95,6 +96,32 @@ namespace FinanceCore.API.Controllers
             var query = new ExportCSVQuery(userId,accountId,toAccountId,CategoryId, Start, End, Type, Page, PageSize);
             var result = await _mediator.Send(query);
             return File(result.content,result.contentType , result.fileName);
+        }
+        /// <summary>
+        /// import transactions
+        /// </summary>
+        [HttpPost("import/{type}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> ImportTransactions(
+            [FromForm] ImportTransactionRequest req,
+            [FromRoute] EnFileType type)
+        {
+            var userId = GetUserId();
+
+            await using var stream = req.File.OpenReadStream();
+
+            var command = new ImportTransactionCommand(
+                userId,
+                req.AccountId,
+                stream,
+                type,
+                req.File.FileName);
+
+            await _mediator.Send(command);
+
+            return Ok("Transactions imported successfully");
         }
         /// <summary>
         /// Delete a transaction

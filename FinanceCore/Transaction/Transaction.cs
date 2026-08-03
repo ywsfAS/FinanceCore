@@ -19,6 +19,8 @@ namespace FinanceCore.Domain.Transactions
         public DateTime CreatedAt { get; private set; }
         public DateTime? UpdatedAt { get; private set; }
 
+        public Guid? BatchId { get; private set; } = null;
+
         private Transaction() { }
 
         private Transaction(
@@ -72,7 +74,9 @@ namespace FinanceCore.Domain.Transactions
             Guid? categoryId,
             EnTransactionType type,
             DateTime? date = null,
-            string? description = null)
+            string? description = null,
+            Guid? batchId = null
+            )
         {
             if (accountId == Guid.Empty)
                 throw new ArgumentException("Account ID cannot be empty.", nameof(accountId));
@@ -110,6 +114,7 @@ namespace FinanceCore.Domain.Transactions
                 Type = type,
                 Date = transactionDate,
                 Description = description?.Trim(),
+                BatchId = batchId,
                 CreatedAt = DateTime.UtcNow
             };
 

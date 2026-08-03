@@ -1,33 +1,40 @@
 using FinanceCore.Application.Abstractions;
 using FinanceCore.Application.DTOs.Transaction;
+using FinanceCore.Domain.Batch;
 using FinanceCore.Domain.Common;
 using FinanceCore.Domain.Transactions;
 using MediatR;
 
 namespace FinanceCore.Application.Features.Transactions.Commands.TransactionImports;
 
-public sealed class Handler : IRequestHandler<Command>
+public sealed class Handler : IRequestHandler<ImportTransactionCommand>
 {
     private readonly ITransactionParser<TransactionImport> _parser;
     private readonly ICategoryRepository _categoryRepository;
     private readonly ITransactionRepository _transactionRepository;
+    private readonly IBatchRepository _batchRepository;
+    private readonly IUnitOfWork _unitOfWork;
+
 
     public Handler(
         ITransactionParser<TransactionImport> parser,
         ICategoryRepository categoryRepository,
-        ITransactionRepository transactionRepository)
+        ITransactionRepository transactionRepository,
+        IBatchRepository batchRepository,
+        IUnitOfWork unitOfWork)
     {
         _parser = parser;
         _categoryRepository = categoryRepository;
         _transactionRepository = transactionRepository;
+        _batchRepository = batchRepository;
+        _unitOfWork = unitOfWork;
     }
 
     public async Task Handle(
-        Command command,
+        ImportTransactionCommand command,
         CancellationToken cancellationToken)
     {
         var imports = _parser.Parse(command.Stream);
-
         var categoryNames = imports
             .Select(x => x.Category)
             .Where(x => !string.IsNullOrWhiteSpace(x))
@@ -38,6 +45,13 @@ public sealed class Handler : IRequestHandler<Command>
             command.UserId,
             categoryNames,
             cancellationToken);
+
+        var batch = new Batch
+        {
+            AccountId = command.AccountId,
+            FileName = command.FileName,
+            ImportedAt = DateTime.UtcNow
+        };
 
         var transactions = new List<Transaction>();
 
@@ -62,7 +76,8 @@ public sealed class Handler : IRequestHandler<Command>
                 categoryId,
                 import.Type,
                 import.Date,
-                import.Description);
+                import.Description,
+                batch.Id);
 
             transactions.Add(transaction);
         }
@@ -72,9 +87,28 @@ public sealed class Handler : IRequestHandler<Command>
             return;
         }
 
-        await _transactionRepository.InsertTransactions(
-            transactions,
-            null,
-            cancellationToken);
+        batch.TransactionCount = transactions.Count;
+        await _unitOfWork.BeginAsync(cancellationToken);
+
+        try
+        {
+            await _batchRepository.AddAsync(
+                batch,
+                _unitOfWork,
+                cancellationToken);
+
+            await _transactionRepository.InsertTransactions(
+                transactions,
+                _unitOfWork,
+                cancellationToken);
+
+            await _unitOfWork.CommitAsync(cancellationToken);
+        }
+        catch
+        {
+            await _unitOfWork.RollBackAsync(cancellationToken);
+            throw;
+        }
+
     }
 }
