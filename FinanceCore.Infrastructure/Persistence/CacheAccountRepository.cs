@@ -66,5 +66,18 @@ namespace FinanceCore.Infrastructure.Persistence
             await _accountRepository.DeleteAsync(userId, accountId, token);
             await _cache.InvalidateTagAsync(Tag(userId));
         }
+        public async Task<IDictionary<Guid,Account>> GetUserOwnedAccountsAsync(
+            Guid userId,
+            CancellationToken token = default)
+        {
+           return await _accountRepository.GetUserOwnedAccountsAsync(userId, token);
+        }
+        public async Task UpdateAccountsAsync(
+            IEnumerable<Account> accounts,
+            IUnitOfWork? unitOfWork = null,
+            CancellationToken token = default)
+        {
+            await _accountRepository.UpdateAccountsAsync(accounts, unitOfWork, token);
+        }
     }
 }

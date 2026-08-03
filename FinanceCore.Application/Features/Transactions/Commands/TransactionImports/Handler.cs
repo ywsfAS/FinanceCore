@@ -1,7 +1,10 @@
 using FinanceCore.Application.Abstractions;
 using FinanceCore.Application.DTOs.Transaction;
+using FinanceCore.Domain.Accounts;
 using FinanceCore.Domain.Batch;
 using FinanceCore.Domain.Common;
+using FinanceCore.Domain.Enums;
+using FinanceCore.Domain.Exceptions;
 using FinanceCore.Domain.Transactions;
 using MediatR;
 
@@ -13,13 +16,14 @@ public sealed class Handler : IRequestHandler<ImportTransactionCommand>
     private readonly ICategoryRepository _categoryRepository;
     private readonly ITransactionRepository _transactionRepository;
     private readonly IBatchRepository _batchRepository;
+    private readonly IAccountRepository _accountRepository;
     private readonly IUnitOfWork _unitOfWork;
-
 
     public Handler(
         ITransactionParser<TransactionImport> parser,
         ICategoryRepository categoryRepository,
         ITransactionRepository transactionRepository,
+        IAccountRepository accountRepository,
         IBatchRepository batchRepository,
         IUnitOfWork unitOfWork)
     {
@@ -27,6 +31,7 @@ public sealed class Handler : IRequestHandler<ImportTransactionCommand>
         _categoryRepository = categoryRepository;
         _transactionRepository = transactionRepository;
         _batchRepository = batchRepository;
+        _accountRepository = accountRepository;
         _unitOfWork = unitOfWork;
     }
 
@@ -34,7 +39,18 @@ public sealed class Handler : IRequestHandler<ImportTransactionCommand>
         ImportTransactionCommand command,
         CancellationToken cancellationToken)
     {
+        var userAccounts =
+            await _accountRepository.GetUserOwnedAccountsAsync(
+                command.UserId,
+                cancellationToken);
+        
+        if (!userAccounts.TryGetValue(command.AccountId,out var account))
+        {
+            throw new AccountNotFoundException(command.AccountId);
+        }
+
         var imports = _parser.Parse(command.Stream);
+
         var categoryNames = imports
             .Select(x => x.Category)
             .Where(x => !string.IsNullOrWhiteSpace(x))
@@ -55,29 +71,50 @@ public sealed class Handler : IRequestHandler<ImportTransactionCommand>
 
         var transactions = new List<Transaction>();
 
+        // Keeps track of accounts whose balances were modified to bulk update them after.
+        var modifiedAccounts = new Dictionary<Guid, Account>();
+
         foreach (var import in imports)
         {
-            if (string.IsNullOrWhiteSpace(import.Category))
-            {
-                continue;
-            }
+            var money = new Money(
+                import.Amount,
+                import.Currency);
 
-            if (!categoryIds.TryGetValue(
-                    import.Category,
-                    out var categoryId))
+            Guid? categoryId = null;
+
+            if (import.Type == EnTransactionType.Transfer)
             {
-                continue;
+                if (import.ToAccountId is null || !userAccounts.TryGetValue(import.ToAccountId.Value, out var toAccount)) continue; 
+
+                account.TransferTo(
+                    toAccount,
+                    money);
+
+                modifiedAccounts[account.Id] = account;
+                modifiedAccounts[toAccount.Id] = toAccount;
+            }
+            else
+            {
+                if (string.IsNullOrWhiteSpace(import.Category) || !categoryIds.TryGetValue(import.Category, out var resolvedCategoryId)) continue;
+
+                categoryId = resolvedCategoryId;
+
+                account.ApplyTransaction(
+                    money,
+                    import.Type);
+
+                modifiedAccounts[account.Id] = account;
             }
 
             var transaction = Transaction.Create(
-                command.AccountId,
-                import.ToAccountId,
-                new Money(import.Amount, import.Currency),
-                categoryId,
-                import.Type,
-                import.Date,
-                import.Description,
-                batch.Id);
+                accountId: command.AccountId,
+                toAccountId: import.ToAccountId,
+                amount: money,
+                categoryId: categoryId,
+                type: import.Type,
+                date: import.Date,
+                description: import.Description,
+                batchId: batch.Id);
 
             transactions.Add(transaction);
         }
@@ -88,6 +125,7 @@ public sealed class Handler : IRequestHandler<ImportTransactionCommand>
         }
 
         batch.TransactionCount = transactions.Count;
+
         await _unitOfWork.BeginAsync(cancellationToken);
 
         try
@@ -102,13 +140,17 @@ public sealed class Handler : IRequestHandler<ImportTransactionCommand>
                 _unitOfWork,
                 cancellationToken);
 
-            await _unitOfWork.CommitAsync(cancellationToken);
+            await _accountRepository.UpdateAccountsAsync(modifiedAccounts.Values,_unitOfWork, cancellationToken);
+
+            await _unitOfWork.CommitAsync(
+                cancellationToken);
         }
         catch
         {
-            await _unitOfWork.RollBackAsync(cancellationToken);
+            await _unitOfWork.RollBackAsync(
+                cancellationToken);
+
             throw;
         }
-
     }
 }
