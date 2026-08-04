@@ -12,5 +12,6 @@ namespace FinanceCore.Application.Abstractions
         Task UpdateAsync(User user, CancellationToken cancellationToken = default);
         Task<bool> IsExistsAsync(Guid userId, CancellationToken token = default);
         Task UpdateLoginSecurityStateAsync(Guid userId, int failedLoginAttempts, DateTime? lockedUntil = null ,CancellationToken token = default);
+
     }
 }

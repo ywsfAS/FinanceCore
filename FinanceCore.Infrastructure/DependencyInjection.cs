@@ -13,7 +13,6 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 using Polly;
 using Polly.Extensions.Http;
@@ -68,6 +67,7 @@ namespace FinanceCore.Infrastructure
             services.AddScoped<IContactMessageRepository, ContactMessageRepository>();
             services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
             services.AddScoped<IBatchRepository, BatchRepository>();
+            services.AddScoped<ILoginHistoryRepository,LoginHistoryRepository>();
             services.AddScoped<ITransactionExporter, TransactionExporter>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 

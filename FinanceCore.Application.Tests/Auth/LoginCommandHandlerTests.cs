@@ -17,6 +17,8 @@ namespace FinanceCore.Application.Tests.Auth
         private readonly Mock<IJwtTokenGenerator> _JwtGeneratorMock;
         private readonly Mock<IUserRepository> _UserRepositoryMock;
         private readonly Mock<IRefreshTokenGenerator> _generator;
+        private readonly Mock<IRequestMetadata> _metadata;
+        private readonly Mock<ILoginHistoryRepository> _loginRepo;
         public LoginCommandHandlerTests()
         {
             _UserRepositoryMock = new();
@@ -25,7 +27,9 @@ namespace FinanceCore.Application.Tests.Auth
             _refreshHasher = new();
             _refreshRepo = new();
             _generator = new();
-            _handler = new LoginUserCommandHandler(_UserRepositoryMock.Object,_refreshHasher.Object,_refreshRepo.Object ,_hasherMock.Object,_JwtGeneratorMock.Object,_generator.Object);
+            _metadata = new();
+            _loginRepo = new();
+            _handler = new LoginUserCommandHandler(_UserRepositoryMock.Object,_refreshHasher.Object,_refreshRepo.Object ,_hasherMock.Object,_JwtGeneratorMock.Object,_generator.Object,_metadata.Object , _loginRepo.Object);
         }
         [Fact]
         public async Task Handle_Should_ReturnToken_WhenCredentialsAreValid()

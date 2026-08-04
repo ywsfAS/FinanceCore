@@ -2,7 +2,9 @@ using Asp.Versioning;
 using Asp.Versioning.Conventions;
 using FinanceCore.API;
 using FinanceCore.API.Configuration;
+using FinanceCore.API.Services;
 using FinanceCore.Application;
+using FinanceCore.Application.Abstractions;
 using FinanceCore.Infrastructure;
 using FinanceCore.Infrastructure.Health;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
@@ -77,7 +79,8 @@ builder.Services
     });
 
 builder.Services.AddApplication();
-
+builder.Services.AddScoped<IRequestMetadata, RequestMetadata>();
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddInfrastructure(builder.Configuration);
 
 builder.Services.AddEndpointsApiExplorer();
