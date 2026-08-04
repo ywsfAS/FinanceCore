@@ -1,6 +1,7 @@
 using Dapper;
 using FinanceCore.Application.Abstractions;
 using FinanceCore.Application.DTOs;
+using FinanceCore.Application.Models;
 using FinanceCore.Application.Models.FinanceCore.Infrastructure.Models;
 using FinanceCore.Domain.Categories;
 using FinanceCore.Domain.Enums;
@@ -181,6 +182,19 @@ namespace FinanceCore.Infrastructure.Repositories
             const string sql = @" SELECT Id , Name FROM Categories WHERE UserId = @Id ORDER BY Id OFFSET @Offset ROWS FETCH NEXT @PageSize ROWS ONLY";
             var command = new CommandDefinition(sql, new { Id = userId, Offset = (page - 1) * pageSize , PageSize = pageSize }, cancellationToken: token);
             return await connection.QueryAsync<CategoryOptionDto>(command);
+
+        }
+        public async Task<IDictionary<string,Guid>> ResolveCategoriesId(Guid userId,IEnumerable<string> names, CancellationToken token)
+        {
+            const string sql = @"SELECT Name , Id FROM Categories WHERE UserId = @UserId AND Name IN @Names";
+
+            using var connection = _connectionFactory.GetConnection();
+
+            var command = new CommandDefinition(sql, new { UserId = userId, Names = names }, cancellationToken: token);
+
+            var categories = await connection.QueryAsync<CategoryLookup>(command);
+
+            return categories.ToDictionary(x => x.Name, x => x.Id);
 
         }
     }

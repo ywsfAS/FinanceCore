@@ -1,3 +1,4 @@
+using Asp.Versioning;
 using FinanceCore.API.Requests.ReccuringTransations;
 using FinanceCore.Application.DTOs;
 using FinanceCore.Application.DTOs.RecurringTransaction;
@@ -16,7 +17,8 @@ namespace FinanceCore.API.Controllers
 {
     [EnableRateLimiting("Default")]
     [ApiController]
-    [Route("api/v1/recurring-transactions")]
+    [Route("api/v{version:apiVersion}/recurring-transactions")]
+    [ApiVersion("1.0")]
     [Authorize]
     public class RecurringTransactionsController : ControllerBase
     {

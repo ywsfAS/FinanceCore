@@ -25,5 +25,6 @@ namespace FinanceCore.Application.Abstractions
         Task<IEnumerable<BudgetHealthDataDto>?> GetBudgetHealthAsync(Guid userId , int page ,int pageSize , CancellationToken token = default);
         Task<decimal> GetTotalSpendingByCategoryAsync(Guid userId, Guid categoryId, DateTime start, DateTime end, CancellationToken token);
 
+        Task InsertTransactions(IEnumerable<Transaction> transactions ,IUnitOfWork? unitOfWork = null, CancellationToken token = default);
     }
 }

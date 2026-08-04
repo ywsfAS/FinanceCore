@@ -1,3 +1,4 @@
+using Asp.Versioning;
 using FinanceCore.API.Requests.Report;
 using FinanceCore.Application.DTOs;
 using FinanceCore.Application.Features.Report.ContributionsTrend;
@@ -16,7 +17,8 @@ namespace FinanceCore.API.Controllers
 {
     [EnableRateLimiting("Reports")]
     [ApiController]
-    [Route("api/v1/reports")]
+    [Route("api/v{version:apiVersion}/reports")]
+    [ApiVersion("1.0")]
     [Authorize]
     public class ReportController : ControllerBase
     {

@@ -1,0 +1,21 @@
+CREATE TABLE LoginHistory (
+
+    Id UNIQUEIDENTIFIER PRIMARY KEY,
+    UserId UNIQUEIDENTIFIER NOT NULL,
+
+    LoginAt DATETIME2 NOT NULL,
+    IpAddress VARCHAR(45) NULL,
+    UserAgent NVARCHAR(500) NULL,
+
+    DeviceName NVARCHAR(200) NULL,
+    Os NVARCHAR(100) NULL,
+
+    Status TINYINT NOT NULL,
+    FailureReason NVARCHAR(500) NULL,
+
+    CONSTRAINT FK_LoginHistory_Users
+    FOREIGN KEY (UserId)
+    REFERENCES Users(Id)
+
+
+);

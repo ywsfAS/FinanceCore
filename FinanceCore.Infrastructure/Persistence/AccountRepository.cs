@@ -8,7 +8,9 @@ using FinanceCore.Domain.Enums;
 using FinanceCore.Infrastructure.Context;
 using FinanceCore.Infrastructure.Mappers;
 using System.Data;
+using System.Data.Common;
 using System.Text;
+using Z.Dapper.Plus;
 namespace FinanceCore.Infrastructure.Repositories
 {
     public class AccountRepository : IAccountRepository
@@ -199,6 +201,62 @@ namespace FinanceCore.Infrastructure.Repositories
             return await connection.QueryAsync<AccountInfoDto>(command);
 
 
+        }
+        public async Task<IDictionary<Guid, Account>> GetUserOwnedAccountsAsync(
+            Guid userId,
+            CancellationToken token = default)
+        {
+            const string sql = """
+            SELECT *
+            FROM Accounts
+            WHERE UserId = @UserId;
+            """; 
+            using var connection = _connectionFactory.GetConnection();
+
+            var command = new CommandDefinition(
+                sql,
+                new { UserId = userId },
+                cancellationToken: token);
+
+            var accounts = await connection.QueryAsync<AccountModel>(
+                command);
+
+            return accounts.ToDictionary(
+                x => x.Id,
+                x => AccountMapper.MapToDomain(x));
+        }
+        public async Task UpdateAccountsAsync(
+            IEnumerable<Account> accounts,
+            IUnitOfWork? unitOfWork = null,
+            CancellationToken token = default)
+        {
+            var accountModels = accounts
+                .Select(AccountMapper.MapToModel)
+                .ToList();
+
+            if (unitOfWork is not null)
+            {
+                await unitOfWork.Connection
+                    .UseBulkOptions(options =>
+                    {
+                        options.Transaction =
+                            (DbTransaction)unitOfWork.Transaction;
+
+                        options.CancellationToken = token;
+                    })
+                    .BulkUpdateAsync(accountModels);
+
+                return;
+            }
+
+            using var connection = _connectionFactory.GetConnection();
+
+            await connection
+                .UseBulkOptions(options =>
+                {
+                    options.CancellationToken = token;
+                })
+                .BulkUpdateAsync(accountModels);
         }
     }
 }

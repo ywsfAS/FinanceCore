@@ -1,3 +1,4 @@
+using Asp.Versioning;
 using FinanceCore.API.Requests.Category;
 using FinanceCore.Application.DTOs;
 using FinanceCore.Application.Features.Categories.Commands.Create;
@@ -17,7 +18,8 @@ namespace FinanceCore.API.Controllers
 {
     [EnableRateLimiting("Default")]
     [ApiController]
-    [Route("api/v1/categories")]
+    [Route("api/v{version:apiVersion}/categories")]
+    [ApiVersion("1.0")]
     [Authorize]
 
     public class CategoriesController : ControllerBase

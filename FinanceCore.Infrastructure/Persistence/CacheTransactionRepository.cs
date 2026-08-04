@@ -85,5 +85,10 @@ namespace FinanceCore.Infrastructure.Persistence
             await _repo.DeleteAsync(userId,id, token);
             await _cache.InvalidateTagAsync(Tag(userId));
         }
+
+        public Task InsertTransactions(IEnumerable<Transaction> transactions , IUnitOfWork? unitOfWork, CancellationToken token)
+        {
+            return _repo.InsertTransactions(transactions,unitOfWork , token);
+        }
     }
 }

@@ -14,5 +14,6 @@ namespace FinanceCore.Application.Abstractions
         Task<IEnumerable<CategoryDto>> GetFiltredCategoriesAsync(Guid userId, string? name, CategoryType? type, DateTime? createdAt, int page, int pageSize,CancellationToken token = default);
         Task<bool> IsExistsAsync(Guid userId, Guid id, CancellationToken token = default);
         Task<IEnumerable<CategoryOptionDto>> GetCategoriesByUserOptionsAsync(Guid userId ,int page ,int pageSize, CancellationToken token = default);
+        Task<IDictionary<string,Guid>> ResolveCategoriesId(Guid userId,IEnumerable<string> names, CancellationToken token);
     }
 }

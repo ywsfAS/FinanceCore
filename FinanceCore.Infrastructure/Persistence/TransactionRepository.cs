@@ -1,4 +1,5 @@
 using Dapper;
+using Z.Dapper.Plus;
 using FinanceCore.Application.Abstractions;
 using FinanceCore.Application.DTOs;
 using FinanceCore.Application.DTOs.Transaction;
@@ -8,6 +9,7 @@ using FinanceCore.Domain.Transactions;
 using FinanceCore.Infrastructure.Context;
 using FinanceCore.Infrastructure.Mappers;
 using System.Text;
+using System.Data.Common;
 
 namespace FinanceCore.Infrastructure.Repositories
 {
@@ -18,6 +20,7 @@ namespace FinanceCore.Infrastructure.Repositories
         public TransactionRepository(IConnectionFactory connectionFactory )
         {
             _connectionFactory = connectionFactory;
+            
         }
 
         private async Task<TransactionModel?> GetModelByIdAndUserIdAsync(Guid userId, Guid id, CancellationToken token = default)
@@ -414,6 +417,26 @@ namespace FinanceCore.Infrastructure.Repositories
                 new { UserId = userId, Months = lastNMonth } 
               
             );
+        }
+        public async Task InsertTransactions(IEnumerable<Transaction> transactions,IUnitOfWork? unitOfWork = null, CancellationToken token = default)
+        {
+            var transactionModels = new List<TransactionModel>();
+            foreach(var transaction in transactions)
+            {
+               transactionModels.Add(TransactionMapper.MapToModel(transaction));
+            }
+            if(unitOfWork is not null)
+            {
+                await unitOfWork.Connection.UseBulkOptions(options =>
+                {
+                    options.Transaction = (DbTransaction)unitOfWork.Transaction;
+                    options.CancellationToken = token;
+                })
+                .BulkInsertAsync(transactionModels);
+                return;
+            }
+            using var connection = _connectionFactory.GetConnection();
+            await connection.BulkInsertAsync(transactionModels);
         }
 
     }

@@ -1,11 +1,18 @@
+using Asp.Versioning;
+using Asp.Versioning.Conventions;
 using FinanceCore.API;
 using FinanceCore.API.Configuration;
+using FinanceCore.API.Services;
 using FinanceCore.Application;
+using FinanceCore.Application.Abstractions;
 using FinanceCore.Infrastructure;
 using FinanceCore.Infrastructure.Health;
 using Microsoft.AspNetCore.Diagnostics.HealthChecks;
+using Microsoft.AspNetCore.Mvc.Routing;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.OpenApi.Models;
+using OpenTelemetry.Metrics;
+using OpenTelemetry.Trace;
 using Serilog;
 using System.Text.Json.Serialization;
 
@@ -16,6 +23,53 @@ builder.Services.AddHttpsRedirection(policy =>
     policy.RedirectStatusCode = StatusCodes.Status308PermanentRedirect;
 });
 
+builder.Services.AddApiVersioning(config =>
+{
+    config.DefaultApiVersion = new ApiVersion(1, 0);
+    config.AssumeDefaultVersionWhenUnspecified = true;
+}).AddMvc(config =>
+{
+    config.Conventions.Add(new VersionByNamespaceConvention());
+}).AddApiExplorer(config =>
+{
+    config.GroupNameFormat = "'v'V";
+    config.SubstituteApiVersionInUrl = true;
+});
+
+builder.Services.AddOptions<OpenTelemetryOptions>()
+    .BindConfiguration("OpenTelemetry")
+    .ValidateDataAnnotations()
+    .ValidateOnStart();
+var oltpUrl = builder.Configuration["OpenTelemetry:OtlpEndpoint"];
+builder.Services
+    .AddOpenTelemetry()
+    .WithTracing(tracing =>
+    {
+        tracing
+            .AddSqlClientInstrumentation()
+            .AddAspNetCoreInstrumentation()
+            .AddHttpClientInstrumentation()
+            .AddOtlpExporter(options =>
+            {
+                options.Endpoint = new Uri(oltpUrl!);
+            });
+    }
+    )
+    .WithMetrics(metrics =>
+    {
+        metrics
+            .AddAspNetCoreInstrumentation()
+            .AddHttpClientInstrumentation()
+            .AddRuntimeInstrumentation()
+            .AddOtlpExporter(options =>
+            {
+                options.Endpoint = new Uri(oltpUrl!);
+            }); 
+
+    });
+
+
+
 builder.Services
     .AddControllers()
     .AddJsonOptions(options =>
@@ -25,7 +79,8 @@ builder.Services
     });
 
 builder.Services.AddApplication();
-
+builder.Services.AddScoped<IRequestMetadata, RequestMetadata>();
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddInfrastructure(builder.Configuration);
 
 builder.Services.AddEndpointsApiExplorer();

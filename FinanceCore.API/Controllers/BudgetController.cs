@@ -1,3 +1,4 @@
+using Asp.Versioning;
 using FinanceCore.API.Requests;
 using FinanceCore.API.Requests.Budget;
 using FinanceCore.Application.DTOs;
@@ -18,7 +19,8 @@ namespace FinanceCore.API.Controllers
 {
     [EnableRateLimiting("Default")]
     [ApiController]
-    [Route("api/v1/budgets")]
+    [Route("api/v{version:apiVersion}/budgets")]
+    [ApiVersion("1.0")]
     [Authorize]
     public class BudgetsController : ControllerBase
     {

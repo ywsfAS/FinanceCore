@@ -1,8 +1,11 @@
 using FinanceCore.Application.Abstractions;
+using FinanceCore.Application.DTOs.Transaction;
 using FinanceCore.Infrastructure.Auth;
 using FinanceCore.Infrastructure.BackgroundJobs;
+using FinanceCore.Infrastructure.Configuration;
 using FinanceCore.Infrastructure.Context;
 using FinanceCore.Infrastructure.Health;
+using FinanceCore.Infrastructure.Imports;
 using FinanceCore.Infrastructure.Persistence;
 using FinanceCore.Infrastructure.Repositories;
 using FinanceCore.Infrastructure.Services;
@@ -11,6 +14,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
 using Microsoft.IdentityModel.Tokens;
+using Polly;
+using Polly.Extensions.Http;
 using Quartz;
 using System.Text;
 
@@ -61,19 +66,44 @@ namespace FinanceCore.Infrastructure
             services.AddScoped<IPasswordResetTokenRepository,PasswordResetTokenRepository>();
             services.AddScoped<IContactMessageRepository, ContactMessageRepository>();
             services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
+            services.AddScoped<IBatchRepository, BatchRepository>();
+            services.AddScoped<ILoginHistoryRepository,LoginHistoryRepository>();
             services.AddScoped<ITransactionExporter, TransactionExporter>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             services.AddScoped<IPasswordHasher, PasswordHasher>();
             services.AddScoped<ICurrencyConverter, CurrencyConverter>();
             services.AddScoped<IExchangeRateRepository, ExchangeRateRepository>();
-            services.AddHttpClient<IExchangeRateApiService, ExchangeRateApiService>();
             services.AddScoped<IJwtTokenGenerator, JwtTokenGenerator>();
             services.AddScoped<IRefreshTokenGenerator, RefreshTokenGenerator>();
             services.AddScoped<IImageProcessor, ImageProcessor>();
             services.AddSingleton<ICacheService, MemoryCacheService>();
-
+            services.AddScoped<
+                ITransactionParser<TransactionImport>,
+                CsvTransactionParser>();
             services.AddHealthChecks().AddCheck<DatabaseHealthCheck>("database",HealthStatus.Unhealthy, tags : new[] {"ready"});
+
+            var retryPolicy = HttpPolicyExtensions
+                .HandleTransientHttpError()
+                .WaitAndRetryAsync(3, (n) => TimeSpan.FromMinutes(Math.Pow(2, n)));
+
+            var circuitBreakerPolicy = HttpPolicyExtensions
+                .HandleTransientHttpError()
+                .CircuitBreakerAsync(
+                    handledEventsAllowedBeforeBreaking: 3,
+                    durationOfBreak: TimeSpan.FromSeconds(30)
+                );
+
+            var timeoutPolicy = Policy.TimeoutAsync<HttpResponseMessage>(
+                TimeSpan.FromSeconds(5)
+            );
+
+            services.AddHttpClient<IExchangeRateApiService, ExchangeRateApiService>()
+                .AddPolicyHandler(retryPolicy)
+                .AddPolicyHandler(circuitBreakerPolicy)
+                .AddPolicyHandler(timeoutPolicy);
+
+            DapperPlusConfiguration.Configure();
 
             services.AddOptions<JwtSettings>()
                 .BindConfiguration("JwtSettings")

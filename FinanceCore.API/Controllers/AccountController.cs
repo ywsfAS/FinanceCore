@@ -1,3 +1,4 @@
+using Asp.Versioning;
 using FinanceCore.API.Requests.Account;
 using FinanceCore.Application.DTOs;
 using FinanceCore.Application.Features.Accounts.Commands.Create;
@@ -18,7 +19,8 @@ namespace FinanceCore.API.Controllers
 {
     [EnableRateLimiting("Default")]
     [ApiController]
-    [Route("api/v1/accounts")]
+    [Route("api/v{version:apiVersion}/accounts")]
+    [ApiVersion("1.0")]
     [Authorize]
     public class AccountsController : ControllerBase
     {

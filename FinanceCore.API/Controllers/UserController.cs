@@ -1,3 +1,4 @@
+using Asp.Versioning;
 using FinanceCore.API.Requests.User;
 using FinanceCore.Application.DTOs;
 using FinanceCore.Application.Features.Users.Command.Delete;
@@ -16,7 +17,8 @@ namespace FinanceCore.API.Controllers
     /// </summary>
     [EnableRateLimiting("Default")]
     [ApiController]
-    [Route("api/v1/users")]
+    [Route("api/v{version:apiVersion}/users")]
+    [ApiVersion("1.0")]
     [Authorize]
     public class UsersController : ControllerBase
     {
