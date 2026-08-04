@@ -25,7 +25,12 @@ namespace FinanceCore.Infrastructure.Configuration
                 .Map(x => x.CreatedAt, "CreatedAt") 
                 .Map(x => x.BatchId , "BatchId")
                 .Map(x => x.UpdatedAt, "UpdatedAt");
-            DapperPlusManager.Entity<AccountModel>().Table("Accounts");
+
+            DapperPlusManager.Entity<AccountModel>()
+                .Table("Accounts")
+                .Key(x => new { x.Id, x.RowVersion })
+                .Ignore(x => x.RowVersion);
+
         }
     }
 }
