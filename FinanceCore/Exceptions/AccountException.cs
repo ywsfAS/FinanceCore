@@ -77,7 +77,16 @@ namespace FinanceCore.Domain.Exceptions
             AccountId = accountId;
         }
     }
+    public class ReconcileAccountException : DomainException
+    {
+        public Guid AccountId { get; }
 
+        public ReconcileAccountException(Guid accountId)
+            : base($"Cannot reconcile a no-cash account (ID: {accountId}).")
+        {
+            AccountId = accountId;
+        }
+    }
     // When account name is invalid
     public class InvalidAccountNameException : DomainException
     {

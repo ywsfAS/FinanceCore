@@ -3,6 +3,7 @@ using FinanceCore.API.Requests.Account;
 using FinanceCore.Application.DTOs;
 using FinanceCore.Application.Features.Accounts.Commands.Create;
 using FinanceCore.Application.Features.Accounts.Commands.Delete;
+using FinanceCore.Application.Features.Accounts.Commands.Reconcile;
 using FinanceCore.Application.Features.Accounts.Commands.Update;
 using FinanceCore.Application.Features.Accounts.Queries.GetAccountById;
 using FinanceCore.Application.Features.Accounts.Queries.GetAccountByUserOptions;
@@ -141,6 +142,19 @@ namespace FinanceCore.API.Controllers
             var UserId = GetUserId();
             var query = new GetSpendingByCategoryQuery(UserId, accountId, year, month,page,pageSize);
             var response = await _mediator.Send(query);
+            return Ok(response);
+        }
+
+        [HttpPost("{accountId}/reconciliations")]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(ReconciliationDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> ReconcileAccount([FromRoute]Guid accountId,[FromBody] ReconcileAccountRequest req) 
+        {
+            var userId = GetUserId();
+            var cmd = new ReconcileAccountCommand(userId, accountId, req.ActualBalance, req.Reason, req.Notes, req.CreateAdjustment);
+            var response = await _mediator.Send(cmd);
             return Ok(response);
         }
 
