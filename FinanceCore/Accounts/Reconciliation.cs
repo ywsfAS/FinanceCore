@@ -33,6 +33,7 @@ namespace FinanceCore.Domain.Accounts
         {
             Status = EnAdjustmentStatus.Applied;
             AdjustmentTransactionId = transactionId;
+            ReconciledAt = DateTime.UtcNow;
         }
         public static Reconciliation Create(Guid accountId , Money expectedBalance , Money actualBalance , EnAdjustmentStatus status = EnAdjustmentStatus.None , EnReconciliationReason reason = EnReconciliationReason.CountingCorrection, string? notes = null , DateTime? reconciledAt = null) {
             return new Reconciliation(accountId, expectedBalance, actualBalance, status, reason, notes, reconciledAt);
