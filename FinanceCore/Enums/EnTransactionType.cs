@@ -1,4 +1,4 @@
-﻿namespace FinanceCore.Domain.Enums;
+namespace FinanceCore.Domain.Enums;
 
 public enum EnTransactionType : byte
 {
@@ -6,5 +6,7 @@ public enum EnTransactionType : byte
     Expense,
     Transfer,
     Debt,
-    Credit
+    Credit,
+    CreditAdjustment,
+    DebitAdjustment
 }

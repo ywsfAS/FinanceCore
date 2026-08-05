@@ -123,7 +123,7 @@ namespace FinanceCore.Domain.Accounts
 
             var previousBalance = Balance;
 
-            if (type == EnTransactionType.Expense)
+            if (type == EnTransactionType.Expense || type == EnTransactionType.DebitAdjustment)
             {
                 if (!HasSufficientBalance(amount))
                     throw new InsufficientBalanceException(Id, amount, Balance);
