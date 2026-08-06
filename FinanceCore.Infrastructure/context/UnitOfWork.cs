@@ -18,19 +18,19 @@ namespace FinanceCore.Infrastructure.Context
         public IDbConnection? Connection => _connection;
         public IDbTransaction? Transaction => _transaction;
 
-        public async Task BeginAsync(CancellationToken token)
+        public async Task BeginAsync(CancellationToken token = default)
         {
             _connection =  (SqlConnection)_connectionFactory.GetConnection();
             await _connection.OpenAsync(token);
             _transaction = (SqlTransaction)await _connection.BeginTransactionAsync(); 
         }
-        public async Task CommitAsync(CancellationToken token)
+        public async Task CommitAsync(CancellationToken token = default)
         {
            if (_transaction is null)
               throw new InvalidOperationException("Cannot commit because no transaction has been started.");
             await _transaction.CommitAsync(token);
         }
-        public async Task RollBackAsync(CancellationToken token)
+        public async Task RollBackAsync(CancellationToken token = default)
         {
            if (_transaction is null)
               throw new InvalidOperationException("Cannot RollBack because no transaction has been started.");

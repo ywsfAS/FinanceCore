@@ -21,10 +21,19 @@ namespace FinanceCore.Infrastructure.Repositories
         {
             _connectionFactory = connectionFactory;
         }
+        public async Task<Account?> GetAccountByIdAsync(Guid accountId , CancellationToken token = default)
+        {
+            using var connection = _connectionFactory.GetConnection();
+            var sql = @"SELECT * FROM Accounts WHERE Id = @Id AND IsActive = 1";
+            var command = new CommandDefinition(sql,new {Id = accountId} , cancellationToken: token);
+            var result = await connection.QuerySingleOrDefaultAsync<AccountModel>(command);
+            if (result is null) return null;
+            return AccountMapper.MapToDomain(result);
+        }
         public async Task<bool> IsExistsAsync(Guid userId,Guid id,CancellationToken token)
         {
             using var connection = _connectionFactory.GetConnection();
-            var sql = @"SELECT 1 FROM Accounts WHERE UserId = @UserId AND Id = @Id";
+            var sql = @"SELECT 1 FROM Accounts WHERE UserId = @UserId AND Id = @Id AND IsActive = 1";
             var parameters = new DynamicParameters();
             parameters.Add("Id", id);
             parameters.Add("UserId", userId);

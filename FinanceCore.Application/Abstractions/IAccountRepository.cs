@@ -16,5 +16,7 @@ namespace FinanceCore.Application.Abstractions
         Task<IEnumerable<AccountInfoDto>> GetAccountsAsync(Guid userId , EnAccountType? type , EnCurrency? currency , string? name,int page = 1 , int pageSize = 10 , CancellationToken token = default);
         Task<IDictionary<Guid,Account>> GetUserOwnedAccountsAsync(Guid userId,CancellationToken token = default);
         Task UpdateAccountsAsync(IEnumerable<Account> accounts, IUnitOfWork? unitOfWork = null, CancellationToken token = default);
+
+        Task<Account?> GetAccountByIdAsync(Guid accountId , CancellationToken token = default);
     }
 }

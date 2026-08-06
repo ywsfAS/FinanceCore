@@ -3,6 +3,8 @@ using FinanceCore.Application.DTOs;
 using FinanceCore.Domain.Accounts;
 using FinanceCore.Domain.Enums;
 using FinanceCore.Infrastructure.Repositories;
+using Microsoft.IdentityModel.Tokens;
+using System.Runtime.CompilerServices;
 
 namespace FinanceCore.Infrastructure.Persistence
 {
@@ -78,6 +80,10 @@ namespace FinanceCore.Infrastructure.Persistence
             CancellationToken token = default)
         {
             await _accountRepository.UpdateAccountsAsync(accounts, unitOfWork, token);
+        }
+        public async Task<Account?> GetAccountByIdAsync(Guid accountId ,CancellationToken token = default)
+        {
+            return await _accountRepository.GetAccountByIdAsync(accountId, token);
         }
     }
 }
