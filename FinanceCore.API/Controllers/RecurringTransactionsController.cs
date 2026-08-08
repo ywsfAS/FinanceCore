@@ -42,7 +42,7 @@ namespace FinanceCore.API.Controllers
         public async Task<IActionResult> CreateRecurringTransaction([FromBody] CreateRecurringTransactionRequest request)
         {
             var userId = GetUserId();
-            var command = new CreateRecurringCommand(userId, request.AccountId, request.CategoryId,request.Amount,request.Period ,request.Description , request.StartDate , request.EndDate );
+            var command = new CreateRecurringCommand(userId, request.AccountId, request.CategoryId,request.Amount,request.Period ,request.Description ,request.ExecutionType, request.StartDate , request.EndDate );
             var reccuring = await _mediator.Send(command);
             return CreatedAtAction(nameof(GetRecurringById), new { id = reccuring.Id }, reccuring);
         }
@@ -58,7 +58,7 @@ namespace FinanceCore.API.Controllers
         public async Task<IActionResult> UpdateRecurringTransaction([FromRoute] Guid id,[FromBody] UpdateRecurringTransactionRequest request)
         {
             var userId = GetUserId();
-            var command = new UpdateRecurringCommand(userId , id , request.AccountId , request.CategoryId , request.Amount , request.Period , request.Description , request.StartDate , request.EndDate , request.IsActive);
+            var command = new UpdateRecurringCommand(userId , id , request.AccountId , request.CategoryId , request.Amount , request.Period, request.ExecutionType , request.Description , request.StartDate , request.EndDate , request.IsActive);
             await _mediator.Send(command);
             return NoContent();
         }

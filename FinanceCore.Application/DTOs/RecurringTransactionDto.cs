@@ -13,6 +13,8 @@ namespace FinanceCore.Application.DTOs.RecurringTransaction
         public string Description { get; set; } = string.Empty;
 
         public EnTransactionType Type { get; set; }
+        public EnExecutionType ExecutionType { get; set; }
+        public EnRecurringTransactionStatus Status { get; set; }
 
         public DateTime StartDate { get; set; }
         public DateTime? EndDate { get; set; }

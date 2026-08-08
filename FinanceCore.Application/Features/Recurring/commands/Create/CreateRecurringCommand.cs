@@ -11,6 +11,7 @@ namespace FinanceCore.Application.Features.Recurring.Commands.Create
         decimal Amount,
         EnPeriod Period,
         string? Description,
+        EnExecutionType ExecutionType,
         DateTime StartDate,
         DateTime? EndDate
     ) : IRequest<RecurringTransactionDto>;

@@ -17,12 +17,16 @@ namespace FinanceCore.Infrastructure.Mappers
                 Amount = domain.Amount.Amount,
                 Currency = domain.Amount.Currency,
                 Description = domain.Description,
+                ExecutionType = domain.ExecutionType,
+                Status = domain.Status,
                 Type = domain.Type,
                 StartDate = domain.StartDate,
                 EndDate = domain.EndDate,
                 Period = domain.Period,
                 IsActive = domain.IsActive,
-                LastExecutedDate = domain.LastExecutedDate
+                LastExecutedDate = domain.LastExecutedDate,
+                NextExecutionAt = domain.NextExecutionAt
+                
             };
         }
 
@@ -34,6 +38,8 @@ namespace FinanceCore.Infrastructure.Mappers
                 new Money(model.Amount,(EnCurrency)model.Currency),
                 model.Description,
                 model.Type,
+                model.ExecutionType,
+                model.Status,
                 model.StartDate,
                 model.Period,
                 model.EndDate

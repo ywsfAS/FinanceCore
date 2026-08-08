@@ -17,13 +17,6 @@ namespace FinanceCore.Application.Features.Report.GetSubscriptions
         {
             var subscriptions = await _recurringTransactionRepository.GetSubscriptionsAsync(query.UserId,query.AccountId,query.CategoryId,query.Name,query.Period,query.Type,query.Page , query.PageSize , token);
             var globalCurrency = EnCurrency.USD;
-            foreach (var item in subscriptions) {
-                var recurringTransaction = new RecurringTransaction
-                {
-                    StartDate = item.PerviousCharge
-                };
-                item.NextCharge = recurringTransaction.GetNextExecutionDate(DateTime.UtcNow);
-            }
             var convertedTasks = subscriptions.Select(async (item) =>
             {
                 return await _CurrencyConverter.Convert(item.Amount, item.Currency, globalCurrency, token);

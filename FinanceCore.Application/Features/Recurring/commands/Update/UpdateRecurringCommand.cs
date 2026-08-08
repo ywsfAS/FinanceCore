@@ -11,6 +11,7 @@ namespace FinanceCore.Application.Features.Recurring.Commands.Update
         Guid CategoryId,
         decimal Amount,
         EnPeriod Period,
+        EnExecutionType ExecutionType,
         string? Description,
         DateTime StartDate,
         DateTime? EndDate,

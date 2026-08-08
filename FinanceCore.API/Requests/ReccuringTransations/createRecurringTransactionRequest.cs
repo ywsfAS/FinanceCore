@@ -7,6 +7,7 @@ namespace FinanceCore.API.Requests.ReccuringTransations
         Guid CategoryId,
         decimal Amount,
         EnPeriod Period,
+        EnExecutionType ExecutionType,
         string? Description,
         DateTime StartDate,
         DateTime? EndDate

@@ -57,6 +57,7 @@ namespace FinanceCore.Application.Features.Recurring.Commands.Update
                 amount,
                 command.Description ?? string.Empty,
                 type,
+                command.ExecutionType,                         
                 command.StartDate,
                 command.Period,
                 command.EndDate
