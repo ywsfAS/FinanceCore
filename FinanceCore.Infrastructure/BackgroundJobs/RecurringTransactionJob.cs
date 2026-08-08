@@ -45,9 +45,9 @@ namespace FinanceCore.Infrastructure.BackgroundJobs
 
                     await _unitOfWork.BeginAsync();
 
-                    await _transactionRepository.AddAsync(transaction);
-                    await _accountRepository.UpdateAsync(account);
-                    await _recurringTransactionRepository.UpdateAsync(recurringTransaction);
+                    await _transactionRepository.AddAsync(transaction, _unitOfWork);
+                    await _accountRepository.UpdateAsync(account , _unitOfWork);
+                    await _recurringTransactionRepository.UpdateAsync(recurringTransaction , _unitOfWork);
 
                     await _unitOfWork.CommitAsync();
 

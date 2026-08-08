@@ -10,7 +10,6 @@ namespace FinanceCore.API.Requests.ReccuringTransations
         EnExecutionType ExecutionType,
         string? Description,
         DateTime StartDate,
-        DateTime? EndDate,
-        bool IsActive = true
+        DateTime? EndDate
         );
 }

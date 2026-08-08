@@ -63,11 +63,6 @@ namespace FinanceCore.Application.Features.Recurring.Commands.Update
                 command.EndDate
             );
 
-            if (command.IsActive)
-                recurring.Activate();
-            else
-                recurring.Deactivate();
-
             await _recurringRepository.UpdateAsync(recurring);
             await DomainEventDispatcher.DispatchAsync(_eventBus, recurring, cancellationToken);
 

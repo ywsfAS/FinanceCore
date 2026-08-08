@@ -6,6 +6,7 @@ namespace FinanceCore.Domain.Enums
         Scheduled = 0,
         Due = 1,
         Paused = 2,
-        Completed = 3,
+        Cancel = 3,
+        Completed = 4,
     }
 }

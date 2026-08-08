@@ -23,7 +23,6 @@ namespace FinanceCore.Infrastructure.Mappers
                 StartDate = domain.StartDate,
                 EndDate = domain.EndDate,
                 Period = domain.Period,
-                IsActive = domain.IsActive,
                 LastExecutedDate = domain.LastExecutedDate,
                 NextExecutionAt = domain.NextExecutionAt
                 

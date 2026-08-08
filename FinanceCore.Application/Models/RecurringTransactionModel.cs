@@ -22,7 +22,6 @@ namespace FinanceCore.Application.Models
 
         public EnPeriod Period { get; set; }
  
-        public bool IsActive { get; set; }
         public DateTime? LastExecutedDate { get; set; }
         public DateTime? NextExecutionAt { get; set; }
         public DateTime CreatedAt { get; set; }

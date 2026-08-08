@@ -58,7 +58,7 @@ namespace FinanceCore.Application.Features.Recurring.Commands.Create
                 command.Description ?? string.Empty,
                 type,
                 command.ExecutionType,
-                EnRecurringTransactionStatus.Scheduled,
+                null,
                 command.StartDate,
                 command.Period,
                 command.EndDate

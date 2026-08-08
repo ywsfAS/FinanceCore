@@ -14,7 +14,6 @@ namespace FinanceCore.Application.Features.Recurring.Commands.Update
         EnExecutionType ExecutionType,
         string? Description,
         DateTime StartDate,
-        DateTime? EndDate,
-        bool IsActive
+        DateTime? EndDate
     ) : IRequest<RecurringTransactionDto>;
 }

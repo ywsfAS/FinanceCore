@@ -1,6 +1,7 @@
 using FinanceCore.Domain.Common;
 using FinanceCore.Domain.Enums;
 using FinanceCore.Domain.Events.RecurringTransaction;
+using FinanceCore.Domain.Exceptions;
 
 namespace FinanceCore.Domain.RecurringTransaction;
 
@@ -19,8 +20,6 @@ public class RecurringTransaction : AggregateRoot
     public EnExecutionType ExecutionType { get; private set; }
     public EnRecurringTransactionStatus Status { get; private set; }
 
-    public bool IsActive { get; private set; }
-
     public DateTime? LastExecutedDate { get; private set; }
     public DateTime? NextExecutionAt { get; private set; }
 
@@ -33,7 +32,7 @@ public class RecurringTransaction : AggregateRoot
         string description,
         EnTransactionType type,
         EnExecutionType executionType,
-        EnRecurringTransactionStatus status,
+        EnRecurringTransactionStatus? status,
         DateTime startDate,
         EnPeriod period,
         DateTime? endDate = null)
@@ -59,8 +58,7 @@ public class RecurringTransaction : AggregateRoot
             EndDate = endDate,
             Period = period,
             ExecutionType = executionType,
-            Status = status,
-            IsActive = true,
+            Status = status ?? EnRecurringTransactionStatus.Scheduled,
             NextExecutionAt = startDate
         };
 
@@ -105,10 +103,7 @@ public class RecurringTransaction : AggregateRoot
 
     public bool CanExecute(DateTime currentDate)
     {
-        if (!IsActive)
-            return false;
-
-        if (Status is EnRecurringTransactionStatus.Paused or EnRecurringTransactionStatus.Completed)
+        if (Status is EnRecurringTransactionStatus.Paused or EnRecurringTransactionStatus.Completed or EnRecurringTransactionStatus.Cancel)
             return false;
 
         if (!NextExecutionAt.HasValue)
@@ -127,17 +122,27 @@ public class RecurringTransaction : AggregateRoot
     {
         Status = EnRecurringTransactionStatus.Scheduled;
     }
-
-    public void Activate()
+    public void MarkAsPaused()
     {
-        IsActive = true;
+        if(Status == EnRecurringTransactionStatus.Scheduled)
+        {
+            Status = EnRecurringTransactionStatus.Paused;
+        }
     }
-
-    public void Deactivate()
+    public void MarkAsResumed()
     {
-        IsActive = false;
-    }
+        if (Status != EnRecurringTransactionStatus.Paused) throw new RecurringTransactionNotPausedException(Id);
 
+        Status = EnRecurringTransactionStatus.Scheduled;
+    }
+    public void MarkAsCanceled()
+    {
+        if(Status == EnRecurringTransactionStatus.Scheduled)
+        {
+            Status = EnRecurringTransactionStatus.Cancel;
+        }
+        
+    }
     public void MarkAsExecuted(DateTime executionDate)
     {
         LastExecutedDate = executionDate;
@@ -146,7 +151,6 @@ public class RecurringTransaction : AggregateRoot
         {
             NextExecutionAt = null;
             Status = EnRecurringTransactionStatus.Completed;
-            IsActive = false;
         }
         else
         {
@@ -162,7 +166,6 @@ public class RecurringTransaction : AggregateRoot
             {
                 NextExecutionAt = null;
                 Status = EnRecurringTransactionStatus.Completed;
-                IsActive = false;
             }
             else
             {

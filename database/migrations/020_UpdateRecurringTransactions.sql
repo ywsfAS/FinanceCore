@@ -9,3 +9,6 @@ CONSTRAINT DF_RecurringTransactions_Execution_Type DEFAULT (0)
 
 ALTER TABLE RecurringTransactions
 ADD NextExecutionAt DATETIME2 NULL
+
+ALTER TABLE RecurringTransactions
+DROP COLUMN IsActive
