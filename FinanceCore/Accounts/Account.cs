@@ -13,6 +13,8 @@ namespace FinanceCore.Domain.Accounts
         public EnAccountType Type { get; private set; }
         public Money Balance { get; private set; }
         public Money InitialBalance { get; private set; }
+
+        public SavingsDetails? SavingsDetails { get; private set; }
         public bool IsActive { get; private set; }
         public byte[]? RowVersion { get; private set; }
         public DateTime CreatedAt { get; private set; }
@@ -28,6 +30,7 @@ namespace FinanceCore.Domain.Accounts
             Money balance,
             Money initialBalance,
             bool isActive,
+            SavingsDetails? savingsDetails,
             DateTime createdAt,
             DateTime? updatedAt,
             byte[]? rowVersion
@@ -40,6 +43,7 @@ namespace FinanceCore.Domain.Accounts
             Balance = balance;
             InitialBalance = initialBalance;
             IsActive = isActive;
+            SavingsDetails = savingsDetails;
             CreatedAt = createdAt;
             UpdatedAt = updatedAt;
             RowVersion = rowVersion;
@@ -56,10 +60,11 @@ namespace FinanceCore.Domain.Accounts
             bool isActive,
             DateTime createdAt,
             DateTime? updatedAt = null,
+            SavingsDetails? savingsDetails = null,
             byte[]? rowVersion = null
             )
         {
-            return new Account(id, userId, name, type, balance,initialBalance, isActive, createdAt, updatedAt,rowVersion);
+            return new Account(id, userId, name, type, balance,initialBalance, isActive,savingsDetails, createdAt, updatedAt,rowVersion);
         }
 
         // Create new account
@@ -67,7 +72,8 @@ namespace FinanceCore.Domain.Accounts
             Guid userId,
             string name,
             EnAccountType type,
-            Money initialBalance)
+            Money initialBalance,
+            SavingsDetails? savingsDetails = null)
         {
             // validation
             ValidateAccountName(name);
@@ -80,6 +86,7 @@ namespace FinanceCore.Domain.Accounts
                 Balance = initialBalance,
                 InitialBalance = initialBalance,
                 IsActive = true,
+                SavingsDetails = savingsDetails,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = null
             };
@@ -218,12 +225,30 @@ namespace FinanceCore.Domain.Accounts
 
             AddDomainEvent(new AccountTransferEvent(Id, targetAccount.Id, amount));
         }
+        private void EnsureSavingsAccount()
+        {
+            if (Type != EnAccountType.Savings)
+                throw new InvalidOperationException(
+                    "Operation is only valid for savings accounts.");
 
+            if (SavingsDetails is null)
+                throw new InvalidOperationException(
+                    "Savings account is missing SavingsDetails.");
+        }
+        public void AccrueInterest(Money amount)
+        {
+            EnsureSavingsAccount();
+
+            SavingsDetails!.AccrueInterest(amount);
+
+            UpdatedAt = DateTime.UtcNow;
+        }
         public bool HasSufficientBalance(Money amount) => Balance.Amount >= amount.Amount;
 
         public decimal GetAvailableBalance() => Balance.Amount;
 
         public bool IsOverdrawn() => Balance.Amount < 0;
+
     }
 
 }
