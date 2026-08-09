@@ -85,5 +85,9 @@ namespace FinanceCore.Infrastructure.Persistence
         {
             return await _accountRepository.GetAccountByIdAsync(accountId, token);
         }
+        public async Task<IEnumerable<Account>> GetSavingsAccountsForInterestProcessingAsync(CancellationToken cancellationToken)
+        {
+            return await _accountRepository.GetSavingsAccountsForInterestProcessingAsync(cancellationToken);
+        }
     }
 }

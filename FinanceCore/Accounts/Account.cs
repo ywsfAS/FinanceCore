@@ -235,13 +235,54 @@ namespace FinanceCore.Domain.Accounts
                 throw new InvalidOperationException(
                     "Savings account is missing SavingsDetails.");
         }
-        public void AccrueInterest(Money amount)
+        public void AccrueInterest(DateTime accruedAt)
         {
             EnsureSavingsAccount();
 
-            SavingsDetails!.AccrueInterest(amount);
+            var lastAccrualAt =
+                SavingsDetails!.LastInterestAccrualAt ?? CreatedAt;
 
-            UpdatedAt = DateTime.UtcNow;
+            var elapsedDays =
+                (accruedAt - lastAccrualAt).TotalDays;
+
+            if (elapsedDays <= 0)
+                return;
+
+            var dailyRate =
+                SavingsDetails.InterestRate / 365m;
+
+            var interestAmount =
+                Balance.Amount * dailyRate * (decimal)elapsedDays;
+
+            if (interestAmount <= 0)
+                return;
+
+            var interest = new Money(
+                interestAmount,
+                Balance.Currency);
+
+            SavingsDetails.AccrueInterest(
+                interest,
+                accruedAt);
+
+            UpdatedAt = accruedAt;
+        }
+        public void ClearAccruedInterest()
+        {
+            EnsureSavingsAccount();
+            SavingsDetails?.ClearAccruedInterest();
+        }
+        public void CreditAccruedInterest(DateTime date)
+        {
+            EnsureSavingsAccount();
+            Balance = SavingsDetails!.InterestAccruedToDate;
+            SavingsDetails.ClearAccruedInterest();
+            SavingsDetails.AdvanceNextInterestCredit(date);
+        }
+        public void AdvanceNextInterestCredit(DateTime date)
+        {
+            EnsureSavingsAccount();
+            SavingsDetails?.AdvanceNextInterestCredit(date);
         }
         public bool HasSufficientBalance(Money amount) => Balance.Amount >= amount.Amount;
 

@@ -1,4 +1,6 @@
 
+using FinanceCore.Domain.Enums;
+
 namespace FinanceCore.Application.Models
 {
     public class AccountModel
@@ -6,12 +8,20 @@ namespace FinanceCore.Application.Models
         public Guid Id { get; set; }
         public Guid UserId { get; set; }
         public string Name { get; set; } = string.Empty;
-        public byte AccountTypeId { get; set; } 
+        public EnAccountType AccountTypeId { get; set; } 
         public decimal Balance { get; set; }
         public decimal InitialBalance { get; set; }
         public byte CurrencyId { get; set; }
+
+        public decimal? InterestRate { get; set; }
+        public decimal? InterestAccruedToDate { get; set; }
+        public EnInterestCreditFrequency? CreditFrequency { get; set; }
+        public DateTime? LastInterestAccrualAt { get; set; }
+        public DateTime? NextInterestCreditAt { get; set; }
+
         public bool IsActive { get; set; }
         public DateTime CreatedAt { get; set; }
+       
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
         public byte[]? RowVersion { get; set; } = null;
     }

@@ -1,9 +1,9 @@
 
 namespace FinanceCore.Domain.Exceptions
 {
-    public class interestAccuredToDateNullException : DomainException
+    public class InterestAccuredToDateNullException : DomainException
     {
-        public interestAccuredToDateNullException(string message) : base(message) { }
+        public InterestAccuredToDateNullException(string message) : base(message) { }
     }
     public class InterestRateNegativeException : DomainException
     {

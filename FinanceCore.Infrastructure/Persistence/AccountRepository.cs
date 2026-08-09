@@ -85,9 +85,12 @@ namespace FinanceCore.Infrastructure.Repositories
             if (affectedRows == 0)
                 throw new InvalidOperationException("Failed to insert account into the database.");
         }
-        public async Task UpdateAsync(Account account , IUnitOfWork? unitOfWork = null, CancellationToken token = default)
+        public async Task UpdateAsync(
+            Account account,
+            IUnitOfWork? unitOfWork = null,
+            CancellationToken token = default)
         {
-            const string sql = @"
+            const string accountSql = """
             UPDATE Accounts
             SET Name = @Name,
             AccountTypeId = @AccountTypeId,
@@ -96,30 +99,82 @@ namespace FinanceCore.Infrastructure.Repositories
             InitialBalance = @InitialBalance,
             IsActive = @IsActive,
             UpdatedAt = @UpdatedAt
-            WHERE Id = @Id
-            AND UserId = @UserId
-            AND RowVersion = @RowVersion";
+                WHERE Id = @Id
+                AND UserId = @UserId
+                AND RowVersion = @RowVersion;
+            """;
+
+            const string savingsSql = """
+            UPDATE SavingsDetails
+            SET InterestRate = @InterestRate,
+            InterestAccruedToDate = @InterestAccruedToDate,
+            CreditFrequency = @CreditFrequency,
+            LastInterestAccrualAt = @LastInterestAccrualAt,
+            NextInterestCreditAt = @NextInterestCreditAt
+                WHERE AccountId = @Id;
+            """;
 
             var model = AccountMapper.MapToModel(account);
-            var cmd = new CommandDefinition(
-                    sql,
-                    model,
-                    cancellationToken: token,
-                    transaction : unitOfWork?.Transaction,
-                    commandType: CommandType.Text);
-            int affectedRows = 0;
-            if(unitOfWork != null)
+
+            if (unitOfWork != null)
             {
-               affectedRows = await unitOfWork.Connection.ExecuteAsync(cmd);
-            }
-            else
-            {
-                using var connection = _connectionFactory.GetConnection();
-                affectedRows = await connection.ExecuteAsync(cmd);
+                var affectedRows = await unitOfWork.Connection.ExecuteAsync(
+                    new CommandDefinition(
+                        accountSql,
+                        model,
+                        transaction: unitOfWork.Transaction,
+                        cancellationToken: token));
+
+                if (affectedRows == 0)
+                    throw new ConcurrencyException(
+                        "The account was modified by another request.");
+
+                if (account.Type == EnAccountType.Savings)
+                {
+                    await unitOfWork.Connection.ExecuteAsync(
+                        new CommandDefinition(
+                            savingsSql,
+                            model,
+                            transaction: unitOfWork.Transaction,
+                            cancellationToken: token));
+                }
+
+                return;
             }
 
-            if (affectedRows == 0)
-                throw new ConcurrencyException("The account was modified by another request.");
+            using var connection = _connectionFactory.GetConnection();
+            using var transaction = connection.BeginTransaction();
+
+            try
+            {
+                var affectedRows = await connection.ExecuteAsync(
+                    new CommandDefinition(
+                        accountSql,
+                        model,
+                        transaction: transaction,
+                        cancellationToken: token));
+
+                if (affectedRows == 0)
+                    throw new ConcurrencyException(
+                        "The account was modified by another request.");
+
+                if (account.Type == EnAccountType.Savings)
+                {
+                    await connection.ExecuteAsync(
+                        new CommandDefinition(
+                            savingsSql,
+                            model,
+                            transaction: transaction,
+                            cancellationToken: token));
+                }
+
+                transaction.Commit();
+            }
+            catch
+            {
+                transaction.Rollback();
+                throw;
+            }
         }
 
         public async Task DeleteAsync(Guid userId ,Guid id, CancellationToken token = default)
@@ -266,6 +321,37 @@ namespace FinanceCore.Infrastructure.Repositories
                     options.CancellationToken = token;
                 })
                 .BulkUpdateAsync(accountModels);
+        }
+
+        public async Task<IEnumerable<Account>> GetSavingsAccountsForInterestProcessingAsync(CancellationToken cancellationToken)
+        {
+            using var connection = _connectionFactory.GetConnection();
+            const string sql = @"SELECT
+                a.Id,
+                a.UserId,
+                a.Name,
+                a.AccountTypeId,
+                a.Balance,
+                a.InitialBalance,
+                a.CurrencyId,
+                s.InterestRate,
+                s.InterestAccruedToDate,
+                s.CreditFrequency,
+                s.LastInterestAccrualAt,
+                s.NextInterestCreditAt,
+                a.IsActive,
+                a.CreatedAt,
+                a.UpdatedAt,
+                a.RowVersion
+                FROM Accounts a
+                INNER JOIN SavingsDetails s
+                    ON a.Id = s.AccountId
+                WHERE a.IsActive = 1 AND a.AccountTypeId = @Type
+            ";
+            var command = new CommandDefinition(sql,new {Type = EnAccountType.Savings},cancellationToken: cancellationToken);
+            var result = await connection.QueryAsync<AccountModel>(command);
+            return result.Select(AccountMapper.MapToDomain);
+
         }
     }
 }
