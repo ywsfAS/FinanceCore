@@ -1,6 +1,7 @@
 using Asp.Versioning;
 using FinanceCore.API.Requests.Account;
 using FinanceCore.Application.DTOs;
+using FinanceCore.Application.Features.Accounts.Commands.Alerts;
 using FinanceCore.Application.Features.Accounts.Commands.Create;
 using FinanceCore.Application.Features.Accounts.Commands.Delete;
 using FinanceCore.Application.Features.Accounts.Commands.Reconcile;
@@ -158,7 +159,26 @@ namespace FinanceCore.API.Controllers
             var response = await _mediator.Send(cmd);
             return Ok(response);
         }
+        [HttpPost("{accountId:guid}/alerts")]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> CreateAlert(
+            Guid accountId,
+            [FromBody] CreateLowBalanceAlertRequest request,
+            CancellationToken cancellationToken)
+        {
+            var alertId = await _mediator.Send(
+                new CreateLowBalanceAlertCommand(
+                    accountId,
+                    request.ThresholdAmount),
+                cancellationToken);
 
+            return Created(
+                $"/api/v1/accounts/{accountId}/alerts/{alertId}",
+                new { id = alertId });
+        }
 
     }
 }

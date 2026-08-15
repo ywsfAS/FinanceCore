@@ -70,6 +70,7 @@ namespace FinanceCore.Infrastructure
             services.AddScoped<IBatchRepository, BatchRepository>();
             services.AddScoped<IReconciliationRepository, ReconciliationRepository>();
             services.AddScoped<ILoginHistoryRepository,LoginHistoryRepository>();
+            services.AddScoped<IAlertRepository,AlertRepository>();
             services.AddScoped<ITransactionExporter, TransactionExporter>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
