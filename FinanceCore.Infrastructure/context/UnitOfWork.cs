@@ -43,14 +43,7 @@ public class UnitOfWork : IUnitOfWork
             throw new InvalidOperationException(
                 "Cannot commit because no transaction has been started.");
 
-        try
-        {
-            await _transaction.CommitAsync(token);
-        }
-        finally
-        {
-            await DisposeTransactionAsync();
-        }
+       await _transaction.CommitAsync(token);
     }
 
     public async Task RollBackAsync(
@@ -59,14 +52,7 @@ public class UnitOfWork : IUnitOfWork
         if (_transaction is null)
             return;
 
-        try
-        {
-            await _transaction.RollbackAsync(token);
-        }
-        finally
-        {
-            await DisposeTransactionAsync();
-        }
+        await _transaction.RollbackAsync(token);
     }
 
     private async ValueTask DisposeTransactionAsync()
