@@ -9,6 +9,9 @@ namespace FinanceCore.Application.Features.Accounts.Commands.Create
         Guid UserId,
         string Name,
         EnAccountType Type,
-        Money InitialBalance) : IRequest<AccountDto>;
+        Money InitialBalance,
+        decimal? InterestRate  = null,
+        EnInterestAccrualFrequency? InterestAccrualFrequency = null,
+        EnInterestCreditFrequency? InterestCreditFrequency = null ) : IRequest<AccountDto>;
 
 }

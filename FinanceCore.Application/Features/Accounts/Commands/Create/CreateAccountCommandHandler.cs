@@ -2,6 +2,7 @@ using FinanceCore.Application.Abstractions;
 using FinanceCore.Application.DTOs;
 using FinanceCore.Application.Events;
 using FinanceCore.Domain.Accounts;
+using FinanceCore.Domain.Enums;
 using MediatR;
 
 namespace FinanceCore.Application.Features.Accounts.Commands.Create
@@ -23,7 +24,10 @@ namespace FinanceCore.Application.Features.Accounts.Commands.Create
                 command.UserId,
                 command.Name,
                 command.Type,
-                command.InitialBalance);
+                command.InitialBalance,
+                command.InterestRate,
+                command.InterestCreditFrequency,
+                command.InterestAccrualFrequency);
 
             await _accountRepository.AddAsync(account, cancellationToken);
 

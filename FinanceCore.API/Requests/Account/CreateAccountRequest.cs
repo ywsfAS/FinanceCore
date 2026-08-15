@@ -1,6 +1,8 @@
-﻿using FinanceCore.Domain.Enums;
+using FinanceCore.Domain.Enums;
 
 namespace FinanceCore.API.Requests.Account
 {
-    public record CreateAccountRequest(string Name , EnAccountType Type , EnCurrency Currency , decimal InitialBalance = 0);
+    public record CreateAccountRequest(string Name , EnAccountType Type , EnCurrency Currency , decimal InitialBalance = 0, decimal? InterestRate = null,
+        EnInterestAccrualFrequency? InterestAccrualFrequency = null,
+        EnInterestCreditFrequency? InterestCreditFrequency = null);
 }

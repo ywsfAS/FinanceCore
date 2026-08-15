@@ -73,10 +73,36 @@ namespace FinanceCore.Domain.Accounts
             string name,
             EnAccountType type,
             Money initialBalance,
-            SavingsDetails? savingsDetails = null)
+            decimal? interestRate = null,
+            EnInterestCreditFrequency? creditFrequency = null,
+            EnInterestAccrualFrequency? accrualFrequency = null)
         {
-            // validation
             ValidateAccountName(name);
+
+            SavingsDetails? savingsDetails = null;
+
+            if (type == EnAccountType.Savings)
+            {
+                if (!interestRate.HasValue)
+                    throw new InvalidOperationException(
+                        "Interest rate is required for savings accounts.");
+
+                if (!creditFrequency.HasValue)
+                    throw new InvalidOperationException(
+                        "Credit frequency is required for savings accounts.");
+
+                if (!accrualFrequency.HasValue)
+                    throw new InvalidOperationException(
+                        "Accrual frequency is required for savings accounts.");
+
+                savingsDetails = SavingsDetails.Create(
+                    interestRate.Value,
+                    Money.Zero(initialBalance.Currency),
+                    creditFrequency.Value,
+                    accrualFrequency.Value,
+                    DateTime.UtcNow);
+            }
+
             var account = new Account
             {
                 Id = Guid.NewGuid(),
@@ -276,13 +302,42 @@ namespace FinanceCore.Domain.Accounts
         {
             EnsureSavingsAccount();
             Balance = SavingsDetails!.InterestAccruedToDate;
-            SavingsDetails.ClearAccruedInterest();
-            SavingsDetails.AdvanceNextInterestCredit(date);
+            SavingsDetails.CreditAccruedInterest(date);
+            UpdatedAt = date;
         }
-        public void AdvanceNextInterestCredit(DateTime date)
+        public void ChangeInterestRate(decimal interestRate)
         {
             EnsureSavingsAccount();
-            SavingsDetails?.AdvanceNextInterestCredit(date);
+
+            SavingsDetails!.ChangeInterestRate(interestRate);
+
+            UpdatedAt = DateTime.UtcNow;
+        }
+
+        public void ChangeCreditFrequency(
+            EnInterestCreditFrequency creditFrequency,
+            DateTime currentTime)
+        {
+            EnsureSavingsAccount();
+
+            SavingsDetails!.ChangeCreditFrequency(
+                creditFrequency,
+                currentTime);
+
+            UpdatedAt = currentTime;
+        }
+
+        public void ChangeAccrualFrequency(
+            EnInterestAccrualFrequency accrualFrequency,
+            DateTime currentTime)
+        {
+            EnsureSavingsAccount();
+
+            SavingsDetails!.ChangeAccrualFrequency(
+                accrualFrequency,
+                currentTime);
+
+            UpdatedAt = currentTime;
         }
         public bool HasSufficientBalance(Money amount) => Balance.Amount >= amount.Amount;
 

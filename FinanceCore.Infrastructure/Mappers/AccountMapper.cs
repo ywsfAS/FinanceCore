@@ -20,19 +20,33 @@ public static class AccountMapper
             CurrencyId = (byte)account.Balance.Currency,
             IsActive = account.IsActive,
             CreatedAt = account.CreatedAt,
-            UpdatedAt = account.UpdatedAt.Value,
+            UpdatedAt = account.UpdatedAt ?? account.CreatedAt,
             RowVersion = account.RowVersion
         };
 
         if (account.SavingsDetails is not null)
         {
-            model.InterestRate = account.SavingsDetails.InterestRate;
+            model.InterestRate =
+                account.SavingsDetails.InterestRate;
+
             model.InterestAccruedToDate =
                 account.SavingsDetails.InterestAccruedToDate.Amount;
+
+            model.AccrualFrequency =
+                account.SavingsDetails.AccrualFrequency;
+
             model.CreditFrequency =
                 account.SavingsDetails.CreditFrequency;
+
             model.LastInterestAccrualAt =
                 account.SavingsDetails.LastInterestAccrualAt;
+
+            model.NextInterestAccrualAt =
+                account.SavingsDetails.NextInterestAccrualAt;
+
+            model.LastInterestCreditAt =
+                account.SavingsDetails.LastInterestCreditAt;
+
             model.NextInterestCreditAt =
                 account.SavingsDetails.NextInterestCreditAt;
         }
@@ -52,8 +66,11 @@ public static class AccountMapper
                     model.InterestAccruedToDate!.Value,
                     (EnCurrency)model.CurrencyId),
                 model.CreditFrequency!.Value,
+                model.AccrualFrequency!.Value,
                 model.LastInterestAccrualAt,
-                model.NextInterestCreditAt);
+                model.NextInterestAccrualAt!.Value,
+                model.LastInterestCreditAt,
+                model.NextInterestCreditAt!.Value);
         }
 
         return Account.Load(

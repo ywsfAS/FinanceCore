@@ -1,7 +1,6 @@
 using FinanceCore.Domain.Common;
 using FinanceCore.Domain.Enums;
 using FinanceCore.Domain.Exceptions;
-using System.Net.NetworkInformation;
 
 namespace FinanceCore.Domain.Accounts;
 
@@ -13,16 +12,25 @@ public sealed class SavingsDetails : ValueObject
 
     public DateTime? LastInterestAccrualAt { get; private set; }
 
+    public DateTime NextInterestAccrualAt { get; private set; }
+
+    public EnInterestAccrualFrequency AccrualFrequency { get; private set; }
+
     public EnInterestCreditFrequency CreditFrequency { get; private set; }
 
-    public DateTime? NextInterestCreditAt { get; private set; }
+    public DateTime? LastInterestCreditAt { get; private set; }
+
+    public DateTime NextInterestCreditAt { get; private set; }
 
     private SavingsDetails(
         decimal interestRate,
         Money interestAccruedToDate,
         EnInterestCreditFrequency creditFrequency,
+        EnInterestAccrualFrequency accrualFrequency,
         DateTime? lastInterestAccrualAt,
-        DateTime? nextInterestCreditAt)
+        DateTime nextInterestAccrualAt,
+        DateTime? lastInterestCreditAt,
+        DateTime nextInterestCreditAt)
     {
         ValidateInterestRate(interestRate);
 
@@ -32,44 +40,76 @@ public sealed class SavingsDetails : ValueObject
 
         InterestRate = interestRate;
         InterestAccruedToDate = interestAccruedToDate;
+
         CreditFrequency = creditFrequency;
+        AccrualFrequency = accrualFrequency;
+
         LastInterestAccrualAt = lastInterestAccrualAt;
+        NextInterestAccrualAt = nextInterestAccrualAt;
+
+        LastInterestCreditAt = lastInterestCreditAt;
         NextInterestCreditAt = nextInterestCreditAt;
     }
-    private SavingsDetails() { }
+
+    private SavingsDetails()
+    {
+    }
 
     public static SavingsDetails Create(
         decimal interestRate,
         Money interestAccruedToDate,
         EnInterestCreditFrequency creditFrequency,
-        DateTime createdAt)
+        EnInterestAccrualFrequency accrualFrequency,
+        DateTime? createdAt = null)
     {
-        var nextCreditAt = ComputeNextInterestCreditAt(
-            creditFrequency,
-            createdAt);
+        var date = createdAt ?? DateTime.UtcNow;
+
+        var nextAccrualAt =
+            ComputeNextInterestAccrualAt(
+                accrualFrequency,
+                date);
+
+        var nextCreditAt =
+            ComputeNextInterestCreditAt(
+                creditFrequency,
+                date);
 
         return new SavingsDetails(
             interestRate,
             interestAccruedToDate,
             creditFrequency,
+            accrualFrequency,
             lastInterestAccrualAt: null,
+            nextInterestAccrualAt: nextAccrualAt,
+            lastInterestCreditAt: null,
             nextInterestCreditAt: nextCreditAt);
     }
-    public static SavingsDetails Load(decimal interestRate , Money interestAccruedToDate , EnInterestCreditFrequency creditFrequency , 
-        DateTime? lastInterestAccrualAt , DateTime? nextInterestCreditAt)
+
+    public static SavingsDetails Load(
+        decimal interestRate,
+        Money interestAccruedToDate,
+        EnInterestCreditFrequency creditFrequency,
+        EnInterestAccrualFrequency accrualFrequency,
+        DateTime? lastInterestAccrualAt,
+        DateTime nextInterestAccrualAt,
+        DateTime? lastInterestCreditAt,
+        DateTime nextInterestCreditAt)
     {
-        return new SavingsDetails
-        {
-            InterestRate = interestRate,
-            InterestAccruedToDate = interestAccruedToDate,
-            CreditFrequency = creditFrequency,
-            LastInterestAccrualAt = lastInterestAccrualAt,
-            NextInterestCreditAt = nextInterestCreditAt
-        };
+        return new SavingsDetails(
+            interestRate,
+            interestAccruedToDate,
+            creditFrequency,
+            accrualFrequency,
+            lastInterestAccrualAt,
+            nextInterestAccrualAt,
+            lastInterestCreditAt,
+            nextInterestCreditAt);
     }
+
     public void ChangeInterestRate(decimal interestRate)
     {
         ValidateInterestRate(interestRate);
+
         InterestRate = interestRate;
     }
 
@@ -78,9 +118,23 @@ public sealed class SavingsDetails : ValueObject
         DateTime currentTime)
     {
         CreditFrequency = creditFrequency;
-        NextInterestCreditAt = ComputeNextInterestCreditAt(
-            creditFrequency,
-            currentTime);
+
+        NextInterestCreditAt =
+            ComputeNextInterestCreditAt(
+                creditFrequency,
+                currentTime);
+    }
+
+    public void ChangeAccrualFrequency(
+        EnInterestAccrualFrequency accrualFrequency,
+        DateTime currentTime)
+    {
+        AccrualFrequency = accrualFrequency;
+
+        NextInterestAccrualAt =
+            ComputeNextInterestAccrualAt(
+                accrualFrequency,
+                currentTime);
     }
 
     public void AccrueInterest(
@@ -91,8 +145,27 @@ public sealed class SavingsDetails : ValueObject
             throw new InterestAccuredToDateNullException(
                 "Interest amount cannot be null.");
 
-        InterestAccruedToDate = InterestAccruedToDate.Add(amount);
+        InterestAccruedToDate =
+            InterestAccruedToDate.Add(amount);
+
         LastInterestAccrualAt = accruedAt;
+
+        NextInterestAccrualAt =
+            ComputeNextInterestAccrualAt(
+                AccrualFrequency,
+                accruedAt);
+    }
+
+    public void CreditAccruedInterest(DateTime creditedAt)
+    {
+        LastInterestCreditAt = creditedAt;
+
+        NextInterestCreditAt =
+            ComputeNextInterestCreditAt(
+                CreditFrequency,
+                creditedAt);
+
+        ClearAccruedInterest();
     }
 
     public void ClearAccruedInterest()
@@ -101,19 +174,12 @@ public sealed class SavingsDetails : ValueObject
             Money.Zero(InterestAccruedToDate.Currency);
     }
 
-    public void AdvanceNextInterestCredit(DateTime creditAt)
-    {
-        NextInterestCreditAt = ComputeNextInterestCreditAt(
-            CreditFrequency,
-            creditAt);
-    }
-
     private static void ValidateInterestRate(decimal interestRate)
     {
-        if (interestRate < 0)
+        if (interestRate < 0 || interestRate > 1)
         {
             throw new InterestRateNegativeException(
-                $"Interest rate cannot be negative [{interestRate}]");
+                $"Interest rate must be between 0 and 1 [{interestRate}]");
         }
     }
 
@@ -139,12 +205,40 @@ public sealed class SavingsDetails : ValueObject
         };
     }
 
+    private static DateTime ComputeNextInterestAccrualAt(
+        EnInterestAccrualFrequency frequency,
+        DateTime currentTime)
+    {
+        return frequency switch
+        {
+            EnInterestAccrualFrequency.Daily =>
+                currentTime.AddDays(1),
+
+            EnInterestAccrualFrequency.Monthly =>
+                currentTime.AddMonths(1),
+
+            EnInterestAccrualFrequency.Quarterly =>
+                currentTime.AddMonths(3),
+
+            EnInterestAccrualFrequency.Yearly =>
+                currentTime.AddYears(1),
+
+            _ => throw new ArgumentOutOfRangeException(
+                nameof(frequency),
+                frequency,
+                "Unsupported interest accrual frequency.")
+        };
+    }
+
     protected override IEnumerable<object> GetEqualityComponents()
     {
         yield return InterestRate;
         yield return InterestAccruedToDate;
+        yield return AccrualFrequency;
         yield return CreditFrequency;
         yield return LastInterestAccrualAt;
+        yield return NextInterestAccrualAt;
+        yield return LastInterestCreditAt;
         yield return NextInterestCreditAt;
     }
 }

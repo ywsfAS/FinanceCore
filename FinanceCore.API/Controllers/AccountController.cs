@@ -47,7 +47,8 @@ namespace FinanceCore.API.Controllers
         public async Task<IActionResult> CreateAccount([FromBody] CreateAccountRequest request)
         {
             var userId = GetUserId();
-            var command = new CreateAccountCommand(userId,request.Name,request.Type,new Money(request.InitialBalance,request.Currency));
+            var command = new CreateAccountCommand(userId,request.Name,request.Type,new Money(request.InitialBalance,request.Currency),
+                request.InterestRate , request.InterestAccrualFrequency,request.InterestCreditFrequency);
             var account = await _mediator.Send(command);
             return CreatedAtAction(nameof(GetAccountById), new { id = account.Id }, account);
         }
