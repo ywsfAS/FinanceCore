@@ -27,7 +27,10 @@ namespace FinanceCore.Application.Features.Accounts.Commands.Create
                 command.InitialBalance,
                 command.InterestRate,
                 command.InterestCreditFrequency,
-                command.InterestAccrualFrequency);
+                command.InterestAccrualFrequency,
+                command.CreditLimit,
+                command.Fee,
+                command.FeePeriod);
 
             await _accountRepository.AddAsync(account, cancellationToken);
 

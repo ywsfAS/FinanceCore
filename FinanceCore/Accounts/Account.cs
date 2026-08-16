@@ -2,6 +2,7 @@ using FinanceCore.Domain.Common;
 using FinanceCore.Domain.Enums;
 using FinanceCore.Domain.Events.Account;
 using FinanceCore.Domain.Exceptions;
+using System.Linq.Expressions;
 
 namespace FinanceCore.Domain.Accounts
 {
@@ -62,6 +63,7 @@ namespace FinanceCore.Domain.Accounts
             DateTime createdAt,
             DateTime? updatedAt = null,
             SavingsDetails? savingsDetails = null,
+            CreditDetails? creditDetails = null,
             byte[]? rowVersion = null
             )
         {
@@ -76,7 +78,11 @@ namespace FinanceCore.Domain.Accounts
             Money initialBalance,
             decimal? interestRate = null,
             EnInterestCreditFrequency? creditFrequency = null,
-            EnInterestAccrualFrequency? accrualFrequency = null)
+            EnInterestAccrualFrequency? accrualFrequency = null,
+            decimal? creditLimit = null,
+            decimal? fee = null,
+            EnPeriod? feePeriod = null
+            )
         {
             ValidateAccountName(name);
 
@@ -103,6 +109,22 @@ namespace FinanceCore.Domain.Accounts
                     accrualFrequency.Value,
                     DateTime.UtcNow);
             }
+            CreditDetails? creditDetails = null;      
+            if (type == EnAccountType.Credit)
+            {
+                if (!creditLimit.HasValue)
+                    throw new InvalidOperationException(
+                        "Credit limit is required for credit accounts.");
+
+                creditDetails = CreditDetails.Create(
+                    new Money(
+                        creditLimit.Value,
+                        initialBalance.Currency),
+                    fee.HasValue
+                        ? new Money(fee.Value, initialBalance.Currency)
+                        : null,
+                    feePeriod ?? EnPeriod.None);
+            }
 
             var account = new Account
             {
@@ -114,6 +136,7 @@ namespace FinanceCore.Domain.Accounts
                 InitialBalance = initialBalance,
                 IsActive = true,
                 SavingsDetails = savingsDetails,
+                CreditDetails = creditDetails,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = null
             };

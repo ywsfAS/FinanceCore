@@ -31,6 +31,13 @@ public class AccountModel
 
     public DateTime? NextInterestCreditAt { get; set; }
 
+    // Credit details
+    public decimal? CreditLimit { get; set; }
+    public decimal? Fee {  get; set; }
+    public EnPeriod FeePeriod { get; set; }
+    public DateTime? LastFeeChargedAt { get; set; }
+    public DateTime? NextFeeChargeAt { get; set; }
+
     public bool IsActive { get; set; }
 
     public DateTime CreatedAt { get; set; }

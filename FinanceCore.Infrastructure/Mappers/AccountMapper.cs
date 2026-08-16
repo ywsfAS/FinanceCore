@@ -24,6 +24,24 @@ public static class AccountMapper
             RowVersion = account.RowVersion
         };
 
+        if (account.CreditDetails is not null)
+        {
+            model.CreditLimit =
+                account.CreditDetails.CreditLimit.Amount;
+
+            model.Fee =
+                account.CreditDetails.Fee.Amount;
+
+            model.FeePeriod =
+                account.CreditDetails.FeePeriod;
+
+            model.LastFeeChargedAt =
+                account.CreditDetails.LastFeeChargedAt;
+
+            model.NextFeeChargeAt =
+                account.CreditDetails.NextFeeChargeAt;
+        }
+
         if (account.SavingsDetails is not null)
         {
             model.InterestRate =
@@ -57,6 +75,9 @@ public static class AccountMapper
     public static Account MapToDomain(AccountModel model)
     {
         SavingsDetails? savingsDetails = null;
+        CreditDetails? creditDetails = null;
+
+        var currency = (EnCurrency)model.CurrencyId;
 
         if (model.AccountTypeId == EnAccountType.Savings)
         {
@@ -64,13 +85,31 @@ public static class AccountMapper
                 model.InterestRate!.Value,
                 new Money(
                     model.InterestAccruedToDate!.Value,
-                    (EnCurrency)model.CurrencyId),
+                    currency),
                 model.CreditFrequency!.Value,
                 model.AccrualFrequency!.Value,
                 model.LastInterestAccrualAt,
                 model.NextInterestAccrualAt!.Value,
                 model.LastInterestCreditAt,
                 model.NextInterestCreditAt!.Value);
+        }
+
+        if (model.AccountTypeId == EnAccountType.Credit)
+        {
+            var creditLimit = new Money(
+                model.CreditLimit!.Value,
+                currency);
+
+            var fee = new Money(
+                model.Fee!.Value,
+                currency);
+
+            creditDetails = CreditDetails.Load(
+                creditLimit,
+                fee,
+                model.FeePeriod,
+                model.LastFeeChargedAt,
+                model.NextFeeChargeAt);
         }
 
         return Account.Load(
@@ -80,14 +119,15 @@ public static class AccountMapper
             model.AccountTypeId,
             new Money(
                 model.Balance,
-                (EnCurrency)model.CurrencyId),
+                currency),
             new Money(
                 model.InitialBalance,
-                (EnCurrency)model.CurrencyId),
+                currency),
             model.IsActive,
             model.CreatedAt,
             model.UpdatedAt,
             savingsDetails,
+            creditDetails,
             model.RowVersion);
     }
 }

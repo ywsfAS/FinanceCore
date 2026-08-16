@@ -49,7 +49,7 @@ namespace FinanceCore.API.Controllers
         {
             var userId = GetUserId();
             var command = new CreateAccountCommand(userId,request.Name,request.Type,new Money(request.InitialBalance,request.Currency),
-                request.InterestRate , request.InterestAccrualFrequency,request.InterestCreditFrequency);
+                request.InterestRate , request.InterestAccrualFrequency,request.InterestCreditFrequency,request.CreditLimit,request.Fee,request.FeePeriod);
             var account = await _mediator.Send(command);
             return CreatedAtAction(nameof(GetAccountById), new { id = account.Id }, account);
         }

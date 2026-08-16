@@ -19,6 +19,49 @@ public class AccountRepository : IAccountRepository
 {
     private readonly IConnectionFactory _connectionFactory;
 
+    private const string AccountSelect = """
+
+        a.Id,
+        a.UserId,
+        a.Name,
+        a.AccountTypeId,
+        a.Balance,
+        a.CurrencyId,
+        a.InitialBalance,
+        a.IsActive,
+        a.CreatedAt,
+        a.UpdatedAt,
+        a.RowVersion,
+
+        s.InterestRate,
+        s.InterestAccruedToDate,
+        s.AccrualFrequency,
+        s.CreditFrequency,
+        s.LastInterestAccrualAt,
+        s.NextInterestAccrualAt,
+        s.LastInterestCreditAt,
+        s.NextInterestCreditAt,
+
+        c.CreditLimit,
+        c.Fee,
+        c.FeePeriodId AS FeePeriod,
+        c.LastFeeChargedAt,
+        c.NextFeeChargeAt
+
+        """;
+
+    private const string AccountFrom = """
+        
+        FROM Accounts a
+
+        LEFT JOIN SavingsDetails s
+            ON a.Id = s.AccountId
+
+        LEFT JOIN CreditDetails c
+            ON a.Id = c.AccountId
+        
+        """;
+
     public AccountRepository(IConnectionFactory connectionFactory)
     {
         _connectionFactory = connectionFactory;
@@ -28,33 +71,10 @@ public class AccountRepository : IAccountRepository
         Guid accountId,
         CancellationToken token = default)
     {
-        const string sql = """
+        var sql = $"""
             SELECT
-                a.Id,
-                a.UserId,
-                a.Name,
-                a.AccountTypeId,
-                a.Balance,
-                a.CurrencyId,
-                a.InitialBalance,
-                a.IsActive,
-                a.CreatedAt,
-                a.UpdatedAt,
-                a.RowVersion,
-
-                s.InterestRate,
-                s.InterestAccruedToDate,
-                s.AccrualFrequency,
-                s.CreditFrequency,
-                s.LastInterestAccrualAt,
-                s.NextInterestAccrualAt,
-                s.LastInterestCreditAt,
-                s.NextInterestCreditAt
-
-            FROM Accounts a
-            LEFT JOIN SavingsDetails s
-                ON a.Id = s.AccountId
-
+                {AccountSelect}
+            {AccountFrom}
             WHERE a.Id = @Id
               AND a.IsActive = 1;
             """;
@@ -87,7 +107,7 @@ public class AccountRepository : IAccountRepository
             FROM Accounts
             WHERE UserId = @UserId
               AND Id = @Id
-              AND IsActive = 1
+              AND IsActive = 1;
             """;
 
         var parameters = new DynamicParameters();
@@ -160,10 +180,32 @@ public class AccountRepository : IAccountRepository
             );
             """;
 
+        const string creditSql = """
+            INSERT INTO CreditDetails (
+                AccountId,
+                CreditLimit,
+                Fee,
+                FeePeriodId,
+                LastFeeChargedAt,
+                NextFeeChargeAt
+            )
+            VALUES (
+                @Id,
+                @CreditLimit,
+                @Fee,
+                @FeePeriod,
+                @LastFeeChargedAt,
+                @NextFeeChargeAt
+            );
+            """;
+
         var model = AccountMapper.MapToModel(account);
 
-        using var connection = (SqlConnection)_connectionFactory.GetConnection();
+        using var connection =
+            (SqlConnection)_connectionFactory.GetConnection();
+
         await connection.OpenAsync(token);
+
         using var transaction = connection.BeginTransaction();
 
         try
@@ -184,6 +226,16 @@ public class AccountRepository : IAccountRepository
                 await connection.ExecuteAsync(
                     new CommandDefinition(
                         savingsSql,
+                        model,
+                        transaction: transaction,
+                        cancellationToken: token));
+            }
+
+            if (account.Type == EnAccountType.Credit)
+            {
+                await connection.ExecuteAsync(
+                    new CommandDefinition(
+                        creditSql,
                         model,
                         transaction: transaction,
                         cancellationToken: token));
@@ -230,16 +282,27 @@ public class AccountRepository : IAccountRepository
             WHERE AccountId = @Id;
             """;
 
+        const string creditSql = """
+            UPDATE CreditDetails
+            SET CreditLimit = @CreditLimit,
+                Fee = @Fee,
+                FeePeriodId = @FeePeriod,
+                LastFeeChargedAt = @LastFeeChargedAt,
+                NextFeeChargeAt = @NextFeeChargeAt
+            WHERE AccountId = @Id;
+            """;
+
         var model = AccountMapper.MapToModel(account);
 
         if (unitOfWork is not null)
         {
-            var affectedRows = await unitOfWork.Connection.ExecuteAsync(
-                new CommandDefinition(
-                    accountSql,
-                    model,
-                    transaction: unitOfWork.Transaction,
-                    cancellationToken: token));
+            var affectedRows =
+                await unitOfWork.Connection.ExecuteAsync(
+                    new CommandDefinition(
+                        accountSql,
+                        model,
+                        transaction: unitOfWork.Transaction,
+                        cancellationToken: token));
 
             if (affectedRows == 0)
                 throw new ConcurrencyException(
@@ -250,6 +313,16 @@ public class AccountRepository : IAccountRepository
                 await unitOfWork.Connection.ExecuteAsync(
                     new CommandDefinition(
                         savingsSql,
+                        model,
+                        transaction: unitOfWork.Transaction,
+                        cancellationToken: token));
+            }
+
+            if (account.Type == EnAccountType.Credit)
+            {
+                await unitOfWork.Connection.ExecuteAsync(
+                    new CommandDefinition(
+                        creditSql,
                         model,
                         transaction: unitOfWork.Transaction,
                         cancellationToken: token));
@@ -279,6 +352,16 @@ public class AccountRepository : IAccountRepository
                 await connection.ExecuteAsync(
                     new CommandDefinition(
                         savingsSql,
+                        model,
+                        transaction: transaction,
+                        cancellationToken: token));
+            }
+
+            if (account.Type == EnAccountType.Credit)
+            {
+                await connection.ExecuteAsync(
+                    new CommandDefinition(
+                        creditSql,
                         model,
                         transaction: transaction,
                         cancellationToken: token));
@@ -368,7 +451,9 @@ public class AccountRepository : IAccountRepository
         using var connection = _connectionFactory.GetConnection();
 
         const string sql = """
-            SELECT Id, Name
+            SELECT
+                Id,
+                Name
             FROM Accounts
             WHERE UserId = @Id
             ORDER BY CreatedAt
@@ -395,33 +480,10 @@ public class AccountRepository : IAccountRepository
             Guid id,
             CancellationToken token = default)
     {
-        const string sql = """
+        var sql = $"""
             SELECT
-                a.Id,
-                a.UserId,
-                a.Name,
-                a.AccountTypeId,
-                a.Balance,
-                a.CurrencyId,
-                a.InitialBalance,
-                a.IsActive,
-                a.CreatedAt,
-                a.UpdatedAt,
-                a.RowVersion,
-
-                s.InterestRate,
-                s.InterestAccruedToDate,
-                s.AccrualFrequency,
-                s.CreditFrequency,
-                s.LastInterestAccrualAt,
-                s.NextInterestAccrualAt,
-                s.LastInterestCreditAt,
-                s.NextInterestCreditAt
-
-            FROM Accounts a
-            LEFT JOIN SavingsDetails s
-                ON a.Id = s.AccountId
-
+                {AccountSelect}
+            {AccountFrom}
             WHERE a.Id = @Id
               AND a.UserId = @UserId;
             """;
@@ -460,7 +522,6 @@ public class AccountRepository : IAccountRepository
                 CurrencyId AS Currency
             FROM Accounts
             WHERE UserId = @Id
-
             """);
 
         if (name is not null)
@@ -476,7 +537,7 @@ public class AccountRepository : IAccountRepository
 
             ORDER BY CreatedAt
             OFFSET @Offset ROWS
-            FETCH NEXT @PageSize ROWS ONLY
+            FETCH NEXT @PageSize ROWS ONLY;
             """);
 
         var command = new CommandDefinition(
@@ -500,33 +561,10 @@ public class AccountRepository : IAccountRepository
             Guid userId,
             CancellationToken token = default)
     {
-        const string sql = """
+        var sql = $"""
             SELECT
-                a.Id,
-                a.UserId,
-                a.Name,
-                a.AccountTypeId,
-                a.Balance,
-                a.CurrencyId,
-                a.InitialBalance,
-                a.IsActive,
-                a.CreatedAt,
-                a.UpdatedAt,
-                a.RowVersion,
-
-                s.InterestRate,
-                s.InterestAccruedToDate,
-                s.AccrualFrequency,
-                s.CreditFrequency,
-                s.LastInterestAccrualAt,
-                s.NextInterestAccrualAt,
-                s.LastInterestCreditAt,
-                s.NextInterestCreditAt
-
-            FROM Accounts a
-            LEFT JOIN SavingsDetails s
-                ON a.Id = s.AccountId
-
+                {AccountSelect}
+            {AccountFrom}
             WHERE a.UserId = @UserId;
             """;
 
@@ -607,6 +645,7 @@ public class AccountRepository : IAccountRepository
                 s.NextInterestCreditAt
 
             FROM Accounts a
+
             INNER JOIN SavingsDetails s
                 ON a.Id = s.AccountId
 

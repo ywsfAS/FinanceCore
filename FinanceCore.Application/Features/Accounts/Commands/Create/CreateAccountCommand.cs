@@ -12,6 +12,10 @@ namespace FinanceCore.Application.Features.Accounts.Commands.Create
         Money InitialBalance,
         decimal? InterestRate  = null,
         EnInterestAccrualFrequency? InterestAccrualFrequency = null,
-        EnInterestCreditFrequency? InterestCreditFrequency = null ) : IRequest<AccountDto>;
+        EnInterestCreditFrequency? InterestCreditFrequency = null,
+        decimal? CreditLimit = null,
+        decimal? Fee = null,
+        EnPeriod? FeePeriod = null
+        ) : IRequest<AccountDto>;
 
 }

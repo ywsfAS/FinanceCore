@@ -22,12 +22,12 @@ namespace FinanceCore.Domain.Accounts
             EnPeriod feePeriod,
             DateTime firstFeeChargeAt)
         {
-            if (creditLimit.IsGreaterOrEqual(Money.Zero(creditLimit.Currency)))
+            if (creditLimit.IsLessOrEqual(Money.Zero(creditLimit.Currency)))
                 throw new ArgumentException(
                     "Credit limit must be greater than zero.",
                     nameof(creditLimit));
 
-            if (fee.IsGreaterOrEqual(Money.Zero(fee.Currency)))
+            if (fee.IsLessOrEqual(Money.Zero(fee.Currency)))
                 throw new ArgumentException(
                     "Fee cannot be negative.",
                     nameof(fee));
@@ -43,7 +43,17 @@ namespace FinanceCore.Domain.Accounts
 
             NextFeeChargeAt = firstFeeChargeAt;
         }
-
+        public static CreditDetails Create(Money limit , Money? fee = null , EnPeriod period = EnPeriod.None , DateTime? firstFeeChargedAt = null)
+        {
+            var creditFee = fee ?? Money.Zero(limit.Currency);
+            var date = firstFeeChargedAt ?? DateTime.UtcNow;
+            return new CreditDetails(limit, creditFee, period, date);
+        }
+        public static CreditDetails Load(Money creditLimit , Money fee , EnPeriod period , DateTime? lastFeeChargedAt = null , DateTime? nextFeeChargedAt = null)
+        {
+            return new CreditDetails { CreditLimit = creditLimit, Fee = fee, FeePeriod = period,
+                LastFeeChargedAt = lastFeeChargedAt, NextFeeChargeAt = nextFeeChargedAt };
+        }
         public bool IsFeeDue(DateTime currentDate)
         {
             return Fee.IsGreaterThan(Money.Zero(Fee.Currency))
