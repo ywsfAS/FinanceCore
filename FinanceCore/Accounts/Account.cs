@@ -15,6 +15,7 @@ namespace FinanceCore.Domain.Accounts
         public Money InitialBalance { get; private set; }
 
         public SavingsDetails? SavingsDetails { get; private set; }
+        public CreditDetails? CreditDetails { get; private set; }
         public bool IsActive { get; private set; }
         public byte[]? RowVersion { get; private set; }
         public DateTime CreatedAt { get; private set; }
