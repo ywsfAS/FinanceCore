@@ -33,10 +33,20 @@ public class AccountModel
 
     // Credit details
     public decimal? CreditLimit { get; set; }
-    public decimal? Fee {  get; set; }
+    public decimal? Fee { get; set; }
     public EnPeriod FeePeriod { get; set; }
     public DateTime? LastFeeChargedAt { get; set; }
     public DateTime? NextFeeChargeAt { get; set; }
+
+    // Loan details
+    public decimal? LoanPrincipalAmount { get; set; }
+    public decimal? LoanInterestRate { get; set; }
+    public int? LoanTermInMonths { get; set; }
+    public EnRepaymentFrequency? LoanRepaymentFrequency { get; set; }
+    public DateTime? LoanStartDate { get; set; }
+    public decimal? LoanRegularPaymentAmount { get; set; }
+    public DateTime? LoanMaturityDate { get; set; }
+    public DateTime? LoanNextPaymentDate { get; set; }
 
     public bool IsActive { get; set; }
 

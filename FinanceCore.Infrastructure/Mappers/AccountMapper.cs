@@ -69,6 +69,33 @@ public static class AccountMapper
                 account.SavingsDetails.NextInterestCreditAt;
         }
 
+        if (account.LoanDetails is not null)
+        {
+            model.LoanPrincipalAmount =
+                account.LoanDetails.PrincipalAmount.Amount;
+
+            model.LoanInterestRate =
+                account.LoanDetails.InterestRate;
+
+            model.LoanTermInMonths =
+                account.LoanDetails.TermInMonths;
+
+            model.LoanRepaymentFrequency =
+                account.LoanDetails.RepaymentFrequency;
+
+            model.LoanStartDate =
+                account.LoanDetails.StartDate;
+
+            model.LoanRegularPaymentAmount =
+                account.LoanDetails.RegularPaymentAmount.Amount;
+
+            model.LoanMaturityDate =
+                account.LoanDetails.MaturityDate;
+
+            model.LoanNextPaymentDate =
+                account.LoanDetails.NextPaymentDate;
+        }
+
         return model;
     }
 
@@ -76,6 +103,7 @@ public static class AccountMapper
     {
         SavingsDetails? savingsDetails = null;
         CreditDetails? creditDetails = null;
+        LoanDetails? loanDetails = null;
 
         var currency = (EnCurrency)model.CurrencyId;
 
@@ -112,6 +140,23 @@ public static class AccountMapper
                 model.NextFeeChargeAt);
         }
 
+        if (model.AccountTypeId == EnAccountType.Loan)
+        {
+            loanDetails = LoanDetails.Load(
+                new Money(
+                    model.LoanPrincipalAmount!.Value,
+                    currency),
+                model.LoanInterestRate!.Value,
+                model.LoanTermInMonths!.Value,
+                model.LoanRepaymentFrequency!.Value,
+                model.LoanStartDate!.Value,
+                new Money(
+                    model.LoanRegularPaymentAmount!.Value,
+                    currency),
+                model.LoanMaturityDate!.Value,
+                model.LoanNextPaymentDate);
+        }
+
         return Account.Load(
             model.Id,
             model.UserId,
@@ -128,7 +173,7 @@ public static class AccountMapper
             model.UpdatedAt,
             savingsDetails,
             creditDetails,
-            null,
+            loanDetails,
             model.RowVersion);
     }
 }

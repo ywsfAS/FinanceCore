@@ -46,7 +46,16 @@ public class AccountRepository : IAccountRepository
         c.Fee,
         c.FeePeriodId AS FeePeriod,
         c.LastFeeChargedAt,
-        c.NextFeeChargeAt
+        c.NextFeeChargeAt,
+
+        l.PrincipalAmount AS LoanPrincipalAmount,
+        l.InterestRate AS LoanInterestRate,
+        l.TermInMonths AS LoanTermInMonths,
+        l.RepaymentFrequency AS LoanRepaymentFrequency,
+        l.StartDate AS LoanStartDate,
+        l.RegularPaymentAmount AS LoanRegularPaymentAmount,
+        l.MaturityDate AS LoanMaturityDate,
+        l.NextPaymentDate AS LoanNextPaymentDate
 
         """;
 
@@ -59,6 +68,9 @@ public class AccountRepository : IAccountRepository
 
         LEFT JOIN CreditDetails c
             ON a.Id = c.AccountId
+
+        LEFT JOIN LoanDetails l
+            ON a.Id = l.AccountId
         
         """;
 
@@ -199,6 +211,31 @@ public class AccountRepository : IAccountRepository
             );
             """;
 
+        const string loanSql = """
+            INSERT INTO LoanDetails (
+                AccountId,
+                PrincipalAmount,
+                InterestRate,
+                TermInMonths,
+                RepaymentFrequency,
+                StartDate,
+                RegularPaymentAmount,
+                MaturityDate,
+                NextPaymentDate
+            )
+            VALUES (
+                @Id,
+                @LoanPrincipalAmount,
+                @LoanInterestRate,
+                @LoanTermInMonths,
+                @LoanRepaymentFrequency,
+                @LoanStartDate,
+                @LoanRegularPaymentAmount,
+                @LoanMaturityDate,
+                @LoanNextPaymentDate
+            );
+            """;
+
         var model = AccountMapper.MapToModel(account);
 
         using var connection =
@@ -236,6 +273,16 @@ public class AccountRepository : IAccountRepository
                 await connection.ExecuteAsync(
                     new CommandDefinition(
                         creditSql,
+                        model,
+                        transaction: transaction,
+                        cancellationToken: token));
+            }
+
+            if (account.Type == EnAccountType.Loan)
+            {
+                await connection.ExecuteAsync(
+                    new CommandDefinition(
+                        loanSql,
                         model,
                         transaction: transaction,
                         cancellationToken: token));
@@ -292,6 +339,19 @@ public class AccountRepository : IAccountRepository
             WHERE AccountId = @Id;
             """;
 
+        const string loanSql = """
+            UPDATE LoanDetails
+            SET PrincipalAmount = @LoanPrincipalAmount,
+                InterestRate = @LoanInterestRate,
+                TermInMonths = @LoanTermInMonths,
+                RepaymentFrequency = @LoanRepaymentFrequency,
+                StartDate = @LoanStartDate,
+                RegularPaymentAmount = @LoanRegularPaymentAmount,
+                MaturityDate = @LoanMaturityDate,
+                NextPaymentDate = @LoanNextPaymentDate
+            WHERE AccountId = @Id;
+            """;
+
         var model = AccountMapper.MapToModel(account);
 
         if (unitOfWork is not null)
@@ -323,6 +383,16 @@ public class AccountRepository : IAccountRepository
                 await unitOfWork.Connection.ExecuteAsync(
                     new CommandDefinition(
                         creditSql,
+                        model,
+                        transaction: unitOfWork.Transaction,
+                        cancellationToken: token));
+            }
+
+            if (account.Type == EnAccountType.Loan)
+            {
+                await unitOfWork.Connection.ExecuteAsync(
+                    new CommandDefinition(
+                        loanSql,
                         model,
                         transaction: unitOfWork.Transaction,
                         cancellationToken: token));
@@ -362,6 +432,16 @@ public class AccountRepository : IAccountRepository
                 await connection.ExecuteAsync(
                     new CommandDefinition(
                         creditSql,
+                        model,
+                        transaction: transaction,
+                        cancellationToken: token));
+            }
+
+            if (account.Type == EnAccountType.Loan)
+            {
+                await connection.ExecuteAsync(
+                    new CommandDefinition(
+                        loanSql,
                         model,
                         transaction: transaction,
                         cancellationToken: token));
