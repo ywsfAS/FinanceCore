@@ -128,6 +128,7 @@ public static class AccountMapper
             model.UpdatedAt,
             savingsDetails,
             creditDetails,
+            null,
             model.RowVersion);
     }
 }
