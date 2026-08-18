@@ -1,5 +1,6 @@
 using Dapper;
 using FinanceCore.Application.Abstractions;
+using FinanceCore.Application.DTOs;
 using FinanceCore.Application.Models;
 using FinanceCore.Domain.Common;
 using FinanceCore.Domain.Users;
@@ -101,6 +102,9 @@ namespace FinanceCore.Infrastructure.Repositories
                     FirstName     = @FirstName,
                     LastName      = @LastName,
                     UpdatedAt     = @UpdatedAt,
+                    Role          = @Role,
+                    FailedLoginAttempts = @FailedLoginAttempts,
+                    LockedUntil  = @LockedUntil,
                     TimeZone      = @TimeZone
                 WHERE Id = @Id";
 
@@ -121,5 +125,97 @@ namespace FinanceCore.Infrastructure.Repositories
             await connection.ExecuteAsync(
                 new CommandDefinition(sql, new { id }, cancellationToken: token, commandType: CommandType.Text));
         }
-      }
+        public async Task<PagedResult<UserDto>> GetUsersAsync(
+        string? search,
+        string? role,
+        bool? isLocked,
+        int page,
+        int pageSize, CancellationToken token = default)
+        {
+            using var connection = _connectionFactory.GetConnection();
+
+            page = Math.Max(page, 1);
+            pageSize = Math.Clamp(pageSize, 1, 100);
+
+            var offset = (page - 1) * pageSize;
+
+            const string sql = """
+        SELECT
+            Id,
+            Name,
+            Email,
+            TimeZone
+        FROM Users
+        WHERE
+            (
+                @Search IS NULL
+                OR Name LIKE '%' + @Search + '%'
+                OR Email LIKE '%' + @Search + '%'
+            )
+            AND
+            (
+                @Role IS NULL
+                OR Role = @Role
+            )
+            AND
+            (
+                @IsLocked IS NULL
+                OR (@IsLocked = 1 AND LockedUntil IS NOT NULL AND LockedUntil > SYSUTCDATETIME())
+                OR (@IsLocked = 0 AND (LockedUntil IS NULL OR LockedUntil <= SYSUTCDATETIME()))
+            )
+        ORDER BY CreatedAt DESC
+        OFFSET @Offset ROWS
+        FETCH NEXT @PageSize ROWS ONLY;
+
+        SELECT COUNT(*)
+        FROM Users
+        WHERE
+            (
+                @Search IS NULL
+                OR Name LIKE '%' + @Search + '%'
+                OR Email LIKE '%' + @Search + '%'
+            )
+            AND
+            (
+                @Role IS NULL
+                OR Role = @Role
+            )
+            AND
+            (
+                @IsLocked IS NULL
+                OR (@IsLocked = 1 AND LockedUntil IS NOT NULL AND LockedUntil > SYSUTCDATETIME())
+                OR (@IsLocked = 0 AND (LockedUntil IS NULL OR LockedUntil <= SYSUTCDATETIME()))
+            );
+        """;
+
+            var command = new CommandDefinition(
+                sql,
+                new
+                {
+                    Search = string.IsNullOrWhiteSpace(search)
+                        ? null
+                        : search.Trim(),
+
+                    Role = string.IsNullOrWhiteSpace(role)
+                        ? null
+                        : role.Trim(),
+
+                    IsLocked = isLocked,
+                    Offset = offset,
+                    PageSize = pageSize
+                },
+                cancellationToken: token);
+
+            using var multi = await connection.QueryMultipleAsync(command);
+
+            var users = await multi.ReadAsync<UserDto>();
+            var totalCount = await multi.ReadSingleAsync<int>();
+
+            return new PagedResult<UserDto>(
+                users,
+                totalCount,
+                page,
+                pageSize);
+        }
+    }
 }

@@ -1,4 +1,5 @@
 using FinanceCore.Application.Abstractions;
+using FinanceCore.Application.DTOs;
 using FinanceCore.Domain.Common;
 using FinanceCore.Domain.Users;
 using FinanceCore.Infrastructure.Repositories;
@@ -47,6 +48,13 @@ namespace FinanceCore.Infrastructure.Persistence
         {
             var key = $"UserExists_{userId}";
             return _cache.GetOrCreateAsync(Tag(userId), key, () => _repo.IsExistsAsync(userId, token));
+        }
+        public Task<PagedResult<UserDto>> GetUsersAsync(
+        string? search,
+        string? role, bool? isLocked,
+        int page, int pageSize, CancellationToken token = default)
+        {
+            return _repo.GetUsersAsync(search,role,isLocked,page,pageSize,token);
         }
     }
 }
