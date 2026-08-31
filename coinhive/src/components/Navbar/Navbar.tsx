@@ -4,14 +4,13 @@ import { useTheme } from "../../hooks/Theme/Theme";
 import { Link, NavLink } from "react-router-dom";
 import Button from "../Button/Button";
 import { Moon, Sun } from "lucide-react";
-
+import { motion } from 'motion/react';
 import MobileMenu from "./MobileMenu";
 import Hamburger from "./Hamburger";
 
 const navLinks = [
-    { label: "About Us", href: "/", end: true },
-    { label: "Pricing", href: "/profile" },
-    { label: "Services", href: "/pricing" },
+    { label: "Home", href: "/", end: true },
+    { label: "Dashboard", href: "/profile" },
     { label: "Help", href: "/about" },
 ];
 
@@ -22,7 +21,15 @@ const Navbar: React.FC = () => {
 
     return (
         <>
-            <header className={styles.header}>
+            <motion.header className={styles.header}
+                initial={{ y: -100, opacity: 0 }}
+                animate={{ y: 0, opacity: 1 }}
+                transition={{
+                    type: "spring",
+                    stiffness: 120,
+                    damping: 18,
+                }}
+            >
                 <div className={styles.inner}>
 
                     {/* Logo */}
@@ -61,17 +68,16 @@ const Navbar: React.FC = () => {
                             </Button>
                         </Link>
 
-                        <Button
+                        <button
+                            className={styles.toggleBackground}
                             onClick={toggleTheme}
-                            variant="ghost"
-                            size="small"
                         >
                             {theme === "dark" ? (
-                                <Moon size={20} />
+                                <Moon size={18} />
                             ) : (
-                                <Sun size={20} />
+                                <Sun size={18} />
                             )}
-                        </Button>
+                        </button>
                     </div>
 
                     <Hamburger
@@ -79,13 +85,13 @@ const Navbar: React.FC = () => {
                         onClick={() => setMenuOpen(!menuOpen)}
                     />
                 </div>
-            </header>
-
+            </motion.header>
             <MobileMenu
                 open={menuOpen}
                 onClose={() => setMenuOpen(false)}
                 links={navLinks}
             />
+
         </>
     );
 };

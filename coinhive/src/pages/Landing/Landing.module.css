@@ -1,6 +1,5 @@
-
 .page {
-    --container-width: 1080px;
+    --container-width: 1200px;
     --container-padding: 10px;
     --container-padding-mobile: 20px;
     min-height: 100vh;
@@ -9,17 +8,18 @@
 
 .container {
     max-width: var(--container-width);
+    margin: var(--space-24) auto;
+    padding: 0 var(--container-padding);
+}
+
+.altBg .container {
+    max-width: var(--container-width);
     margin: 0 auto;
     padding: 0 var(--container-padding);
 }
 
- .altBg .container {
-   max-width: var(--container-width);
-   margin: 0 auto;
-   padding: 0 var(--container-padding);
-}
-
 @media (max-width: 768px) {
+
     .container,
     .altBg .container {
         padding: 0 var(--container-padding-mobile);

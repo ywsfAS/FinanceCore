@@ -1,10 +1,9 @@
 import React from "react";
 import HeroSection from "../../components/HeroSection/HeroSection";
 import FeaturesSection from "../../components/FeaturesSection/FeaturesSection";
-import TestimonialsSection from  "../../components/TestimonialsSection/TestimonialsSection";
-import PricingSection from "../../components/Pricingsection/PricingSection";
+import TestimonialsSection from "../../components/TestimonialsSection/TestimonialsSection";
 import CtaSection from "../../components/Ctasection/CtaSection";
-import  HowItWorks from "../../components/Howitworks/HowItWorks";
+import HowItWorks from "../../components/Howitworks/HowItWorks";
 import styles from "./Landing.module.css";
 import ActiviyInsight from "../../components/ActivityInsights/ActivityInsight";
 
@@ -27,18 +26,20 @@ const Landing: React.FC = () => {
                 />
             </div>
 
-            <ActiviyInsight title="Activity Insights" description="See what's happening across your system in real time. Track actions, monitor background operations, and stay updated on important events as they unfold."/>
+            <ActiviyInsight title="Activity Insights" description="See what's happening across your system in real time. Track actions, monitor background operations, and stay updated on important events as they unfold." />
             {/* How it works */}
-            
-                <div className={styles.container}>
-                    <HowItWorks
-                        title="Up and Running in Minutes"
-                        subtitle="No financial expertise required. FinanceCore guides you from signup to full clarity in four simple steps."
-                    />
-                </div>
-           
+
+            <div className={styles.container}>
+                <HowItWorks
+                    title="Up and Running in Minutes"
+                    subtitle="No financial expertise required. FinanceCore guides you from signup to full clarity in four simple steps."
+                />
+            </div>
+
             {/* Testimonials */}
-            <TestimonialsSection />
+            <div className={styles.container}>
+                <TestimonialsSection />
+            </div>
 
             {/* CTA */}
             <div className={styles.container}>

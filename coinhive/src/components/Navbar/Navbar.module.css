@@ -1,6 +1,6 @@
 .header {
-    background-color : var(--surface);
-    padding : var(--space-16) var(--space-48);
+    background-color: var(--surface);
+    padding: var(--space-16) var(--space-48);
 }
 
 .inner {
@@ -13,28 +13,57 @@
 }
 
 .logo {
-    font-size : var(--font-size-18);
+    font-size: var(--font-size-18);
     text-decoration: none;
+}
+
+.logo:active {
+    color: var(--primary-600);
 }
 
 .desktopNav {
     display: flex;
     align-items: center;
-    gap: var(--space-64);
+    gap: var(--space-48);
     flex: 1;
     justify-content: center;
 }
 
+.desktopNav a {
+
+    padding: var(--space-8) var(--space-12);
+    border-radius: var(--space-8);
+}
+
+.desktopNav a:hover {
+    background-color: var(--gray-100);
+}
+
+.desktopNav a:active {
+    color: var(--primary-600);
+}
+
+
 .navLink {
-    text-decoration : none;
-    font-weight : var(--font-weight-regular)
- }
+    text-decoration: none;
+    font-weight: var(--font-weight-regular)
+}
 
 
 .desktopActions {
     display: flex;
     align-items: center;
     gap: var(--space-12);
+}
+
+.toggleBackground {
+    align-items: center;
+    background-color: var(--gray-100);
+    border-radius: 50%;
+    border: none;
+    padding: 8px;
+    display: flex;
+    justify-content: center;
 }
 
 @keyframes fadeIn {
@@ -48,7 +77,9 @@
 }
 
 @media (max-width: 900px) {
-    .desktopNav,.desktopActions {
+
+    .desktopNav,
+    .desktopActions {
         display: none;
     }
 }

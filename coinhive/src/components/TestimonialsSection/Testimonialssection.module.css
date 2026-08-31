@@ -1,11 +1,5 @@
-.wrapper {
-    margin : 0 auto;
-    max-width : 1350px;
-}
-
 .header {
     text-align: center;
-    margin-bottom: var(--space-64);
 }
 
 .title {
@@ -25,9 +19,9 @@
 
 .grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px,1fr));
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: var(--space-24);
-    padding: var(--space-48);
+    padding: var(--space-64);
 }
 
 .card {
@@ -38,21 +32,23 @@
     display: flex;
     flex-direction: column;
     transition: border-color .2s ease, box-shadow .2s ease, transform .2s ease;
-    box-shadow : var(--shadow-100);
+    box-shadow: var(--shadow-100);
 }
 
 .card:hover {
     transform: translateY(-4px);
     border-color: var(--gray-300);
-    box-shadow: 0 8px 24px rgba(0,0,0,.06);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, .06);
 }
+
 .quoteIcon {
     width: 64px;
     height: 64px;
-    color: var(--gray-200);
+    color: black;
     margin-bottom: var(--space-32);
     flex-shrink: 0;
 }
+
 .quote {
     flex: 1;
     font-size: var(--font-size-14);
@@ -60,6 +56,7 @@
     line-height: 1.6;
     margin-bottom: var(--space-24);
 }
+
 .author {
     display: flex;
     align-items: center;
@@ -67,6 +64,7 @@
     padding-top: var(--space-16);
     border-top: 1px solid var(--gray-100);
 }
+
 .avatar {
     width: 48px;
     height: 48px;
@@ -78,6 +76,7 @@
     font-weight: var(--font-weight-bold);
     flex-shrink: 0;
 }
+
 .name {
     display: block;
     font-size: var(--font-size-14);
