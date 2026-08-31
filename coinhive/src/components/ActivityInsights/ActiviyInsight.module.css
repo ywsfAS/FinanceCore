@@ -27,7 +27,7 @@
     justify-content: center;
     align-items: center;
     gap: var(--space-64);
-    flex-direction : column;
+    flex-direction: column;
 }
 
 .chart {
@@ -37,7 +37,7 @@
 }
 
 .phone {
-    max-width: 724px;
+    max-width: 1000px;
     width: 50%;
     height: auto;
 }

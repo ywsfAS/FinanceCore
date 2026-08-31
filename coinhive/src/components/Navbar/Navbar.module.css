@@ -45,10 +45,29 @@
 
 
 .navLink {
+    position: relative;
     text-decoration: none;
-    font-weight: var(--font-weight-regular)
+    font-weight: var(--font-weight-regular);
+    z-index: 0;
 }
 
+.navLinkActive {
+    color: var(--text-white);
+    font-weight: var(--font-weight-medium);
+}
+
+.navLink span {
+    position: relative;
+    z-index: 1;
+}
+
+.activeBackground {
+    position: absolute;
+    inset: 0;
+    border-radius: var(--space-24);
+    background: var(--primary-400);
+    z-index: 0;
+}
 
 .desktopActions {
     display: flex;
@@ -58,12 +77,15 @@
 
 .toggleBackground {
     align-items: center;
-    background-color: var(--gray-100);
-    border-radius: 50%;
+    background: var(--theme-toggle-bg);
+    color: var(--theme-toggle-icon);
+    border-radius: var(--space-12);
     border: none;
     padding: 8px;
     display: flex;
     justify-content: center;
+    cursor: pointer;
+    transition: background .4s ease;
 }
 
 @keyframes fadeIn {

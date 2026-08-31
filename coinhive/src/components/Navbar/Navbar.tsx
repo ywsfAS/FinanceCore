@@ -51,7 +51,22 @@ const Navbar: React.FC = () => {
                                     ].join(" ")
                                 }
                             >
-                                {link.label}
+                                {({ isActive }) => (
+                                    <>
+                                        {isActive && (
+                                            <motion.div
+                                                layoutId="activeNavLink"
+                                                className={styles.activeBackground}
+                                                transition={{
+                                                    type: "spring",
+                                                    stiffness: 480,
+                                                    damping: 20,
+                                                }}
+                                            />
+                                        )}
+                                        <span>{link.label}</span>
+                                    </>
+                                )}
                             </NavLink>
                         ))}
                     </nav>
@@ -73,9 +88,25 @@ const Navbar: React.FC = () => {
                             onClick={toggleTheme}
                         >
                             {theme === "dark" ? (
-                                <Moon size={18} />
+                                <motion.div
+                                    key="moon"
+                                    initial={{ opacity: 0, rotate: -90, scale: 0 }}
+                                    animate={{ opacity: 1, rotate: 0, scale: 1 }}
+                                    exit={{ opacity: 0, rotate: 90, scale: 0 }}
+                                    transition={{ duration: 0.25 }}
+                                >
+                                    <Moon size={18} />
+                                </motion.div>
                             ) : (
-                                <Sun size={18} />
+                                <motion.div
+                                    key="sun"
+                                    initial={{ opacity: 0, rotate: 90, scale: 0 }}
+                                    animate={{ opacity: 1, rotate: 0, scale: 1 }}
+                                    exit={{ opacity: 0, rotate: -90, scale: 0 }}
+                                    transition={{ duration: 0.25 }}
+                                >
+                                    <Sun size={18} />
+                                </motion.div>
                             )}
                         </button>
                     </div>
