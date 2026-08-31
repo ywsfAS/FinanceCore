@@ -1,3 +1,4 @@
+using FinanceCore.Domain.Enums;
 using FluentValidation;
 
 namespace FinanceCore.Application.Features.Accounts.Commands.Update
@@ -14,6 +15,13 @@ namespace FinanceCore.Application.Features.Accounts.Commands.Update
                 .NotEmpty()
                 .MaximumLength(100);
             RuleFor(x => x.AccountType).IsInEnum();
+            When(x => x.AccountType == EnAccountType.Savings, () =>
+            {
+                RuleFor(x => x.AccrualFrequency).IsInEnum();
+                RuleFor(x => x.CreditFrequency).IsInEnum();
+                RuleFor(x => x.InterestRate).NotEmpty();
+
+            });
         }
     }
 }

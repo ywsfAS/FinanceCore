@@ -10,11 +10,12 @@ namespace FinanceCore.Application.Abstractions
         Task<RecurringTransaction?> GetByIdAsync(Guid userId ,Guid id );
         Task<RecurringTransactionDto?> GetDtoByIdAsync(Guid userId , Guid id );
         Task<IEnumerable<RecurringTransaction>> GetActiveAsync();
-        Task<IEnumerable<RecurringTransactionDto>> GetRecurringTransactionsAsync(Guid userId , Guid? accountId , Guid? categoryId , bool? isActive, EnPeriod? period, DateTime? start, DateTime? end, int page, int pageSize, CancellationToken token = default);
+        Task<IEnumerable<RecurringTransactionDto>> GetRecurringTransactionsAsync(Guid userId , Guid? accountId , Guid? categoryId , EnRecurringTransactionStatus? isActive, EnPeriod? period, DateTime? start, DateTime? end, int page, int pageSize, CancellationToken token = default);
         Task AddAsync(RecurringTransaction recurringTransaction );
-        Task UpdateAsync(RecurringTransaction recurringTransaction);
+        Task UpdateAsync(RecurringTransaction recurringTransaction , IUnitOfWork? unitOfWork = null, CancellationToken token = default);
         Task<IEnumerable<SubsriptionDataDto>> GetSubscriptionsAsync(Guid userId, Guid? accountId, Guid? categoryId, string? name, EnPeriod? period, EnTransactionType? type, int page, int pageSize, CancellationToken token);
         Task DeleteAsync(Guid id);
         Task<SubscriptionGrowthDto?> GetSubscriptionsGrowthAsync(Guid userId, Guid? accountId, EnTransactionType type, DateTime currentStartDate, DateTime currentEndDate, DateTime previousStartDate, DateTime previousEndDate, CancellationToken token);
+       
     }
 }

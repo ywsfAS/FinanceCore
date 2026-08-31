@@ -1,8 +1,10 @@
 using Asp.Versioning;
 using FinanceCore.API.Requests.Account;
 using FinanceCore.Application.DTOs;
+using FinanceCore.Application.Features.Accounts.Commands.Alerts;
 using FinanceCore.Application.Features.Accounts.Commands.Create;
 using FinanceCore.Application.Features.Accounts.Commands.Delete;
+using FinanceCore.Application.Features.Accounts.Commands.Reconcile;
 using FinanceCore.Application.Features.Accounts.Commands.Update;
 using FinanceCore.Application.Features.Accounts.Queries.GetAccountById;
 using FinanceCore.Application.Features.Accounts.Queries.GetAccountByUserOptions;
@@ -46,7 +48,9 @@ namespace FinanceCore.API.Controllers
         public async Task<IActionResult> CreateAccount([FromBody] CreateAccountRequest request)
         {
             var userId = GetUserId();
-            var command = new CreateAccountCommand(userId,request.Name,request.Type,new Money(request.InitialBalance,request.Currency));
+            var command = new CreateAccountCommand(userId, request.Name, request.Type, new Money(request.InitialBalance, request.Currency),
+                request.InterestRate, request.InterestAccrualFrequency, request.InterestCreditFrequency, request.CreditLimit, request.Fee, request.FeePeriod,
+                request.PrincipalAmount, request.LoanInterestRate, request.TermInMonths, request.RepaymentFrequency, request.StartDate, request.RegularPaymentAmount, request.MaturityDate, request.NextPaymentDate);
             var account = await _mediator.Send(command);
             return CreatedAtAction(nameof(GetAccountById), new { id = account.Id }, account);
         }
@@ -62,7 +66,7 @@ namespace FinanceCore.API.Controllers
         public async Task<IActionResult> GetAccounts([FromQuery] AccountFilteredRequest request)
         {
             var userId = GetUserId();
-            var command = new GetAccountFilteredQuery(userId,request.Name,request.Type,request.Currency,request.page,request.pageSize); 
+            var command = new GetAccountFilteredQuery(userId, request.Name, request.Type, request.Currency, request.page, request.pageSize);
             var accounts = await _mediator.Send(command);
             return Ok(accounts);
         }
@@ -76,10 +80,10 @@ namespace FinanceCore.API.Controllers
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> GetAccountById([FromRoute]Guid id)
+        public async Task<IActionResult> GetAccountById([FromRoute] Guid id)
         {
             var userId = GetUserId();
-            var query = new GetAccountByIdQuery(userId,id); // Should return only Accounts of UserId
+            var query = new GetAccountByIdQuery(userId, id); // Should return only Accounts of UserId
             var account = await _mediator.Send(query);
             if (account is null) return NotFound(new { Message = $"Account '{id}' was not found" });
             return Ok(account);
@@ -92,10 +96,10 @@ namespace FinanceCore.API.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> UpdateAccount([FromRoute] Guid id,[FromBody] UpdateAccountRequest request)
+        public async Task<IActionResult> UpdateAccount([FromRoute] Guid id, [FromBody] UpdateAccountRequest request)
         {
             var userId = GetUserId();
-            var command = new UpdateAccountCommand(userId,id, request.Name,request.Type);
+            var command = new UpdateAccountCommand(userId, id, request.Name, request.Type);
             await _mediator.Send(command);
             return NoContent();
         }
@@ -108,10 +112,10 @@ namespace FinanceCore.API.Controllers
         [ProducesResponseType(StatusCodes.Status204NoContent)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> DeleteAccount([FromRoute]Guid id)
+        public async Task<IActionResult> DeleteAccount([FromRoute] Guid id)
         {
             var userId = GetUserId();
-            var command = new DeleteAccountCommand(userId,id);
+            var command = new DeleteAccountCommand(userId, id);
             await _mediator.Send(command);
             return NoContent();
         }
@@ -123,10 +127,10 @@ namespace FinanceCore.API.Controllers
         [ProducesResponseType(typeof(IEnumerable<AccountOptionsDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> GetAccountsOptions([FromQuery] int page , [FromQuery] int pageSize)
+        public async Task<IActionResult> GetAccountsOptions([FromQuery] int page, [FromQuery] int pageSize)
         {
             var userId = GetUserId();
-            var query = new GetAccountsOptionsQuery(userId); 
+            var query = new GetAccountsOptionsQuery(userId);
             var accounts = await _mediator.Send(query);
             return Ok(accounts);
         }
@@ -136,14 +140,46 @@ namespace FinanceCore.API.Controllers
         [ProducesResponseType(typeof(IEnumerable<SpendingByCategoryDto>), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        public async Task<IActionResult> GetSpendingByCategory([FromRoute]Guid accountId, [FromQuery] int year,[FromQuery] int month, [FromQuery] int page = 1 , [FromQuery] int pageSize = 10)
+        public async Task<IActionResult> GetSpendingByCategory([FromRoute] Guid accountId, [FromQuery] int year, [FromQuery] int month, [FromQuery] int page = 1, [FromQuery] int pageSize = 10)
         {
             var UserId = GetUserId();
-            var query = new GetSpendingByCategoryQuery(UserId, accountId, year, month,page,pageSize);
+            var query = new GetSpendingByCategoryQuery(UserId, accountId, year, month, page, pageSize);
             var response = await _mediator.Send(query);
             return Ok(response);
         }
 
+        [HttpPost("{accountId}/reconciliations")]
+        [Produces("application/json")]
+        [ProducesResponseType(typeof(ReconciliationDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> ReconcileAccount([FromRoute] Guid accountId, [FromBody] ReconcileAccountRequest req)
+        {
+            var userId = GetUserId();
+            var cmd = new ReconcileAccountCommand(userId, accountId, req.ActualBalance, req.Reason, req.Notes, req.CreateAdjustment);
+            var response = await _mediator.Send(cmd);
+            return Ok(response);
+        }
+        [HttpPost("{accountId:guid}/alerts")]
+        [Produces("application/json")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ValidationErrorDto), StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> CreateAlert(
+            Guid accountId,
+            [FromBody] CreateLowBalanceAlertRequest request,
+            CancellationToken cancellationToken)
+        {
+            var alertId = await _mediator.Send(
+                new CreateLowBalanceAlertCommand(
+                    accountId,
+                    request.ThresholdAmount),
+                cancellationToken);
+
+            return Created(
+                $"/api/v1/accounts/{accountId}/alerts/{alertId}",
+                new { id = alertId });
+        }
 
     }
 }

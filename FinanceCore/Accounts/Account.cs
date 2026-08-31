@@ -2,6 +2,7 @@ using FinanceCore.Domain.Common;
 using FinanceCore.Domain.Enums;
 using FinanceCore.Domain.Events.Account;
 using FinanceCore.Domain.Exceptions;
+using System.Linq.Expressions;
 
 namespace FinanceCore.Domain.Accounts
 {
@@ -13,6 +14,10 @@ namespace FinanceCore.Domain.Accounts
         public EnAccountType Type { get; private set; }
         public Money Balance { get; private set; }
         public Money InitialBalance { get; private set; }
+
+        public SavingsDetails? SavingsDetails { get; private set; }
+        public CreditDetails? CreditDetails { get; private set; }
+        public LoanDetails? LoanDetails { get; private set; }
         public bool IsActive { get; private set; }
         public byte[]? RowVersion { get; private set; }
         public DateTime CreatedAt { get; private set; }
@@ -28,6 +33,7 @@ namespace FinanceCore.Domain.Accounts
             Money balance,
             Money initialBalance,
             bool isActive,
+            SavingsDetails? savingsDetails,
             DateTime createdAt,
             DateTime? updatedAt,
             byte[]? rowVersion
@@ -40,6 +46,7 @@ namespace FinanceCore.Domain.Accounts
             Balance = balance;
             InitialBalance = initialBalance;
             IsActive = isActive;
+            SavingsDetails = savingsDetails;
             CreatedAt = createdAt;
             UpdatedAt = updatedAt;
             RowVersion = rowVersion;
@@ -56,10 +63,16 @@ namespace FinanceCore.Domain.Accounts
             bool isActive,
             DateTime createdAt,
             DateTime? updatedAt = null,
+            SavingsDetails? savingsDetails = null,
+            CreditDetails? creditDetails = null,
+            LoanDetails? loanDetails = null,
             byte[]? rowVersion = null
             )
         {
-            return new Account(id, userId, name, type, balance,initialBalance, isActive, createdAt, updatedAt,rowVersion);
+            var account = new Account(id, userId, name, type, balance, initialBalance, isActive, savingsDetails, createdAt, updatedAt, rowVersion);
+            account.CreditDetails = creditDetails;
+            account.LoanDetails = loanDetails;
+            return account;
         }
 
         // Create new account
@@ -67,10 +80,101 @@ namespace FinanceCore.Domain.Accounts
             Guid userId,
             string name,
             EnAccountType type,
-            Money initialBalance)
+            Money initialBalance,
+            decimal? interestRate = null,
+            EnInterestCreditFrequency? creditFrequency = null,
+            EnInterestAccrualFrequency? accrualFrequency = null,
+            decimal? creditLimit = null,
+            decimal? fee = null,
+            EnPeriod? feePeriod = null,
+            decimal? principalAmount = null,
+            decimal? loanInterestRate = null,
+            int? termInMonths = null,
+            EnRepaymentFrequency? repaymentFrequency = null,
+            DateTime? startDate = null,
+            decimal? regularPaymentAmount = null,
+            DateTime? maturityDate = null,
+            DateTime? nextPaymentDate = null
+            )
         {
-            // validation
             ValidateAccountName(name);
+
+            SavingsDetails? savingsDetails = null;
+
+            if (type == EnAccountType.Savings)
+            {
+                if (!interestRate.HasValue)
+                    throw new InvalidOperationException(
+                        "Interest rate is required for savings accounts.");
+
+                if (!creditFrequency.HasValue)
+                    throw new InvalidOperationException(
+                        "Credit frequency is required for savings accounts.");
+
+                if (!accrualFrequency.HasValue)
+                    throw new InvalidOperationException(
+                        "Accrual frequency is required for savings accounts.");
+
+                savingsDetails = SavingsDetails.Create(
+                    interestRate.Value,
+                    Money.Zero(initialBalance.Currency),
+                    creditFrequency.Value,
+                    accrualFrequency.Value,
+                    DateTime.UtcNow);
+            }
+            CreditDetails? creditDetails = null;
+            if (type == EnAccountType.Credit)
+            {
+                if (!creditLimit.HasValue)
+                    throw new InvalidOperationException(
+                        "Credit limit is required for credit accounts.");
+
+                creditDetails = CreditDetails.Create(
+                    new Money(
+                        creditLimit.Value,
+                        initialBalance.Currency),
+                    fee.HasValue
+                        ? new Money(fee.Value, initialBalance.Currency)
+                        : null,
+                    feePeriod ?? EnPeriod.None);
+            }
+
+            LoanDetails? loanDetails = null;
+            if (type == EnAccountType.Loan)
+            {
+                if (!principalAmount.HasValue)
+                    throw new InvalidOperationException(
+                        "Principal amount is required for loan accounts.");
+                if (!loanInterestRate.HasValue)
+                    throw new InvalidOperationException(
+                        "Interest rate is required for loan accounts.");
+                if (!termInMonths.HasValue)
+                    throw new InvalidOperationException(
+                        "Term in months is required for loan accounts.");
+                if (!repaymentFrequency.HasValue)
+                    throw new InvalidOperationException(
+                        "Repayment frequency is required for loan accounts.");
+                if (!startDate.HasValue)
+                    throw new InvalidOperationException(
+                        "Start date is required for loan accounts.");
+                if (!regularPaymentAmount.HasValue)
+                    throw new InvalidOperationException(
+                        "Regular payment amount is required for loan accounts.");
+                if (!maturityDate.HasValue)
+                    throw new InvalidOperationException(
+                        "Maturity date is required for loan accounts.");
+
+                loanDetails = LoanDetails.Create(
+                    new Money(principalAmount.Value, initialBalance.Currency),
+                    loanInterestRate.Value,
+                    termInMonths.Value,
+                    repaymentFrequency.Value,
+                    startDate.Value,
+                    new Money(regularPaymentAmount.Value, initialBalance.Currency),
+                    maturityDate.Value,
+                    nextPaymentDate);
+            }
+
             var account = new Account
             {
                 Id = Guid.NewGuid(),
@@ -80,6 +184,9 @@ namespace FinanceCore.Domain.Accounts
                 Balance = initialBalance,
                 InitialBalance = initialBalance,
                 IsActive = true,
+                SavingsDetails = savingsDetails,
+                CreditDetails = creditDetails,
+                LoanDetails = loanDetails,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = null
             };
@@ -104,7 +211,7 @@ namespace FinanceCore.Domain.Accounts
         }
         private static readonly Dictionary<EnAccountType, EnAccountType[]> AllowedAccountTypeTransitions = new()
         {
-            [EnAccountType.Credit] = [EnAccountType.Cash, EnAccountType.Savings,EnAccountType.Other],
+            [EnAccountType.Credit] = [EnAccountType.Cash, EnAccountType.Savings, EnAccountType.Other],
             [EnAccountType.Savings] = [EnAccountType.Checking, EnAccountType.Other],
             [EnAccountType.Cash] = [EnAccountType.Checking, EnAccountType.Other],
             [EnAccountType.Investment] = [EnAccountType.Other],
@@ -112,7 +219,7 @@ namespace FinanceCore.Domain.Accounts
             [EnAccountType.Loan] = [],   // no transitions allowed
             [EnAccountType.Other] = [EnAccountType.Checking, EnAccountType.Savings, EnAccountType.Cash]
         };
-        
+
         public void ApplyTransaction(Money amount, EnTransactionType type)
         {
             if (!IsActive)
@@ -123,7 +230,7 @@ namespace FinanceCore.Domain.Accounts
 
             var previousBalance = Balance;
 
-            if (type == EnTransactionType.Expense)
+            if (type == EnTransactionType.Expense || type == EnTransactionType.DebitAdjustment)
             {
                 if (!HasSufficientBalance(amount))
                     throw new InsufficientBalanceException(Id, amount, Balance);
@@ -146,7 +253,7 @@ namespace FinanceCore.Domain.Accounts
         }
         private void ValidateAccountTypeTransition(EnAccountType newType)
         {
-            if(Type != newType)
+            if (Type != newType)
             {
                 if (!AllowedAccountTypeTransitions[Type].Contains(newType))
                 {
@@ -155,7 +262,7 @@ namespace FinanceCore.Domain.Accounts
             }
         }
 
-        public void UpdateDetails(string name , EnAccountType type)
+        public void UpdateDetails(string name, EnAccountType type)
         {
             ValidateAccountName(name);
             ValidateAccountTypeTransition(type);
@@ -218,12 +325,197 @@ namespace FinanceCore.Domain.Accounts
 
             AddDomainEvent(new AccountTransferEvent(Id, targetAccount.Id, amount));
         }
+        private void EnsureSavingsAccount()
+        {
+            if (Type != EnAccountType.Savings)
+                throw new InvalidOperationException(
+                    "Operation is only valid for savings accounts.");
+
+            if (SavingsDetails is null)
+                throw new InvalidOperationException(
+                    "Savings account is missing SavingsDetails.");
+        }
+        public void AccrueInterest(DateTime accruedAt)
+        {
+            EnsureSavingsAccount();
+
+            var lastAccrualAt =
+                SavingsDetails!.LastInterestAccrualAt ?? CreatedAt;
+
+            var elapsedDays =
+                (accruedAt - lastAccrualAt).TotalDays;
+
+            if (elapsedDays <= 0)
+                return;
+
+            var dailyRate =
+                SavingsDetails.InterestRate / 365m;
+
+            var interestAmount =
+                Balance.Amount * dailyRate * (decimal)elapsedDays;
+
+            if (interestAmount <= 0)
+                return;
+
+            var interest = new Money(
+                interestAmount,
+                Balance.Currency);
+
+            SavingsDetails.AccrueInterest(
+                interest,
+                accruedAt);
+
+            UpdatedAt = accruedAt;
+        }
+        public void ClearAccruedInterest()
+        {
+            EnsureSavingsAccount();
+            SavingsDetails?.ClearAccruedInterest();
+        }
+        public void CreditAccruedInterest(DateTime date)
+        {
+            EnsureSavingsAccount();
+            Balance = SavingsDetails!.InterestAccruedToDate;
+            SavingsDetails.CreditAccruedInterest(date);
+            UpdatedAt = date;
+        }
+        public void ChangeInterestRate(decimal interestRate)
+        {
+            EnsureSavingsAccount();
+
+            SavingsDetails!.ChangeInterestRate(interestRate);
+
+            UpdatedAt = DateTime.UtcNow;
+        }
+
+        public void ChangeCreditFrequency(
+            EnInterestCreditFrequency creditFrequency,
+            DateTime currentTime)
+        {
+            EnsureSavingsAccount();
+
+            SavingsDetails!.ChangeCreditFrequency(
+                creditFrequency,
+                currentTime);
+
+            UpdatedAt = currentTime;
+        }
+
+        public void ChangeAccrualFrequency(
+            EnInterestAccrualFrequency accrualFrequency,
+            DateTime currentTime)
+        {
+            EnsureSavingsAccount();
+
+            SavingsDetails!.ChangeAccrualFrequency(
+                accrualFrequency,
+                currentTime);
+
+            UpdatedAt = currentTime;
+        }
+
+        // Loan account orchestration methods
+        private void EnsureLoanAccount()
+        {
+            if (Type != EnAccountType.Loan)
+                throw new InvalidOperationException(
+                    "Operation is only valid for loan accounts.");
+
+            if (LoanDetails is null)
+                throw new InvalidOperationException(
+                    "Loan account is missing LoanDetails.");
+        }
+
+        /// <summary>
+        /// Records a loan payment and updates the next payment date.
+        /// </summary>
+        public void RecordLoanPayment(Money paymentAmount, DateTime paymentDate)
+        {
+            if (!IsActive)
+                throw new InactiveAccountException(Id, Name);
+
+            EnsureLoanAccount();
+
+            if (!LoanDetails!.IsPaymentDue(paymentDate))
+                throw new InvalidLoanOperationException(
+                    $"Loan payment is not yet due. Next payment date: {LoanDetails.NextPaymentDate:O}");
+
+            if (paymentAmount.Amount <= 0)
+                throw new InvalidTransactionAmountException(paymentAmount);
+
+            if (!HasSufficientBalance(paymentAmount))
+                throw new InsufficientBalanceException(Id, paymentAmount, Balance);
+
+            // Apply the payment as a transaction
+            ApplyTransaction(paymentAmount, EnTransactionType.Expense);
+
+            // Record the payment in loan details
+            LoanDetails.RecordPayment(paymentDate);
+
+            UpdatedAt = paymentDate;
+        }
+
+        /// <summary>
+        /// Checks if a loan payment is due.
+        /// </summary>
+        public bool IsLoanPaymentDue(DateTime currentDate)
+        {
+            EnsureLoanAccount();
+            return LoanDetails!.IsPaymentDue(currentDate);
+        }
+
+        /// <summary>
+        /// Checks if a loan payment is overdue.
+        /// </summary>
+        public bool IsLoanPaymentOverdue(DateTime currentDate)
+        {
+            EnsureLoanAccount();
+            return LoanDetails!.IsPaymentOverdue(currentDate);
+        }
+
+        /// <summary>
+        /// Gets the remaining term of the loan in months.
+        /// </summary>
+        public int GetLoanRemainingTermInMonths(DateTime fromDate)
+        {
+            EnsureLoanAccount();
+            return LoanDetails!.GetRemainingTermInMonths(fromDate);
+        }
+
+        /// <summary>
+        /// Checks if the loan is fully paid (maturity date reached or passed).
+        /// </summary>
+        public bool IsLoanFullyPaid(DateTime currentDate)
+        {
+            EnsureLoanAccount();
+            return LoanDetails!.IsLoanFullyPaid(currentDate);
+        }
+
+        /// <summary>
+        /// Updates the next payment date for the loan.
+        /// </summary>
+        public void UpdateLoanNextPaymentDate(DateTime newNextPaymentDate)
+        {
+            EnsureLoanAccount();
+            LoanDetails!.UpdateNextPaymentDate(newNextPaymentDate);
+            UpdatedAt = DateTime.UtcNow;
+        }
+
+        /// <summary>
+        /// Checks if the loan has started.
+        /// </summary>
+        public bool HasLoanStarted(DateTime currentDate)
+        {
+            EnsureLoanAccount();
+            return LoanDetails!.HasStarted(currentDate);
+        }
 
         public bool HasSufficientBalance(Money amount) => Balance.Amount >= amount.Amount;
 
         public decimal GetAvailableBalance() => Balance.Amount;
 
         public bool IsOverdrawn() => Balance.Amount < 0;
+
     }
 
 }

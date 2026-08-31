@@ -146,6 +146,7 @@ namespace FinanceCore.Domain.Users
                 AddDomainEvent(new UserAccountUnlockedEvent(Id,Email));
             }
         }
+
         public void RecordFailedLoginAttempt(int maxAttempts , TimeSpan lockDuration)
         {
             FailedLoginAttempts++;
@@ -157,6 +158,10 @@ namespace FinanceCore.Domain.Users
                 AddDomainEvent(new UserAccountLockedEvent(Id,LockedUntil.Value,Email));
             }
 
+        }
+        public void AssignRole(UserRole role)
+        {
+            Role = role;
         }
         public bool IsLocked()
         {

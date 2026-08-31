@@ -12,7 +12,7 @@ namespace FinanceCore.Application.Features.Recurring.Queries.GetRecurring
         }
         public async Task<IEnumerable<RecurringTransactionDto>> Handle(GetRecurringQuery query , CancellationToken token)
         {
-            return await _recurringRepository.GetRecurringTransactionsAsync(query.UserId, query.AccountId, query.CategoryId, query.IsActive, query.Period, query.Start, query.End, query.Page, query.PageSize, token);
+            return await _recurringRepository.GetRecurringTransactionsAsync(query.UserId, query.AccountId, query.CategoryId, query.Status, query.Period, query.Start, query.End, query.Page, query.PageSize, token);
 
         }
         

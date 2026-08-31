@@ -6,5 +6,7 @@ public enum EnPeriod : byte
     Weekly = 1,
     Monthly = 2,
     Quarterly = 3,
-    Yearly = 4
+    Yearly = 4,
+    None = 5
+
 }

@@ -3,12 +3,12 @@ namespace FinanceCore.Domain.Enums
 {
     public enum EnAccountType : byte
     {
-        Checking = 1,
-        Savings = 2,
-        Credit = 3,
+        Checking = 0,
+        Savings = 1,
+        Credit = 2,
+        Investment = 3,
         Cash = 4,
-        Investment = 5,
-        Loan = 6,
+        Loan = 5,
         Other = 99
     }
 }

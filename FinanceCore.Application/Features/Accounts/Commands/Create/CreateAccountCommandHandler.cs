@@ -2,6 +2,7 @@ using FinanceCore.Application.Abstractions;
 using FinanceCore.Application.DTOs;
 using FinanceCore.Application.Events;
 using FinanceCore.Domain.Accounts;
+using FinanceCore.Domain.Enums;
 using MediatR;
 
 namespace FinanceCore.Application.Features.Accounts.Commands.Create
@@ -11,7 +12,7 @@ namespace FinanceCore.Application.Features.Accounts.Commands.Create
         private readonly IAccountRepository _accountRepository;
         private readonly IMediator _eventBus;
 
-        public CreateAccountCommandHandler(IAccountRepository accountRepositorsy,IMediator eventBus)
+        public CreateAccountCommandHandler(IAccountRepository accountRepositorsy, IMediator eventBus)
         {
             _accountRepository = accountRepositorsy;
             _eventBus = eventBus;
@@ -23,13 +24,27 @@ namespace FinanceCore.Application.Features.Accounts.Commands.Create
                 command.UserId,
                 command.Name,
                 command.Type,
-                command.InitialBalance);
+                command.InitialBalance,
+                command.InterestRate,
+                command.InterestCreditFrequency,
+                command.InterestAccrualFrequency,
+                command.CreditLimit,
+                command.Fee,
+                command.FeePeriod,
+                command.PrincipalAmount,
+                command.LoanInterestRate,
+                command.TermInMonths,
+                command.RepaymentFrequency,
+                command.StartDate,
+                command.RegularPaymentAmount,
+                command.MaturityDate,
+                command.NextPaymentDate);
 
             await _accountRepository.AddAsync(account, cancellationToken);
 
-            await DomainEventDispatcher.DispatchAsync(_eventBus,account, cancellationToken);
-  
-            return new AccountDto(account.Id,account.UserId,account.Name,account.Type,account.Balance.Amount,account.Balance.Currency,account.CreatedAt);
+            await DomainEventDispatcher.DispatchAsync(_eventBus, account, cancellationToken);
+
+            return new AccountDto(account.Id, account.UserId, account.Name, account.Type, account.Balance.Amount, account.Balance.Currency, account.CreatedAt);
         }
     }
 }

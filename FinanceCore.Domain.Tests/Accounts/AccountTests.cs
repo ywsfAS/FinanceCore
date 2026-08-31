@@ -18,10 +18,13 @@ namespace FinanceCore.Domain.Tests.Accounts
             var name = "Savings Account";
             var type = EnAccountType.Savings;
             var currency = EnCurrency.USD;
+            decimal interestRate = 0.4m;
+            EnInterestAccrualFrequency accrualFrequency = EnInterestAccrualFrequency.Daily;
+            EnInterestCreditFrequency creditFrequency = EnInterestCreditFrequency.Yearly; 
             Money initialBalance = new Money(100m,currency);
 
             // Act
-            var account = Account.Create(userId, name, type,initialBalance);
+            var account = Account.Create(userId, name, type,initialBalance,interestRate,creditFrequency , accrualFrequency);
 
             // Assert
             account.UserId.Should().Be(userId);
@@ -81,7 +84,7 @@ namespace FinanceCore.Domain.Tests.Accounts
         {
             // Arrange
             var source = Account.Create(Guid.NewGuid(), "Source", EnAccountType.Checking,new Money(500m,EnCurrency.USD));
-            var target = Account.Create(Guid.NewGuid(), "Target", EnAccountType.Savings, new Money(100m, EnCurrency.USD));
+            var target = Account.Create(Guid.NewGuid(), "Target", EnAccountType.Checking, new Money(100m, EnCurrency.USD));
             var amount = new Money(200m, EnCurrency.USD);
 
             // Act

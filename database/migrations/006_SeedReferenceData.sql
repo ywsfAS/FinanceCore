@@ -9,6 +9,8 @@ INSERT INTO AccountTypes (AccountTypeId,Code,Name)
 VALUES (3,'Investment','Investment Account')
 INSERT INTO AccountTypes (AccountTypeId,Code,Name)
 VALUES (4,'Cash','Cash')
+INSERT INTO AccountTypes (AccountTypeId,Code,Name)
+VALUES (5,'Loan','Loan Account')
 
 INSERT INTO BudgetPeriods (BudgetPeriodId,Code,Name)
 VALUES (0,'Daily','Daily Budget')

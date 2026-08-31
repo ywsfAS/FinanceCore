@@ -34,6 +34,7 @@ namespace FinanceCore.Infrastructure
             // Recurring Transactions Job Config + Sync Exchange Rates Job Config 
             services.AddJobWithTrigger<RecurringTransactionJob>("RecurringTransactionJob", "RecurringTranactionTrigger", 2);
             services.AddJobWithTrigger<ExchangeRateSyncJob>("ExchangeRateJob", "ExchangeRateTrigger", 6);
+            services.AddJobWithTrigger<SavingsInterestJob>("SavingsInterestJob", "SavingsInterestTrigger", 24);
             services.AddQuartzHostedService(config => config.WaitForJobsToComplete = true);
 
             var connectionString =
@@ -67,7 +68,9 @@ namespace FinanceCore.Infrastructure
             services.AddScoped<IContactMessageRepository, ContactMessageRepository>();
             services.AddScoped<IRefreshTokenRepository, RefreshTokenRepository>();
             services.AddScoped<IBatchRepository, BatchRepository>();
+            services.AddScoped<IReconciliationRepository, ReconciliationRepository>();
             services.AddScoped<ILoginHistoryRepository,LoginHistoryRepository>();
+            services.AddScoped<IAlertRepository,AlertRepository>();
             services.AddScoped<ITransactionExporter, TransactionExporter>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 

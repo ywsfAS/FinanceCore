@@ -1,3 +1,4 @@
+using FinanceCore.Application.DTOs;
 using FinanceCore.Domain.Common;
 using FinanceCore.Domain.Users;
 
@@ -12,6 +13,12 @@ namespace FinanceCore.Application.Abstractions
         Task UpdateAsync(User user, CancellationToken cancellationToken = default);
         Task<bool> IsExistsAsync(Guid userId, CancellationToken token = default);
         Task UpdateLoginSecurityStateAsync(Guid userId, int failedLoginAttempts, DateTime? lockedUntil = null ,CancellationToken token = default);
-
+        Task<PagedResult<UserDto>> GetUsersAsync(
+            string? search,
+            string? role,
+            bool? isLocked,
+            int page,
+            int pageSize,
+            CancellationToken token = default);
     }
 }
