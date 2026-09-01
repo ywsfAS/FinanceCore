@@ -37,6 +37,7 @@
 
 /* CARD */
 .card {
+    position: relative;
     border-radius: var(--space-12);
     padding: 28px;
     display: flex;
@@ -45,12 +46,27 @@
     background-color: var(--surface);
     box-shadow: var(--shadow-100);
     transition: transform 0.2s ease;
-    cursor : pointer;
+    cursor: pointer;
+    overflow: hidden;
 }
 
-    .card:hover {
-        transform: translateY(-4px);
-    }
+.water {
+    position: absolute;
+    width: 120%;
+    height: 100%;
+    left: -10%;
+    bottom: 0;
+
+    background: rgba(59, 130, 246, 0.2);
+
+    border-radius: 50% 50% 0 0;
+
+    z-index: 1;
+}
+
+.card:hover {
+    transform: translateY(-4px);
+}
 
 /* ICON */
 .icon {

@@ -42,8 +42,8 @@
 }
 
 .quoteIcon {
-    width: 64px;
-    height: 64px;
+    width: var(--space-32);
+    height: var(--space-32);
     color: black;
     margin-bottom: var(--space-32);
     flex-shrink: 0;

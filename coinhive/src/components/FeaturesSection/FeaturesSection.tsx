@@ -1,7 +1,8 @@
 // FeaturesSection.tsx
 import React from "react";
 import styles from "./FeaturesSection.module.css";
-import {features} from "./Constants";
+import { features, waterConfig, animationConfig } from "./Constants";
+import { motion } from 'motion/react';
 
 interface FeaturesSectionProps {
     title: string;
@@ -16,11 +17,16 @@ const FeaturesSection: React.FC<FeaturesSectionProps> = ({ title, description })
                 <p className={styles.subtitle}>{description}</p>
             </div>
             <div className={styles.grid}>
-                {features.map((f) => (
-                    <div
+                {features.map((f, index) => (
+                    <motion.div
+                        {...animationConfig(index, f.direction)}
                         key={f.title}
                         className={styles.card}
-                        >
+                    >
+                        <motion.div
+                            className={styles.water}
+                            {...waterConfig(f.waterLevel)}
+                        />
                         <div
                             className={styles.icon}
                         >
@@ -28,7 +34,7 @@ const FeaturesSection: React.FC<FeaturesSectionProps> = ({ title, description })
                         </div>
                         <h3 className={styles.cardTitle}>{f.title}</h3>
                         <p className={styles.cardDesc}>{f.description}</p>
-                    </div>
+                    </motion.div>
                 ))}
             </div>
         </section>

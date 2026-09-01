@@ -1,7 +1,7 @@
 import styles from "./TestimonialsSection.module.css";
 import { MessageSquareQuote } from "lucide-react";
-import { testimonials } from "./Constants";
-
+import { testimonials, animationConfig } from "./Constants";
+import { motion } from 'motion/react';
 const TestimonialsSection = () => {
     return (
         <section className={styles.wrapper}>
@@ -17,13 +17,14 @@ const TestimonialsSection = () => {
             </div>
 
             <div className={styles.grid}>
-                {testimonials.map((t) => (
-                    <article
+                {testimonials.map((t, index) => (
+                    <motion.article
+                        {...animationConfig(index)}
                         key={t.name}
                         className={styles.card}
                     >
-                        <MessageSquareQuote size={16} strokeWidth={2} className={styles.quoteIcon} />
-                            
+                        <MessageSquareQuote strokeWidth={2} className={styles.quoteIcon} />
+
 
                         <p className={styles.quote}>
                             "{t.quote}"
@@ -51,7 +52,7 @@ const TestimonialsSection = () => {
                                 </span>
                             </div>
                         </div>
-                    </article>
+                    </motion.article>
                 ))}
             </div>
         </section>

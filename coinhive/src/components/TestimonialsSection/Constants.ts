@@ -51,3 +51,36 @@ export const testimonials: Testimonial[] = [
     },
 ];
 
+export const animationConfig = (index: number) => (
+    {
+
+        initial: {
+            opacity: 0,
+        },
+
+        whileInView: {
+            opacity: 1,
+            x: 0,
+            y: 0,
+        },
+
+        whileHover: {
+            scale: 1.04,
+            transition: {
+                type: "spring",
+                stiffness: 400,
+                damping: 25,
+            },
+        },
+
+        viewport: {
+            once: true,
+            amount: 0.3,
+        },
+
+        transition: {
+            duration: 0.3,
+            delay: index * 0.1,
+        },
+    }
+);

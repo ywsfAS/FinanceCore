@@ -107,7 +107,8 @@
     --shadow-100: 0 10px 7px rgba(0, 0, 0, 0.09);
     --shadow-50: 0 3px 7px rgba(0, 0, 0, 0.04);
 
-    --theme-toggle-bg: #E2E8F0;
+    --theme-toggle-bg: #F1F5F9;
+    ;
     --theme-toggle-icon: #000000;
 }
 
