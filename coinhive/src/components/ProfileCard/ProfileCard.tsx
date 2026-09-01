@@ -1,27 +1,24 @@
 import { UserRoundPen } from "lucide-react";
 
 import styles from "./ProfileCard.module.css";
-import Image from "../../assets/pfp.jpeg";
-
-import {
-    NAV_ITEMS,
-    DEFAULT_PROFILE,
-} from "./constants";
+import { NAV_ITEMS, DEFAULT_PROFILE } from "./constants";
+import { useProfileAvatar } from "../../hooks/Profile/useProfileAvatar";
 
 export default function ProfileCard({
     profileData,
     PopUpHandler,
     TabHandler,
-    active
+    active,
 }) {
     const data = profileData ?? DEFAULT_PROFILE;
-    const name = `${data.firstName} ${data.lastName}`;
+    const name = `${data.firstName ?? ""} ${data.lastName ?? ""}`.trim() || "Profile";
+    const avatarUrl = useProfileAvatar(data.avatarUrl);
 
     return (
         <aside className={styles.card}>
             <div className={styles.avatar}>
                 <img
-                    src={Image}
+                    src={avatarUrl}
                     alt={name}
                     className={styles.image}
                 />
@@ -55,8 +52,8 @@ export default function ProfileCard({
                     <div
                         key={item.name}
                         className={`${styles.navItem} ${active === index
-                                ? styles.navActive
-                                : ""
+                            ? styles.navActive
+                            : ""
                             }`}
                         onClick={() => TabHandler(index)}
                     >

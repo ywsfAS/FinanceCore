@@ -1,13 +1,13 @@
-import {apiClient} from "../lib/apiClient";
+import { apiClient } from "../lib/apiClient";
 
 export interface UpdateProfileParams {
-    firstName: string;
-    lastName: string;
-    bio: string;
+    firstName?: string;
+    lastName?: string;
+    bio?: string;
 }
 
 export interface UploadProfileImageParams {
-    photo : File;
+    photo: File;
 }
 
 export const profileService = {
@@ -17,13 +17,16 @@ export const profileService = {
     updateProfile: async (profile: UpdateProfileParams) => {
         return apiClient(`/profile`, {
             method: 'PUT',
-            body : JSON.stringify(profile)
+            body: JSON.stringify(profile)
         })
     },
-    uploadProfilePhoto: async (photo : UploadProfileImageParams) => {
-        return apiClient(`/profile/profile-image`, {
-            method: 'POST',
-            body : JSON.stringify(photo)
+    uploadProfilePhoto: async ({ photo }: UploadProfileImageParams) => {
+        const formData = new FormData();
+        formData.append('File', photo);
+
+        return apiClient(`/profile/image`, {
+            method: 'PUT',
+            body: formData,
         })
     }
 

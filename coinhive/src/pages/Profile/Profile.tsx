@@ -78,7 +78,12 @@ export default function ProfilePage() {
             <ProfileCard profileData={profile} PopUpHandler={PopUpHandler} TabHandler={handleActiveTab} active={activeTab} />
             <main className={styles.main}>
                 {DashboardContent}
-                {active && <ProfileEditPopUp EditProfileImageHandler={updateProfileImage} EditProfileHandler={updateProfile} PopUpHandler={PopUpHandler} />}
+                {active && <ProfileEditPopUp
+                    EditProfileImageHandler={updateProfileImage}
+                    EditProfileHandler={updateProfile}
+                    PopUpHandler={PopUpHandler}
+                    avatarUrl={profile?.avatarUrl}
+                />}
             </main>
         </div>
     );
