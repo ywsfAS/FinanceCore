@@ -8,14 +8,23 @@ import {
     CURRENCIES,
     HEADER,
     INITIAL_FILTERS,
-    MOCK_GOALS,
     SAVING_STATUSES,
 } from "./constants";
 import type { SavingGoalsFilters } from "./types";
+import { useGoals } from "../../hooks/Goals/useGoals";
+import type { SavingsEntity } from "../../entities/Savings";
 
 const Savings = () => {
     const [open, setOpen] = useState(false);
     const [filters, setFilters] = useState<SavingGoalsFilters>(INITIAL_FILTERS);
+    const { data, isLoading } = useGoals({
+        page: 1,
+        pageSize: 10,
+        currency: filters.currency || undefined,
+        status: filters.status || undefined,
+        name: filters.search || undefined,
+    });
+    const goals: SavingsEntity[] = Array.isArray(data) ? data : [];
 
     const handleToggle = () => setOpen((prev) => !prev);
 
@@ -25,18 +34,6 @@ const Savings = () => {
             [key]: value,
         }));
     };
-
-    const filteredGoals = MOCK_GOALS.filter((goal) => {
-        const search = filters.search.trim().toLowerCase();
-        const matchesSearch =
-            !search ||
-            goal.name.toLowerCase().includes(search) ||
-            goal.description.toLowerCase().includes(search);
-        const matchesCurrency = !filters.currency || goal.currency === filters.currency;
-        const matchesStatus = !filters.status || goal.status === filters.status;
-
-        return matchesSearch && matchesCurrency && matchesStatus;
-    });
 
     return (
         <div>
@@ -70,10 +67,21 @@ const Savings = () => {
             </div>
 
             <div className={styles.goalsGrid}>
-                {filteredGoals.length ? (
-                    filteredGoals.map((goal) => <SavingGoalCard key={goal.id} goal={goal} />)
+                {isLoading ? (
+                    <div>Loading...</div>
+                ) : goals.length ? (
+                    goals.map((goal) => <SavingGoalCard key={goal.id} goal={{
+                        id: goal.id,
+                        name: goal.name,
+                        description: goal.description ?? "",
+                        targetAmount: goal.targetAmount,
+                        currentAmount: goal.currentAmount,
+                        currency: goal.currency,
+                        targetDate: goal.targetDate,
+                        status: (goal.status as any) ?? "active",
+                    }} />)
                 ) : (
-                    <div className={styles.emptyState}>No saving goals match the selected filters.</div>
+                    <div className={styles.emptyState}>No saving goals available.</div>
                 )}
             </div>
 

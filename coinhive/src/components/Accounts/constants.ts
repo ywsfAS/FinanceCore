@@ -1,9 +1,11 @@
 import type { GetAccountWithFiltersParams } from "../../services/accountService";
+import { EnAccountType } from "../../entities/Account";
+
 export enum AccountType {
-    checking = "checking",
-    credit = "credit",
-    savings = "savings",
-    cash = "cash",
+    checking = EnAccountType.Checking,
+    credit = EnAccountType.Credit,
+    savings = EnAccountType.Savings,
+    cash = EnAccountType.Cash,
 }
 
 export const INITIAL_FILTERS: GetAccountWithFiltersParams = {
@@ -14,54 +16,31 @@ export const INITIAL_FILTERS: GetAccountWithFiltersParams = {
 
 export const ACCOUNT_TYPES = [
     { value: "", label: "All Types" },
-    { value: AccountType.checking, label: "Checking" },
-    { value: AccountType.savings, label: "Savings" },
-    { value: AccountType.cash, label: "Cash" },
-    { value: AccountType.credit, label: "Credit" },
+    { value: EnAccountType.Checking, label: "Checking" },
+    { value: EnAccountType.Savings, label: "Savings" },
+    { value: EnAccountType.Cash, label: "Cash" },
+    { value: EnAccountType.Credit, label: "Credit" },
+    { value: EnAccountType.Investment, label: "Investment" },
+    { value: EnAccountType.Loan, label: "Loan" },
+    { value: EnAccountType.Other, label: "Other" },
 ];
 
 export const CURRENCIES = [
     { value: "", label: "All Currencies" },
     { value: "USD", label: "USD" },
     { value: "EUR", label: "EUR" },
-    { value: "MAD", label: "MAD" },
+    { value: "GBP", label: "GBP" },
+    { value: "JPY", label: "JPY" },
+    { value: "CAD", label: "CAD" },
+    { value: "AUD", label: "AUD" },
+    { value: "CHF", label: "CHF" },
+    { value: "CNY", label: "CNY" },
+    { value: "MXN", label: "MXN" },
+    { value: "INR", label: "INR" },
 ];
+
 export const HEADER = {
     title: "Accounts",
     subtitle: "Manage and monitor your financial accounts",
     btnName: "new Account",
-}
-export const MOCK_ACCOUNTS = [
-    {
-        id: 1,
-        name: "Main Checking",
-        type: AccountType.checking,
-        balance: 4250,
-        currency: "USD",
-        label: "3.2% this month"
-    },
-    {
-        id: 2,
-        name: "Emergency Fund",
-        type: AccountType.savings,
-        balance: 12000,
-        currency: "USD",
-        label: "3.2% this month"
-    },
-    {
-        id: 3,
-        name: "Cash Wallet",
-        type: AccountType.cash,
-        balance: 350,
-        currency: "MAD",
-        label: "3.2% this month"
-    },
-    {
-        id: 4,
-        name: "Business Account",
-        type: AccountType.checking,
-        balance: 8450,
-        currency: "EUR",
-        label: "3.2% this month"
-    },
-];
+};

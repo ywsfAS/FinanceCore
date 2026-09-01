@@ -14,10 +14,10 @@ import {
     ACCOUNT_TYPES,
     CURRENCIES,
     INITIAL_FILTERS,
-    MOCK_ACCOUNTS,
     HEADER,
 } from "./constants";
 import SectionHeader from "../SectionHeader/SectionHeader";
+import type { AccountEntity } from "../../entities/Account";
 
 const Accounts = () => {
     const [open, setOpen] = useState(false);
@@ -44,9 +44,7 @@ const Accounts = () => {
 
     if (isLoading) return <div>Loading...</div>;
 
-    //if (isError) return <div>{error.message}</div>;
-
-    const accounts = data?.length ? data : MOCK_ACCOUNTS;
+    const accounts: AccountEntity[] = Array.isArray(data) ? data : [];
 
     return (
         <div className={styles.wrapper}>
@@ -79,17 +77,21 @@ const Accounts = () => {
             </div>
 
             <div className={styles.accountsGrid}>
-                {accounts.map((account) => (
-                    <AccountCard
-                        key={account.id}
-                        id={account.id}
-                        name={account.name}
-                        type={account.type}
-                        balance={account.balance}
-                        currency={account.currency}
-                        label={account.label}
-                    />
-                ))}
+                {accounts.length > 0 ? (
+                    accounts.map((account) => (
+                        <AccountCard
+                            key={account.id}
+                            id={account.id}
+                            name={account.name}
+                            type={account.type}
+                            balance={account.balance}
+                            currency={account.currency}
+                            label={`${account.type} account`}
+                        />
+                    ))
+                ) : (
+                    <div>No accounts available.</div>
+                )}
             </div>
 
             {open && (

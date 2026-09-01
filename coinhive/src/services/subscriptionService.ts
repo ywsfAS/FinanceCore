@@ -29,12 +29,12 @@ export interface CreateSubscription {
     startDate: Date;
     endDate: Date;
 }
- class SubscriptionRepository {
-    
+class SubscriptionRepository {
+
     private basePath = '/recurring-transactions';
 
 
-    public async GetFilteredSubscriptions({ accountId,categoryId,isActive,period,start,end,page = 1,pageSize = 10} : GetFilteredSubscriptionsParams) {
+    public async GetFilteredSubscriptions({ accountId, categoryId, isActive, period, start, end, page = 1, pageSize = 10 }: GetFilteredSubscriptionsParams) {
         const params = new URLSearchParams();
 
         params.append("Page", page);
@@ -48,25 +48,24 @@ export interface CreateSubscription {
 
         return apiClient(`${this.basePath}?${params}`);
     }
-    public async GetSubscriptionById({ id }: GetSubscriptionByIdParams ) {
+    public async GetSubscriptionById({ id }: GetSubscriptionByIdParams) {
 
         return apiClient(`${this.basePath}/${id}`);
     }
 
-    public async RemoveSubscriptionById({ id }: RemoveSubscriptionByIdParams ) {
+    public async RemoveSubscriptionById({ id }: RemoveSubscriptionByIdParams) {
 
         return apiClient(`${this.basePath}/${id}`, {
-            method : 'DELETE'
+            method: 'DELETE'
         });
     }
-    public async CreateSubscription(subscription  : CreateSubscription) {
+    public async CreateSubscription(subscription: CreateSubscription) {
 
         return apiClient(`${this.basePath}`, {
             method: 'POST',
-            body : JSON.stringify(subscription)
+            body: JSON.stringify(subscription)
         });
     }
-    }
-
 }
+
 export const SubscriptionService = new SubscriptionRepository();
