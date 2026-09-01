@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import {
     ReportService,
-    MonthlyAccountSummaryParams,
+    type MonthlyAccountSummaryParams,
 } from "../../services/reportService";
 
 export function useAccountMonthlySummary({

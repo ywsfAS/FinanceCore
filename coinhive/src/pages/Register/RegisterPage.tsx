@@ -38,12 +38,16 @@ const RegisterPage = () => {
     const password = watch("password");
 
     const onSubmit = async (data: RegisterInfos) => {
+        console.log("Submitting...", data);
         await registerUser(
             data.name,
             data.email,
             data.password
         );
     };
+    const onInvalid = (errors) => {
+        console.log("Error", errors);
+    }
 
     return (
         <div className={styles.page}>
@@ -55,7 +59,7 @@ const RegisterPage = () => {
 
                 <form
                     className={styles.formContainer}
-                    onSubmit={handleSubmit(onSubmit)}
+                    onSubmit={handleSubmit(onSubmit, onInvalid)}
                 >
                     <h1 className={styles.title}>FinanceCore</h1>
 

@@ -1,5 +1,5 @@
 export interface TransactionUI {
-    id: number;
+    id: string;
     name: string;
     account: string;
     date: string;

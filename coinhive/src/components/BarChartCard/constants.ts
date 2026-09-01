@@ -1,19 +1,20 @@
 export type Data = Record<string, string | number>[];
-export const DEFAULT_DATA : Data  = [
+export const DEFAULT_DATA: Data = [
     { name: "Jan", income: 400, expense: -500 },
     { name: "Feb", income: 940, expense: -120 },
     { name: "Mar", income: 650, expense: -30 },
     { name: "Apr", income: 1000, expense: -224 },
     { name: "May", income: 1020, expense: -900 },
 ];
-export const DEFAULT_CONFIG : tickConfig = {
+export const DEFAULT_CONFIG: tickConfig = {
     fill: "#99B2C6",
     fontSize: 14,
     fontWeight: 500,
-    fontFamily : "Plus Jakarta Sans",
+    fontFamily: "Plus Jakarta Sans",
 }
 export const DEFAULT_KEY1 = "income";
 export const DEFAULT_KEY2 = "expense";
+export const DEFAULT_LABEL = "name";
 
 export interface tickConfig {
     fill: string;
@@ -26,4 +27,5 @@ export interface BarChartCardProps {
     config?: tickConfig;
     dataKey1?: string;
     dataKey2?: string;
+    label?: string;
 }

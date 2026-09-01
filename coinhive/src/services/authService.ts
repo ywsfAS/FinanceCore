@@ -1,45 +1,35 @@
 import type { User } from "../entities/User";
-
-const auth_URL = "https://localhost:7143/api/v1/auth";
+import { apiClient } from "../lib/apiClient";
 
 export const authService = {
 
-    login: async (email : string , password : string) : Promise<User > => {
-        const res = await fetch(`${auth_URL}/login`, {
+    login: async (email: string, password: string): Promise<User> => {
+        return await apiClient<User>(`/auth/login`, {
             method: "POST",
             headers: { "content-type": "application/json" },
-            body: JSON.stringify({email,password}),
+            body: JSON.stringify({ email, password }),
         });
-        if (!res.ok) throw new Error("Login failed");
-        return res.json();
     },
-    forgetPassword: async (email: string): Promise<{message : string}> => {
-        const res = await fetch(`${auth_URL}/forgot-password`, {
+    forgetPassword: async (email: string): Promise<{ message: string }> => {
+        return await apiClient(`/auth/forgot-password`, {
             method: "POST",
             headers: { "content-type": "application/json" },
             body: JSON.stringify({ email: { address: email } }),
         });
-        if (!res.ok) throw new Error("Forget Password Failed");
-        return res.json();
 
     },
-    resetPassword: async (newPassword: string , token : string): Promise<{ message: string }> => {
-        const res = await fetch(`${auth_URL}/reset-password`, {
+    resetPassword: async (newPassword: string, token: string): Promise<{ message: string }> => {
+        return await apiClient(`/auth/reset-password`, {
             method: "POST",
             headers: { "content-type": "application/json" },
             body: JSON.stringify({ token, newPassword }),
         });
-        if (!res.ok) throw new Error("Reset Password Failed");
-        return res.json();
     },
     register: async (name: string, email: string, password: string): Promise<User> => {
-        const res = await fetch(`${auth_URL}/register`, {
+        return await apiClient(`/auth/register`, {
             method: "POST",
             headers: { "Content-type": "application/json" },
-            body: JSON.stringify({name,email,password}),
+            body: JSON.stringify({ name, email, password }),
         });
-        if (!res.ok) throw new Error("Register failed");
-        return res.json();
-
-    }
+    },
 }

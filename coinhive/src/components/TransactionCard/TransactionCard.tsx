@@ -3,41 +3,36 @@ import TransactionRow from "./TransactionRow";
 
 import { useFiltredTransactions } from "../../hooks/Transactions/useFiltredTransactions";
 import type { FiltredTransactionsParams } from "../../services/transactionService";
+import { EnTransactionType, type TransactionEntity } from "../../entities/Transaction";
 
-import { TABLE_HEADERS, DEFAULT_TRANSACTIONS } from "./constants";
+import { TABLE_HEADERS } from "./constants";
 
-export default function TransactionCard(
-    filters: FiltredTransactionsParams
-) {
-    const {
-        data,
-        isLoading,
-    } = useFiltredTransactions(filters);
+export interface TransactionCardProps {
+    filters: FiltredTransactionsParams;
+}
+
+const formatAmount = (amount: number, type: EnTransactionType) => {
+    const sign = type === EnTransactionType.Income ? "+" : "-";
+    return `${sign}${amount.toFixed(2)}`;
+};
+
+const mapTransactionToUI = (tx: TransactionEntity) => ({
+    id: tx.id,
+    name: tx.description || tx.categoryName || "Transaction",
+    account: tx.accountName || "Unkown",
+    date: new Date(tx.date).toLocaleString(),
+    amount: `${formatAmount(tx.amount, tx.type)} ${tx.currency}`,
+    currency: tx.currency || "Unkown",
+    category: tx.categoryName || "Transfer",
+    positive: tx.type === EnTransactionType.Income,
+});
+
+export default function TransactionCard({ filters }: TransactionCardProps) {
+    const { data, isLoading } = useFiltredTransactions(filters);
 
     if (isLoading) return <div className={styles.loading}>Loading transactions...</div>;
 
-    const transactions =
-        data?.length
-            ? data.map((tx) => ({
-                id: tx.id,
-                name:
-                    tx.description ??
-                    tx.categoryName ??
-                    "Transaction",
-
-                account: tx.accountName ?? "Mononiex",
-
-                date: new Date(tx.date).toLocaleString(),
-
-                amount: `${tx.type === 1 ? "+" : "-"}${tx.amount.toFixed(2)}`,
-
-                currency: tx.currency ?? "USD",
-
-                category: tx.categoryName ?? "Transfer",
-
-                positive: tx.type === 1,
-            }))
-            : DEFAULT_TRANSACTIONS;
+    const transactions = Array.isArray(data) ? data.map(mapTransactionToUI) : [];
 
     return (
         <div className={styles.card}>
@@ -57,9 +52,13 @@ export default function TransactionCard(
                     ))}
                 </div>
 
-                {transactions.map((tx) => (
-                    <TransactionRow key={tx.id} transaction={tx} />
-                ))}
+                {transactions.length > 0 ? (
+                    transactions.map((tx) => (
+                        <TransactionRow key={tx.id} transaction={tx} />
+                    ))
+                ) : (
+                    <div className={styles.loading}>No transactions available.</div>
+                )}
             </div>
         </div>
     );

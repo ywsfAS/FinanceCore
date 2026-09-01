@@ -1,39 +1,40 @@
-import {apiClient} from '../lib/apiClient';
+import type { AccountSummary, UserSummary } from '../entities/Report';
+import { apiClient } from '../lib/apiClient';
 export interface MonthlyAccountSummaryParams {
     accountId: string;
-    year: number, 
-    month : number,
+    year: number,
+    month: number,
 }
 export interface MonthlyUserSpendingByCategoryParams {
     year: number,
-    month : number,
+    month: number,
 }
 
 export interface MonthlyAccountSpendingByCategoryParams {
-    accountId : string,
+    accountId: string,
     year: number,
-    month : number,
+    month: number,
 }
 
 export interface MonthlyUserSummaryParams {
     year: number,
-    month : number,
+    month: number,
 }
 export interface MonthlyUserTrendParams {
-    month : number,
+    month: number,
 }
 
 export const ReportService = {
     getUserSummary: () => {
-        return apiClient(`/reports/summary/user`);
+        return apiClient<AccountSummary>(`/reports/monthly/accounts`);
     },
-    getAccountMonthlySummary: ({accountId,year,month} : MonthlyAccountSummaryParams) => {
-        return apiClient(`/reports/monthly/account?id=${accountId}&year=${year}&month=${month}`);
+    getAccountMonthlySummary: ({ accountId, year, month }: MonthlyAccountSummaryParams) => {
+        return apiClient(`/reports/monthly/accounts?id=${accountId}&year=${year}&month=${month}`);
     },
-    getUserBySpendingCategoryMonthly: ({year , month }: MonthlyUserSpendingByCategoryParams) => {
+    getUserBySpendingCategoryMonthly: ({ year, month }: MonthlyUserSpendingByCategoryParams) => {
         return apiClient(`/reports/spending/by-category/user?year=${year}&month=${month}`);
     },
-    getAccountSpendingCategoryMonthly: ({accountId , year , month } : MonthlyAccountSpendingByCategoryParams) => {
+    getAccountSpendingCategoryMonthly: ({ accountId, year, month }: MonthlyAccountSpendingByCategoryParams) => {
         return apiClient(`/reports/spending/by-category/account?id=${accountId}&year=${year}&month=${month}`);
     },
     getUserNetWorth: () => {
@@ -43,7 +44,7 @@ export const ReportService = {
         return apiClient(`/reports/monthly/user?year=${year}&month=${month}`);
     },
     getUserMonthlyTrend: ({ month }: MonthlyUserTrendParams) => {
-        return apiClient(`/reports/monthly/trend?month=${month}`);
+        return apiClient(`/reports/monthly/trend?lastNMonth=${month}`);
     }
 
 }

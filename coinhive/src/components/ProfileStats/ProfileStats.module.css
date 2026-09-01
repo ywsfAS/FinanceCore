@@ -5,27 +5,29 @@
     column-gap: var(--space-4);
     color: var(--text-primary);
 }
+
 .grid .box {
-    display : flex;
-    flex-direction : column;
-    align-items : flex-start;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
     padding: var(--space-16);
     overflow: hidden;
     cursor: pointer;
     border-radius: var(--space-16);
     background-color: var(--surface);
     box-shadow: var(--shadow-100);
- }
-
-.box .title{
-    display : flex;
-   justify-content : center;
-   align-items : center;
-   gap : var(--space-8);
-    margin-bottom : var(--space-12);
 }
+
+.box .title {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--space-8);
+    margin-bottom: var(--space-12);
+}
+
 .box .icon {
-   
+
     width: var(--space-32);
     height: var(--space-32);
 }

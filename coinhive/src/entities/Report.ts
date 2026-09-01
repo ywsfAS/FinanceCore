@@ -1,6 +1,15 @@
-
-// User global Summary on all accounts
+import { EnCurrency } from "./Currency";
 export interface UserSummary {
-    TotalIncome: number;
-    TotalExpense: number;
+    totalIncome: number;
+    totalExpense: number;
+    netSavings: number;
+    currency: EnCurrency
+}
+export interface AccountSummary {
+    accountId: string;
+    totalIncome: number;
+    totalExpense: number;
+    netSavings: number;
+    currency: EnCurrency
+
 }

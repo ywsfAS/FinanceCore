@@ -1,58 +1,38 @@
-import {useState} from "react";
+import { useState } from "react";
 import type { ReactNode } from "react";
 import type { User } from "../../entities/User";
 import { AuthContext } from "./AuthContext";
-import { registerUser} from "../../use-cases/auth/signup"
+import { registerUser } from "../../use-cases/auth/signup"
 import { loginUser } from "../../use-cases/auth/login";
-import {authService} from "../../services/authService";
+import { authService } from "../../services/authService";
 
 
 type AuthProviderProps = {
     children: ReactNode;
 };
-const {forgetPassword , resetPassword} = authService;
+const { forgetPassword, resetPassword } = authService;
 export const AuthProvider = ({ children }: AuthProviderProps) => {
     const [user, setUser] = useState<User | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
 
-    const login = async (token: string) => {
+    const saveJwtToken = async (token: string) => {
         console.log(token);
         localStorage.setItem("token", token);
-        await loginWithToken(token);
     };
 
-    const logout = () => {
+    const RemoveJwtToken = () => {
         localStorage.removeItem("token");
         setUser(null);
     };
 
-    const loginWithToken = async (token: string | null) => {
-        try {
-            const res = await fetch("https://localhost:7143/api/v1/users", {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            });
-
-            if (!res.ok) throw new Error("Invalid token");
-
-            const userData: User = await res.json();
-            if (token) userData.token = token;
-            setUser(userData);
-        } catch {
-            logout();
-        } finally {
-            setLoading(false);
-        }
-    };
-    const loginWithCredentials = async (email : string , password : string) => {
-        const { token} = await loginUser(email, password);
-        await login(token!);
+    const loginWithCredentials = async (email: string, password: string) => {
+        const { token } = await loginUser(email, password);
+        saveJwtToken(token!);
 
     }
     const register = async (name: string, email: string, password: string) => {
-        const {token} = await registerUser(name, email, password);
-        await login(token!);
+        const { token } = await registerUser(name, email, password);
+        saveJwtToken(token!);
     };
 
     return (
@@ -61,14 +41,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
                 user,
                 isAuthenticated: !!user,
                 loading,
-                login,
-                loginWithToken,
-                logout,
+                login: saveJwtToken,
+                logout: RemoveJwtToken,
                 register,
                 loginWithCredentials,
                 forgetPassword,
                 resetPassword
-                
+
             }}
         >
             {children}

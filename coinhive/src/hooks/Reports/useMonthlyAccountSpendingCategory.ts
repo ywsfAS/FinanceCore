@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import {
     ReportService,
-    MonthlyAccountSpendingByCategoryParams,
+    type MonthlyAccountSpendingByCategoryParams,
 } from "../../services/reportService";
 
 interface Params extends MonthlyAccountSpendingByCategoryParams {

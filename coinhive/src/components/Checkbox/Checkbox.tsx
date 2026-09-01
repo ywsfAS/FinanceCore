@@ -1,25 +1,21 @@
-import type { ChangeEvent } from "react";
 import "./Checkbox.css";
+import type { InputHTMLAttributes } from "react";
 
-interface CheckboxProps {
+interface CheckboxProps extends InputHTMLAttributes<HTMLInputElement> {
     label: string;
-    checked: boolean;
-    onChange: (e: ChangeEvent<HTMLInputElement>) => void;
     className?: string;
 }
 
 export default function Checkbox({
     label,
-    checked,
-    onChange,
-    className = ""
+    className = "",
+    ...props
 }: CheckboxProps) {
     return (
         <label className={`checkbox-container ${className}`}>
             <input
                 type="checkbox"
-                checked={checked}
-                onChange={onChange}
+                {...props}
             />
             <span className="checkmark"></span>
             {label}
