@@ -3,23 +3,29 @@ export interface FiltredTransactionsParams {
     CategoryId?: string;
     Start?: Date | null;
     End?: Date | null;
-    Type?: number;
+    Type?: string;
     Page?: number;
     PageSize?: number;
 }
-export enum TransactionType {
-    Income = "Income",
-    Expense = "Expense"
-
-}
+export const TransactionType = {
+    Income: "Income",
+    Expense: "Expense",
+    Transfer: "Transfer",
+    Debt: "Debt",
+    Credit: "Credit",
+    CreditAdjustment: "CreditAdjustment",
+    DebitAdjustment: "DebitAdjustment",
+} as const;
+export type TransactionType = typeof TransactionType[keyof typeof TransactionType];
 
 export interface CreateTransactionParams {
     accountId: string;
+    toAccountId?: string;
     categoryId: string;
     type: TransactionType;
     amount: number;
     description: string;
-    transactionDate : string;
+    transactionDate: string;
 }
 export interface EditTransactionBodyParams {
     accountId: string;
@@ -37,9 +43,37 @@ export interface EditTransactionParams {
 export interface DeleteTransactionParams {
     transactionId: string;
 }
+export interface ExportTransactionsParams {
+    accountId?: string;
+    toAccountId?: string;
+    CategoryId?: string;
+    Start?: Date | null;
+    End?: Date | null;
+    Type?: string;
+    Page?: number;
+    PageSize?: number;
+}
+export interface ImportTransactionsParams {
+    type: "Csv";
+    file: File;
+    accountId: string;
+}
+
+const transactionQuery = ({ accountId, toAccountId, CategoryId, Start, End, Type, Page, PageSize }: ExportTransactionsParams) => {
+    const params = new URLSearchParams();
+    if (accountId) params.set("accountId", accountId);
+    if (toAccountId) params.set("toAccountId", toAccountId);
+    if (CategoryId) params.set("CategoryId", CategoryId);
+    if (Start) params.set("Start", Start.toISOString());
+    if (End) params.set("End", End.toISOString());
+    if (Type) params.set("Type", Type);
+    if (Page) params.set("Page", String(Page));
+    if (PageSize) params.set("PageSize", String(PageSize));
+    return params.toString();
+};
 export const transactionService = {
     getFiltredTransactions: ({ CategoryId, Start, End, Type, Page = 1, PageSize = 5 }: FiltredTransactionsParams) => {
-        const params : URLSearchParams = new URLSearchParams();
+        const params: URLSearchParams = new URLSearchParams();
         if (CategoryId) params.append('CategoryId', CategoryId);
         if (Start) params.append('Start', Start.toISOString());
         if (End) params.append('End', End.toISOString());
@@ -49,25 +83,32 @@ export const transactionService = {
 
         return apiClient(`/transactions?${params.toString()}`);
     },
-    CreateTransaction : (transaction: CreateTransactionParams) => {
+    CreateTransaction: (transaction: CreateTransactionParams) => {
         return apiClient(`/transactions`, {
             method: 'POST',
             body: JSON.stringify(transaction)
         })
     },
-    EditTransaction: ({transactionId ,transactionBody } : EditTransactionParams) => {
+    EditTransaction: ({ transactionId, transactionBody }: EditTransactionParams) => {
 
         return apiClient(`/transactions/${transactionId}`, {
             method: 'PUT',
             body: JSON.stringify(transactionBody),
         })
     },
-    DeleteTransaction: ({transactionId}: DeleteTransactionParams) => {
+    DeleteTransaction: ({ transactionId }: DeleteTransactionParams) => {
 
         return apiClient(`/transactions/${transactionId}`, {
             method: 'DELETE',
         })
-    }
+    },
+    ExportTransactions: (filters: ExportTransactionsParams) => apiClient<Blob>(`/transactions/export?${transactionQuery(filters)}`),
+    ImportTransactions: ({ type, file, accountId }: ImportTransactionsParams) => {
+        const formData = new FormData();
+        formData.append("File", file);
+        formData.append("AccountId", accountId);
+        return apiClient(`/transactions/import/${type}`, { method: "POST", body: formData });
+    },
 
 
 

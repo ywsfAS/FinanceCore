@@ -8,7 +8,7 @@ import TransactionCard from "../TransactionCard/TransactionCard";
 import { useUserCategoriesOptions } from '../../hooks/User/useUserCategoriesOptions';
 import TransactionCreatePopUp from "../TransactionCreatePopUp/TransactionCreatePopUp";
 import Button from "../Button/Button";
-import { CATEGORIES, HEADER } from "./constants";
+import { HEADER } from "./constants";
 import CostumSelect from "../Select/Select";
 import SectionHeader from '../SectionHeader/SectionHeader';
 
@@ -27,7 +27,10 @@ const Transactions = () => {
 
     const [open, setOpen] = useState<boolean>(false);
     const [filters, setFilters] = useState<Transactionfilters>(initialFiltersState);
-    const [page, setPage] = useState<number>(1);
+    const [appliedFilters, setAppliedFilters] = useState<Transactionfilters>(initialFiltersState);
+    const [page, setPage] = useState(1);
+    const [hasNextPage, setHasNextPage] = useState(true);
+    const [isPageLoading, setIsPageLoading] = useState(false);
     const pageSize = 3;
 
     const handleClose = () => {
@@ -36,36 +39,42 @@ const Transactions = () => {
 
     const handleFromDateChange = (date: Date | null) => {
         setFilters((prev) => ({ ...prev, fromDate: date }));
-        setPage(1);
     };
 
     const handleToDateChange = (date: Date | null) => {
         setFilters((prev) => ({ ...prev, toDate: date }));
-        setPage(1);
     };
 
     const handleCategoryChange = (value: string) => {
         setFilters((prev) => ({ ...prev, category: value }));
-        setPage(1);
     };
 
     const handleReset = () => {
         setFilters(initialFiltersState);
+        setAppliedFilters(initialFiltersState);
         setPage(1);
+        setHasNextPage(true);
+    };
+
+    const handleApply = () => {
+        setAppliedFilters(filters);
+        setPage(1);
+        setHasNextPage(true);
     };
 
     const handleNextPage = () => {
-        setPage((prev) => prev + 1);
+        if (hasNextPage && !isPageLoading) setPage((currentPage) => currentPage + 1);
     };
 
-    const handlePrevPage = () => {
-        setPage((prev) => Math.max(prev - 1, 1));
+    const handlePreviousPage = () => {
+        setPage((currentPage) => Math.max(currentPage - 1, 1));
     };
 
     const { data } = useUserCategoriesOptions();
-    const categories = data ?? CATEGORIES;
-    const cat = categories.find(cat => cat.value.toLowerCase() === filters.category);
-    const id = cat?.id;
+    const categories = Array.isArray(data)
+        ? data.map((category) => ({ id: category.id, label: category.name, value: category.id }))
+        : [];
+    const categoryId = appliedFilters.category;
 
     return (
         <div className={styles.wrapper}>
@@ -78,59 +87,55 @@ const Transactions = () => {
 
             <div className={styles.filterSection}>
                 <div className={styles.left}>
-                    <DatePicker
-                        selected={filters.fromDate}
-                        onChange={handleFromDateChange}
-                        wrapperClassName={styles.datePickerWrapper}
-                        popperClassName={styles.datePickerPopper}
-                        customInput={
-                            <button className={styles.datePickerBtn}>
-                                <Calendar size={16} />
-                                {filters.fromDate
-                                    ? format(filters.fromDate, "dd/MM/yyyy")
-                                    : "Select start date"}
-                            </button>
-                        }
-                    />
-                    <DatePicker
-                        selected={filters.toDate}
-                        onChange={handleToDateChange}
-                        wrapperClassName={styles.datePickerWrapper}
-                        popperClassName={styles.datePickerPopper}
-                        customInput={
-                            <button className={styles.datePickerBtn}>
-                                <Calendar size={16} />
-                                {filters.toDate
-                                    ? format(filters.toDate, "dd/MM/yyyy")
-                                    : "Select end date"}
-                            </button>
-                        }
-                    />
-                    <CostumSelect
-                        value={filters.category}
-                        options={CATEGORIES}
-                        onChange={(e) => handleCategoryChange(e.target.value)}
-                    />
+                    <div className={styles.filterField}>
+                        <DatePicker
+                            selected={filters.fromDate}
+                            onChange={handleFromDateChange}
+                            wrapperClassName={styles.datePickerWrapper}
+                            popperClassName={styles.datePickerPopper}
+                            portalId="root"
+                            popperPlacement="bottom-start"
+                            customInput={<button className={styles.datePickerBtn}><Calendar size={16} />{filters.fromDate ? format(filters.fromDate, "dd/MM/yyyy") : "Select start date"}</button>}
+                        />
+                    </div>
+                    <div className={styles.filterField}>
+                        <DatePicker
+                            selected={filters.toDate}
+                            onChange={handleToDateChange}
+                            wrapperClassName={styles.datePickerWrapper}
+                            popperClassName={styles.datePickerPopper}
+                            portalId="root"
+                            popperPlacement="bottom-start"
+                            customInput={<button className={styles.datePickerBtn}><Calendar size={16} />{filters.toDate ? format(filters.toDate, "dd/MM/yyyy") : "Select end date"}</button>}
+                        />
+                    </div>
+                    <div className={styles.filterField}>
+                        <CostumSelect value={filters.category} options={[{ label: "All Categories", value: "" }, ...categories]} onChange={handleCategoryChange} variant="secondary" />
+                    </div>
                 </div>
 
                 <div className={styles.right}>
-                    <Button type="button">Apply</Button>
+                    <Button type="button" onClick={handleApply}>Apply</Button>
                     <Button type="button" variant='secondary' onClick={handleReset}>Reset</Button>
                 </div>
             </div>
             <div className={styles.listContainer}>
-            <TransactionCard
-                Page={page}
-                PageSize={pageSize}
-                Start={filters.fromDate}
-                End={filters.toDate}
-                CategoryId={id ?? ""}
-            />
+                <TransactionCard
+                    filters={{
+                        Page: page,
+                        PageSize: pageSize,
+                        Start: appliedFilters.fromDate,
+                        End: appliedFilters.toDate,
+                        CategoryId: categoryId,
+                    }}
+                    onPageAvailabilityChange={setHasNextPage}
+                    onLoadingChange={setIsPageLoading}
+                />
+                <div className={styles.paginationBtnContainer}>
+                    <Button type="button" size="small" onClick={handlePreviousPage} disabled={page === 1 || isPageLoading}>Previous</Button>
+                    <Button type="button" size="small" onClick={handleNextPage} disabled={!hasNextPage || isPageLoading}>Next</Button>
+                </div>
 
-            <div className={styles.paginationBtnContainer}>
-                <Button type="button" size='small' onClick={handleNextPage}>{`Next page ${page + 1}`}</Button>
-                <Button type="button" size='small' onClick={handlePrevPage}>{`Previous page ${page - 1}`}</Button>
-            </div>
             </div>
             {open && <TransactionCreatePopUp handleClose={handleClose} />}
         </div>

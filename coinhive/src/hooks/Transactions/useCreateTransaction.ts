@@ -1,10 +1,14 @@
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
     transactionService,
-    type CreateTransactionParams 
+    type CreateTransactionParams
 } from "../../services/transactionService";
 export function useCreateTransaction() {
+    const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: (transaction : CreateTransactionParams) => transactionService.CreateTransaction(transaction)
+        mutationFn: (transaction: CreateTransactionParams) => transactionService.CreateTransaction(transaction),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["filtred-transactions"] });
+        },
     })
 }

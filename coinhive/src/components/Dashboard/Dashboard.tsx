@@ -4,7 +4,11 @@ import { BarChartCard } from "../BarChartCard/BarChartCard";
 import TransactionCard from "../TransactionCard/TransactionCard";
 import { useUserMonthlyTrend } from "../../hooks/Reports/useUserMonthlyTrend";
 import type { FiltredTransactionsParams } from "../../services/transactionService";
-const Dashboard = () => {
+interface DashboardProps {
+    onSeeAllTransactions?: () => void;
+}
+
+const Dashboard = ({ onSeeAllTransactions }: DashboardProps) => {
     const { data, isLoading, isError, error } = useUserMonthlyTrend({ month: 5 });
     const filters: FiltredTransactionsParams = {
         Page: 1,
@@ -20,7 +24,12 @@ const Dashboard = () => {
                 <p className={styles.description}>Track monthly income and expenses across the year</p>
                 <BarChartCard data={data} label="month" dataKey1="totalIncome" dataKey2="totalExpense" />
             </div>
-            <TransactionCard filters={filters} />
+            <TransactionCard
+                filters={filters}
+                title="Latest activity"
+                description="A quick view of the money moving through your accounts."
+                onSeeAll={onSeeAllTransactions}
+            />
         </>
     )
 }

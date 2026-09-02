@@ -3,26 +3,20 @@ import { useForm, type SubmitHandler } from "react-hook-form";
 
 import { useUserAccountsOptions } from "../../hooks/User/useUserAccountsOptions";
 import { useUserCategoriesOptions } from "../../hooks/User/useUserCategoriesOptions";
-import {useCreateTransaction} from "../../hooks/Transactions/useCreateTransaction";
+import { useCreateTransaction } from "../../hooks/Transactions/useCreateTransaction";
+import Button from "../Button/Button";
 
 import {
     TransactionType,
     type CreateTransactionParams,
 } from "../../services/transactionService";
+import { CREATE_TRANSACTION_COPY } from "./constants";
 
-const staticCategories = [
-    { id: 1, name: "Food" },
-    { id: 2, name: "Sport" },
-    { id: 3, name: "Transportation" },
-];
+interface TransactionCreatePopUpProps {
+    handleClose: () => void;
+}
 
-const staticAccounts = [
-    { id: 1, name: "Account 1" },
-    { id: 2, name: "Account 2" },
-    { id: 3, name: "Account 3" },
-];
-
-const TransactionCreatePopUp = ({handleClose}) => {
+const TransactionCreatePopUp = ({ handleClose }: TransactionCreatePopUpProps) => {
     const {
         register,
         handleSubmit,
@@ -53,27 +47,15 @@ const TransactionCreatePopUp = ({handleClose}) => {
         console.log(data);
         try {
             await createTransactionMutation.mutateAsync(data);
-
+            handleClose();
         } catch (err) {
             console.log(err);
         }
 
     };
 
-    if (isCategoriesLoading || isAccountsLoading) {
-        return <div>Loading...</div>;
-    }
-
-    if (isCategoryError || isAccountError) {
-        return (
-            <div>
-                {accountsError?.message} {categoryError?.message}
-            </div>
-        );
-    }
-
-    const accounts = accountsData ?? staticAccounts;
-    const categories = categoriesData ?? staticCategories;
+    const accounts = accountsData ?? [];
+    const categories = categoriesData ?? [];
 
     return (
         <div className={styles.overlay}>
@@ -81,11 +63,17 @@ const TransactionCreatePopUp = ({handleClose}) => {
                 className={styles.popUp}
                 onSubmit={handleSubmit(onSubmit)}
             >
-                <h1 className={styles.title}>Create Transaction</h1>
+                <div className={styles.header}>
+                    <h1 className={styles.title}>{CREATE_TRANSACTION_COPY.title}</h1>
+                    <p className={styles.description}>{CREATE_TRANSACTION_COPY.description}</p>
+                </div>
+                {(isCategoriesLoading || isAccountsLoading) && <p>Loading account and category options...</p>}
+                {(isCategoryError || isAccountError) && <p className={styles.error}>{accountsError?.message} {categoryError?.message}</p>}
 
                 {/* Account */}
                 <div className={styles.field}>
-                    <label htmlFor="accountId">Account</label>
+                    <label htmlFor="accountId">{CREATE_TRANSACTION_COPY.fields.account.label}</label>
+                    <p>{CREATE_TRANSACTION_COPY.fields.account.description}</p>
 
                     <select
                         id="accountId"
@@ -116,7 +104,8 @@ const TransactionCreatePopUp = ({handleClose}) => {
 
                 {/* Category */}
                 <div className={styles.field}>
-                    <label htmlFor="categoryId">Category</label>
+                    <label htmlFor="categoryId">{CREATE_TRANSACTION_COPY.fields.category.label}</label>
+                    <p>{CREATE_TRANSACTION_COPY.fields.category.description}</p>
 
                     <select
                         id="categoryId"
@@ -148,8 +137,9 @@ const TransactionCreatePopUp = ({handleClose}) => {
                 {/* Transaction Type */}
                 <div className={styles.field}>
                     <label htmlFor="type">
-                        Transaction Type
+                        {CREATE_TRANSACTION_COPY.fields.type.label}
                     </label>
+                    <p>{CREATE_TRANSACTION_COPY.fields.type.description}</p>
 
                     <select
                         id="type"
@@ -183,7 +173,8 @@ const TransactionCreatePopUp = ({handleClose}) => {
 
                 {/* Amount */}
                 <div className={styles.field}>
-                    <label htmlFor="amount">Amount</label>
+                    <label htmlFor="amount">{CREATE_TRANSACTION_COPY.fields.amount.label}</label>
+                    <p>{CREATE_TRANSACTION_COPY.fields.amount.description}</p>
 
                     <input
                         id="amount"
@@ -211,8 +202,9 @@ const TransactionCreatePopUp = ({handleClose}) => {
                 {/* Description */}
                 <div className={styles.field}>
                     <label htmlFor="description">
-                        Description
+                        {CREATE_TRANSACTION_COPY.fields.description.label}
                     </label>
+                    <p>{CREATE_TRANSACTION_COPY.fields.description.description}</p>
 
                     <input
                         id="description"
@@ -223,23 +215,23 @@ const TransactionCreatePopUp = ({handleClose}) => {
                 </div>
 
                 <div className={styles.actions}>
-                    <button
+                    <Button
                         type="button"
-                        className={styles.cancelBtn}
+                        variant="secondary"
                         onClick={handleClose}
                     >
                         Cancel
-                    </button>
+                    </Button>
 
-                    <button
+                    <Button
                         type="submit"
-                        className={styles.submitBtn}
-                        disabled={isSubmitting}
+                        variant="primary"
+                        disabled={isSubmitting || createTransactionMutation.isPending}
                     >
-                        {isSubmitting
+                        {isSubmitting || createTransactionMutation.isPending
                             ? "Creating..."
-                            : "Create Transaction"}
-                    </button>
+                            : CREATE_TRANSACTION_COPY.submit}
+                    </Button>
                 </div>
             </form>
         </div>

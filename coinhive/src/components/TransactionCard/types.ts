@@ -7,4 +7,5 @@ export interface TransactionUI {
     currency: string;
     category: string;
     positive: boolean;
+    type: string;
 }

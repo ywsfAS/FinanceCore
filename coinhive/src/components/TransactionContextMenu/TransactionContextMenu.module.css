@@ -1,0 +1,63 @@
+.menu {
+    position: absolute;
+    top: calc(100% + var(--space-8));
+    right: var(--space-16);
+    z-index: 1000;
+    min-width: 256px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+    padding: var(--space-12);
+    background: var(--surface);
+    border: 1px solid var(--gray-200);
+    border-radius: var(--space-8);
+    box-shadow: var(--shadow-100);
+}
+
+.menu button {
+    min-height: 54px;
+    display: flex;
+    align-items: center;
+    gap: var(--space-8);
+    padding: var(--space-8) var(--space-12);
+    border: 0;
+    border-radius: var(--space-8);
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+    text-align: left;
+}
+
+.menu button:hover {
+    background: var(--gray-50);
+    color: var(--primary-600);
+}
+
+.menu button>svg {
+    flex: 0 0 auto;
+    transition: transform .25s ease;
+}
+
+.menu button:hover>svg {
+    transform: rotate(-10deg) translateY(-2px);
+}
+
+.menu button>span {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+.menu strong {
+    color: var(--text-primary);
+    font-size: var(--font-size-14);
+}
+
+.menu small {
+    color: var(--text-tertiary);
+    font-size: var(--font-size-12);
+}
+
+.menu .deleteButton {
+    color: var(--danger-600);
+}

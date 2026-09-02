@@ -1,18 +1,32 @@
 import styles from "./TransactionCard.module.css";
-import { getTransactionIcon } from "./constants";
+import { TRANSACTION_TYPE_ICONS } from "./constants";
+import TransactionContextMenu from "../TransactionContextMenu/TransactionContextMenu";
 import type { TransactionUI } from "./types";
 
 interface Props {
     transaction: TransactionUI;
+    menuOpen: boolean;
+    onMenuOpen: (id: string) => void;
+    onMenuClose: () => void;
+    onDelete: (id: string) => void;
+    onExport: () => void;
+    onImport: () => void;
 }
 
 export default function TransactionRow({
     transaction,
+    menuOpen,
+    onMenuOpen,
+    onMenuClose,
+    onDelete,
+    onExport,
+    onImport,
 }: Props) {
+    const TransactionIcon = TRANSACTION_TYPE_ICONS[transaction.type as keyof typeof TRANSACTION_TYPE_ICONS] ?? TRANSACTION_TYPE_ICONS.Expense;
     return (
-        <div className={styles.row}>
+        <div className={styles.row} onContextMenu={(event) => { event.preventDefault(); onMenuOpen(transaction.id); }}>
             <div className={styles.iconWrapper}>
-                {getTransactionIcon(transaction.positive)}
+                <TransactionIcon size={18} />
             </div>
 
             <div className={styles.nameBlock}>
@@ -30,7 +44,8 @@ export default function TransactionRow({
                 {transaction.amount}
             </div>
 
-            <div className={styles.statusPill}>Completed</div>
+            <div className={styles.status}>Completed</div>
+            {menuOpen && <TransactionContextMenu onClose={onMenuClose} onDelete={() => onDelete(transaction.id)} onExport={onExport} onImport={onImport} />}
         </div>
     );
 }

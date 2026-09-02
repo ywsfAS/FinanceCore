@@ -55,7 +55,7 @@ export default function ProfilePage() {
     const DashboardContent = (() => {
         switch (activeTab) {
             case EnNavLinks.Dashboard:
-                return <Dashboard />
+                return <Dashboard onSeeAllTransactions={() => setActiveTab(EnNavLinks.Transactions)} />
 
             case EnNavLinks.Accounts:
                 return <Accounts />
