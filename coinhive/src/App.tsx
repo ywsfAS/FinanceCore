@@ -1,5 +1,3 @@
-import { useAuth } from "./hooks/Auth/Auth";
-import { useEffect } from 'react';
 import { Route, Routes } from "react-router-dom";
 import Navbar from './components/Navbar/Navbar';
 import RegisterPage from './pages/Register/RegisterPage';
@@ -14,11 +12,6 @@ import ResetPasswordPage from "./pages/ResetPasswordPage/Resetpasswordpage";
 import BudgetsPage from "./pages/Budgets/BudgetsPage"
 
 function App() {
-    const { user, loginWithToken} = useAuth();
-    // On Mount
-    useEffect(() => {
-        if(user?.token) loginWithToken(user.token);
-    }, []);
     return (
         <>
             <Navbar />
@@ -28,13 +21,14 @@ function App() {
                 <Route path="/contact" element={<Contact />} />
                 <Route path="/register" element={<RegisterPage />} />
                 <Route path="/login" element={<LoginPage />} />
-                <Route path="/forget-password" element={<ForgotPasswordPage/> } />
-                <Route path="/reset-password" element={<ResetPasswordPage/> } />
+                <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+                <Route path="/forget-password" element={<ForgotPasswordPage />} />
+                <Route path="/reset-password" element={<ResetPasswordPage />} />
                 <Route path="/profile" element={<ProfilePage />} />
-                <Route path="/budgets" element={<BudgetsPage/>}/>
+                <Route path="/budgets" element={<BudgetsPage />} />
 
             </Routes>
-            <Footer/>
+            <Footer />
         </>
     )
 }

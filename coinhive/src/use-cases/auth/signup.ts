@@ -7,5 +7,5 @@ export const registerUser = async (
     email: string,
     password: string
 ): Promise<User> => {
-    return await authService.register(name, email, password);
+    return await authService.register({ name, email, password });
 };
