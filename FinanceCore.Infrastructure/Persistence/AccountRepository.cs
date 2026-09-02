@@ -601,21 +601,21 @@ public class AccountRepository : IAccountRepository
                 Balance,
                 CurrencyId AS Currency
             FROM Accounts
-            WHERE UserId = @Id
+            WHERE UserId = @Id  
             """);
 
         if (name is not null)
-            sql.Append(" AND Name LIKE @Name");
+            sql.Append(" AND Name LIKE @Name ");
 
         if (type.HasValue)
-            sql.Append(" AND AccountTypeId = @Type");
+            sql.Append(" AND AccountTypeId = @Type ");
 
         if (currency.HasValue)
-            sql.Append(" AND CurrencyId = @Currency");
+            sql.Append(" AND CurrencyId = @Currency ");
 
         sql.Append("""
 
-            ORDER BY CreatedAt
+               ORDER BY CreatedAt
             OFFSET @Offset ROWS
             FETCH NEXT @PageSize ROWS ONLY;
             """);

@@ -167,7 +167,7 @@ namespace FinanceCore.Infrastructure.Repositories
 
             var sql = new StringBuilder(@"
             SELECT
-            t.AccountId,
+            a.Id AS AccountId,
 
             COALESCE(SUM(CASE WHEN t.TransactionTypeId = 0
                 THEN t.Amount * er.Rate ELSE 0 END), 0) AS TotalIncome,
@@ -185,17 +185,18 @@ namespace FinanceCore.Infrastructure.Repositories
 
             p.Currency AS Currency
 
-            FROM Transactions t
-
-            INNER JOIN Accounts a 
-                ON a.Id = t.AccountId  
-                AND t.Date >= @Start
-                AND t.Date < @End
+            FROM Accounts a
 
             INNER JOIN Profiles p
                 ON p.UserId = @UserId
 
-            INNER JOIN ExchangeRates er
+            LEFT JOIN Transactions t 
+                ON a.Id = t.AccountId  
+                AND t.Date >= @Start
+                AND t.Date < @End
+
+
+            LEFT JOIN ExchangeRates er
                 ON er.SourceCurrencyId = a.CurrencyId
                 AND er.TargetCurrencyId = p.Currency
 
@@ -203,14 +204,14 @@ namespace FinanceCore.Infrastructure.Repositories
             ");
 
             if (accountId.HasValue)
-                sql.Append(" AND t.AccountId = @AccountId ");
+                sql.Append(" AND a.Id = @AccountId ");
 
             sql.Append(@"
             GROUP BY
-                t.AccountId,
+                a.Id,
                 p.Currency
 
-            ORDER BY t.AccountId
+            ORDER BY a.Id
             OFFSET @Offset ROWS
             FETCH NEXT @PageSize ROWS ONLY
             ");

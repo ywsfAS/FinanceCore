@@ -10,7 +10,7 @@ namespace FinanceCore.Infrastructure.Services
             using var image = new MagickImage(input);
 
             // resize and strip metadata infos
-            image.Resize(48, 48);
+            image.Resize(512, 512);
             image.Strip();
             image.Format = MagickFormat.WebP;
             image.Quality = 90;

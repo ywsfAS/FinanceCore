@@ -13,7 +13,7 @@ namespace FinanceCore.Application.Features.Accounts.Queries.GetAccountFiltered
         }
         public async Task<IEnumerable<AccountInfoDto>> Handle(GetAccountFilteredQuery query, CancellationToken token)
         {
-            return await _accountRepository.GetAccountsAsync(query.UserId, query.Type, query.Currency, query.Name ,query.Page , query.Page ,token);
+            return await _accountRepository.GetAccountsAsync(query.UserId, query.Type, query.Currency, query.Name ,query.Page , query.PageSize ,token);
         }
     }
 }

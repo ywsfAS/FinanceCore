@@ -40,15 +40,22 @@ namespace FinanceCore.Domain.Profile
             return profile;
         }
 
-        public void UpdateName(string firstName, string lastName)
+        public void UpdateFirstName(string firstName)
         {
-            if (string.IsNullOrWhiteSpace(firstName) || string.IsNullOrWhiteSpace(lastName))
-                throw new InvalidFirstNameException(firstName + lastName, "Invalid name");
+            if (string.IsNullOrWhiteSpace(firstName))
+                throw new InvalidFirstNameException(firstName, "Invalid name");
 
             FirstName = firstName;
-            LastName = lastName;
+            AddDomainEvent(new ProfileNameUpdatedEvent(UserId, FirstName, LastName));
+        }
 
-            AddDomainEvent(new ProfileNameUpdatedEvent(UserId, firstName, lastName));
+        public void UpdateLasttName(string lastName)
+        {
+            if (string.IsNullOrWhiteSpace(lastName))
+                throw new InvalidFirstNameException(lastName, "Invalid name");
+
+            LastName = lastName;
+            AddDomainEvent(new ProfileNameUpdatedEvent(UserId, FirstName, LastName));
         }
 
         public void UpdateAvatar(string avatarUrl)

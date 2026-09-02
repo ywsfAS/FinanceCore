@@ -197,6 +197,7 @@ if (!app.Environment.IsDevelopment())
     app.UseHsts();
 }
 
+app.UseStaticFiles();
 app.UseHttpsRedirection();
 
 
@@ -204,7 +205,6 @@ app.UseSerilogRequestLogging();
 
 app.UseCors("AllowFrontend");
 
-app.UseStaticFiles();
 
 app.UseAuthentication();
 

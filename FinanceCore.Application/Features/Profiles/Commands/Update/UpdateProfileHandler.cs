@@ -23,9 +23,10 @@ namespace FinanceCore.Application.Features.Profiles.Commands.Update
             }
             var profile = await _profileRepository.GetProfileByUserIdAsync(command.UserId);
             // update profile infos
-            profile!.ChangeCurrency(command.Currency);
-            profile.UpdateName(command.FirstName, command.LastName);
-            profile.UpdateBio(command.Bio);
+            if (command.Currency.HasValue) profile!.ChangeCurrency(command.Currency.Value);
+            if (command.FirstName != null) profile!.UpdateFirstName(command.FirstName);
+            if (command.LastName != null) profile!.UpdateLasttName(command.LastName);
+            if (command.Bio != null) profile.UpdateBio(command.Bio); 
             await DomainEventDispatcher.DispatchAsync(_eventBus, profile ,token);
             await _profileRepository.UpdateAsync(profile, token);
         }
