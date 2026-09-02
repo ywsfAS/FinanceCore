@@ -5,7 +5,7 @@ import {
 } from "../../services/accountService";
 
 export function useGetAccountById({
-   id,
+    id,
 }: GetAccountByIdParams) {
     return useQuery({
         queryKey: ["account-id", id],
@@ -16,5 +16,6 @@ export function useGetAccountById({
             }),
 
         staleTime: 1000 * 60 * 5,
+        enabled: Boolean(id),
     });
 }

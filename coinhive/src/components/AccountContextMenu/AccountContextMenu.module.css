@@ -1,0 +1,68 @@
+.menu {
+    position: absolute;
+    top: 64px;
+    right: var(--space-16);
+    z-index: 1000;
+    min-width: 256px;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+    padding: var(--space-12);
+    background: var(--surface);
+    border: 1px solid var(--border, #d9e1e8);
+    border-radius: var(--space-8);
+    box-shadow: var(--shadow-200, 0 10px 30px rgba(0, 0, 0, .14));
+}
+
+.menu button {
+    font-family: var(--font-family);
+    min-height: 56px;
+    display: flex;
+    align-items: center;
+    gap: var(--space-8);
+    border: 0;
+    border-radius: var(--space-8);
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: var(--space-8) var(--space-12);
+    font-size: var(--font-size-14);
+    font-weight: var(--font-weight-medium);
+}
+
+.menu button:hover {
+    color: var(--primary-500);
+    background: var(--background, #f4f7f8);
+}
+
+.menu .deleteButton {
+    color: var(--danger-500, #c2413d);
+}
+
+.menu button>svg {
+    flex: 0 0 auto;
+    transition: transform .25s ease;
+}
+
+.menu button:hover>svg {
+    transform: rotate(-12deg) translateY(-2px);
+}
+
+.menu button>span {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-4);
+    text-align: left;
+}
+
+.menu strong {
+    color: var(--text-primary);
+    font-size: var(--font-size-14);
+}
+
+.menu small {
+    color: var(--text-tertiary);
+    font-size: var(--font-size-12);
+    font-weight: var(--font-weight-regular);
+}

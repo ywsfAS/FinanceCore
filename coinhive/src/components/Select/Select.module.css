@@ -4,7 +4,8 @@
 }
 
 .trigger {
-    font-family : var(--font-family);
+    font-family: var(--font-family);
+    font-weight: var(--font-weight-medium);
     width: 100%;
     padding: var(--space-12);
     display: flex;
@@ -17,25 +18,49 @@
     color: var(--text-primary);
     cursor: pointer;
 }
-.primary{
-    background-color : var(--primary-500);
-    color : var(--text-white);
+
+.primary {
+    background-color: var(--primary-500);
+    color: var(--text-white);
 }
+
 .dropdown {
     position: absolute;
     top: calc(100% + var(--space-8));
     left: 0;
     right: 0;
+    max-height: var(--space-256);
+    overflow-y: auto;
+    overflow-x: hidden;
     background: var(--surface);
     border: 1px solid var(--gray-200);
     border-radius: var(--space-8);
     box-shadow: var(--shadow-50);
-    overflow: hidden;
+    overflow-x: hidden;
     z-index: 10;
+}
+
+.dropdown {
+    scrollbar-width: thin;
+    scrollbar-color: var(--gray-300) transparent;
+}
+
+.dropdown::-webkit-scrollbar {
+    width: var(--space-8);
+}
+
+.dropdown::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.dropdown::-webkit-scrollbar-thumb {
+    background: var(--gray-300);
+    border-radius: var(--space-8);
 }
 
 .option {
     padding: var(--space-12);
+    font-weight: var(--font-weight-medium);
     font-size: var(--font-size-14);
     color: var(--text-primary);
     cursor: pointer;

@@ -1,5 +1,7 @@
 import type { GetAccountWithFiltersParams } from "../../services/accountService";
 import { EnAccountType } from "../../entities/Account";
+import { BadgeDollarSign, Banknote, BriefcaseBusiness, CreditCard, Landmark, PiggyBank, WalletCards } from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 
 export enum AccountType {
     checking = EnAccountType.Checking,
@@ -24,6 +26,16 @@ export const ACCOUNT_TYPES = [
     { value: EnAccountType.Loan, label: "Loan" },
     { value: EnAccountType.Other, label: "Other" },
 ];
+
+export const ACCOUNT_TYPE_ICONS: Record<EnAccountType, LucideIcon> = {
+    [EnAccountType.Checking]: CreditCard,
+    [EnAccountType.Savings]: PiggyBank,
+    [EnAccountType.Cash]: Banknote,
+    [EnAccountType.Credit]: BadgeDollarSign,
+    [EnAccountType.Investment]: BriefcaseBusiness,
+    [EnAccountType.Loan]: Landmark,
+    [EnAccountType.Other]: WalletCards,
+};
 
 export const CURRENCIES = [
     { value: "", label: "All Currencies" },

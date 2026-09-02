@@ -1,0 +1,89 @@
+.overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-16);
+    background: var(--overlay);
+}
+
+.popup {
+    width: min(100%, 480px);
+    padding: var(--space-24);
+    background: var(--surface);
+    border-radius: var(--space-16);
+    box-shadow: var(--shadow-300, 0 20px 60px rgba(0, 0, 0, .2));
+}
+
+.header,
+.buttonRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-12);
+}
+
+.header {
+    margin-bottom: var(--space-24);
+}
+
+.header h2 {
+    margin: 0;
+    color: var(--text-primary);
+    font-size: var(--font-size-24);
+}
+
+.description {
+    margin-top: var(--space-8);
+    max-width: 384px;
+    color: var(--text-secondary);
+    font-size: var(--font-size-14);
+    line-height: 1.5;
+}
+
+.closeButton {
+    border: 0;
+    background: transparent;
+    color: var(--text-secondary);
+    cursor: pointer;
+}
+
+.idContent,
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-16);
+}
+
+.idContent p {
+    margin: 0;
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+.idValue {
+    padding: var(--space-16);
+    overflow-wrap: anywhere;
+    background: var(--background, #f4f7f8);
+    border: 1px solid var(--border, #d9e1e8);
+    border-radius: var(--space-8);
+    color: var(--text-primary);
+    font-family: monospace;
+}
+
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+}
+
+.field label {
+    color: var(--text-primary);
+    font-weight: var(--font-weight-medium);
+}
+
+.buttonRow {
+    justify-content: flex-end;
+}

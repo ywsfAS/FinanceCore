@@ -21,10 +21,18 @@
     align-items: center;
     margin-bottom: var(--space-32);
 }
-.header h2{
-    font-size : var(--font-size-24);
-    font-weight : var(--font-weight-semibold);
-    color : var(--text-primary);
+
+.header h2 {
+    font-size: var(--font-size-24);
+    font-weight: var(--font-weight-semibold);
+    color: var(--text-primary);
+}
+
+.description {
+    margin-top: var(--space-8);
+    color: var(--text-secondary);
+    font-size: var(--font-size-14);
+    line-height: 1.5;
 }
 
 .closeBtn {
@@ -36,7 +44,7 @@
 .form {
     display: flex;
     flex-direction: column;
-    gap: var(--space-20); 
+    gap: var(--space-20);
 }
 
 .field {
@@ -46,3 +54,15 @@
     margin-bottom: var(--space-24);
 }
 
+.field label {
+    color: var(--text-primary);
+    font-size: var(--font-size-16);
+    font-weight: var(--font-weight-semibold);
+}
+
+.field p {
+    color: var(--text-secondary);
+    font-size: var(--font-size-14);
+    font-weight: var(--font-weight-regular);
+    line-height: 1.5;
+}

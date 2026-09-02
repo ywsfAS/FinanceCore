@@ -4,12 +4,12 @@ import {
     type GetAccountWithFiltersParams
 } from "../../services/accountService";
 
-export function useGetAccountsWithFilters(filters :  GetAccountWithFiltersParams) {
+export function useGetAccountsWithFilters(filters: GetAccountWithFiltersParams) {
     return useQuery({
         queryKey: ["accounts-user-filters", filters],
 
         queryFn: () =>
-           accountService.getUserAccountsWithFilters(filters),
+            accountService.getUserAccountsWithFilters(filters),
 
         staleTime: 1000 * 60 * 5,
         placeholderData: (prev) => prev,

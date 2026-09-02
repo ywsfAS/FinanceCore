@@ -12,10 +12,10 @@ import Accounts from "../../components/Accounts/Accounts";
 import Transactions from "../../components/Transactions/transactions";
 import Categories from "../../components/Categories/Categories";
 import Savings from "../../components/Savings/Savings";
-import { PieChartCard } from "../../components/PieChartCard/PieChartCard";
 import { Settings } from "../../components/Settings/Settings";
 import Budgets from "../../components/Budgets/Budgets";
 import Analytics from "../../components/Analytics/Analytics";
+import { motion, AnimatePresence } from "motion/react";
 
 export default function ProfilePage() {
 
@@ -76,15 +76,38 @@ export default function ProfilePage() {
     return (
         <div className={styles.layout}>
             <ProfileCard profileData={profile} PopUpHandler={PopUpHandler} TabHandler={handleActiveTab} active={activeTab} />
-            <main className={styles.main}>
-                {DashboardContent}
+            <motion.main className={styles.main}
+            >
+                <AnimatePresence mode="wait">
+                    <motion.div
+                        key={activeTab}
+                        initial={{
+                            opacity: 0,
+                            x: 15,
+                        }}
+                        animate={{
+                            opacity: 1,
+                            x: 0,
+                        }}
+                        exit={{
+                            opacity: 0,
+                            x: -15,
+                        }}
+                        transition={{
+                            duration: 0.25,
+                            ease: "easeOut",
+                        }}
+                    >
+                        {DashboardContent}
+                    </motion.div>
+                </AnimatePresence>
                 {active && <ProfileEditPopUp
                     EditProfileImageHandler={updateProfileImage}
                     EditProfileHandler={updateProfile}
                     PopUpHandler={PopUpHandler}
                     avatarUrl={profile?.avatarUrl}
                 />}
-            </main>
+            </motion.main>
         </div>
     );
 }
