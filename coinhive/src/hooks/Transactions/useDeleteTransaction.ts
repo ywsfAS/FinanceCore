@@ -3,7 +3,7 @@ import {
     transactionService,
     type DeleteTransactionParams
 } from "../../services/transactionService";
-export function useCreateAccount() {
+export function useRemoveTransaction() {
     return useMutation({
         mutationFn: (transaction: DeleteTransactionParams) => transactionService.DeleteTransaction(transaction)
 

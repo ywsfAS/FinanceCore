@@ -8,9 +8,9 @@ interface Props {
     menuOpen: boolean;
     onMenuOpen: (id: string) => void;
     onMenuClose: () => void;
-    onDelete: (id: string) => void;
-    onExport: () => void;
+    onRemove: () => void;
     onImport: () => void;
+    onView: () => void;
 }
 
 export default function TransactionRow({
@@ -18,9 +18,11 @@ export default function TransactionRow({
     menuOpen,
     onMenuOpen,
     onMenuClose,
-    onDelete,
-    onExport,
     onImport,
+    onView,
+    onRemove
+
+
 }: Props) {
     const TransactionIcon = TRANSACTION_TYPE_ICONS[transaction.type as keyof typeof TRANSACTION_TYPE_ICONS] ?? TRANSACTION_TYPE_ICONS.Expense;
     return (
@@ -45,7 +47,7 @@ export default function TransactionRow({
             </div>
 
             <div className={styles.status}>Completed</div>
-            {menuOpen && <TransactionContextMenu onClose={onMenuClose} onDelete={() => onDelete(transaction.id)} onExport={onExport} onImport={onImport} />}
+            {menuOpen && <TransactionContextMenu onClose={onMenuClose} onDelete={onRemove} onImport={onImport} onView={onView} />}
         </div>
     );
 }

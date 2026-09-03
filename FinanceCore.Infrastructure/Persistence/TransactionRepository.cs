@@ -170,17 +170,17 @@ namespace FinanceCore.Infrastructure.Repositories
             a.Id AS AccountId,
 
             COALESCE(SUM(CASE WHEN t.TransactionTypeId = 0
-                THEN t.Amount * er.Rate ELSE 0 END), 0) AS TotalIncome,
+                THEN t.Amount * COALESCE(er.Rate,1) ELSE 0 END), 0) AS TotalIncome,
 
             COALESCE(SUM(CASE WHEN t.TransactionTypeId = 1
-                THEN t.Amount * er.Rate ELSE 0 END), 0) AS TotalExpense,
+                THEN t.Amount * COALESCE(er.Rate,1) ELSE 0 END), 0) AS TotalExpense,
 
             (
             COALESCE(SUM(CASE WHEN t.TransactionTypeId = 0
-                THEN t.Amount * er.Rate ELSE 0 END), 0)
+                THEN t.Amount * COALESCE(er.Rate,1) ELSE 0 END), 0)
             -
             COALESCE(SUM(CASE WHEN t.TransactionTypeId = 1
-                THEN t.Amount * er.Rate ELSE 0 END), 0)
+                THEN t.Amount * COALESCE(er.Rate,1) ELSE 0 END), 0)
             ) AS NetSavings,
 
             p.Currency AS Currency

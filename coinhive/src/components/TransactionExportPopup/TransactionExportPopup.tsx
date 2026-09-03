@@ -4,17 +4,21 @@ import Button from "../Button/Button";
 import CustomSelect from "../Select/Select";
 import { useUserAccountsOptions } from "../../hooks/User/useUserAccountsOptions";
 import { useUserCategoriesOptions } from "../../hooks/User/useUserCategoriesOptions";
-import { useExportTransactions } from "../../hooks/Transactions/useExportTransactions";
+import { useExportTransaction } from "../../hooks/Transactions/useExportTransaction";
 import { TransactionType, type ExportTransactionsParams } from "../../services/transactionService";
 import styles from "./TransactionExportPopup.module.css";
 
-interface TransactionExportPopupProps { onClose: () => void; }
+interface TransactionExportPopupProps {
+    onClose: () => void;
+    onExport: () => void;
 
-const TransactionExportPopup = ({ onClose }: TransactionExportPopupProps) => {
+}
+
+const TransactionExportPopup = ({ onClose}: TransactionExportPopupProps) => {
     const [filters, setFilters] = useState<ExportTransactionsParams>({ Page: 1, PageSize: 100 });
     const { data: accounts = [] } = useUserAccountsOptions();
     const { data: categories = [] } = useUserCategoriesOptions();
-    const exportMutation = useExportTransactions();
+    const exportMutation = useExportTransaction();
 
     const update = (key: keyof ExportTransactionsParams, value: string) => {
         setFilters((previous) => ({

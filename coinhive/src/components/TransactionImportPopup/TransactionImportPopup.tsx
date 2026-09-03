@@ -3,16 +3,19 @@ import { X } from "lucide-react";
 import Button from "../Button/Button";
 import CustomSelect from "../Select/Select";
 import { useUserAccountsOptions } from "../../hooks/User/useUserAccountsOptions";
-import { useImportTransactions } from "../../hooks/Transactions/useImportTransactions";
 import styles from "./TransactionImportPopup.module.css";
+import { useImportTransaction } from "../../hooks/Transactions/useImportTransaction";
 
-interface TransactionImportPopupProps { onClose: () => void; }
+interface TransactionImportPopupProps {
+    onClose: () => void;
+
+}
 
 const TransactionImportPopup = ({ onClose }: TransactionImportPopupProps) => {
     const [accountId, setAccountId] = useState("");
     const [file, setFile] = useState<File | null>(null);
     const { data: accounts = [] } = useUserAccountsOptions();
-    const importMutation = useImportTransactions();
+    const importMutation = useImportTransaction();
 
     const submit = async (event: React.FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -20,7 +23,6 @@ const TransactionImportPopup = ({ onClose }: TransactionImportPopupProps) => {
         await importMutation.mutateAsync({ type: "Csv", file, accountId });
         onClose();
     };
-
     return <div className={styles.overlay}><form className={styles.popup} onSubmit={submit}>
         <div className={styles.header}><div><h2>Import transactions</h2><p>Upload a CSV file and assign its transactions to an account.</p></div><button type="button" onClick={onClose} aria-label="Close"><X /></button></div>
         <label>Account<CustomSelect value={accountId} options={[{ value: "", label: "Select account" }, ...accounts.map((account) => ({ value: account.id, label: account.name }))]} onChange={setAccountId} variant="secondary" /></label>

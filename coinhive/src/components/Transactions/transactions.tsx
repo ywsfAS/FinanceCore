@@ -33,6 +33,7 @@ const Transactions = () => {
     const [isPageLoading, setIsPageLoading] = useState(false);
     const pageSize = 3;
 
+
     const handleClose = () => {
         setOpen((prev) => !prev);
     };

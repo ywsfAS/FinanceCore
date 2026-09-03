@@ -1,3 +1,4 @@
+import type { ImportedFileType } from '../components/TransactionActionPopUp/TransactionAction';
 import { apiClient } from '../lib/apiClient';
 export interface FiltredTransactionsParams {
     CategoryId?: string;
@@ -54,9 +55,12 @@ export interface ExportTransactionsParams {
     PageSize?: number;
 }
 export interface ImportTransactionsParams {
-    type: "Csv";
+    type: ImportedFileType;
     file: File;
     accountId: string;
+}
+export interface GetTransactionByIdParams {
+    id: string;
 }
 
 const transactionQuery = ({ accountId, toAccountId, CategoryId, Start, End, Type, Page, PageSize }: ExportTransactionsParams) => {
@@ -110,6 +114,9 @@ export const transactionService = {
         return apiClient(`/transactions/import/${type}`, { method: "POST", body: formData });
     },
 
+    GetTransactionById: ({ id }: GetTransactionByIdParams) => {
+        return apiClient(`/transactions/${id}`);
+    }
 
 
 

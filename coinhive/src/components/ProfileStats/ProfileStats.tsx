@@ -4,6 +4,8 @@ import { useUserSummary } from '../../hooks/Reports/useUserSummary';
 import styles from './ProfileStats.module.css';
 import { stats } from './constants';
 
+
+
 export default function StatsGrid() {
     const { isLoading, data, error, isError } = useUserSummary();
     if (isLoading) return <div>loading...</div>;
@@ -12,7 +14,7 @@ export default function StatsGrid() {
         (acc: UserSummary, account: AccountSummary) => ({
             totalIncome: acc.totalIncome + account.totalIncome,
             totalExpense: acc.totalExpense + account.totalExpense,
-            netSavings: acc.netSavings + acc.netSavings,
+            netSavings: acc.netSavings + account.netSavings,
             currency: acc.currency
         }),
         {
@@ -38,7 +40,6 @@ export default function StatsGrid() {
             value: userSummary.netSavings,
         },
     ];
-
     return (
         <div className={styles.grid}>
             {summary.map((s) => {

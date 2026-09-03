@@ -3,7 +3,7 @@ import {
     transactionService,
     type EditTransactionParams
 } from "../../services/transactionService";
-export function useCreateAccount() {
+export function useEditTransaction() {
     return useMutation({
         mutationFn: (transaction: EditTransactionParams) => transactionService.EditTransaction(transaction)
 
