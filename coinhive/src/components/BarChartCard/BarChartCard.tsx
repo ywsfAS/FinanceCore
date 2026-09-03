@@ -10,6 +10,9 @@ const calculatePeak = (data: Data, keys: string[]): number => {
 }
 export function BarChartCard({ data = DEFAULT_DATA, config = DEFAULT_CONFIG, label = DEFAULT_LABEL, dataKey1 = DEFAULT_KEY1, dataKey2 = DEFAULT_KEY2 }: BarChartCardProps) {
     const peak = calculatePeak(data, [dataKey1, dataKey2]);
+    data = data.map(m => ({ ...m, totalExpense: - m.totalExpense })
+    );
+    console.log(data, peak);
     return (
 
         <ResponsiveContainer width="100%" height="70%">

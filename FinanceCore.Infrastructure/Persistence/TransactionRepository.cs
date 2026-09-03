@@ -110,11 +110,11 @@ namespace FinanceCore.Infrastructure.Repositories
             const string sql = @"
             SELECT
             t.Id,
-            t.CurrencyId AS Currency,
             a.Name  AS AccountName,
             ta.Name AS ToAccountName,
             c.Name  AS CategoryName,
             t.Amount,
+            t.CurrencyId AS Currency,
             t.TransactionTypeId AS Type,
             t.CreatedAt AS Date,
             t.Description
@@ -386,16 +386,16 @@ namespace FinanceCore.Infrastructure.Repositories
             TransactionsGrouped AS (
             SELECT
                 DATEFROMPARTS(YEAR(t.CreatedAt), MONTH(t.CreatedAt), 1) AS MonthDate,
-                SUM(CASE WHEN t.TransactionTypeId = 0 THEN t.Amount * er.Rate ELSE 0 END) AS TotalIncome,
-                SUM(CASE WHEN t.TransactionTypeId = 1 THEN t.Amount * er.Rate ELSE 0 END) AS TotalExpense,
-                (SUM(CASE WHEN t.TransactionTypeId = 0 THEN t.Amount * er.Rate ELSE 0 END)
+                SUM(CASE WHEN t.TransactionTypeId = 0 THEN t.Amount * COALESCE(er.Rate,1) ELSE 0 END) AS TotalIncome,
+                SUM(CASE WHEN t.TransactionTypeId = 1 THEN t.Amount * COALESCE(er.Rate,1) ELSE 0 END) AS TotalExpense,
+                (SUM(CASE WHEN t.TransactionTypeId = 0 THEN t.Amount * COALESCE(er.Rate,1) ELSE 0 END)
                 -
-                SUM(CASE WHEN t.TransactionTypeId = 1 THEN t.Amount * er.Rate ELSE 0 END)) AS NetSavings
+                SUM(CASE WHEN t.TransactionTypeId = 1 THEN t.Amount * COALESCE(er.Rate,1) ELSE 0 END)) AS NetSavings
                 
             FROM Transactions t
             INNER JOIN Accounts a ON t.AccountId = a.Id
             INNER JOIN Profiles p ON a.UserId = p.UserId
-            INNER JOIN ExchangeRates er ON er.SourceCurrencyId = a.CurrencyId AND er.TargetCurrencyId = p.Currency
+            LEFT JOIN ExchangeRates er ON er.SourceCurrencyId = a.CurrencyId AND er.TargetCurrencyId = p.Currency
             WHERE a.UserId = @UserId
              
             AND t.CreatedAt >= DATEADD(MONTH, -@Months, GETDATE())
