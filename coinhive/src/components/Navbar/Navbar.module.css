@@ -13,6 +13,7 @@
 }
 
 .logo {
+    color: var(--text-primary);
     font-size: var(--font-size-18);
     text-decoration: none;
 }
@@ -30,13 +31,13 @@
 }
 
 .desktopNav a {
-
+    color: var(--text-primary);
     padding: var(--space-8) var(--space-12);
     border-radius: var(--space-8);
 }
 
 .desktopNav a:hover {
-    background-color: var(--gray-100);
+    background-color: var(--nav-hover);
 }
 
 .desktopNav a:active {
