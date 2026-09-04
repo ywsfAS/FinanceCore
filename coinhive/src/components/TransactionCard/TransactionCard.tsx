@@ -3,10 +3,9 @@ import { useEffect, useState } from "react";
 import TransactionRow from "./TransactionRow";
 
 import { useFiltredTransactions } from "../../hooks/Transactions/useFiltredTransactions";
-import type { DeleteTransactionParams, FiltredTransactionsParams, ImportTransactionsParams } from "../../services/transactionService";
+import type { FiltredTransactionsParams } from "../../services/transactionService";
 import { EnTransactionType, type TransactionEntity } from "../../entities/Transaction";
 import { useRemoveTransaction } from '../../hooks/Transactions/useDeleteTransaction';
-import { useImportTransaction } from '../../hooks/Transactions/useImportTransaction';
 import { TransactionAction, type TransactionActions } from '../TransactionActionPopUp/TransactionAction';
 
 import { TABLE_HEADERS } from "./constants";
@@ -42,8 +41,10 @@ export default function TransactionCard({ filters, onPageAvailabilityChange, onL
     const transactions = Array.isArray(data) ? data.map(mapTransactionToUI) : [];
 
     const [selectedTransaction, setSelectedTransaction] = useState<string | null>(null);
+    const [txName, settxName] = useState<string | null>(null);
     const [action, setAction] = useState<TransactionActions | null>(null);
     const [openMenuId, setOpenMenuId] = useState<string | null>(null);
+    const removeTransaction = useRemoveTransaction();
     const openAction = (action: TransactionActions) => {
         setAction(action);
     }
@@ -80,14 +81,17 @@ export default function TransactionCard({ filters, onPageAvailabilityChange, onL
                         <TransactionRow
                             onImport={() => {
                                 setSelectedTransaction(tx.id);
+                                settxName(tx.name);
                                 openAction("import");
                             }}
                             onView={() => {
                                 setSelectedTransaction(tx.id);
+                                settxName(tx.name);
                                 openAction("id");
                             }}
                             onRemove={() => {
                                 setSelectedTransaction(tx.id);
+                                settxName(tx.name);
                                 openAction("remove");
 
                             }}
@@ -107,6 +111,8 @@ export default function TransactionCard({ filters, onPageAvailabilityChange, onL
                     action={action}
                     id={selectedTransaction}
                     onClose={closeAction}
+                    name={txName!}
+                    onDelete={async () => await removeTransaction.mutateAsync({ transactionId: selectedTransaction })}
                 />}
         </div>
     );

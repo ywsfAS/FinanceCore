@@ -1,0 +1,64 @@
+.overlay {
+    position: fixed;
+    inset: 0;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: rgb(0 0 0 / 40%);
+
+    z-index: 1000;
+}
+
+.popup {
+    width: min(500px, calc(100vw - var(--space-32)));
+
+    padding: var(--space-24);
+
+    background: var(--background, #ffffff);
+    border: 1px solid var(--border, #d9e1e8);
+    border-radius: var(--space-12);
+
+    box-shadow: var(--shadow-lg, 0 10px 40px rgb(0 0 0 / 15%));
+}
+
+.header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+
+    gap: var(--space-16);
+    margin-bottom: var(--space-24);
+}
+
+.header h2 {
+    margin: 0;
+    color: var(--text-primary);
+}
+
+.description {
+    margin: var(--space-8) 0 0;
+    color: var(--text-secondary);
+    line-height: 1.5;
+}
+
+.closeButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    padding: var(--space-8);
+
+    border: 0;
+    border-radius: var(--space-8);
+
+    background: transparent;
+    color: var(--text-secondary);
+
+    cursor: pointer;
+}
+
+.closeButton:hover {
+    background: var(--background-hover, #f4f7f8);
+}

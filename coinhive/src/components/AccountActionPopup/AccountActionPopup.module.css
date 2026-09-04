@@ -50,29 +50,6 @@
     cursor: pointer;
 }
 
-.idContent,
-.form {
-    display: flex;
-    flex-direction: column;
-    gap: var(--space-16);
-}
-
-.idContent p {
-    margin: 0;
-    color: var(--text-secondary);
-    line-height: 1.5;
-}
-
-.idValue {
-    padding: var(--space-16);
-    overflow-wrap: anywhere;
-    background: var(--background, #f4f7f8);
-    border: 1px solid var(--border, #d9e1e8);
-    border-radius: var(--space-8);
-    color: var(--text-primary);
-    font-family: monospace;
-}
-
 .field {
     display: flex;
     flex-direction: column;
@@ -84,6 +61,8 @@
     font-weight: var(--font-weight-medium);
 }
 
-.buttonRow {
-    justify-content: flex-end;
+form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-16);
 }

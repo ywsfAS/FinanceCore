@@ -1,10 +1,13 @@
 import { useState, type FormEvent } from "react";
-import { Check, Copy, X } from "lucide-react";
+import { X } from "lucide-react";
 import Button from "../Button/Button";
 import Input from "../Input/Input";
 import CustomSelect from "../Select/Select";
 import { ACCOUNT_TYPES } from "../Accounts/constants";
 import styles from "./AccountActionPopup.module.css";
+import { ViewDetailsPopup } from "../ViewDetailsPopup/ViewDetailsPopup";
+import { VIEW_ACCOUNT_TITLE } from "./constants";
+import { DeleteConfirmationPopup } from "../DeleteConfirmationPopup/DeleteConfirmationPopup";
 
 export type AccountAction = "id" | "edit" | "alert" | "reconcile" | "delete";
 
@@ -40,12 +43,6 @@ const AccountActionPopup = ({ action, id, name, type, onClose, onEdit, onAlert, 
     const [accountName, setAccountName] = useState(name);
     const [accountType, setAccountType] = useState(type);
     const [amount, setAmount] = useState("");
-    const [copied, setCopied] = useState(false);
-
-    const copyId = async () => {
-        await navigator.clipboard.writeText(id);
-        setCopied(true);
-    };
 
     const submit = (event: FormEvent<HTMLFormElement>) => {
         event.preventDefault();
@@ -67,18 +64,11 @@ const AccountActionPopup = ({ action, id, name, type, onClose, onEdit, onAlert, 
                 </div>
 
                 {action === "id" && (
-                    <div className={styles.idContent}>
-                        <p>Use this ID to identify the account in reports and API requests.</p>
-                        <div className={styles.idValue}>{id}</div>
-                        <Button type="button" onClick={copyId}>{copied ? <><Check size={18} /> Copied</> : <><Copy size={18} /> Copy ID</>}</Button>
-                    </div>
+                    <ViewDetailsPopup id={id} title={VIEW_ACCOUNT_TITLE} onClose={onClose} />
                 )}
 
                 {action === "delete" && (
-                    <div className={styles.idContent}>
-                        <p>Delete <strong>{name}</strong>? This action cannot be undone.</p>
-                        <div className={styles.buttonRow}><Button type="button" variant="secondary" onClick={onClose}>Cancel</Button><Button type="button" variant="danger" onClick={onDelete}>Delete account</Button></div>
-                    </div>
+                    <DeleteConfirmationPopup name={name} onClose={onClose} onDelete={onDelete} />
                 )}
 
                 {action !== "id" && action !== "delete" && (

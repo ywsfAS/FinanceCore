@@ -1,0 +1,11 @@
+.idContent {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-16);
+}
+
+.buttonRow {
+    display: flex;
+    justify-content: flex-start;
+    gap: var(--space-8);
+}
